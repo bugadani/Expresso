@@ -1,0 +1,8 @@
+--TEST--
+Test
+--EXPRESSION--
+a + b
+--DATA--
+'a' => 5, 'b' => 2
+--EXPECT--
+7

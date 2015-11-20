@@ -13,6 +13,55 @@ class Compiler
         return $this;
     }
 
+    public function compileString($string)
+    {
+        $string = strtr(
+            $string,
+            [
+                "'"  => "\'",
+                '\n' => "\n",
+                '\t' => "\t"
+            ]
+        );
+
+        return $this->add("'{$string}'");
+    }
+
+    public function addData($data)
+    {
+        if (is_int($data)) {
+            $this->add($data);
+        } elseif (is_float($data)) {
+            $old = setlocale(LC_NUMERIC, 0);
+            if ($old) {
+                setlocale(LC_NUMERIC, 'C');
+                $this->add($data);
+                setlocale(LC_NUMERIC, $old);
+            } else {
+                $this->add($data);
+            }
+        } elseif (is_bool($data)) {
+            $this->add($data ? 'true' : 'false');
+        } elseif ($data === null) {
+            $this->add('null');
+        } elseif (is_array($data)) {
+            $this->compileArray($data);
+        } elseif ($data instanceof Node) {
+            $this->compileNode($data);
+        } else {
+            $this->compileString($data);
+        }
+
+        return $this;
+    }
+
+    public function addVariableAccess($variableName)
+    {
+        $this->add('$context["' . $variableName . '"]');
+
+        return $this;
+    }
+
     public function compileNode(NodeInterface $node)
     {
         $node->compile($this);

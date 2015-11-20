@@ -6,7 +6,7 @@ use Expresso\Compiler\Compiler;
 use Expresso\Compiler\ExecutionContext;
 use Expresso\Compiler\Leaf;
 
-class DataNode extends Leaf
+class IdentifierNode extends Leaf
 {
     private $value;
 
@@ -17,11 +17,11 @@ class DataNode extends Leaf
 
     public function compile(Compiler $compiler)
     {
-        $compiler->addData($this->value);
+        $compiler->addVariableAccess($this->value);
     }
 
     public function evaluate(ExecutionContext $context)
     {
-        return $this->value;
+        return $context[$this->value];
     }
 }

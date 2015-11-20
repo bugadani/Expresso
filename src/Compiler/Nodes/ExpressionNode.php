@@ -27,7 +27,7 @@ class ExpressionNode extends Node
 
     public function compile(Compiler $compiler)
     {
-        $compiler->add('function() {')
+        $compiler->add('function(array $context = []) {')
                  ->add('return ')
                  ->compileNode($this->rootNode)
                  ->add(';};');

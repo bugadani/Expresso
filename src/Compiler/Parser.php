@@ -5,6 +5,7 @@ namespace Expresso\Compiler;
 use Expresso\Compiler\Exceptions\ParseException;
 use Expresso\Compiler\Exceptions\SyntaxException;
 use Expresso\Compiler\Nodes\DataNode;
+use Expresso\Compiler\Nodes\IdentifierNode;
 use Expresso\Compiler\Operators\BinaryOperator;
 
 /**

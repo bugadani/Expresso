@@ -2,7 +2,7 @@
 
 namespace Expresso\Compiler;
 
-class ExecutionContext
+class ExecutionContext extends \ArrayObject
 {
 
 }
