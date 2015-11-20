@@ -17,7 +17,7 @@ class DataNode extends Leaf
 
     public function compile(Compiler $compiler)
     {
-        // TODO: Implement compile() method.
+        $compiler->add($this->value);
     }
 
     public function evaluate(ExecutionContext $context)

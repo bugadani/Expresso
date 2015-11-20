@@ -2,6 +2,9 @@
 
 namespace Expresso\Compiler\Operators;
 
+use Expresso\Compiler\Compiler;
+use Expresso\Compiler\NodeInterface;
+
 class SubtractionOperator extends BinaryOperator
 {
 
@@ -15,8 +18,8 @@ class SubtractionOperator extends BinaryOperator
         return $left - $right;
     }
 
-    public function compile($left, $right)
+    public function compile(Compiler $compiler, NodeInterface $left, NodeInterface $right)
     {
-        // TODO: Implement compile() method.
+        $compiler->compileNode($left)->add(' - ')->compileNode($right);
     }
 }

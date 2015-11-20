@@ -34,7 +34,7 @@ class BinaryOperatorNode extends Node
 
     public function compile(Compiler $compiler)
     {
-        // TODO: Implement compile() method.
+        $this->operator->compile($compiler, $this->left, $this->right);
     }
 
     public function evaluate(ExecutionContext $context)

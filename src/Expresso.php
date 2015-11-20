@@ -6,6 +6,7 @@ use Expresso\Compiler\Compiler;
 use Expresso\Compiler\CompilerConfiguration;
 use Expresso\Compiler\ExecutionContext;
 use Expresso\Compiler\NodeInterface;
+use Expresso\Compiler\Nodes\ExpressionNode;
 use Expresso\Compiler\Parser;
 use Expresso\Compiler\Tokenizer;
 
@@ -40,22 +41,6 @@ class Expresso
     public function addExtension(Extension $extension)
     {
         $this->extensions[] = $extension;
-    }
-
-    public function compile($expression)
-    {
-        $nodes = $this->parse($expression);
-
-        $source = $this->compiler->compile($nodes);
-
-        return new Expression();
-    }
-
-    public function execute($expression, array $parameters)
-    {
-        $nodes = $this->parse($expression);
-
-        return $nodes->evaluate(new ExecutionContext($parameters));
     }
 
     private function getTokenizer()
@@ -97,6 +82,28 @@ class Expresso
     {
         $tokens = $this->getTokenizer()->tokenize($expression);
 
-        return $this->getParser()->parse($tokens);
+        return new ExpressionNode($expression, $this->getParser()->parse($tokens));
+    }
+
+    public function compile($expression)
+    {
+        $nodes = $this->parse($expression);
+
+        $source = $this->getCompiler()->compile($nodes);
+
+        $function = eval('return ' . $source);
+
+        if (!is_callable($function)) {
+            throw new \InvalidArgumentException("Expression is not callable: $expression");
+        }
+
+        return $function;
+    }
+
+    public function execute($expression, array $parameters)
+    {
+        $nodes = $this->parse($expression);
+
+        return $nodes->evaluate(new ExecutionContext($parameters));
     }
 }
