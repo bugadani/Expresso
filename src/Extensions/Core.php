@@ -34,12 +34,6 @@ class Core extends Extension
             new LessThanOrEqualsOperator(8),
             new GreaterThanOperator(8),
             new GreaterThanOrEqualsOperator(8),
-            //bitwise
-            new BitwiseAndOperator(6),
-            new BitwiseOrOperator(4),
-            new BitwiseXorOperator(5),
-            new ShiftLeftOperator(9),
-            new ShiftRightOperator(9),
             //logical
             new AndOperator(3),
             new OrOperator(2),
@@ -72,7 +66,6 @@ class Core extends Extension
         return [
             /*new PreDecrementOperator(13, Operator::RIGHT),
             new PreIncrementOperator(13, Operator::RIGHT),
-            new BitwiseNotOperator(13, Operator::RIGHT),
             new NegationOperator(13, Operator::RIGHT),
             new NotOperator(12, Operator::RIGHT)*/
         ];

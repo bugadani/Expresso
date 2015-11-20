@@ -85,6 +85,11 @@ class Expresso
         return new ExpressionNode($expression, $this->getParser()->parse($tokens));
     }
 
+    /**
+     * @param $expression
+     *
+     * @return callable
+     */
     public function compile($expression)
     {
         $nodes = $this->parse($expression);
