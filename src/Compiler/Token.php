@@ -4,23 +4,19 @@ namespace Expresso\Compiler;
 
 class Token
 {
-    const LITERAL = 2;
-    const STRING = 3;
-    const IDENTIFIER = 4;
-    const OPERATOR = 5;
-    const PUNCTUATION = 6;
-    const TEXT = 7;
-    const VARIABLE = 8;
-    const EOF = 9;
+    const CONSTANT = 0;
+    const STRING = 1;
+    const IDENTIFIER = 2;
+    const OPERATOR = 3;
+    const PUNCTUATION = 4;
+    const EOF = 5;
 
     private static $strings = [
-        self::LITERAL     => 'LITERAL',
+        self::CONSTANT    => 'LITERAL',
         self::STRING      => 'STRING',
         self::IDENTIFIER  => 'IDENTIFIER',
         self::OPERATOR    => 'OPERATOR',
         self::PUNCTUATION => 'PUNCTUATION',
-        self::TEXT        => 'TEXT',
-        self::VARIABLE    => 'VARIABLE',
         self::EOF         => 'EOF',
     ];
     private $type;

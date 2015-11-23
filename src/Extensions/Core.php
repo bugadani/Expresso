@@ -2,9 +2,18 @@
 
 namespace Expresso\Extensions;
 
-use Expresso\Compiler\Operators\AdditionOperator;
-use Expresso\Compiler\Operators\MultiplicationOperator;
-use Expresso\Compiler\Operators\SubtractionOperator;
+use Expresso\Compiler\Operator;
+use Expresso\Compiler\Operators\Binary\DivisionOperator;
+use Expresso\Compiler\Operators\Binary\ExponentialOperator;
+use Expresso\Compiler\Operators\Binary\ModuloOperator;
+use Expresso\Compiler\Operators\Binary\NullSafeAccessOperator;
+use Expresso\Compiler\Operators\Binary\RemainderOperator;
+use Expresso\Compiler\Operators\Binary\SimpleAccessOperator;
+use Expresso\Compiler\Operators\Binary\AdditionOperator;
+use Expresso\Compiler\Operators\Binary\ConcatenationOperator;
+use Expresso\Compiler\Operators\Binary\MultiplicationOperator;
+use Expresso\Compiler\Operators\Binary\SubtractionOperator;
+use Expresso\Compiler\Operators\Unary\Prefix\MinusOperator;
 use Expresso\Extension;
 
 class Core extends Extension
@@ -21,10 +30,10 @@ class Core extends Extension
             new AdditionOperator(10),
             new SubtractionOperator(10),
             new MultiplicationOperator(11),
-            /*new DivisionOperator(11),
+            new DivisionOperator(11),
             new RemainderOperator(11),
             new ModuloOperator(11),
-            new ExponentialOperator(14, Operator::RIGHT),
+            new ExponentialOperator(14, Operator::RIGHT),/*
             //comparison
             new EqualsOperator(7),
             new IdenticalOperator(7),
@@ -50,10 +59,11 @@ class Core extends Extension
             new DivisibleByOperator(8, Operator::NONE),
             new NotDivisibleByOperator(8, Operator::NONE),
             //other
-            new NullCoalescingOperator(1),
-            new NullSafeAccessOperator(1),
+            new NullCoalescingOperator(1),*/
             new ConcatenationOperator(10),
-            new PropertyAccessOperator(16),
+            new SimpleAccessOperator(16),
+            new NullSafeAccessOperator(16),
+            /*
             new FilterOperator(11),
             new RangeOperator(9),
             new ExclusiveRangeOperator(9)
@@ -65,9 +75,9 @@ class Core extends Extension
     {
         return [
             /*new PreDecrementOperator(13, Operator::RIGHT),
-            new PreIncrementOperator(13, Operator::RIGHT),
-            new NegationOperator(13, Operator::RIGHT),
-            new NotOperator(12, Operator::RIGHT)*/
+            new PreIncrementOperator(13, Operator::RIGHT),*/
+            new MinusOperator(13, Operator::RIGHT),
+            //new NotOperator(12, Operator::RIGHT)
         ];
     }
 

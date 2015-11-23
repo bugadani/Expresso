@@ -1,8 +1,6 @@
 --TEST--
 Test
 --EXPRESSION--
-a + b
---DATA--
-'a' => 5, 'b' => 2
+1+2*-3
 --EXPECT--
-7
+-5

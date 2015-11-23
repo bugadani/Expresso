@@ -20,7 +20,7 @@ class TokenStreamTest extends \PHPUnit_Framework_TestCase
         );
 
         $stream = new TokenStream($tokens);
-        $stream->expect(Token::LITERAL);
+        $stream->expect(Token::CONSTANT);
     }
 
     /**

@@ -35,8 +35,9 @@ class IntegrationTest extends \PHPUnit_Framework_TestCase
         );
 
         $tests = [];
+        /** @var \SplFileInfo $file */
         foreach ($iterator as $file) {
-            $tests[ $file->getPath() ] = $this->parseDescriptor($file);
+            $tests[ $file->getPathname() ] = $this->parseDescriptor($file);
         }
 
         return array_filter($tests);
@@ -55,7 +56,6 @@ class IntegrationTest extends \PHPUnit_Framework_TestCase
     private function parseDescriptor($file)
     {
         $testDescriptor = file_get_contents($file);
-
         $file = basename($file);
 
         $testDescriptor = strtr(

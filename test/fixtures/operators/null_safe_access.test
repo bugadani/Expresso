@@ -1,0 +1,8 @@
+--TEST--
+Test null safe array access
+--EXPRESSION--
+a?.0 ~ a?.nested.foobar
+--DATA--
+'a' => ['a', 'b']
+--EXPECT--
+a

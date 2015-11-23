@@ -2,6 +2,8 @@
 
 namespace Expresso\Compiler;
 
+use Expresso\ExecutionContext;
+
 interface NodeInterface
 {
 

@@ -4,7 +4,6 @@ namespace Expresso;
 
 use Expresso\Compiler\Compiler;
 use Expresso\Compiler\CompilerConfiguration;
-use Expresso\Compiler\ExecutionContext;
 use Expresso\Compiler\NodeInterface;
 use Expresso\Compiler\Nodes\ExpressionNode;
 use Expresso\Compiler\Parser;

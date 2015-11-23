@@ -1,0 +1,6 @@
+--TEST--
+Test the exponential expression
+--EXPRESSION--
+2 ^ 3 ^ 2
+--EXPECT--
+512

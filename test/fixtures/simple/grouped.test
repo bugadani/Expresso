@@ -1,0 +1,6 @@
+--TEST--
+Test grouped expression
+--EXPRESSION--
+3 * -(5 + 6)
+--EXPECT--
+-33

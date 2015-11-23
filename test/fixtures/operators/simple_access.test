@@ -1,0 +1,8 @@
+--TEST--
+Test array access
+--EXPRESSION--
+a.1 ~ " " ~ a.foo ~ ' ' ~ a.nested.foobar
+--DATA--
+'a' => ['a', 'b', 'foo' => 'c', 'nested' => ['foobar' => 'baz']]
+--EXPECT--
+b c baz

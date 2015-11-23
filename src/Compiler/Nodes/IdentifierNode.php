@@ -3,8 +3,8 @@
 namespace Expresso\Compiler\Nodes;
 
 use Expresso\Compiler\Compiler;
-use Expresso\Compiler\ExecutionContext;
 use Expresso\Compiler\Leaf;
+use Expresso\ExecutionContext;
 
 class IdentifierNode extends Leaf
 {
@@ -23,5 +23,10 @@ class IdentifierNode extends Leaf
     public function evaluate(ExecutionContext $context)
     {
         return $context[$this->value];
+    }
+
+    public function getName()
+    {
+        return $this->value;
     }
 }

@@ -1,0 +1,6 @@
+--TEST--
+Test conditional expression
+--EXPRESSION--
+false ? 5 : 7
+--EXPECT--
+7

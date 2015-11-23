@@ -1,6 +1,6 @@
 --TEST--
-Test
+Test the mod operator
 --EXPRESSION--
-1+2*3
+-2 mod 7
 --EXPECT--
-7
+5

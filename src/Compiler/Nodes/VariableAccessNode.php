@@ -5,13 +5,13 @@ namespace Expresso\Compiler\Nodes;
 use Expresso\Compiler\Compiler;
 use Expresso\Compiler\Node;
 use Expresso\Compiler\NodeInterface;
-use Expresso\Compiler\Operators\BinaryOperator;
+use Expresso\Compiler\Operators\Binary\SimpleAccessOperator;
 use Expresso\ExecutionContext;
 
-class BinaryOperatorNode extends Node
+class VariableAccessNode extends Node
 {
     /**
-     * @var BinaryOperator
+     * @var SimpleAccessOperator
      */
     private $operator;
 
@@ -25,7 +25,7 @@ class BinaryOperatorNode extends Node
      */
     private $right;
 
-    public function __construct(BinaryOperator $operator, NodeInterface $left, NodeInterface $right)
+    public function __construct(SimpleAccessOperator $operator, NodeInterface $left, NodeInterface $right)
     {
         $this->operator = $operator;
         $this->left     = $left;
@@ -39,6 +39,10 @@ class BinaryOperatorNode extends Node
 
     public function evaluate(ExecutionContext $context)
     {
-        return $this->operator->execute($context, $this->left, $this->right);
+        return $this->operator->execute(
+            $context,
+            $this->left,
+            $this->right
+        );
     }
 }

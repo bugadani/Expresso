@@ -6,10 +6,11 @@ use Expresso\Compiler\Compiler;
 use Expresso\Compiler\NodeInterface;
 use Expresso\Compiler\Nodes\BinaryOperatorNode;
 use Expresso\Compiler\Operator;
+use Expresso\ExecutionContext;
 
 abstract class BinaryOperator extends Operator
 {
-    abstract public function execute($left, $right);
+    abstract public function execute(ExecutionContext $context, NodeInterface $left, NodeInterface $right);
 
     abstract public function compile(Compiler $compiler, NodeInterface $left, NodeInterface $right);
 

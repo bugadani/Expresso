@@ -3,8 +3,8 @@
 namespace Expresso\Compiler\Nodes;
 
 use Expresso\Compiler\Compiler;
-use Expresso\Compiler\ExecutionContext;
 use Expresso\Compiler\Leaf;
+use Expresso\ExecutionContext;
 
 class DataNode extends Leaf
 {

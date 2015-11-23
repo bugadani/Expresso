@@ -7,6 +7,8 @@ use Expresso\Compiler\Exceptions\SyntaxException;
 use Expresso\Compiler\Nodes\DataNode;
 use Expresso\Compiler\Nodes\IdentifierNode;
 use Expresso\Compiler\Operators\BinaryOperator;
+use Expresso\Compiler\Operators\Ternary\ConditionalOperator;
+use Expresso\Compiler\Operators\UnaryOperator;
 
 /**
  * Expression parser is based on the Shunting Yard algorithm by Edsger W. Dijkstra
@@ -33,12 +35,12 @@ class Parser
     /**
      * @var OperatorCollection
      */
-    private $unaryPrefixOperators;
+    private $prefixOperators;
 
     /**
      * @var OperatorCollection
      */
-    private $unaryPostfixOperators;
+    private $postfixOperators;
 
     /**
      * @var ConditionalOperator
@@ -52,9 +54,9 @@ class Parser
 
     public function __construct(CompilerConfiguration $config)
     {
-        $this->binaryOperators       = $config->getBinaryOperators();
-        $this->unaryPrefixOperators  = $config->getUnaryPrefixOperators();
-        $this->unaryPostfixOperators = $config->getUnaryPostfixOperators();
+        $this->binaryOperators  = $config->getBinaryOperators();
+        $this->prefixOperators  = $config->getUnaryPrefixOperators();
+        $this->postfixOperators = $config->getUnaryPostfixOperators();
     }
 
     public function parse(TokenStream $tokens)
@@ -97,26 +99,21 @@ class Parser
             }
         } else {
             $node = new IdentifierNode($identifier);
+            while ($this->tokens->nextTokenIf(Token::PUNCTUATION, '[')) {
+                //array indexing
+                $this->parseExpression();
+                $node = new ArrayIndexNode($node, $this->operandStack->pop());
+            }
         }
         $this->operandStack->push($node);
-    }
-
-    private function parseVariable($variable)
-    {
-        $operand = new VariableNode($variable);
-        while ($this->tokens->nextTokenIf(Token::PUNCTUATION, '[')) {
-            //array indexing
-            $this->parseExpression();
-            $operand = new ArrayIndexNode($operand, $this->operandStack->pop());
-        }
-        $this->operandStack->push($operand);
     }
 
     private function parsePostfixOperator()
     {
         $token = $this->tokens->next();
-        if ($token->test(Token::OPERATOR, [$this->unaryPostfixOperators, 'isOperator'])) {
-            $operator = $this->unaryPostfixOperators->getOperator($token->getValue());
+        if ($this->postfixOperators->isOperator($token->getValue())) {
+            /** @var UnaryOperator $operator */
+            $operator = $this->postfixOperators->getOperator($token->getValue());
             while ($this->compareToStackTop($operator)) {
                 $this->popOperator();
             }
@@ -134,8 +131,8 @@ class Parser
 
     private function parseArray()
     {
-        $node  = new ArrayNode();
         $token = $this->tokens->current();
+        $array = [];
 
         //iterate over tokens
         while (!$token->test(Token::PUNCTUATION, ']')) {
@@ -151,16 +148,16 @@ class Parser
                 //the previous value was a key
                 $key = $value;
                 $this->parseExpression();
-                $value = $this->operandStack->pop();
+                $value         = $this->operandStack->pop();
+                $array[ $key ] = $value;
             } else {
-                $key = null;
+                $array[] = $value;
             }
-            $node->add($value, $key);
 
             $token = $this->tokens->expectCurrent(Token::PUNCTUATION, [',', ']']);
         }
         //push array node to operand stack
-        $this->operandStack->push($node);
+        $this->operandStack->push(new DataNode($array));
     }
 
     private function parseToken()
@@ -174,16 +171,12 @@ class Parser
 
             switch ($type) {
                 case Token::STRING:
-                case Token::LITERAL:
+                case Token::CONSTANT:
                     $this->operandStack->push(new DataNode($value));
                     break;
 
                 case Token::IDENTIFIER:
                     $this->parseIdentifier($value);
-                    break;
-
-                case Token::VARIABLE:
-                    $this->parseVariable($value);
                     break;
 
                 case Token::PUNCTUATION:
@@ -205,10 +198,10 @@ class Parser
                 default:
                     $this->tokens->expectCurrent(
                         Token::OPERATOR,
-                        [$this->unaryPrefixOperators, 'isOperator']
+                        [$this->prefixOperators, 'isOperator']
                     );
                     $this->pushOperator(
-                        $this->unaryPrefixOperators->getOperator($value)
+                        $this->prefixOperators->getOperator($value)
                     );
                     $done = false;
                     break;
@@ -225,7 +218,7 @@ class Parser
 
         $token = $this->parseToken();
 
-        while ($token->test(Token::OPERATOR, [$this->binaryOperators, 'isOperator'])) {
+        while ($this->binaryOperators->isOperator($token->getValue())) {
             $this->pushOperator(
                 $this->binaryOperators->getOperator($token->getValue())
             );
@@ -238,6 +231,7 @@ class Parser
         $this->operatorStack->pop();
 
         //A conditional is marked by '?' (punctuation, not operator) so it breaks the loop above.
+        //TODO general ternary handling - maybe: array index, function call(, method call?)
         if ($token->test(Token::PUNCTUATION, '?')) {
             $this->parseConditional();
         }
@@ -247,25 +241,19 @@ class Parser
     {
         //Only instantiate ConditionalOperator when there is a possibility of it being used
         if (!isset($this->conditionalOperator)) {
-            $this->conditionalOperator = new ConditionalOperator();
-        }
-        $left = $this->operandStack->pop();
-
-        // Check whether the current expression is a simplified conditional
-        // expression (expr1 ?: expr3)
-        if (!$this->tokens->nextTokenIf(Token::PUNCTUATION, ':')) {
-            $this->parseExpression();
-            $middle = $this->operandStack->pop();
-            $this->tokens->expectCurrent(Token::PUNCTUATION, ':');
-        } else {
-            $middle = null;
+            $this->conditionalOperator = new ConditionalOperator(0);
         }
 
         $this->parseExpression();
-        $right = $this->operandStack->pop();
+        $this->tokens->expectCurrent(Token::PUNCTUATION, ':');
+        $this->parseExpression();
+
+        $right  = $this->operandStack->pop();
+        $middle = $this->operandStack->pop();
+        $left   = $this->operandStack->pop();
 
         $this->operandStack->push(
-            $this->conditionalOperator->createNode($left, $right, $middle)
+            $this->conditionalOperator->createNode($left, $middle, $right)
         );
     }
 
@@ -274,15 +262,9 @@ class Parser
         $operator = $this->operatorStack->pop();
         $right    = $this->operandStack->pop();
         if ($operator instanceof BinaryOperator) {
-            $operatorNode = $operator->createNode(
-                $this->operandStack->pop(),
-                $right
-            );
+            $operatorNode = $operator->createNode($this->operandStack->pop(), $right);
         } else {
-            $operatorNode = $operator->createNode(
-                null,
-                $right
-            );
+            $operatorNode = $operator->createNode($right);
         }
         $this->operandStack->push($operatorNode);
     }

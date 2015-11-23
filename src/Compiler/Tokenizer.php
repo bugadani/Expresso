@@ -11,7 +11,6 @@ namespace Expresso\Compiler;
 
 class Tokenizer
 {
-    //Constants
     private static $punctuation = [
         ','  => ',',
         '['  => '[',
@@ -110,7 +109,7 @@ class Tokenizer
             if (ctype_digit($part) && $number <= PHP_INT_MAX) {
                 $number = (int)$part;
             }
-            $token = new Token(Token::LITERAL, $number);
+            $token = new Token(Token::CONSTANT, $number);
         } else {
             switch ($part[0]) {
                 case '"':
@@ -124,22 +123,18 @@ class Tokenizer
                     $token = new Token(Token::STRING, substr($part, 1));
                     break;
 
-                case '$':
-                    $token = new Token(Token::VARIABLE, substr($part, 1));
-                    break;
-
                 default:
                     switch (strtolower($part)) {
                         case 'null':
-                            $token = new Token(Token::LITERAL, null);
+                            $token = new Token(Token::CONSTANT, null);
                             break;
 
                         case 'true':
-                            $token = new Token(Token::LITERAL, true);
+                            $token = new Token(Token::CONSTANT, true);
                             break;
 
                         case 'false':
-                            $token = new Token(Token::LITERAL, false);
+                            $token = new Token(Token::CONSTANT, false);
                             break;
 
                         default:

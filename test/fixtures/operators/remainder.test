@@ -1,0 +1,6 @@
+--TEST--
+Test the remainder operator
+--EXPRESSION--
+-2 % 7
+--EXPECT--
+-2

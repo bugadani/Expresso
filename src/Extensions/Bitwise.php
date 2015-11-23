@@ -2,9 +2,6 @@
 
 namespace Expresso\Extensions;
 
-use Expresso\Compiler\Operators\AdditionOperator;
-use Expresso\Compiler\Operators\MultiplicationOperator;
-use Expresso\Compiler\Operators\SubtractionOperator;
 use Expresso\Extension;
 
 class Bitwise extends Extension

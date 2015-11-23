@@ -27,6 +27,21 @@ class Compiler
         return $this->add("'{$string}'");
     }
 
+    private function compileArray($array)
+    {
+        $this->add('[');
+        $separator = '';
+        foreach ($array as $key => $value) {
+            $this->add($separator);
+            $separator = ', ';
+            $this->addData($key);
+            $this->add(' => ');
+            $this->addData($value);
+        }
+
+        return $this->add(']');
+    }
+
     public function addData($data)
     {
         if (is_int($data)) {
