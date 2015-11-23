@@ -5,6 +5,7 @@ namespace Expresso\Compiler\Nodes;
 use Expresso\Compiler\Compiler;
 use Expresso\Compiler\Node;
 use Expresso\Compiler\NodeInterface;
+use Expresso\Compiler\Operators\Binary\ArrayAccessOperator;
 use Expresso\Compiler\Operators\Binary\SimpleAccessOperator;
 use Expresso\ExecutionContext;
 
@@ -25,7 +26,13 @@ class VariableAccessNode extends Node
      */
     private $right;
 
-    public function __construct(SimpleAccessOperator $operator, NodeInterface $left, NodeInterface $right)
+    /**
+     * VariableAccessNode constructor.
+     * @param ArrayAccessOperator $operator
+     * @param NodeInterface $left
+     * @param NodeInterface $right
+     */
+    public function __construct(ArrayAccessOperator $operator, NodeInterface $left, NodeInterface $right)
     {
         $this->operator = $operator;
         $this->left     = $left;

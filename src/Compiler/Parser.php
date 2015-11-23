@@ -5,7 +5,11 @@ namespace Expresso\Compiler;
 use Expresso\Compiler\Exceptions\ParseException;
 use Expresso\Compiler\Exceptions\SyntaxException;
 use Expresso\Compiler\Nodes\DataNode;
+use Expresso\Compiler\Nodes\FunctionCallNode;
 use Expresso\Compiler\Nodes\IdentifierNode;
+use Expresso\Compiler\Nodes\VariableAccessNode;
+use Expresso\Compiler\Operators\Binary\ArrayAccessOperator;
+use Expresso\Compiler\Operators\Binary\SimpleAccessOperator;
 use Expresso\Compiler\Operators\BinaryOperator;
 use Expresso\Compiler\Operators\Ternary\ConditionalOperator;
 use Expresso\Compiler\Operators\UnaryOperator;
@@ -90,19 +94,23 @@ class Parser
     {
         if ($this->tokens->nextTokenIf(Token::PUNCTUATION, '(')) {
             //function call
-            $node = new FunctionNode($identifier, $this->parseArgumentList());
+            $arguments = $this->parseArgumentList();
 
             $lastOperator = $this->operatorStack->top();
-            if ($lastOperator instanceof PropertyAccessOperator) {
+            if ($lastOperator instanceof SimpleAccessOperator) {
                 $this->operatorStack->pop();
-                $node->setObject($this->operandStack->pop());
+                $node = new MethodCallNode($this->operandStack->pop(), $identifier, $arguments);
+            } else {
+                $node = new FunctionCallNode($identifier, $arguments);
             }
         } else {
             $node = new IdentifierNode($identifier);
+            /** @var SimpleAccessOperator $simpleAccessOperator */
+            $accessOperator = new ArrayAccessOperator(0);
+            //array indexing
             while ($this->tokens->nextTokenIf(Token::PUNCTUATION, '[')) {
-                //array indexing
                 $this->parseExpression();
-                $node = new ArrayIndexNode($node, $this->operandStack->pop());
+                $node = new VariableAccessNode($accessOperator, $node, $this->operandStack->pop());
             }
         }
         $this->operandStack->push($node);

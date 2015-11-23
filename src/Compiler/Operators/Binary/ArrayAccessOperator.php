@@ -4,16 +4,16 @@ namespace Expresso\Compiler\Operators\Binary;
 
 use Expresso\Compiler\Compiler;
 use Expresso\Compiler\NodeInterface;
-use Expresso\Compiler\Nodes\IdentifierNode;
 use Expresso\Compiler\Nodes\VariableAccessNode;
+use Expresso\Compiler\Operators\BinaryOperator;
 use Expresso\ExecutionContext;
 
-class SimpleAccessOperator extends ArrayAccessOperator
+class ArrayAccessOperator extends BinaryOperator
 {
 
     public function operators()
     {
-        return '.';
+
     }
 
     public function createNode($left, $right)
@@ -23,13 +23,8 @@ class SimpleAccessOperator extends ArrayAccessOperator
 
     public function execute(ExecutionContext $context, NodeInterface $left, NodeInterface $right)
     {
-        $left = $left->evaluate($context);
-
-        if ($right instanceof IdentifierNode) {
-            $right = $right->getName();
-        } else {
-            $right = $right->evaluate($context);
-        }
+        $left  = $left->evaluate($context);
+        $right = $right->evaluate($context);
 
         return $left[ $right ];
     }
@@ -40,11 +35,7 @@ class SimpleAccessOperator extends ArrayAccessOperator
                  ->compileNode($left)
                  ->add(', ');
 
-        if ($right instanceof IdentifierNode) {
-            $compiler->compileString($right->getName());
-        } else {
-            $compiler->compileNode($right);
-        }
+        $compiler->compileNode($right);
 
         $compiler->add(')');
     }

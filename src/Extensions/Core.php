@@ -5,6 +5,7 @@ namespace Expresso\Extensions;
 use Expresso\Compiler\Operator;
 use Expresso\Compiler\Operators\Binary\DivisionOperator;
 use Expresso\Compiler\Operators\Binary\ExponentialOperator;
+use Expresso\Compiler\Operators\Binary\FilterOperator;
 use Expresso\Compiler\Operators\Binary\ModuloOperator;
 use Expresso\Compiler\Operators\Binary\NullSafeAccessOperator;
 use Expresso\Compiler\Operators\Binary\RemainderOperator;
@@ -63,8 +64,7 @@ class Core extends Extension
             new ConcatenationOperator(10),
             new SimpleAccessOperator(16),
             new NullSafeAccessOperator(16),
-            /*
-            new FilterOperator(11),
+            new FilterOperator(11),/*
             new RangeOperator(9),
             new ExclusiveRangeOperator(9)
             */

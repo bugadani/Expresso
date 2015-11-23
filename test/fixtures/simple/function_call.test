@@ -1,0 +1,6 @@
+--TEST--
+Test simple function calls
+--EXPRESSION--
+:string|reverse ~' '~ reverse("string")
+--EXPECT--
+gnirts gnirts
