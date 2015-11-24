@@ -3,6 +3,7 @@
 namespace Expresso;
 
 use Expresso\Compiler\Operator;
+use Expresso\Compiler\ParserCollection;
 
 abstract class Extension
 {
@@ -30,5 +31,10 @@ abstract class Extension
     public function getPostfixUnaryOperators()
     {
         return [];
+    }
+
+    public function addParsers(ParserCollection $parserCollection)
+    {
+
     }
 }

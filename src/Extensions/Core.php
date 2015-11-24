@@ -15,6 +15,10 @@ use Expresso\Compiler\Operators\Binary\ConcatenationOperator;
 use Expresso\Compiler\Operators\Binary\MultiplicationOperator;
 use Expresso\Compiler\Operators\Binary\SubtractionOperator;
 use Expresso\Compiler\Operators\Unary\Prefix\MinusOperator;
+use Expresso\Compiler\ParserCollection;
+use Expresso\Compiler\Parsers\DataTokenParser;
+use Expresso\Compiler\Parsers\IdentifierTokenParser;
+use Expresso\Compiler\Token;
 use Expresso\Extension;
 
 class Core extends Extension
@@ -94,4 +98,19 @@ class Core extends Extension
             new NotEmptyOperator(15)*/
         ];
     }
+
+    public function addParsers(ParserCollection $parserCollection)
+    {
+        $parserCollection->add('identifier', new IdentifierTokenParser(), Token::IDENTIFIER);
+        $parserCollection->add('data', new DataTokenParser(), [Token::STRING, Token::CONSTANT]);
+        $parserCollection->add('array', new ArrayDefinitionParser());
+        $parserCollection->add('argumentList', new ArgumentListParser());
+        $parserCollection->add('ternary', new TernaryOperatorParser());
+        $parserCollection->add('prefixOperator', new PrefixOperatorParser());
+        $parserCollection->add('postfixOperator', new PostfixOperatorParser());
+
+        $parserCollection->setDefaultParser('prefixOperator');
+    }
+
+
 }

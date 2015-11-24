@@ -6,7 +6,7 @@ use Expresso\Compiler\Compiler;
 use Expresso\Compiler\CompilerConfiguration;
 use Expresso\Compiler\NodeInterface;
 use Expresso\Compiler\Nodes\ExpressionNode;
-use Expresso\Compiler\Parser;
+use Expresso\Compiler\TokenStreamParser;
 use Expresso\Compiler\Tokenizer;
 
 class Expresso
@@ -22,7 +22,7 @@ class Expresso
     private $tokenizer;
 
     /**
-     * @var Parser
+     * @var TokenStreamParser
      */
     private $parser;
 
@@ -58,7 +58,7 @@ class Expresso
     private function getParser()
     {
         if (!isset($this->parser)) {
-            $this->parser = new Parser($this->configuration);
+            $this->parser = new TokenStreamParser($this->configuration);
         }
 
         return $this->parser;
@@ -81,7 +81,7 @@ class Expresso
     {
         $tokens = $this->getTokenizer()->tokenize($expression);
 
-        return new ExpressionNode($expression, $this->getParser()->parse($tokens));
+        return new ExpressionNode($expression, $this->getParser()->parseTokenStream($tokens));
     }
 
     /**
