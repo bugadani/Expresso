@@ -5,11 +5,6 @@ namespace Expresso\Compiler;
 use Expresso\Compiler\Exceptions\ParseException;
 use Expresso\Compiler\Exceptions\SyntaxException;
 use Expresso\Compiler\Nodes\DataNode;
-use Expresso\Compiler\Nodes\FunctionCallNode;
-use Expresso\Compiler\Nodes\IdentifierNode;
-use Expresso\Compiler\Nodes\VariableAccessNode;
-use Expresso\Compiler\Operators\Binary\ArrayAccessOperator;
-use Expresso\Compiler\Operators\Binary\SimpleAccessOperator;
 use Expresso\Compiler\Operators\BinaryOperator;
 use Expresso\Compiler\Operators\Ternary\ConditionalOperator;
 use Expresso\Compiler\Operators\UnaryOperator;
@@ -57,16 +52,30 @@ class TokenStreamParser
     private $tokens;
 
     /**
-     * @var ParserCollection
+     * @var Parser[]
      */
-    private $parserCollection;
+    private $parsers = [];
+
+    /**
+     * @var Parser
+     */
+    private $defaultParser;
 
     public function __construct(CompilerConfiguration $config)
     {
         $this->binaryOperators  = $config->getBinaryOperators();
         $this->prefixOperators  = $config->getUnaryPrefixOperators();
         $this->postfixOperators = $config->getUnaryPostfixOperators();
-        $this->parserCollection = $config->getParserCollection();
+    }
+
+    public function addParser($name, Parser $parser)
+    {
+        $this->parsers[ $name ] = $parser;
+    }
+
+    public function setDefaultParser(Parser $parser)
+    {
+        $this->defaultParser = $parser;
     }
 
     public function parseTokenStream(TokenStream $tokens)
@@ -75,9 +84,32 @@ class TokenStreamParser
         $this->operandStack  = new \SplStack();
         $this->tokens        = $tokens;
 
+        $tokens->next();
         $this->parseExpression();
 
         return $this->operandStack->pop();
+    }
+
+    public function pushOperatorSentinel()
+    {
+        $this->operatorStack->push(null);
+    }
+
+    public function popOperatorSentinel()
+    {
+        $this->operatorStack->pop();
+    }
+
+    public function hasParser($parser)
+    {
+        return isset($this->parsers[ $parser ]);
+    }
+
+    public function popOperators()
+    {
+        while ($this->operatorStack->top() !== null) {
+            $this->popOperator();
+        }
     }
 
     private function parseArgumentList()
@@ -161,7 +193,7 @@ class TokenStreamParser
                 $tokenParser = $this->parserCollection->getTokenParser($type);
                 $tokenParser->parse($token, $this->tokens, $this);
                 continue;
-            }catch (\Exception $e) {
+            } catch (\Exception $e) {
 
             }
             switch ($type) {
@@ -200,28 +232,7 @@ class TokenStreamParser
 
     public function parseExpression()
     {
-        //push sentinel
-        $this->operatorStack->push(null);
-
-        $token = $this->parseToken();
-
-        while ($this->binaryOperators->isOperator($token->getValue())) {
-            $this->pushOperator(
-                $this->binaryOperators->getOperator($token->getValue())
-            );
-            $token = $this->parseToken();
-        }
-        while ($this->operatorStack->top() !== null) {
-            $this->popOperator();
-        }
-        //pop sentinel
-        $this->operatorStack->pop();
-
-        $this->parse('ternary');
-
-        if ($token->test(Token::PUNCTUATION, '?')) {
-            $this->parseConditional();
-        }
+        $this->defaultParser->parse($this->tokens->current(), $this->tokens, $this);
     }
 
     private function parseConditional()
@@ -256,7 +267,7 @@ class TokenStreamParser
         $this->operandStack->push($operatorNode);
     }
 
-    private function pushOperator(Operator $operator)
+    public function pushOperator(Operator $operator)
     {
         while ($this->compareToStackTop($operator)) {
             $this->popOperator();
@@ -301,9 +312,7 @@ class TokenStreamParser
 
     public function parse($parser)
     {
-        $parser = $this->parserCollection->get($parser);
-
-        $parser->parse($this->tokens->current(), $this->tokens, $this);
+        $this->parsers[ $parser ]->parse($this->tokens->current(), $this->tokens, $this);
     }
 
     public function topOperator()

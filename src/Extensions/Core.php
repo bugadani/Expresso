@@ -2,23 +2,28 @@
 
 namespace Expresso\Extensions;
 
+use Expresso\Compiler\CompilerConfiguration;
 use Expresso\Compiler\Operator;
+use Expresso\Compiler\Operators\Binary\AdditionOperator;
+use Expresso\Compiler\Operators\Binary\ConcatenationOperator;
 use Expresso\Compiler\Operators\Binary\DivisionOperator;
 use Expresso\Compiler\Operators\Binary\ExponentialOperator;
 use Expresso\Compiler\Operators\Binary\FilterOperator;
 use Expresso\Compiler\Operators\Binary\ModuloOperator;
+use Expresso\Compiler\Operators\Binary\MultiplicationOperator;
 use Expresso\Compiler\Operators\Binary\NullSafeAccessOperator;
 use Expresso\Compiler\Operators\Binary\RemainderOperator;
 use Expresso\Compiler\Operators\Binary\SimpleAccessOperator;
-use Expresso\Compiler\Operators\Binary\AdditionOperator;
-use Expresso\Compiler\Operators\Binary\ConcatenationOperator;
-use Expresso\Compiler\Operators\Binary\MultiplicationOperator;
 use Expresso\Compiler\Operators\Binary\SubtractionOperator;
 use Expresso\Compiler\Operators\Unary\Prefix\MinusOperator;
-use Expresso\Compiler\ParserCollection;
+use Expresso\Compiler\ParserAlternativeCollection;
+use Expresso\Compiler\Parsers\BinaryOperatorParser;
 use Expresso\Compiler\Parsers\DataTokenParser;
+use Expresso\Compiler\Parsers\ExpressionParser;
 use Expresso\Compiler\Parsers\IdentifierTokenParser;
+use Expresso\Compiler\Parsers\PrefixOperatorParser;
 use Expresso\Compiler\Token;
+use Expresso\Compiler\TokenStreamParser;
 use Expresso\Extension;
 
 class Core extends Extension
@@ -99,18 +104,17 @@ class Core extends Extension
         ];
     }
 
-    public function addParsers(ParserCollection $parserCollection)
+    public function addParsers(TokenStreamParser $parser, CompilerConfiguration $configuration)
     {
-        $parserCollection->add('identifier', new IdentifierTokenParser(), Token::IDENTIFIER);
-        $parserCollection->add('data', new DataTokenParser(), [Token::STRING, Token::CONSTANT]);
-        $parserCollection->add('array', new ArrayDefinitionParser());
-        $parserCollection->add('argumentList', new ArgumentListParser());
-        $parserCollection->add('ternary', new TernaryOperatorParser());
-        $parserCollection->add('prefixOperator', new PrefixOperatorParser());
-        $parserCollection->add('postfixOperator', new PostfixOperatorParser());
+        $tokenParsers = new ParserAlternativeCollection(new PrefixOperatorParser($configuration->getUnaryPrefixOperators()));
+        $tokenParsers->addAlternative(new IdentifierTokenParser(), Token::IDENTIFIER);
+        $tokenParsers->addAlternative(new DataTokenParser(), Token::CONSTANT);
+        $tokenParsers->addAlternative(new DataTokenParser(), Token::STRING);
 
-        $parserCollection->setDefaultParser('prefixOperator');
+        $parser->addParser('terminal', $tokenParsers);
+        $parser->addParser('binary', new BinaryOperatorParser($configuration->getBinaryOperators()));
+        $parser->addParser('expression', new ExpressionParser());
+
+        $parser->setDefaultParser(new ExpressionParser());
     }
-
-
 }

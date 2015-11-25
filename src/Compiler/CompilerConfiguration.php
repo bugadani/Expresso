@@ -21,17 +21,11 @@ class CompilerConfiguration
      */
     private $unaryPostfixOperators;
 
-    /**
-     * @var ParserCollection
-     */
-    private $parserCollection;
-
     public function __construct()
     {
         $this->binaryOperators       = new OperatorCollection();
         $this->unaryPrefixOperators  = new OperatorCollection();
         $this->unaryPostfixOperators = new OperatorCollection();
-        $this->parserCollection      = new ParserCollection();
     }
 
     public function addExtension(Extension $ext)
@@ -39,8 +33,6 @@ class CompilerConfiguration
         $this->binaryOperators->addOperators($ext->getBinaryOperators());
         $this->unaryPrefixOperators->addOperators($ext->getPrefixUnaryOperators());
         $this->unaryPostfixOperators->addOperators($ext->getPostfixUnaryOperators());
-
-        $ext->addParsers($this->parserCollection);
     }
 
     public function getOperatorSymbols()
@@ -74,13 +66,5 @@ class CompilerConfiguration
     public function getUnaryPostfixOperators()
     {
         return $this->unaryPostfixOperators;
-    }
-
-    /**
-     * @return ParserCollection
-     */
-    public function getParserCollection()
-    {
-        return $this->parserCollection;
     }
 }

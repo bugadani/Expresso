@@ -30,6 +30,10 @@ class Expresso
      * @var Compiler
      */
     private $compiler;
+
+    /**
+     * @var Extension[]
+     */
     private $extensions = [];
 
     public function __construct()
@@ -58,7 +62,11 @@ class Expresso
     private function getParser()
     {
         if (!isset($this->parser)) {
-            $this->parser = new TokenStreamParser($this->configuration);
+            $parser = new TokenStreamParser($this->configuration);
+            foreach ($this->extensions as $extension) {
+                $extension->addParsers($parser, $this->configuration);
+            }
+            $this->parser = $parser;
         }
 
         return $this->parser;
