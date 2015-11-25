@@ -16,6 +16,7 @@ use Expresso\Compiler\Operators\Binary\NullSafeAccessOperator;
 use Expresso\Compiler\Operators\Binary\RemainderOperator;
 use Expresso\Compiler\Operators\Binary\SimpleAccessOperator;
 use Expresso\Compiler\Operators\Binary\SubtractionOperator;
+use Expresso\Compiler\Operators\FunctionCallOperator;
 use Expresso\Compiler\Operators\Unary\Prefix\MinusOperator;
 use Expresso\Compiler\ParserAlternativeCollection;
 use Expresso\Compiler\Parsers\ArgumentListParser;
@@ -123,7 +124,7 @@ class Core extends Extension
         //$tokenParsers->addAlternative(new ArrayDefinitionExpressionParser(), [Token::PUNCTUATION, '[']);
 
         $postfixParsers = new ParserAlternativeCollection();
-        $postfixParsers->addAlternative(new FunctionCallParser(), [Token::PUNCTUATION, '(']);
+        $postfixParsers->addAlternative(new FunctionCallParser(new FunctionCallOperator(11)), [Token::PUNCTUATION, '(']);
         $postfixParsers->addAlternative(new ArrayAccessParser(), [Token::PUNCTUATION, '[']);
         $postfixParsers->addAlternative(
             new PostfixOperatorParser($configuration->getUnaryOperators()),
