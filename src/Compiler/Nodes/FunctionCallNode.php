@@ -19,10 +19,10 @@ class FunctionCallNode extends Node
      */
     private $arguments;
 
-    public function __construct($functionName, array $arguments)
+    public function __construct($functionName, DataNode $arguments)
     {
         $this->functionName = $functionName;
-        $this->arguments    = $arguments;
+        $this->arguments    = $arguments->getValue();
     }
 
     public function compile(Compiler $compiler)
@@ -32,6 +32,6 @@ class FunctionCallNode extends Node
 
     public function evaluate(ExecutionContext $context)
     {
-        // TODO: Implement evaluate() method.
+        //
     }
 }

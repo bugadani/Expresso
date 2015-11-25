@@ -17,10 +17,14 @@ use Expresso\Compiler\Operators\Binary\SimpleAccessOperator;
 use Expresso\Compiler\Operators\Binary\SubtractionOperator;
 use Expresso\Compiler\Operators\Unary\Prefix\MinusOperator;
 use Expresso\Compiler\ParserAlternativeCollection;
+use Expresso\Compiler\Parsers\ArgumentListParser;
 use Expresso\Compiler\Parsers\BinaryOperatorParser;
+use Expresso\Compiler\Parsers\ConditionalParser;
 use Expresso\Compiler\Parsers\DataTokenParser;
 use Expresso\Compiler\Parsers\ExpressionParser;
 use Expresso\Compiler\Parsers\IdentifierTokenParser;
+use Expresso\Compiler\Parsers\ParenthesisGroupedExpressionParser;
+use Expresso\Compiler\Parsers\PostfixOperatorParser;
 use Expresso\Compiler\Parsers\PrefixOperatorParser;
 use Expresso\Compiler\Token;
 use Expresso\Compiler\TokenStreamParser;
@@ -43,9 +47,9 @@ class Core extends Extension
             new DivisionOperator(11),
             new RemainderOperator(11),
             new ModuloOperator(11),
-            new ExponentialOperator(14, Operator::RIGHT),/*
+            new ExponentialOperator(14, Operator::RIGHT),
             //comparison
-            new EqualsOperator(7),
+            /*new EqualsOperator(7),
             new IdenticalOperator(7),
             new NotIdenticalOperator(7),
             new NotEqualsOperator(7),
@@ -110,10 +114,15 @@ class Core extends Extension
         $tokenParsers->addAlternative(new IdentifierTokenParser(), Token::IDENTIFIER);
         $tokenParsers->addAlternative(new DataTokenParser(), Token::CONSTANT);
         $tokenParsers->addAlternative(new DataTokenParser(), Token::STRING);
+        $tokenParsers->addAlternative(new ParenthesisGroupedExpressionParser(), [Token::PUNCTUATION, '(']);
+        //$tokenParsers->addAlternative(new ArrayDefinitionExpressionParser(), [Token::PUNCTUATION, '[']);
 
-        $parser->addParser('terminal', $tokenParsers);
+        $parser->addParser('term', $tokenParsers);
         $parser->addParser('binary', new BinaryOperatorParser($configuration->getBinaryOperators()));
+        $parser->addParser('postfix', new PostfixOperatorParser($configuration->getUnaryPostfixOperators()));
         $parser->addParser('expression', new ExpressionParser());
+        $parser->addParser('conditional', new ConditionalParser());
+        $parser->addParser('argumentList', new ArgumentListParser());
 
         $parser->setDefaultParser(new ExpressionParser());
     }

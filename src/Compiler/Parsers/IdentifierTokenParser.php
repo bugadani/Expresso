@@ -2,7 +2,6 @@
 
 namespace Expresso\Compiler\Parsers;
 
-use Expresso\Compiler\Nodes\DataNode;
 use Expresso\Compiler\Nodes\FunctionCallNode;
 use Expresso\Compiler\Nodes\IdentifierNode;
 use Expresso\Compiler\Nodes\VariableAccessNode;
@@ -30,7 +29,7 @@ class IdentifierTokenParser extends Parser
                 $parser->popOperatorStack();
                 $node = new MethodCallNode($parser->popOperand(), $identifier, $arguments);
             } else {
-                $node       = new FunctionCallNode($identifier, $arguments);
+                $node = new FunctionCallNode($identifier, $arguments);
             }
         } else {
             $node = new IdentifierNode($identifier);
@@ -38,11 +37,14 @@ class IdentifierTokenParser extends Parser
             $accessOperator = new ArrayAccessOperator(0);
             //array indexing
             while ($stream->nextTokenIf(Token::PUNCTUATION, '[')) {
-                $parser->parseExpression();
+                $stream->next();
+                $parser->parse('expression');
                 $stream->expectCurrent(Token::PUNCTUATION, ']');
                 $node = new VariableAccessNode($accessOperator, $node, $parser->popOperand());
             }
         }
+        $stream->next();
         $parser->pushOperand($node);
+        $parser->parse('postfix');
     }
 }

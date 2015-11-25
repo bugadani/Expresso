@@ -27,7 +27,7 @@ class BinaryOperatorParser extends Parser
                 $this->binaryOperators->getOperator($currentToken->getValue())
             );
             $stream->next();
-            $parser->parse('terminal');
+            $parser->parse('term');
 
             $currentToken = $stream->current();
         }

@@ -30,6 +30,6 @@ class PrefixOperatorParser extends Parser
             $this->prefixOperators->getOperator($currentToken->getValue())
         );
         $stream->next();
-        $parser->parse('terminal');
+        $parser->parse('term');
     }
 }

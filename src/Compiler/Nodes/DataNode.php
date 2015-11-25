@@ -24,4 +24,12 @@ class DataNode extends Leaf
     {
         return $this->value;
     }
+
+    /**
+     * @return mixed
+     */
+    public function getValue()
+    {
+        return $this->value;
+    }
 }
