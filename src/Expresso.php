@@ -36,6 +36,11 @@ class Expresso
      */
     private $extensions = [];
 
+    /**
+     * @var
+     */
+    private $functions = [];
+
     public function __construct()
     {
         $this->configuration = new CompilerConfiguration();
@@ -44,6 +49,9 @@ class Expresso
     public function addExtension(Extension $extension)
     {
         $this->extensions[] = $extension;
+        foreach($extension->getFunctions() as $function) {
+            $this->functions[$function->getName()] = $function;
+        }
     }
 
     private function getTokenizer()

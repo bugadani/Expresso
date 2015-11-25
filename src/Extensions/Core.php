@@ -3,6 +3,7 @@
 namespace Expresso\Extensions;
 
 use Expresso\Compiler\CompilerConfiguration;
+use Expresso\Compiler\ExpressionFunction;
 use Expresso\Compiler\Operator;
 use Expresso\Compiler\Operators\Binary\AdditionOperator;
 use Expresso\Compiler\Operators\Binary\ConcatenationOperator;
@@ -18,11 +19,13 @@ use Expresso\Compiler\Operators\Binary\SubtractionOperator;
 use Expresso\Compiler\Operators\Unary\Prefix\MinusOperator;
 use Expresso\Compiler\ParserAlternativeCollection;
 use Expresso\Compiler\Parsers\ArgumentListParser;
+use Expresso\Compiler\Parsers\ArrayAccessParser;
 use Expresso\Compiler\Parsers\BinaryOperatorParser;
 use Expresso\Compiler\Parsers\ConditionalParser;
 use Expresso\Compiler\Parsers\DataTokenParser;
 use Expresso\Compiler\Parsers\ExpressionParser;
-use Expresso\Compiler\Parsers\IdentifierTokenParser;
+use Expresso\Compiler\Parsers\FunctionCallParser;
+use Expresso\Compiler\Parsers\IdentifierParser;
 use Expresso\Compiler\Parsers\ParenthesisGroupedExpressionParser;
 use Expresso\Compiler\Parsers\PostfixOperatorParser;
 use Expresso\Compiler\Parsers\PrefixOperatorParser;
@@ -97,33 +100,52 @@ class Core extends Extension
     public function getPostfixUnaryOperators()
     {
         return [
-           /*new IsSetOperator(15, Operator::RIGHT),
-            new IsNotSetOperator(15, Operator::RIGHT),
-            new EvenOperator(15, Operator::NONE),
-            new OddOperator(15, Operator::NONE),
-            new PostDecrementOperator(15),
-            new PostIncrementOperator(15),
-            new EmptyOperator(15),
-            new NotEmptyOperator(15)*/
+            /*new IsSetOperator(15, Operator::RIGHT),
+             new IsNotSetOperator(15, Operator::RIGHT),
+             new EvenOperator(15, Operator::NONE),
+             new OddOperator(15, Operator::NONE),
+             new PostDecrementOperator(15),
+             new PostIncrementOperator(15),
+             new EmptyOperator(15),
+             new NotEmptyOperator(15)*/
         ];
     }
 
     public function addParsers(TokenStreamParser $parser, CompilerConfiguration $configuration)
     {
-        $tokenParsers = new ParserAlternativeCollection(new PrefixOperatorParser($configuration->getUnaryPrefixOperators()));
-        $tokenParsers->addAlternative(new IdentifierTokenParser(), Token::IDENTIFIER);
+        $tokenParsers = new ParserAlternativeCollection(
+            new PrefixOperatorParser($configuration->getPrefixOperators())
+        );
+        $tokenParsers->addAlternative(new IdentifierParser(), Token::IDENTIFIER);
         $tokenParsers->addAlternative(new DataTokenParser(), Token::CONSTANT);
         $tokenParsers->addAlternative(new DataTokenParser(), Token::STRING);
         $tokenParsers->addAlternative(new ParenthesisGroupedExpressionParser(), [Token::PUNCTUATION, '(']);
         //$tokenParsers->addAlternative(new ArrayDefinitionExpressionParser(), [Token::PUNCTUATION, '[']);
 
+        $postfixParsers = new ParserAlternativeCollection();
+        $postfixParsers->addAlternative(new FunctionCallParser(), [Token::PUNCTUATION, '(']);
+        $postfixParsers->addAlternative(new ArrayAccessParser(), [Token::PUNCTUATION, '[']);
+        $postfixParsers->addAlternative(
+            new PostfixOperatorParser($configuration->getUnaryOperators()),
+            [Token::OPERATOR, [$configuration->getUnaryOperators(), 'isOperator']]
+        );
+
         $parser->addParser('term', $tokenParsers);
         $parser->addParser('binary', new BinaryOperatorParser($configuration->getBinaryOperators()));
-        $parser->addParser('postfix', new PostfixOperatorParser($configuration->getUnaryPostfixOperators()));
+        $parser->addParser('postfix', $postfixParsers);
         $parser->addParser('expression', new ExpressionParser());
         $parser->addParser('conditional', new ConditionalParser());
         $parser->addParser('argumentList', new ArgumentListParser());
 
         $parser->setDefaultParser(new ExpressionParser());
     }
+
+    public function getFunctions()
+    {
+        return [
+            new ExpressionFunction('reverse', 'strrev')
+        ];
+    }
+
+
 }

@@ -32,6 +32,6 @@ class FunctionCallNode extends Node
 
     public function evaluate(ExecutionContext $context)
     {
-        //
+
     }
 }

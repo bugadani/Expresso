@@ -55,7 +55,7 @@ class CompilerConfiguration
     /**
      * @return OperatorCollection
      */
-    public function getUnaryPrefixOperators()
+    public function getPrefixOperators()
     {
         return $this->unaryPrefixOperators;
     }
@@ -63,7 +63,7 @@ class CompilerConfiguration
     /**
      * @return OperatorCollection
      */
-    public function getUnaryPostfixOperators()
+    public function getUnaryOperators()
     {
         return $this->unaryPostfixOperators;
     }

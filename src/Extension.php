@@ -3,6 +3,7 @@
 namespace Expresso;
 
 use Expresso\Compiler\CompilerConfiguration;
+use Expresso\Compiler\ExpressionFunction;
 use Expresso\Compiler\Operator;
 use Expresso\Compiler\TokenStreamParser;
 
@@ -30,6 +31,14 @@ abstract class Extension
      * @return Operator[]
      */
     public function getPostfixUnaryOperators()
+    {
+        return [];
+    }
+
+    /**
+     * @return ExpressionFunction[]
+     */
+    public function getFunctions()
     {
         return [];
     }
