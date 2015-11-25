@@ -25,7 +25,7 @@ class FunctionCallParser extends Parser
         $operator = $this->functionOperator;
         $parser->popOperatorCompared($operator);
 
-        //either identifier or access node
+        //either identifier or filter/access node
         $node = $parser->popOperand();
 
         $stream->next();

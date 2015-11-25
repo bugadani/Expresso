@@ -32,6 +32,6 @@ class FunctionCallNode extends Node
 
     public function evaluate(ExecutionContext $context)
     {
-
+        //return call_user_func_array($this->functionName, $arguments);
     }
 }

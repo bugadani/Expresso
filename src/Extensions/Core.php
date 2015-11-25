@@ -124,7 +124,7 @@ class Core extends Extension
         //$tokenParsers->addAlternative(new ArrayDefinitionExpressionParser(), [Token::PUNCTUATION, '[']);
 
         $postfixParsers = new ParserAlternativeCollection();
-        $postfixParsers->addAlternative(new FunctionCallParser(new FunctionCallOperator(11)), [Token::PUNCTUATION, '(']);
+        $postfixParsers->addAlternative(new FunctionCallParser(new FunctionCallOperator(11, $configuration->getFunctions())), [Token::PUNCTUATION, '(']);
         $postfixParsers->addAlternative(new ArrayAccessParser(), [Token::PUNCTUATION, '[']);
         $postfixParsers->addAlternative(
             new PostfixOperatorParser($configuration->getUnaryOperators()),
@@ -147,6 +147,4 @@ class Core extends Extension
             new ExpressionFunction('reverse', 'strrev')
         ];
     }
-
-
 }

@@ -14,33 +14,43 @@ class CompilerConfiguration
     /**
      * @var OperatorCollection
      */
-    private $unaryPrefixOperators;
+    private $prefixOperators;
 
     /**
      * @var OperatorCollection
      */
-    private $unaryPostfixOperators;
+    private $unaryOperators;
+
+    /**
+     * @var
+     */
+    private $functions;
 
     public function __construct()
     {
-        $this->binaryOperators       = new OperatorCollection();
-        $this->unaryPrefixOperators  = new OperatorCollection();
-        $this->unaryPostfixOperators = new OperatorCollection();
+        $this->binaryOperators = new OperatorCollection();
+        $this->prefixOperators = new OperatorCollection();
+        $this->unaryOperators  = new OperatorCollection();
+        $this->functions       = new \ArrayObject();
     }
 
     public function addExtension(Extension $ext)
     {
         $this->binaryOperators->addOperators($ext->getBinaryOperators());
-        $this->unaryPrefixOperators->addOperators($ext->getPrefixUnaryOperators());
-        $this->unaryPostfixOperators->addOperators($ext->getPostfixUnaryOperators());
+        $this->prefixOperators->addOperators($ext->getPrefixUnaryOperators());
+        $this->unaryOperators->addOperators($ext->getPostfixUnaryOperators());
+
+        foreach($ext->getFunctions() as $function) {
+            $this->functions[$function->getName()] = $function;
+        }
     }
 
     public function getOperatorSymbols()
     {
         return array_merge(
             $this->binaryOperators->getSymbols(),
-            $this->unaryPrefixOperators->getSymbols(),
-            $this->unaryPostfixOperators->getSymbols()
+            $this->prefixOperators->getSymbols(),
+            $this->unaryOperators->getSymbols()
         );
     }
 
@@ -57,7 +67,7 @@ class CompilerConfiguration
      */
     public function getPrefixOperators()
     {
-        return $this->unaryPrefixOperators;
+        return $this->prefixOperators;
     }
 
     /**
@@ -65,6 +75,11 @@ class CompilerConfiguration
      */
     public function getUnaryOperators()
     {
-        return $this->unaryPostfixOperators;
+        return $this->unaryOperators;
+    }
+
+    public function getFunctions()
+    {
+        return $this->functions;
     }
 }

@@ -41,4 +41,12 @@ class BinaryOperatorNode extends Node
     {
         return $this->operator->execute($context, $this->left, $this->right);
     }
+
+    /**
+     * @return BinaryOperator
+     */
+    public function getOperator()
+    {
+        return $this->operator;
+    }
 }
