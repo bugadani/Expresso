@@ -28,7 +28,7 @@ class PostfixOperatorParser extends Parser
             $operator = $this->postfixOperators->getOperator($currentToken->getValue());
             $parser->popOperatorCompared($operator);
 
-            $parser->pushOperand(//todo push operator?
+            $parser->pushOperand(//todo push operatort használni?
                 $operator->createNode(
                     $parser->popOperand()
                 )

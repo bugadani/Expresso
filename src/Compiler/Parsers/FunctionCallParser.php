@@ -27,6 +27,8 @@ class FunctionCallParser extends Parser
 
         //either identifier or access node
         $node = $parser->popOperand();
+
+        $stream->next();
         $parser->parse('argumentList');
 
         $parser->pushOperand(
@@ -37,8 +39,6 @@ class FunctionCallParser extends Parser
         );
 
         $stream->expectCurrent(Token::PUNCTUATION, ')');
-
-        $parser->pushOperand($node);
 
         $stream->next();
         $parser->parse('postfix');
