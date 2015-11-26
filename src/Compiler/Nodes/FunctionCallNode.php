@@ -32,7 +32,11 @@ class FunctionCallNode extends Node
 
     public function compile(Compiler $compiler)
     {
-        // TODO: Implement compile() method.
+        /** @var IdentifierNode $functionName */
+        $functionName = $compiler->getConfiguration()
+                                 ->getFunctions()[ $this->functionName->getName() ]
+            ->getFunctionName();
+        $compiler->compileFunction($functionName, $this->arguments);
     }
 
     public function evaluate(EvaluationContext $context)

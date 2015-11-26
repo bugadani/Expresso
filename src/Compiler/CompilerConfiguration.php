@@ -22,7 +22,7 @@ class CompilerConfiguration
     private $unaryOperators;
 
     /**
-     * @var
+     * @var ExpressionFunction[]
      */
     private $functions;
 

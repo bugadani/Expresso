@@ -24,6 +24,21 @@ class Compiler
         return $this->configuration;
     }
 
+    public function compileFunction($functionName, $arguments)
+    {
+        $this->add($functionName)
+             ->add('(');
+
+        $separator = '';
+        foreach ($arguments as $value) {
+            $this->add($separator);
+            $separator = ', ';
+            $this->compileNode($value);
+        }
+
+        $this->add(')');
+    }
+
     public function add($string)
     {
         $this->source .= $string;
