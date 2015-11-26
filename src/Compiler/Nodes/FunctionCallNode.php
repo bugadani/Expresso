@@ -32,11 +32,19 @@ class FunctionCallNode extends Node
 
     public function compile(Compiler $compiler)
     {
-        /** @var IdentifierNode $functionName */
-        $functionName = $compiler->getConfiguration()
-                                 ->getFunctions()[ $this->functionName->getName() ]
-            ->getFunctionName();
-        $compiler->compileFunction($functionName, $this->arguments);
+        if ($this->functionName instanceof IdentifierNode) {
+            /** @var IdentifierNode $functionName */
+            $functionName = $compiler->getConfiguration()
+                                     ->getFunctions()[ $this->functionName->getName() ]
+                ->getFunctionName();
+            $compiler->compileFunction($functionName, $this->arguments);
+        } else {
+            if ($this->functionName instanceof VariableAccessNode) {
+                $compiler->compileNode($this->functionName->getLeft())
+                         ->add('->')
+                         ->compileFunction($this->functionName->getRight()->getName(), $this->arguments);
+            }
+        }
     }
 
     public function evaluate(EvaluationContext $context)
@@ -48,9 +56,18 @@ class FunctionCallNode extends Node
             $this->arguments
         );
 
-        /** @var IdentifierNode $functionName */
-        $functionName = $this->functionName;
+        if ($this->functionName instanceof IdentifierNode) {
+            /** @var IdentifierNode $functionName */
+            $functionName = $this->functionName;
 
-        return $context->getFunction($functionName->getName())->call($arguments);
+            return $context->getFunction($functionName->getName())->call($arguments);
+        } else {
+            if ($this->functionName instanceof VariableAccessNode) {
+                $object     = $this->functionName->getLeft()->evaluate($context);
+                $methodName = $this->functionName->getRight()->getName();
+
+                return call_user_func_array([$object, $methodName], $arguments);
+            }
+        }
     }
 }

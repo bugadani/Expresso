@@ -53,4 +53,20 @@ class VariableAccessNode extends Node
             $this->right
         );
     }
+
+    /**
+     * @return NodeInterface
+     */
+    public function getLeft()
+    {
+        return $this->left;
+    }
+
+    /**
+     * @return NodeInterface
+     */
+    public function getRight()
+    {
+        return $this->right;
+    }
 }

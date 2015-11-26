@@ -1,0 +1,8 @@
+--TEST--
+Test simple method calls
+--EXPRESSION--
+array.count()
+--DATA--
+'array' => new \ArrayObject([1, 2, 3])
+--EXPECT--
+3
