@@ -18,6 +18,7 @@ use Expresso\Compiler\Operators\Binary\SimpleAccessOperator;
 use Expresso\Compiler\Operators\Binary\SubtractionOperator;
 use Expresso\Compiler\Operators\FunctionCallOperator;
 use Expresso\Compiler\Operators\Unary\Prefix\MinusOperator;
+use Expresso\Compiler\Operators\Unary\Prefix\NotOperator;
 use Expresso\Compiler\ParserAlternativeCollection;
 use Expresso\Compiler\Parsers\ArgumentListParser;
 use Expresso\Compiler\Parsers\ArrayAccessParser;
@@ -94,7 +95,7 @@ class Core extends Extension
             /*new PreDecrementOperator(13, Operator::RIGHT),
             new PreIncrementOperator(13, Operator::RIGHT),*/
             new MinusOperator(13, Operator::RIGHT),
-            //new NotOperator(12, Operator::RIGHT)
+            new NotOperator(12, Operator::RIGHT)
         ];
     }
 
