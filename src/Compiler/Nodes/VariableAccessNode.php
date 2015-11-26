@@ -7,6 +7,7 @@ use Expresso\Compiler\Node;
 use Expresso\Compiler\NodeInterface;
 use Expresso\Compiler\Operators\Binary\ArrayAccessOperator;
 use Expresso\Compiler\Operators\Binary\SimpleAccessOperator;
+use Expresso\EvaluationContext;
 use Expresso\ExecutionContext;
 
 class VariableAccessNode extends Node
@@ -44,7 +45,7 @@ class VariableAccessNode extends Node
         $this->operator->compile($compiler, $this->left, $this->right);
     }
 
-    public function evaluate(ExecutionContext $context)
+    public function evaluate(EvaluationContext $context)
     {
         return $this->operator->execute(
             $context,

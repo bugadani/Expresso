@@ -2,12 +2,12 @@
 
 namespace Expresso\Compiler;
 
-use Expresso\ExecutionContext;
+use Expresso\EvaluationContext;
 
 interface NodeInterface
 {
 
     public function compile(Compiler $compiler);
 
-    public function evaluate(ExecutionContext $context);
+    public function evaluate(EvaluationContext $context);
 }

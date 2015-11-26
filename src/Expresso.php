@@ -116,6 +116,6 @@ class Expresso
     {
         $nodes = $this->parse($expression);
 
-        return $nodes->evaluate(new ExecutionContext($parameters));
+        return $nodes->evaluate(new EvaluationContext($parameters, $this->configuration));
     }
 }

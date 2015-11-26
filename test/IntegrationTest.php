@@ -135,7 +135,7 @@ class IntegrationTest extends \PHPUnit_Framework_TestCase
             $this->assertEquals(
                 $expectation,
                 $compiled($data),
-                $description . ' (' . $file . ')'
+                $description . ' (' . $file . ', compiled)'
             );
         }
     }

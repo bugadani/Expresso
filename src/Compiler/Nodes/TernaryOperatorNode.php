@@ -6,7 +6,7 @@ use Expresso\Compiler\Compiler;
 use Expresso\Compiler\Node;
 use Expresso\Compiler\NodeInterface;
 use Expresso\Compiler\Operators\TernaryOperator;
-use Expresso\ExecutionContext;
+use Expresso\EvaluationContext;
 
 class TernaryOperatorNode extends Node
 {
@@ -43,7 +43,7 @@ class TernaryOperatorNode extends Node
         $this->operator->compile($compiler, $this->left, $this->middle, $this->right);
     }
 
-    public function evaluate(ExecutionContext $context)
+    public function evaluate(EvaluationContext $context)
     {
         return $this->operator->execute(
             $this->left->evaluate($context),

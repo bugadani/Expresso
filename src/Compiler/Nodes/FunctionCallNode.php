@@ -5,7 +5,7 @@ namespace Expresso\Compiler\Nodes;
 use Expresso\Compiler\Compiler;
 use Expresso\Compiler\Node;
 use Expresso\Compiler\NodeInterface;
-use Expresso\ExecutionContext;
+use Expresso\EvaluationContext;
 
 class FunctionCallNode extends Node
 {
@@ -15,14 +15,19 @@ class FunctionCallNode extends Node
     private $functionName;
 
     /**
-     * @var array
+     * @var NodeInterface[]
      */
     private $arguments;
 
-    public function __construct($functionName, DataNode $arguments)
+    public function __construct($functionName)
     {
         $this->functionName = $functionName;
-        $this->arguments    = $arguments->getValue();
+        $this->arguments    = [];
+    }
+
+    public function addArgument(NodeInterface $node)
+    {
+        $this->arguments[] = $node;
     }
 
     public function compile(Compiler $compiler)
@@ -30,8 +35,18 @@ class FunctionCallNode extends Node
         // TODO: Implement compile() method.
     }
 
-    public function evaluate(ExecutionContext $context)
+    public function evaluate(EvaluationContext $context)
     {
-        //return call_user_func_array($this->functionName, $arguments);
+        $arguments = array_map(
+            function (NodeInterface $nodeInterface) use ($context) {
+                return $nodeInterface->evaluate($context);
+            },
+            $this->arguments
+        );
+
+        /** @var IdentifierNode $functionName */
+        $functionName = $this->functionName;
+
+        return $context->getFunction($functionName->getName())->call($arguments);
     }
 }

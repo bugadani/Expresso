@@ -6,6 +6,7 @@ use Expresso\Compiler\Compiler;
 use Expresso\Compiler\NodeInterface;
 use Expresso\Compiler\Nodes\IdentifierNode;
 use Expresso\Compiler\Nodes\VariableAccessNode;
+use Expresso\EvaluationContext;
 use Expresso\ExecutionContext;
 
 class NullSafeAccessOperator extends SimpleAccessOperator
@@ -21,7 +22,7 @@ class NullSafeAccessOperator extends SimpleAccessOperator
         return new VariableAccessNode($this, $left, $right);
     }
 
-    public function execute(ExecutionContext $context, NodeInterface $left, NodeInterface $right)
+    public function execute(EvaluationContext $context, NodeInterface $left, NodeInterface $right)
     {
         $left = $left->evaluate($context);
 

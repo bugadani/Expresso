@@ -4,7 +4,7 @@ namespace Expresso\Compiler\Nodes;
 
 use Expresso\Compiler\Compiler;
 use Expresso\Compiler\Leaf;
-use Expresso\ExecutionContext;
+use Expresso\EvaluationContext;
 
 class IdentifierNode extends Leaf
 {
@@ -20,7 +20,7 @@ class IdentifierNode extends Leaf
         $compiler->addVariableAccess($this->value);
     }
 
-    public function evaluate(ExecutionContext $context)
+    public function evaluate(EvaluationContext $context)
     {
         return $context[$this->value];
     }

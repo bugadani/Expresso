@@ -6,6 +6,24 @@ class Compiler
 {
     private $source;
 
+    /**
+     * @var CompilerConfiguration
+     */
+    private $configuration;
+
+    public function __construct(CompilerConfiguration $configuration)
+    {
+        $this->configuration = $configuration;
+    }
+
+    /**
+     * @return CompilerConfiguration
+     */
+    public function getConfiguration()
+    {
+        return $this->configuration;
+    }
+
     public function add($string)
     {
         $this->source .= $string;

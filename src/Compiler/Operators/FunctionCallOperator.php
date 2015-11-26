@@ -4,7 +4,6 @@ namespace Expresso\Compiler\Operators;
 
 use Expresso\Compiler\ExpressionFunction;
 use Expresso\Compiler\Nodes\FunctionCallNode;
-use Expresso\Compiler\Nodes\IdentifierNode;
 use Expresso\Compiler\Operator;
 
 class FunctionCallOperator extends Operator
@@ -20,13 +19,13 @@ class FunctionCallOperator extends Operator
         $this->functions = $functions;
     }
 
-    public function createNode($left, $right)
+    public function createNode($left)
     {
-        if ($left instanceof IdentifierNode) {
-            $left = $this->functions[ $left->getName() ];
+        if (!$left instanceof FunctionCallNode) {
+            $left = new FunctionCallNode($left);
         }
 
-        return new FunctionCallNode($left, $right);
+        return $left;
     }
 
     public function operators()

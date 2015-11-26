@@ -1,0 +1,6 @@
+--TEST--
+Test filters with arguments
+--EXPRESSION--
+:string|replace('ing', 'ong')
+--EXPECT--
+strong

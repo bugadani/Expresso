@@ -1,6 +1,6 @@
 --TEST--
 Test simple function calls
 --EXPRESSION--
-:string|reverse ~ :string|reverse() ~ ' '~ reverse("string")
+reverse("string")
 --EXPECT--
-gnirts gnirts
+gnirts

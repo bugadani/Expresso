@@ -6,6 +6,7 @@ use Expresso\Compiler\Compiler;
 use Expresso\Compiler\Node;
 use Expresso\Compiler\NodeInterface;
 use Expresso\Compiler\Operators\BinaryOperator;
+use Expresso\EvaluationContext;
 use Expresso\ExecutionContext;
 
 class BinaryOperatorNode extends Node
@@ -37,7 +38,7 @@ class BinaryOperatorNode extends Node
         $this->operator->compile($compiler, $this->left, $this->right);
     }
 
-    public function evaluate(ExecutionContext $context)
+    public function evaluate(EvaluationContext $context)
     {
         return $this->operator->execute($context, $this->left, $this->right);
     }

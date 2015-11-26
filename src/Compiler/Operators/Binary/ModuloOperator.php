@@ -5,6 +5,7 @@ namespace Expresso\Compiler\Operators\Binary;
 use Expresso\Compiler\Compiler;
 use Expresso\Compiler\NodeInterface;
 use Expresso\Compiler\Operators\BinaryOperator;
+use Expresso\EvaluationContext;
 use Expresso\ExecutionContext;
 
 class ModuloOperator extends BinaryOperator
@@ -15,7 +16,7 @@ class ModuloOperator extends BinaryOperator
         return 'mod';
     }
 
-    public function execute(ExecutionContext $context, NodeInterface $left, NodeInterface $right)
+    public function execute(EvaluationContext $context, NodeInterface $left, NodeInterface $right)
     {
         $left  = $left->evaluate($context);
         $right = $right->evaluate($context);

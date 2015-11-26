@@ -5,7 +5,7 @@ namespace Expresso\Compiler\Nodes;
 use Expresso\Compiler\Compiler;
 use Expresso\Compiler\Node;
 use Expresso\Compiler\NodeInterface;
-use Expresso\ExecutionContext;
+use Expresso\EvaluationContext;
 
 class ExpressionNode extends Node
 {
@@ -34,7 +34,7 @@ class ExpressionNode extends Node
                  ->add(';};');
     }
 
-    public function evaluate(ExecutionContext $context)
+    public function evaluate(EvaluationContext $context)
     {
         return $this->rootNode->evaluate($context);
     }

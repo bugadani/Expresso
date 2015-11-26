@@ -30,6 +30,6 @@ class ArrayAccessParser extends Parser
         $parser->pushOperand($node);
 
         $stream->next();
-        $parser->parse('postfix');
+        $parser->parse('postfix no function call');
     }
 }

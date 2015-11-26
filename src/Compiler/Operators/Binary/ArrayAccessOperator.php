@@ -6,6 +6,7 @@ use Expresso\Compiler\Compiler;
 use Expresso\Compiler\NodeInterface;
 use Expresso\Compiler\Nodes\VariableAccessNode;
 use Expresso\Compiler\Operators\BinaryOperator;
+use Expresso\EvaluationContext;
 use Expresso\ExecutionContext;
 
 class ArrayAccessOperator extends BinaryOperator
@@ -21,7 +22,7 @@ class ArrayAccessOperator extends BinaryOperator
         return new VariableAccessNode($this, $left, $right);
     }
 
-    public function execute(ExecutionContext $context, NodeInterface $left, NodeInterface $right)
+    public function execute(EvaluationContext $context, NodeInterface $left, NodeInterface $right)
     {
         $left  = $left->evaluate($context);
         $right = $right->evaluate($context);

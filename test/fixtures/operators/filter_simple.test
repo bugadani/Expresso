@@ -1,0 +1,6 @@
+--TEST--
+Test simple filters
+--EXPRESSION--
+:string|reverse
+--EXPECT--
+gnirts

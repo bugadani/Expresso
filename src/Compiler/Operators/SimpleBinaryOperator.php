@@ -4,6 +4,7 @@ namespace Expresso\Compiler\Operators;
 
 use Expresso\Compiler\Compiler;
 use Expresso\Compiler\NodeInterface;
+use Expresso\EvaluationContext;
 use Expresso\ExecutionContext;
 
 abstract class SimpleBinaryOperator extends BinaryOperator
@@ -17,7 +18,7 @@ abstract class SimpleBinaryOperator extends BinaryOperator
                  ->add(')');
     }
 
-    public function execute(ExecutionContext $context, NodeInterface $left, NodeInterface $right)
+    public function execute(EvaluationContext $context, NodeInterface $left, NodeInterface $right)
     {
         return $this->executeSimple(
             $left->evaluate($context),

@@ -5,6 +5,7 @@ namespace Expresso\Compiler\Operators\Binary;
 use Expresso\Compiler\Compiler;
 use Expresso\Compiler\NodeInterface;
 use Expresso\Compiler\Operators\BinaryOperator;
+use Expresso\EvaluationContext;
 use Expresso\ExecutionContext;
 
 class ExponentialOperator extends BinaryOperator
@@ -15,7 +16,7 @@ class ExponentialOperator extends BinaryOperator
         return '^';
     }
 
-    public function execute(ExecutionContext $context, NodeInterface $left, NodeInterface $right)
+    public function execute(EvaluationContext $context, NodeInterface $left, NodeInterface $right)
     {
         return pow($left->evaluate($context), $right->evaluate($context));
     }

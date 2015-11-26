@@ -6,6 +6,7 @@ use Expresso\Compiler\Compiler;
 use Expresso\Compiler\Node;
 use Expresso\Compiler\NodeInterface;
 use Expresso\Compiler\Operators\UnaryOperator;
+use Expresso\EvaluationContext;
 use Expresso\ExecutionContext;
 
 class UnaryOperatorNode extends Node
@@ -31,7 +32,7 @@ class UnaryOperatorNode extends Node
         $this->operator->compile($compiler, $this->operand);
     }
 
-    public function evaluate(ExecutionContext $context)
+    public function evaluate(EvaluationContext $context)
     {
         return $this->operator->execute(
             $this->operand->evaluate($context)

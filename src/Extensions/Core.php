@@ -131,9 +131,17 @@ class Core extends Extension
             [Token::OPERATOR, [$configuration->getUnaryOperators(), 'isOperator']]
         );
 
+        $postfixNoFcParsers = new ParserAlternativeCollection();
+        $postfixNoFcParsers->addAlternative(new ArrayAccessParser(), [Token::PUNCTUATION, '[']);
+        $postfixNoFcParsers->addAlternative(
+            new PostfixOperatorParser($configuration->getUnaryOperators()),
+            [Token::OPERATOR, [$configuration->getUnaryOperators(), 'isOperator']]
+        );
+
         $parser->addParser('term', $tokenParsers);
         $parser->addParser('binary', new BinaryOperatorParser($configuration->getBinaryOperators()));
         $parser->addParser('postfix', $postfixParsers);
+        $parser->addParser('postfix no function call', $postfixNoFcParsers);
         $parser->addParser('expression', new ExpressionParser());
         $parser->addParser('conditional', new ConditionalParser());
         $parser->addParser('argumentList', new ArgumentListParser());
@@ -144,7 +152,12 @@ class Core extends Extension
     public function getFunctions()
     {
         return [
-            new ExpressionFunction('reverse', 'strrev')
+            new ExpressionFunction('replace', __NAMESPACE__.'\expression_function_replace'),
+            new ExpressionFunction('reverse', 'strrev'),
         ];
     }
+}
+
+function expression_function_replace($string, $search, $replacement) {
+    return str_replace($search, $replacement, $string);
 }

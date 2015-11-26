@@ -26,21 +26,13 @@ class FunctionCallParser extends Parser
         $parser->popOperatorCompared($operator);
 
         //either identifier or filter/access node
-        $node = $parser->popOperand();
-
-        $stream->next();
-        $parser->parse('argumentList');
-
         $parser->pushOperand(
             $operator->createNode(
-                $node, //function name or filter/access node
-                $parser->popOperand() //arguments
+                $parser->popOperand() //function name or filter/access node
             )
         );
 
-        $stream->expectCurrent(Token::PUNCTUATION, ')');
-
         $stream->next();
-        $parser->parse('postfix');
+        $parser->parse('argumentList');
     }
 }
