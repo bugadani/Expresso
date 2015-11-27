@@ -5,6 +5,8 @@ namespace Expresso\Test;
 use Expresso\Expresso;
 use Expresso\Extensions\Bitwise;
 use Expresso\Extensions\Core;
+use Expresso\Extensions\Generator;
+use Expresso\Extensions\Lambda;
 
 class IntegrationTest extends \PHPUnit_Framework_TestCase
 {
@@ -18,6 +20,8 @@ class IntegrationTest extends \PHPUnit_Framework_TestCase
         $this->expresso = new Expresso();
         $this->expresso->addExtension(new Core());
         $this->expresso->addExtension(new Bitwise());
+        $this->expresso->addExtension(new Lambda());
+        $this->expresso->addExtension(new Generator());
     }
 
     public function getTests()
