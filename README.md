@@ -1,8 +1,8 @@
-[![Build Status](https://travis-ci.org/bugadani/Minty.svg?branch=master)](https://travis-ci.org/bugadani/Minty)
+Todo:
+- range in array elements - [1..], [1..3]
+- generators - Haskell-ish {x^2 | x <- [2, 4, 6]}  ----> [4, 16, 36] ... handle infinite lists, guard expressions(using callback filters)
 
-What is Minty?
-========
-Minty is a templating engine written in PHP. Minty was inspired by Twig and Smarty, the two most popular
-PHP templating engines.
+ { expression (| generator)* } - filterrel ütközik így (kell egyáltalán a filter?)
 
-Minty is licensed under the MIT license.
+- lambdas: x -> y, (x, y) -> z (dual precedence operator - high (inf) on left, low (0) on right => punctuation?)
+- constant stack size implementation
