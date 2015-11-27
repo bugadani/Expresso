@@ -22,6 +22,7 @@ use Expresso\Compiler\Operators\Unary\Prefix\NotOperator;
 use Expresso\Compiler\ParserAlternativeCollection;
 use Expresso\Compiler\Parsers\ArgumentListParser;
 use Expresso\Compiler\Parsers\ArrayAccessParser;
+use Expresso\Compiler\Parsers\ArrayDefinitionParser;
 use Expresso\Compiler\Parsers\BinaryOperatorParser;
 use Expresso\Compiler\Parsers\ConditionalParser;
 use Expresso\Compiler\Parsers\DataTokenParser;
@@ -122,7 +123,7 @@ class Core extends Extension
         $tokenParsers->addAlternative(new DataTokenParser(), Token::CONSTANT);
         $tokenParsers->addAlternative(new DataTokenParser(), Token::STRING);
         $tokenParsers->addAlternative(new ParenthesisGroupedExpressionParser(), [Token::PUNCTUATION, '(']);
-        //$tokenParsers->addAlternative(new ArrayDefinitionExpressionParser(), [Token::PUNCTUATION, '[']);
+        $tokenParsers->addAlternative(new ArrayDefinitionParser(), [Token::PUNCTUATION, '[']);
 
         $postfixParsers = new ParserAlternativeCollection();
         $postfixParsers->addAlternative(new FunctionCallParser(new FunctionCallOperator(11, $configuration->getFunctions())), [Token::PUNCTUATION, '(']);
@@ -153,6 +154,7 @@ class Core extends Extension
     public function getFunctions()
     {
         return [
+            new ExpressionFunction('count', 'count'),
             new ExpressionFunction('replace', __NAMESPACE__.'\expression_function_replace'),
             new ExpressionFunction('reverse', 'strrev'),
         ];
