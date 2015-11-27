@@ -4,6 +4,15 @@ namespace Expresso\Compiler;
 
 class ParserAlternativeCollection extends Parser
 {
+    public static function wrap(Parser $parser)
+    {
+        if (!$parser instanceof ParserAlternativeCollection) {
+            $parser = new ParserAlternativeCollection($parser);
+        }
+
+        return $parser;
+    }
+
     /**
      * @var \SplObjectStorage
      */
@@ -29,7 +38,7 @@ class ParserAlternativeCollection extends Parser
     {
         foreach ($this->tests as $index => $test) {
 
-            $tokenType = $test[0];
+            $tokenType  = $test[0];
             $tokenValue = isset($test[1]) ? $test[1] : null;
 
             if ($currentToken->test($tokenType, $tokenValue)) {

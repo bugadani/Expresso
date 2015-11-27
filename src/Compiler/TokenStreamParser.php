@@ -74,6 +74,11 @@ class TokenStreamParser
         return isset($this->parsers[ $parser ]);
     }
 
+    public function getParser($parser)
+    {
+        return $this->parsers[ $parser ];
+    }
+
     public function popOperators()
     {
         while ($this->operatorStack->top() !== null) {
@@ -136,7 +141,7 @@ class TokenStreamParser
 
     public function parse($parser)
     {
-        $this->parsers[ $parser ]->parse($this->tokens->current(), $this->tokens, $this);
+        $this->getParser($parser)->parse($this->tokens->current(), $this->tokens, $this);
     }
 
     public function topOperator()

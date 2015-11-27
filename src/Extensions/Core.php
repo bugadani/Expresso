@@ -140,15 +140,17 @@ class Core extends Extension
             [Token::OPERATOR, [$configuration->getUnaryOperators(), 'isOperator']]
         );
 
+        $expressionParser = new ExpressionParser();
+
         $parser->addParser('term', $tokenParsers);
         $parser->addParser('binary', new BinaryOperatorParser($configuration->getBinaryOperators()));
         $parser->addParser('postfix', $postfixParsers);
         $parser->addParser('postfix no function call', $postfixNoFcParsers);
-        $parser->addParser('expression', new ExpressionParser());
+        $parser->addParser('expression', $expressionParser);
         $parser->addParser('conditional', new ConditionalParser());
         $parser->addParser('argumentList', new ArgumentListParser());
 
-        $parser->setDefaultParser(new ExpressionParser());
+        $parser->setDefaultParser($expressionParser);
     }
 
     public function getFunctions()
