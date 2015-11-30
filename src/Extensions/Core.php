@@ -123,8 +123,9 @@ class Core extends Extension
             new PrefixOperatorParser($configuration->getPrefixOperators())
         );
         $postfixOperatorParser = new PostfixOperatorParser($configuration->getUnaryOperators());
+        $identifierParser = new IdentifierParser();
 
-        $tokenParsers->addAlternative(new IdentifierParser(), Token::IDENTIFIER);
+        $tokenParsers->addAlternative($identifierParser, Token::IDENTIFIER);
         $tokenParsers->addAlternative(new DataTokenParser(), Token::CONSTANT);
         $tokenParsers->addAlternative(new DataTokenParser(), Token::STRING);
         $tokenParsers->addAlternative(new ParenthesisGroupedExpressionParser(), [Token::PUNCTUATION, '(']);
@@ -143,6 +144,7 @@ class Core extends Extension
         $expressionParser = new ExpressionParser();
 
         $parser->addParser('term', $tokenParsers);
+        $parser->addParser('identifier', $identifierParser);
         $parser->addParser('binary', new BinaryOperatorParser($configuration->getBinaryOperators()));
         $parser->addParser('postfix', $postfixParsers);
         $parser->addParser('postfix no function call', $postfixNoFcParsers);

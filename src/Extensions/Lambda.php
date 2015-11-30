@@ -4,6 +4,7 @@ namespace Expresso\Extensions;
 
 use Expresso\Compiler\CompilerConfiguration;
 use Expresso\Compiler\ExpressionFunction;
+use Expresso\Compiler\Operators\Binary\LambdaOperator;
 use Expresso\Compiler\ParserAlternativeCollection;
 use Expresso\Compiler\Parsers\LambdaParser;
 use Expresso\Compiler\Token;
@@ -17,6 +18,13 @@ class Lambda extends Extension
     public function getExtensionName()
     {
         return 'lambda';
+    }
+
+    public function getBinaryOperators()
+    {
+        return [
+            new LambdaOperator(0)
+        ];
     }
 
     public function addParsers(TokenStreamParser $parser, CompilerConfiguration $configuration)
