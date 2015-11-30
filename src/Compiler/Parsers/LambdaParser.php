@@ -16,20 +16,16 @@ class LambdaParser extends Parser
 
         $arguments = [];
         if ($currentToken->test(Token::PUNCTUATION, '(')) {
-            $currentToken = $stream->next();
-            if (!$currentToken->test(Token::PUNCTUATION, ')')) {
-                while (!$currentToken->test(Token::PUNCTUATION, ')')) {
-                    $arguments[]  = new IdentifierNode($stream->current()->getValue());
+            if (!$stream->nextTokenIf(Token::PUNCTUATION, ')')) {
+                do {
+                    $arguments[]  = new IdentifierNode($stream->next()->getValue());
                     $currentToken = $stream->expect(Token::PUNCTUATION, [',', ')']);
-                    $stream->next();
-                }
-            } else {
-                $stream->next();
+                } while (!$currentToken->test(Token::PUNCTUATION, ')'));
             }
         } else {
             $arguments[] = new IdentifierNode($currentToken->getValue());
-            $stream->next();
         }
+        $stream->next();
 
         $stream->expectCurrent(Token::OPERATOR, '->');
         $stream->next();
