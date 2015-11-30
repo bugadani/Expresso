@@ -3,5 +3,4 @@ Todo:
 
  { expression (| generator)* } - filterrel ütközik így (kell egyáltalán a filter?)
 
-- lambdas: \x -> y, \(x, y) -> z --> \ argument list -> func body (\ is needed) (tetszőleges expression lehet)
 - constant stack size implementation

@@ -3,6 +3,7 @@
 namespace Expresso\Compiler\Parsers;
 
 use Expresso\Compiler\Nodes\IdentifierNode;
+use Expresso\Compiler\Nodes\LambdaNode;
 use Expresso\Compiler\Parser;
 use Expresso\Compiler\Token;
 use Expresso\Compiler\TokenStream;
@@ -16,7 +17,7 @@ class LambdaParser extends Parser
         if ($stream->nextTokenIf(Token::PUNCTUATION, '(')) {
             if (!$stream->nextTokenIf(Token::PUNCTUATION, ')')) {
                 do {
-                    $arguments[]  = new IdentifierNode($stream->next()->getValue());
+                    $arguments[] = new IdentifierNode($stream->next()->getValue());
                     $stream->expect(Token::PUNCTUATION, [',', ')']);
                 } while (!$stream->current()->test(Token::PUNCTUATION, ')'));
             }
@@ -29,5 +30,7 @@ class LambdaParser extends Parser
 
         $parser->parse('expression');
         $body = $parser->popOperand();
+
+        $parser->pushOperand(new LambdaNode($body, $arguments));
     }
 }

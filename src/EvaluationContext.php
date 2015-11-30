@@ -26,4 +26,9 @@ class EvaluationContext extends ExecutionContext
     {
         return $this->configuration->getFunctions()[ $functionName ];
     }
+
+    public function getConfiguration()
+    {
+        return $this->configuration;
+    }
 }
