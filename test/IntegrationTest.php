@@ -44,7 +44,10 @@ class IntegrationTest extends \PHPUnit_Framework_TestCase
             $tests[ $file->getPathname() ] = $this->parseDescriptor($file);
         }
 
-        return array_filter($tests);
+        return array_filter($tests, function($descriptor) {
+            //return $descriptor[1] === 'Test infinite range declaration';
+            return true;
+        });
     }
 
     private function getBlock($string, $block)

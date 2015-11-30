@@ -13,10 +13,12 @@ use Expresso\Compiler\Operators\Binary\FilterOperator;
 use Expresso\Compiler\Operators\Binary\ModuloOperator;
 use Expresso\Compiler\Operators\Binary\MultiplicationOperator;
 use Expresso\Compiler\Operators\Binary\NullSafeAccessOperator;
+use Expresso\Compiler\Operators\Binary\RangeOperator;
 use Expresso\Compiler\Operators\Binary\RemainderOperator;
 use Expresso\Compiler\Operators\Binary\SimpleAccessOperator;
 use Expresso\Compiler\Operators\Binary\SubtractionOperator;
 use Expresso\Compiler\Operators\FunctionCallOperator;
+use Expresso\Compiler\Operators\Unary\Postfix\InfiniteRangeOperator;
 use Expresso\Compiler\Operators\Unary\Prefix\MinusOperator;
 use Expresso\Compiler\Operators\Unary\Prefix\NotOperator;
 use Expresso\Compiler\ParserAlternativeCollection;
@@ -83,8 +85,8 @@ class Core extends Extension
             new ConcatenationOperator(10),
             new SimpleAccessOperator(16),
             new NullSafeAccessOperator(16),
-            new FilterOperator(11),/*
-            new RangeOperator(9),
+            new FilterOperator(11),
+            new RangeOperator(9),/*
             new ExclusiveRangeOperator(9)
             */
         ];
@@ -111,34 +113,32 @@ class Core extends Extension
              new PostIncrementOperator(15),
              new EmptyOperator(15),
              new NotEmptyOperator(15)*/
+            new InfiniteRangeOperator(15, Operator::NONE)
         ];
     }
 
     public function addParsers(TokenStreamParser $parser, CompilerConfiguration $configuration)
     {
-        $tokenParsers = new ParserAlternativeCollection(
+        $tokenParsers          = new ParserAlternativeCollection(
             new PrefixOperatorParser($configuration->getPrefixOperators())
         );
+        $postfixOperatorParser = new PostfixOperatorParser($configuration->getUnaryOperators());
+
         $tokenParsers->addAlternative(new IdentifierParser(), Token::IDENTIFIER);
         $tokenParsers->addAlternative(new DataTokenParser(), Token::CONSTANT);
         $tokenParsers->addAlternative(new DataTokenParser(), Token::STRING);
         $tokenParsers->addAlternative(new ParenthesisGroupedExpressionParser(), [Token::PUNCTUATION, '(']);
         $tokenParsers->addAlternative(new ArrayDefinitionParser(), [Token::PUNCTUATION, '[']);
 
-        $postfixParsers = new ParserAlternativeCollection();
-        $postfixParsers->addAlternative(new FunctionCallParser(new FunctionCallOperator(11, $configuration->getFunctions())), [Token::PUNCTUATION, '(']);
-        $postfixParsers->addAlternative(new ArrayAccessParser(), [Token::PUNCTUATION, '[']);
+        $postfixParsers = new ParserAlternativeCollection($postfixOperatorParser);
         $postfixParsers->addAlternative(
-            new PostfixOperatorParser($configuration->getUnaryOperators()),
-            [Token::OPERATOR, [$configuration->getUnaryOperators(), 'isOperator']]
+            new FunctionCallParser(new FunctionCallOperator(11, $configuration->getFunctions())),
+            [Token::PUNCTUATION, '(']
         );
+        $postfixParsers->addAlternative(new ArrayAccessParser(), [Token::PUNCTUATION, '[']);
 
-        $postfixNoFcParsers = new ParserAlternativeCollection();
+        $postfixNoFcParsers = new ParserAlternativeCollection($postfixOperatorParser);
         $postfixNoFcParsers->addAlternative(new ArrayAccessParser(), [Token::PUNCTUATION, '[']);
-        $postfixNoFcParsers->addAlternative(
-            new PostfixOperatorParser($configuration->getUnaryOperators()),
-            [Token::OPERATOR, [$configuration->getUnaryOperators(), 'isOperator']]
-        );
 
         $expressionParser = new ExpressionParser();
 
@@ -157,12 +157,34 @@ class Core extends Extension
     {
         return [
             new ExpressionFunction('count', 'count'),
-            new ExpressionFunction('replace', __NAMESPACE__.'\expression_function_replace'),
+            new ExpressionFunction('join', __NAMESPACE__ . '\expression_function_join'),
+            new ExpressionFunction('replace', __NAMESPACE__ . '\expression_function_replace'),
             new ExpressionFunction('reverse', 'strrev'),
+            new ExpressionFunction('take', __NAMESPACE__ . '\expression_function_take'),
         ];
     }
 }
 
-function expression_function_replace($string, $search, $replacement) {
+function expression_function_replace($string, $search, $replacement)
+{
     return str_replace($search, $replacement, $string);
+}
+
+function expression_function_join($collection, $glue = '')
+{
+    if ($collection instanceof \Iterator) {
+        $collection = iterator_to_array($collection);
+    }
+    if (is_array($collection)) {
+        return implode($glue, $collection);
+    }
+}
+
+function expression_function_take($collection, $number)
+{
+    if (is_array($collection)) {
+        return array_slice($collection, 0, $number, true);
+    } else if ($collection instanceof \Iterator) {
+        return new \LimitIterator($collection, 0, $number);
+    }
 }

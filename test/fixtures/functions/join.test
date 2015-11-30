@@ -1,0 +1,6 @@
+--TEST--
+Test join function
+--EXPRESSION--
+[:a, :b]|join ~ ' ' ~ [:a, :b]|join(',')
+--EXPECT--
+ab a,b

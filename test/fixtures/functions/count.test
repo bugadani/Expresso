@@ -1,0 +1,6 @@
+--TEST--
+Test count function
+--EXPRESSION--
+[1, 5]|count ~ ' ' ~ []|count
+--EXPECT--
+2 0

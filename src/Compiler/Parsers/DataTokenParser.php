@@ -15,5 +15,6 @@ class DataTokenParser extends Parser
         $node = new DataNode($currentToken->getValue());
         $parser->pushOperand($node);
         $stream->next();
+        $parser->parse('postfix');
     }
 }

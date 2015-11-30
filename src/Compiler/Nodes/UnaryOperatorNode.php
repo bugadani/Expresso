@@ -38,4 +38,12 @@ class UnaryOperatorNode extends Node
             $this->operand->evaluate($context)
         );
     }
+
+    /**
+     * @return UnaryOperator
+     */
+    public function getOperator()
+    {
+        return $this->operator;
+    }
 }
