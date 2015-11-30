@@ -22,16 +22,19 @@ class ArrayDataNode extends Node
     public function add(NodeInterface $value, NodeInterface $key = null)
     {
         $this->values[] = $value;
-        $this->keys[]   = $key === null ? count($this->keys) : $key;
+        $this->keys[]   = $key;
     }
 
     public function compile(Compiler $compiler)
     {
         $compiler->add('[');
         foreach ($this->values as $index => $value) {
-            $compiler->compileNode($this->keys[ $index ])
-                     ->add(' => ')
-                     ->compileNode($value)
+            $key = $this->keys[ $index ];
+            if ($key instanceof NodeInterface) {
+                $compiler->compileNode($this->keys[ $index ]);
+                $compiler->add(' => ');
+            }
+            $compiler->compileNode($value)
                      ->add(',');
         }
         $compiler->add(']');
@@ -42,7 +45,13 @@ class ArrayDataNode extends Node
         $array = [];
 
         foreach ($this->values as $index => $value) {
-            $array[ $this->keys[ $index ]->evaluate($context) ] = $value->evaluate($context);
+            $key = $this->keys[ $index ];
+
+            if ($key instanceof NodeInterface) {
+                $array[ $key->evaluate($context) ] = $value->evaluate($context);
+            } else {
+                $array[] = $value->evaluate($context);
+            }
         }
 
         return $array;

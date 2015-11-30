@@ -1,6 +1,6 @@
 --TEST--
-Test
+Test list declaration
 --EXPRESSION--
-[:foo => 1, :bar => 5]|count
+[1, 5]|count
 --EXPECT--
 2

@@ -1,0 +1,6 @@
+--TEST--
+Test map declaration
+--EXPRESSION--
+[:foo => 1, :bar => 5]|count
+--EXPECT--
+2
