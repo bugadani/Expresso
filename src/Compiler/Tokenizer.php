@@ -9,6 +9,8 @@
 
 namespace Expresso\Compiler;
 
+use Expresso\Utils\TransformIterator;
+
 class Tokenizer
 {
     private static $punctuation = [

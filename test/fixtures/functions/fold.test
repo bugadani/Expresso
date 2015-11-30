@@ -1,0 +1,6 @@
+--TEST--
+Test fold function
+--EXPRESSION--
+[1, 2, 3]|fold(\(x, c) -> x + c, 1)
+--EXPECT--
+7

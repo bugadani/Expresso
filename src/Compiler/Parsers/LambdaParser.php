@@ -11,6 +11,6 @@ class LambdaParser extends Parser
 {
     public function parse(Token $currentToken, TokenStream $stream, TokenStreamParser $parser)
     {
-        // TODO: Implement parse() method.
+
     }
 }

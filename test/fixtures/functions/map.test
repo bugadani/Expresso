@@ -1,0 +1,6 @@
+--TEST--
+Test map function
+--EXPRESSION--
+[1, 2, 3]|map(\x -> 2*x)|join
+--EXPECT--
+246

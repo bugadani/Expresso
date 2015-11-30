@@ -1,6 +1,6 @@
 <?php
 
-namespace Expresso\Compiler;
+namespace Expresso\Utils;
 
 class TransformIterator extends \IteratorIterator
 {

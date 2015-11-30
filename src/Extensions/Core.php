@@ -177,14 +177,18 @@ function expression_function_join($collection, $glue = '')
     }
     if (is_array($collection)) {
         return implode($glue, $collection);
+    } else {
+        throw new \InvalidArgumentException('Collection must be an array or an Iterator');
     }
 }
 
-function expression_function_take($collection, $number)
+function expression_function_take($collection, $number, $offset = 0)
 {
     if (is_array($collection)) {
-        return array_slice($collection, 0, $number, true);
+        return array_slice($collection, $offset, $number, true);
     } else if ($collection instanceof \Iterator) {
-        return new \LimitIterator($collection, 0, $number);
+        return new \LimitIterator($collection, $offset, $number);
+    } else {
+        throw new \InvalidArgumentException('Collection must be an array or an Iterator');
     }
 }
