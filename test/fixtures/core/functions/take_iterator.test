@@ -1,0 +1,6 @@
+--TEST--
+Test take function
+--EXPRESSION--
+[1...]|take(2)|join
+--EXPECT--
+12

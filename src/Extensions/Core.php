@@ -201,13 +201,7 @@ function expression_function_skip($collection, $number)
     if (is_array($collection)) {
         return array_slice($collection, $number, null, true);
     } else if ($collection instanceof \Iterator) {
-        if ($collection instanceof \LimitIterator) {
-            $collection->seek($collection->getPosition() + $number);
-
-            return $collection;
-        } else {
-            return new \LimitIterator($collection, $number);
-        }
+        return new \LimitIterator($collection, $number);
     } else {
         throw new \InvalidArgumentException('Collection must be an array or an Iterator');
     }
