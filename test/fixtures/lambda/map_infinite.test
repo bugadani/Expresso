@@ -1,0 +1,6 @@
+--TEST--
+Test map function
+--EXPRESSION--
+[1...]|map(\x -> x^2)|take(5)|join(' ')
+--EXPECT--
+1 4 9 16 25

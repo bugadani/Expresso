@@ -39,7 +39,7 @@ class LambdaNode extends Node
             $compiler->add('$' . $argName->getName());
         }
 
-        $compiler->add(') {')
+        $compiler->add(') use ($context) {')
                  ->add('$context = new Expresso\\ExecutionContext([');
 
         $first = true;
@@ -52,7 +52,7 @@ class LambdaNode extends Node
             $compiler->compileString($argName->getName());
             $compiler->add('=> $' . $argName->getName());
         }
-        $compiler->add(']);')
+        $compiler->add('], $context);')
                  ->add('return ')
                  ->compileNode($this->functionBody)
                  ->add(';}');
@@ -68,7 +68,7 @@ class LambdaNode extends Node
                 },
                 $this->arguments
             );
-            $innerContext = new EvaluationContext(array_combine($argNames, $arguments), $context->getConfiguration());
+            $innerContext = $context->createInnerScope(array_combine($argNames, $arguments));
 
             return $this->functionBody->evaluate($innerContext);
         };

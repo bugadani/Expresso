@@ -1,0 +1,8 @@
+--TEST--
+Test map function
+--EXPRESSION--
+[1,2,3]|map(\x -> y*x)|join(' ')
+--DATA--
+'y' => 4, 'x' => 5
+--EXPECT--
+4 8 12

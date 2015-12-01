@@ -12,9 +12,9 @@ class EvaluationContext extends ExecutionContext
      */
     private $configuration;
 
-    public function __construct($input, CompilerConfiguration $configuration)
+    public function __construct($input, CompilerConfiguration $configuration, EvaluationContext $parentScope = null)
     {
-        parent::__construct($input);
+        parent::__construct($input, $parentScope);
         $this->configuration = $configuration;
     }
 
@@ -30,5 +30,10 @@ class EvaluationContext extends ExecutionContext
     public function getConfiguration()
     {
         return $this->configuration;
+    }
+
+    public function createInnerScope($input)
+    {
+        return new EvaluationContext($input, $this->configuration, $this);
     }
 }
