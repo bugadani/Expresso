@@ -123,7 +123,7 @@ class Core extends Extension
             new PrefixOperatorParser($configuration->getPrefixOperators())
         );
         $postfixOperatorParser = new PostfixOperatorParser($configuration->getUnaryOperators());
-        $identifierParser = new IdentifierParser();
+        $identifierParser      = new IdentifierParser();
 
         $tokenParsers->addAlternative($identifierParser, Token::IDENTIFIER);
         $tokenParsers->addAlternative(new DataTokenParser(), Token::CONSTANT);
@@ -160,6 +160,7 @@ class Core extends Extension
         return [
             new ExpressionFunction('count', 'count'),
             new ExpressionFunction('join', __NAMESPACE__ . '\expression_function_join'),
+            new ExpressionFunction('skip', __NAMESPACE__ . '\expression_function_skip'),
             new ExpressionFunction('replace', __NAMESPACE__ . '\expression_function_replace'),
             new ExpressionFunction('reverse', 'strrev'),
             new ExpressionFunction('take', __NAMESPACE__ . '\expression_function_take'),
@@ -184,12 +185,29 @@ function expression_function_join($collection, $glue = '')
     }
 }
 
-function expression_function_take($collection, $number, $offset = 0)
+function expression_function_take($collection, $number)
 {
     if (is_array($collection)) {
-        return array_slice($collection, $offset, $number, true);
+        return array_slice($collection, 0, $number, true);
     } else if ($collection instanceof \Iterator) {
-        return new \LimitIterator($collection, $offset, $number);
+        return new \LimitIterator($collection, 0, $number);
+    } else {
+        throw new \InvalidArgumentException('Collection must be an array or an Iterator');
+    }
+}
+
+function expression_function_skip($collection, $number)
+{
+    if (is_array($collection)) {
+        return array_slice($collection, $number, null, true);
+    } else if ($collection instanceof \Iterator) {
+        if ($collection instanceof \LimitIterator) {
+            $collection->seek($collection->getPosition() + $number);
+
+            return $collection;
+        } else {
+            return new \LimitIterator($collection, $number);
+        }
     } else {
         throw new \InvalidArgumentException('Collection must be an array or an Iterator');
     }
