@@ -34,22 +34,23 @@ class ParserAlternativeCollection extends Parser
         $this->tests[]        = (array)$test;
     }
 
-    public function parse(Token $currentToken, TokenStream $stream, TokenStreamParser $parser)
+    public function parse(TokenStream $stream, TokenStreamParser $parser)
     {
+        $currentToken = $stream->current();
         foreach ($this->tests as $index => $test) {
 
             $tokenType  = $test[0];
             $tokenValue = isset($test[1]) ? $test[1] : null;
 
             if ($currentToken->test($tokenType, $tokenValue)) {
-                $this->alternatives[ $index ]->parse($currentToken, $stream, $parser);
+                $this->alternatives[ $index ]->parse($stream, $parser);
 
                 return;
             }
         }
 
         if ($this->defaultParser !== null) {
-            $this->defaultParser->parse($currentToken, $stream, $parser);
+            $this->defaultParser->parse($stream, $parser);
         }
     }
 }

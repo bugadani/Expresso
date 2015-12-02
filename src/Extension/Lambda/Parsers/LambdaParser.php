@@ -11,7 +11,7 @@ use Expresso\Extensions\Lambda\Nodes\LambdaNode;
 
 class LambdaParser extends Parser
 {
-    public function parse(Token $currentToken, TokenStream $stream, TokenStreamParser $parser)
+    public function parse(TokenStream $stream, TokenStreamParser $parser)
     {
         $arguments = [];
         if ($stream->nextTokenIf(Token::PUNCTUATION, '(')) {

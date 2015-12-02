@@ -54,7 +54,7 @@ class TokenStreamParser
         $this->tokens        = $tokens;
 
         $tokens->next();
-        $this->defaultParser->parse($this->tokens->current(), $this->tokens, $this);
+        $this->defaultParser->parse($tokens, $this);
 
         return $this->operandStack->pop();
     }
@@ -66,6 +66,9 @@ class TokenStreamParser
 
     public function popOperatorSentinel()
     {
+        while ($this->operatorStack->top() !== null) {
+            $this->popOperator();
+        }
         $this->operatorStack->pop();
     }
 
@@ -79,14 +82,7 @@ class TokenStreamParser
         return $this->parsers[ $parser ];
     }
 
-    public function popOperators()
-    {
-        while ($this->operatorStack->top() !== null) {
-            $this->popOperator();
-        }
-    }
-
-    public function popOperator()
+    private function popOperator()
     {
         $operator = $this->operatorStack->pop();
         $right    = $this->operandStack->pop();
@@ -100,7 +96,7 @@ class TokenStreamParser
 
     public function pushOperator(Operator $operator)
     {
-        $this->popOperatorCompared($operator);
+        $this->popOperatorsWithHigherPrecedence($operator);
         $this->operatorStack->push($operator);
     }
 
@@ -141,23 +137,13 @@ class TokenStreamParser
 
     public function parse($parser)
     {
-        $this->getParser($parser)->parse($this->tokens->current(), $this->tokens, $this);
-    }
-
-    public function topOperator()
-    {
-        return $this->operatorStack->top();
-    }
-
-    public function popOperatorStack()
-    {
-        return $this->operatorStack->pop();
+        $this->getParser($parser)->parse($this->tokens, $this);
     }
 
     /**
      * @param Operator $operator
      */
-    public function popOperatorCompared(Operator $operator)
+    public function popOperatorsWithHigherPrecedence(Operator $operator)
     {
         while ($this->compareToStackTop($operator)) {
             $this->popOperator();

@@ -20,14 +20,14 @@ class PrefixOperatorParser extends Parser
         $this->prefixOperators = $prefixOperators;
     }
 
-    public function parse(Token $currentToken, TokenStream $stream, TokenStreamParser $parser)
+    public function parse(TokenStream $stream, TokenStreamParser $parser)
     {
-        $stream->expectCurrent(
+        $current = $stream->expectCurrent(
             Token::OPERATOR,
             [$this->prefixOperators, 'isOperator']
         );
         $parser->pushOperator(
-            $this->prefixOperators->getOperator($currentToken->getValue())
+            $this->prefixOperators->getOperator($current->getValue())
         );
         $stream->next();
         $parser->parse('term');

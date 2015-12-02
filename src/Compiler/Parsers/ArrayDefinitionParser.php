@@ -21,7 +21,7 @@ class ArrayDefinitionParser extends Parser
     const TYPE_MAP = 2;
     const TYPE_RANGE = 3;
 
-    public function parse(Token $currentToken, TokenStream $stream, TokenStreamParser $parser)
+    public function parse(TokenStream $stream, TokenStreamParser $parser)
     {
         $array = new ArrayDataNode();
 

@@ -15,9 +15,9 @@ class ConditionalParser extends Parser
         $this->conditionalOperator = new ConditionalOperator(0);
     }
 
-    public function parse(Token $currentToken, TokenStream $stream, TokenStreamParser $parser)
+    public function parse(TokenStream $stream, TokenStreamParser $parser)
     {
-        if($currentToken->test(Token::PUNCTUATION, '?')) {
+        if($stream->current()->test(Token::PUNCTUATION, '?')) {
             $stream->next();
             $parser->parse('expression');
             $stream->expectCurrent(Token::PUNCTUATION, ':');

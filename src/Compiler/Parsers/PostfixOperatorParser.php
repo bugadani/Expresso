@@ -3,9 +3,7 @@
 namespace Expresso\Compiler\Parsers;
 
 use Expresso\Compiler\OperatorCollection;
-use Expresso\Compiler\Operators\UnaryOperator;
 use Expresso\Compiler\Parser;
-use Expresso\Compiler\Token;
 use Expresso\Compiler\TokenStream;
 use Expresso\Compiler\TokenStreamParser;
 
@@ -21,17 +19,12 @@ class PostfixOperatorParser extends Parser
         $this->postfixOperators = $postfixOperators;
     }
 
-    public function parse(Token $currentToken, TokenStream $stream, TokenStreamParser $parser)
+    public function parse(TokenStream $stream, TokenStreamParser $parser)
     {
-        if ($this->postfixOperators->isOperator($currentToken->getValue())) {
-            /** @var UnaryOperator $operator */
-            $operator = $this->postfixOperators->getOperator($currentToken->getValue());
-            $parser->popOperatorCompared($operator);
-
-            $parser->pushOperand(//todo push operatort használni?
-                $operator->createNode(
-                    $parser->popOperand()
-                )
+        $currentSymbol = $stream->current()->getValue();
+        if ($this->postfixOperators->isOperator($currentSymbol)) {
+            $parser->pushOperator(
+                $this->postfixOperators->getOperator($currentSymbol)
             );
             $stream->next();
         }

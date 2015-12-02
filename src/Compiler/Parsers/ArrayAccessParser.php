@@ -18,7 +18,7 @@ class ArrayAccessParser extends Parser
         $this->accessOperator = new ArrayAccessOperator(0);
     }
 
-    public function parse(Token $currentToken, TokenStream $stream, TokenStreamParser $parser)
+    public function parse(TokenStream $stream, TokenStreamParser $parser)
     {
         $node = $parser->popOperand();
 

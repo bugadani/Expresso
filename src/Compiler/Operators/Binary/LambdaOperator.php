@@ -17,11 +17,11 @@ class LambdaOperator extends BinaryOperator
 
     public function execute(EvaluationContext $context, NodeInterface $left, NodeInterface $right)
     {
-        // TODO: Implement execute() method.
+        //intentionally empty
     }
 
     public function compile(Compiler $compiler, NodeInterface $left, NodeInterface $right)
     {
-        // TODO: Implement compile() method.
+        //intentionally empty
     }
 }
