@@ -3,4 +3,4 @@ Test inconsistent map declaration
 --EXPRESSION--
 [1, :bar => 5]|count
 --EXCEPTION--
-\Expresso\Compiler\Exceptions\InconsistentMapDeclarationException
+\Expresso\Compiler\Exceptions\ParseException

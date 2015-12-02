@@ -9,8 +9,6 @@ use Expresso\Compiler\TokenStreamParser;
 
 abstract class Extension
 {
-    abstract public function getExtensionName();
-
     /**
      * @return Operator[]
      */
@@ -39,6 +37,11 @@ abstract class Extension
      * @return ExpressionFunction[]
      */
     public function getFunctions()
+    {
+        return [];
+    }
+
+    public function getDependencies()
     {
         return [];
     }

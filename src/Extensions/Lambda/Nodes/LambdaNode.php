@@ -1,10 +1,11 @@
 <?php
 
-namespace Expresso\Compiler\Nodes;
+namespace Expresso\Extensions\Lambda\Nodes;
 
 use Expresso\Compiler\Compiler;
 use Expresso\Compiler\Node;
 use Expresso\Compiler\NodeInterface;
+use Expresso\Compiler\Nodes\IdentifierNode;
 use Expresso\EvaluationContext;
 
 class LambdaNode extends Node

@@ -6,9 +6,11 @@ use Expresso\Extension;
 
 class Generator extends Extension
 {
-
-    public function getExtensionName()
+    public function getDependencies()
     {
-        return 'generator';
+        return [
+            __NAMESPACE__ . '\\Core',
+            __NAMESPACE__ . '\\Lambda'
+        ];
     }
 }

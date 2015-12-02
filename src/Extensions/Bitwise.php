@@ -6,11 +6,6 @@ use Expresso\Extension;
 
 class Bitwise extends Extension
 {
-    public function getExtensionName()
-    {
-        return 'bitwise';
-    }
-
     public function getBinaryOperators()
     {
         return [
@@ -33,6 +28,13 @@ class Bitwise extends Extension
     public function getPostfixUnaryOperators()
     {
         return [
+        ];
+    }
+
+    public function getDependencies()
+    {
+        return [
+            __NAMESPACE__ . '\\Core'
         ];
     }
 }

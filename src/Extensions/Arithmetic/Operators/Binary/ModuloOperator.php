@@ -1,12 +1,11 @@
 <?php
 
-namespace Expresso\Compiler\Operators\Binary;
+namespace Expresso\Extensions\Arithmetic\Operators\Binary;
 
 use Expresso\Compiler\Compiler;
 use Expresso\Compiler\NodeInterface;
 use Expresso\Compiler\Operators\BinaryOperator;
 use Expresso\EvaluationContext;
-use Expresso\ExecutionContext;
 
 class ModuloOperator extends BinaryOperator
 {

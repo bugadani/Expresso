@@ -6,20 +6,14 @@ use Expresso\Compiler\CompilerConfiguration;
 use Expresso\Compiler\ExpressionFunction;
 use Expresso\Compiler\Operators\Binary\LambdaOperator;
 use Expresso\Compiler\ParserAlternativeCollection;
-use Expresso\Compiler\Parsers\LambdaParser;
 use Expresso\Compiler\Token;
 use Expresso\Compiler\TokenStreamParser;
 use Expresso\Extension;
+use Expresso\Extension\Lambda\Parsers\LambdaParser;
 use Expresso\Utils\TransformIterator;
 
 class Lambda extends Extension
 {
-
-    public function getExtensionName()
-    {
-        return 'lambda';
-    }
-
     public function getBinaryOperators()
     {
         return [
@@ -41,6 +35,13 @@ class Lambda extends Extension
         return [
             new ExpressionFunction('fold', __NAMESPACE__ . '\expression_function_fold'),
             new ExpressionFunction('map', __NAMESPACE__ . '\expression_function_map')
+        ];
+    }
+
+    public function getDependencies()
+    {
+        return [
+            __NAMESPACE__ . '\\Core'
         ];
     }
 }

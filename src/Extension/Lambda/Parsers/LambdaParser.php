@@ -1,13 +1,13 @@
 <?php
 
-namespace Expresso\Compiler\Parsers;
+namespace Expresso\Extension\Lambda\Parsers;
 
 use Expresso\Compiler\Nodes\IdentifierNode;
-use Expresso\Compiler\Nodes\LambdaNode;
 use Expresso\Compiler\Parser;
 use Expresso\Compiler\Token;
 use Expresso\Compiler\TokenStream;
 use Expresso\Compiler\TokenStreamParser;
+use Expresso\Extensions\Lambda\Nodes\LambdaNode;
 
 class LambdaParser extends Parser
 {

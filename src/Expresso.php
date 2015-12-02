@@ -6,8 +6,8 @@ use Expresso\Compiler\Compiler;
 use Expresso\Compiler\CompilerConfiguration;
 use Expresso\Compiler\NodeInterface;
 use Expresso\Compiler\Nodes\ExpressionNode;
-use Expresso\Compiler\TokenStreamParser;
 use Expresso\Compiler\Tokenizer;
+use Expresso\Compiler\TokenStreamParser;
 
 class Expresso
 {
@@ -43,7 +43,21 @@ class Expresso
 
     public function addExtension(Extension $extension)
     {
-        $this->extensions[] = $extension;
+        $extensionClassName = get_class($extension);
+        if (!isset($this->extensions[ $extensionClassName ])) {
+            $this->internalAddExtension($extensionClassName, $extension);
+        }
+    }
+
+    public function internalAddExtension($extensionClassName, Extension $extension)
+    {
+        $this->extensions[ $extensionClassName ] = $extension;
+
+        foreach ($extension->getDependencies() as $dependency) {
+            if (!isset($this->extensions[ $dependency ])) {
+                $this->internalAddExtension($dependency, new $dependency);
+            }
+        }
     }
 
     private function getTokenizer()

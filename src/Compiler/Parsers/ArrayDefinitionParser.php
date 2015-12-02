@@ -3,6 +3,7 @@
 namespace Expresso\Compiler\Parsers;
 
 use Expresso\Compiler\Exceptions\InconsistentMapDeclarationException;
+use Expresso\Compiler\Exceptions\ParseException;
 use Expresso\Compiler\Nodes\ArrayDataNode;
 use Expresso\Compiler\Nodes\BinaryOperatorNode;
 use Expresso\Compiler\Nodes\UnaryOperatorNode;
@@ -36,7 +37,7 @@ class ArrayDefinitionParser extends Parser
             //Optional key support
             if ($this->isRangeOperator($value)) {
                 if (!($isMap === self::TYPE_INDETERMINATE)) {
-                    throw new InconsistentMapDeclarationException();
+                    throw new ParseException('Can not mix range definitions with array or map declarations');
                 }
                 $isMap = self::TYPE_RANGE;
                 $stream->expectCurrent(Token::PUNCTUATION, ']');
@@ -44,7 +45,7 @@ class ArrayDefinitionParser extends Parser
             } else {
                 if ($stream->current()->test(Token::PUNCTUATION, [':', '=>'])) {
                     if (!($isMap === self::TYPE_INDETERMINATE || $isMap === self::TYPE_MAP)) {
-                        throw new InconsistentMapDeclarationException();
+                        throw new ParseException('Can not array and map declarations');
                     }
                     $isMap = self::TYPE_MAP;
                     //the previous value was a key
@@ -54,7 +55,7 @@ class ArrayDefinitionParser extends Parser
                     $value = $parser->popOperand();
                 } else {
                     if (!($isMap === self::TYPE_INDETERMINATE || $isMap === self::TYPE_LIST)) {
-                        throw new InconsistentMapDeclarationException();
+                        throw new ParseException('Can not array and map declarations');
                     }
                     $isMap = self::TYPE_LIST;
                     $key   = null;

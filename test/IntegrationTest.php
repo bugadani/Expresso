@@ -3,6 +3,7 @@
 namespace Expresso\Test;
 
 use Expresso\Expresso;
+use Expresso\Extensions\Arithmetic;
 use Expresso\Extensions\Bitwise;
 use Expresso\Extensions\Core;
 use Expresso\Extensions\Generator;
@@ -19,6 +20,7 @@ class IntegrationTest extends \PHPUnit_Framework_TestCase
     {
         $this->expresso = new Expresso();
         $this->expresso->addExtension(new Core());
+        $this->expresso->addExtension(new Arithmetic());
         $this->expresso->addExtension(new Bitwise());
         $this->expresso->addExtension(new Lambda());
         $this->expresso->addExtension(new Generator());
