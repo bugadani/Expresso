@@ -1,0 +1,8 @@
+--TEST--
+Test the odd operator
+--EXPRESSION--
+(3 is odd ? 'odd' : 'even')
+~ ' ' ~
+(2 is odd ? 'odd' : 'even')
+--EXPECT--
+odd even

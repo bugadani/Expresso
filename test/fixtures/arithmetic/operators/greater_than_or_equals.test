@@ -1,0 +1,8 @@
+--TEST--
+Test the greater than or equals operator
+--EXPRESSION--
+(3 >= 2 ? 'greater' : 'not greater')
+~ ' ' ~
+(2 >= 2 ? 'equals' : 'not equals')
+--EXPECT--
+greater equals

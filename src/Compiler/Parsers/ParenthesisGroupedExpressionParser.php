@@ -14,5 +14,6 @@ class ParenthesisGroupedExpressionParser extends Parser
         $stream->next();
         $parser->parse('expression');
         $stream->expectCurrent(Token::PUNCTUATION, ')');
+        $stream->next();
     }
 }

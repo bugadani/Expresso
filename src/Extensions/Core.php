@@ -12,7 +12,6 @@ use Expresso\Compiler\Operators\Binary\RangeOperator;
 use Expresso\Compiler\Operators\Binary\SimpleAccessOperator;
 use Expresso\Compiler\Operators\FunctionCallOperator;
 use Expresso\Compiler\Operators\Unary\Postfix\InfiniteRangeOperator;
-use Expresso\Compiler\Operators\Unary\Prefix\NotOperator;
 use Expresso\Compiler\ParserAlternativeCollection;
 use Expresso\Compiler\Parsers\ArgumentListParser;
 use Expresso\Compiler\Parsers\ArrayAccessParser;
@@ -40,14 +39,6 @@ class Core extends Extension
             new IdenticalOperator(7),
             new NotIdenticalOperator(7),
             new NotEqualsOperator(7),
-            new LessThanOperator(8),
-            new LessThanOrEqualsOperator(8),
-            new GreaterThanOperator(8),
-            new GreaterThanOrEqualsOperator(8),
-            //logical
-            new AndOperator(3),
-            new OrOperator(2),
-            new XorOperator(1),
             //test
             new ContainsOperator(8, Operator::NONE),
             new EndsOperator(8, Operator::NONE),
@@ -57,17 +48,13 @@ class Core extends Extension
             new NotMatchesOperator(8, Operator::NONE),
             new NotStartsOperator(8, Operator::NONE),
             new StartsOperator(8, Operator::NONE),
-            new DivisibleByOperator(8, Operator::NONE),
-            new NotDivisibleByOperator(8, Operator::NONE),
             //other
             new NullCoalescingOperator(1),*/
             new ConcatenationOperator(10),
             new SimpleAccessOperator(16),
             new NullSafeAccessOperator(16),
             new FilterOperator(11),
-            new RangeOperator(9),/*
-            new ExclusiveRangeOperator(9)
-            */
+            new RangeOperator(9)
         ];
     }
 
@@ -75,8 +62,7 @@ class Core extends Extension
     {
         return [
             /*new PreDecrementOperator(13, Operator::RIGHT),
-            new PreIncrementOperator(13, Operator::RIGHT),*/
-            new NotOperator(12, Operator::RIGHT)
+            new PreIncrementOperator(13, Operator::RIGHT)*/
         ];
     }
 
@@ -85,8 +71,6 @@ class Core extends Extension
         return [
             /*new IsSetOperator(15, Operator::RIGHT),
              new IsNotSetOperator(15, Operator::RIGHT),
-             new EvenOperator(15, Operator::NONE),
-             new OddOperator(15, Operator::NONE),
              new PostDecrementOperator(15),
              new PostIncrementOperator(15),
              new EmptyOperator(15),

@@ -8,6 +8,7 @@ use Expresso\Extensions\Bitwise;
 use Expresso\Extensions\Core;
 use Expresso\Extensions\Generator;
 use Expresso\Extensions\Lambda;
+use Expresso\Extensions\Logical;
 
 class IntegrationTest extends \PHPUnit_Framework_TestCase
 {
@@ -23,6 +24,7 @@ class IntegrationTest extends \PHPUnit_Framework_TestCase
         $this->expresso->addExtension(new Arithmetic());
         $this->expresso->addExtension(new Bitwise());
         $this->expresso->addExtension(new Lambda());
+        $this->expresso->addExtension(new Logical());
         $this->expresso->addExtension(new Generator());
     }
 

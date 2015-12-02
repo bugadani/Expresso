@@ -1,0 +1,8 @@
+--TEST--
+Test the less than or equals operator
+--EXPRESSION--
+(2 <= 3 ? 'less' : 'less')
+~ ' ' ~
+(2 <= 2 ? 'equals' : 'not equals')
+--EXPECT--
+less equals

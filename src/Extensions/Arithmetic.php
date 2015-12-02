@@ -7,10 +7,16 @@ use Expresso\Extension;
 use Expresso\Extensions\Arithmetic\Operators\Binary\AdditionOperator;
 use Expresso\Extensions\Arithmetic\Operators\Binary\DivisionOperator;
 use Expresso\Extensions\Arithmetic\Operators\Binary\ExponentialOperator;
+use Expresso\Extensions\Arithmetic\Operators\Binary\GreaterThanOperator;
+use Expresso\Extensions\Arithmetic\Operators\Binary\GreaterThanOrEqualsOperator;
+use Expresso\Extensions\Arithmetic\Operators\Binary\LessThanOperator;
+use Expresso\Extensions\Arithmetic\Operators\Binary\LessThanOrEqualsOperator;
 use Expresso\Extensions\Arithmetic\Operators\Binary\ModuloOperator;
 use Expresso\Extensions\Arithmetic\Operators\Binary\MultiplicationOperator;
 use Expresso\Extensions\Arithmetic\Operators\Binary\RemainderOperator;
 use Expresso\Extensions\Arithmetic\Operators\Binary\SubtractionOperator;
+use Expresso\Extensions\Arithmetic\Operators\Unary\Postfix\EvenOperator;
+use Expresso\Extensions\Arithmetic\Operators\Unary\Postfix\OddOperator;
 use Expresso\Extensions\Arithmetic\Operators\Unary\Prefix\MinusOperator;
 
 class Arithmetic extends Extension
@@ -25,7 +31,14 @@ class Arithmetic extends Extension
             new DivisionOperator(11),
             new RemainderOperator(11),
             new ModuloOperator(11),
-            new ExponentialOperator(14, Operator::RIGHT)
+            new ExponentialOperator(14, Operator::RIGHT),
+            //new DivisibleByOperator(8, Operator::NONE),
+            //new NotDivisibleByOperator(8, Operator::NONE),
+            //comparison
+            new LessThanOperator(8),
+            new LessThanOrEqualsOperator(8),
+            new GreaterThanOperator(8),
+            new GreaterThanOrEqualsOperator(8)
         ];
     }
 
@@ -39,6 +52,8 @@ class Arithmetic extends Extension
     public function getPostfixUnaryOperators()
     {
         return [
+            new EvenOperator(15, Operator::NONE),
+            new OddOperator(15, Operator::NONE),
         ];
     }
 

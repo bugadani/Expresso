@@ -1,6 +1,6 @@
 <?php
 
-namespace Expresso\Compiler\Operators\Unary\Prefix;
+namespace Expresso\Extensions\Logical\Operators\Unary\Prefix;
 
 use Expresso\Compiler\Compiler;
 use Expresso\Compiler\NodeInterface;

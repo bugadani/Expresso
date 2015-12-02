@@ -1,0 +1,6 @@
+--TEST--
+Test the less than operator
+--EXPRESSION--
+2 < 3 ? 'less' : 'not less'
+--EXPECT--
+less
