@@ -65,9 +65,8 @@ function expression_function_map($collection, callable $callback)
     return new TransformIterator($collection, $callback);
 }
 
-function expression_function_fold($collection, callable $callback, $initial)
+function expression_function_fold($collection, callable $callback, $acc)
 {
-    $acc = $initial;
     foreach ($collection as $a) {
         $acc = $callback($acc, $a);
     }
