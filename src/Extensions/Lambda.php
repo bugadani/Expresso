@@ -9,7 +9,7 @@ use Expresso\Compiler\ParserAlternativeCollection;
 use Expresso\Compiler\Token;
 use Expresso\Compiler\TokenStreamParser;
 use Expresso\Extension;
-use Expresso\Extension\Lambda\Parsers\LambdaParser;
+use Expresso\Extensions\Lambda\Parsers\LambdaParser;
 use Expresso\Utils\TransformIterator;
 
 class Lambda extends Extension

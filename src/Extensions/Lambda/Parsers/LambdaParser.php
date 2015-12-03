@@ -1,6 +1,6 @@
 <?php
 
-namespace Expresso\Extension\Lambda\Parsers;
+namespace Expresso\Extensions\Lambda\Parsers;
 
 use Expresso\Compiler\Nodes\IdentifierNode;
 use Expresso\Compiler\Parser;
