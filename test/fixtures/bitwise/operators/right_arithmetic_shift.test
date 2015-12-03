@@ -1,0 +1,6 @@
+--TEST--
+Test the right arithmetic shift operator
+--EXPRESSION--
+-5 >> 1
+--EXPECT--
+-3

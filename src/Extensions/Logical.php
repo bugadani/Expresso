@@ -5,6 +5,8 @@ namespace Expresso\Extensions;
 use Expresso\Compiler\Operator;
 use Expresso\Extension;
 use Expresso\Extensions\Logical\Operators\Binary\AndOperator;
+use Expresso\Extensions\Logical\Operators\Binary\OrOperator;
+use Expresso\Extensions\Logical\Operators\Binary\XorOperator;
 use Expresso\Extensions\Logical\Operators\Unary\Prefix\NotOperator;
 
 class Logical extends Extension
@@ -14,8 +16,8 @@ class Logical extends Extension
         return [
             //logical
             new AndOperator(3),
-            //new OrOperator(2),
-            //new XorOperator(1),
+            new OrOperator(2),
+            new XorOperator(1),
         ];
     }
 

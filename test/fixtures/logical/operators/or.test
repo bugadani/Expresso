@@ -1,0 +1,10 @@
+--TEST--
+Test the or operator
+--EXPRESSION--
+(false || false ? :t : :f)
+~' '~
+(false || true ? :t : :f)
+~' '~
+(true || true ? :t : :f)
+--EXPECT--
+f t t

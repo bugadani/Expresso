@@ -5,6 +5,7 @@ namespace Expresso\Extensions;
 use Expresso\Compiler\Operator;
 use Expresso\Extension;
 use Expresso\Extensions\Arithmetic\Operators\Binary\AdditionOperator;
+use Expresso\Extensions\Arithmetic\Operators\Binary\DivisibleOperator;
 use Expresso\Extensions\Arithmetic\Operators\Binary\DivisionOperator;
 use Expresso\Extensions\Arithmetic\Operators\Binary\ExponentialOperator;
 use Expresso\Extensions\Arithmetic\Operators\Binary\GreaterThanOperator;
@@ -13,6 +14,7 @@ use Expresso\Extensions\Arithmetic\Operators\Binary\LessThanOperator;
 use Expresso\Extensions\Arithmetic\Operators\Binary\LessThanOrEqualsOperator;
 use Expresso\Extensions\Arithmetic\Operators\Binary\ModuloOperator;
 use Expresso\Extensions\Arithmetic\Operators\Binary\MultiplicationOperator;
+use Expresso\Extensions\Arithmetic\Operators\Binary\NotDivisibleOperator;
 use Expresso\Extensions\Arithmetic\Operators\Binary\RemainderOperator;
 use Expresso\Extensions\Arithmetic\Operators\Binary\SubtractionOperator;
 use Expresso\Extensions\Arithmetic\Operators\Unary\Postfix\EvenOperator;
@@ -32,8 +34,8 @@ class Arithmetic extends Extension
             new RemainderOperator(11),
             new ModuloOperator(11),
             new ExponentialOperator(14, Operator::RIGHT),
-            //new DivisibleByOperator(8, Operator::NONE),
-            //new NotDivisibleByOperator(8, Operator::NONE),
+            new DivisibleOperator(8, Operator::NONE),
+            new NotDivisibleOperator(8, Operator::NONE),
             //comparison
             new LessThanOperator(8),
             new LessThanOrEqualsOperator(8),

@@ -1,0 +1,6 @@
+--TEST--
+Test the left arithmetic shift operator
+--EXPRESSION--
+5 << 3
+--EXPECT--
+40

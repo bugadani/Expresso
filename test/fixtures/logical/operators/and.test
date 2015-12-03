@@ -1,0 +1,8 @@
+--TEST--
+Test the and operator
+--EXPRESSION--
+(true && true ? :t : :f)
+~' '~
+(false && true ? :t : :f)
+--EXPECT--
+t f

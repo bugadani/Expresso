@@ -1,0 +1,6 @@
+--TEST--
+Test the bitwise not operator
+--EXPRESSION--
+~5 b-and 7
+--EXPECT--
+2

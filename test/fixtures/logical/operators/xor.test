@@ -1,0 +1,10 @@
+--TEST--
+Test the xor operator
+--EXPRESSION--
+(true xor true ? :t : :f)
+~ ' ' ~
+(false xor true ? :t : :f)
+~ ' ' ~
+(false xor false ? :t : :f)
+--EXPECT--
+f t f

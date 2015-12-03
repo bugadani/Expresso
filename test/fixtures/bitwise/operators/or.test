@@ -1,0 +1,6 @@
+--TEST--
+Test the bitwise or operator
+--EXPRESSION--
+5 b-or 3
+--EXPECT--
+7

@@ -1,0 +1,8 @@
+--TEST--
+Test the 'divisible by' operator
+--EXPRESSION--
+(3 is not divisible by 2 ? 'not divisible' : 'divisible')
+~ ' ' ~
+(4 is not divisible by 2 ? 'not divisible' : 'divisible')
+--EXPECT--
+not divisible divisible
