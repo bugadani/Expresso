@@ -62,7 +62,7 @@ class LambdaNode extends Node
     public function evaluate(EvaluationContext $context)
     {
         return function () use ($context) {
-            $arguments    = func_get_args();
+            $arguments    = array_slice(func_get_args(), 0, count($this->arguments));
             $argNames     = array_map(
                 function (IdentifierNode $node) {
                     return $node->getName();

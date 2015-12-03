@@ -33,6 +33,7 @@ class Lambda extends Extension
     public function getFunctions()
     {
         return [
+            new ExpressionFunction('filter', __NAMESPACE__ . '\expression_function_filter'),
             new ExpressionFunction('fold', __NAMESPACE__ . '\expression_function_fold'),
             new ExpressionFunction('map', __NAMESPACE__ . '\expression_function_map')
         ];
@@ -44,6 +45,15 @@ class Lambda extends Extension
             __NAMESPACE__ . '\\Core'
         ];
     }
+}
+
+function expression_function_filter($collection, callable $callback)
+{
+    if (is_array($collection)) {
+        $collection = new \ArrayIterator($collection);
+    }
+
+    return new \CallbackFilterIterator($collection, $callback);
 }
 
 function expression_function_map($collection, callable $callback)

@@ -129,6 +129,7 @@ class Tokenizer
                     break;
 
                 default:
+                    $part = trim($part);
                     switch (strtolower($part)) {
                         case 'null':
                             $token = new Token(Token::CONSTANT, null);

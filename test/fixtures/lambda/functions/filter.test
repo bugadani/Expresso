@@ -1,0 +1,6 @@
+--TEST--
+Test filter function
+--EXPRESSION--
+[1...]|take(4)|filter(\x -> x is odd)|join(' ')
+--EXPECT--
+1 3
