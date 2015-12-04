@@ -1,0 +1,6 @@
+--TEST--
+Test first function
+--EXPRESSION--
+[2...]|first(\x -> x is odd)
+--EXPECT--
+3

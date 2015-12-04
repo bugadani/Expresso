@@ -33,7 +33,10 @@ class Lambda extends Extension
     public function getFunctions()
     {
         return [
+            new ExpressionFunction('all', __NAMESPACE__ . '\expression_function_all'),
+            new ExpressionFunction('any', __NAMESPACE__ . '\expression_function_any'),
             new ExpressionFunction('filter', __NAMESPACE__ . '\expression_function_filter'),
+            new ExpressionFunction('first', __NAMESPACE__ . '\expression_function_first'),
             new ExpressionFunction('fold', __NAMESPACE__ . '\expression_function_fold'),
             new ExpressionFunction('map', __NAMESPACE__ . '\expression_function_map')
         ];
@@ -47,6 +50,36 @@ class Lambda extends Extension
     }
 }
 
+function expression_function_any($collection, callable $callback)
+{
+    if (!is_array($collection) && !$collection instanceof \Traversable) {
+        throw new \InvalidArgumentException('$collection must be an array or Traversable object');
+    }
+
+    foreach ($collection as $key => $item) {
+        if ($callback($item, $key)) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+function expression_function_all($collection, callable $callback)
+{
+    if (!is_array($collection) && !$collection instanceof \Traversable) {
+        throw new \InvalidArgumentException('$collection must be an array or Traversable object');
+    }
+
+    foreach ($collection as $key => $item) {
+        if (!$callback($item, $key)) {
+            return false;
+        }
+    }
+
+    return true;
+}
+
 function expression_function_filter($collection, callable $callback)
 {
     if (is_array($collection)) {
@@ -54,6 +87,21 @@ function expression_function_filter($collection, callable $callback)
     }
 
     return new \CallbackFilterIterator($collection, $callback);
+}
+
+function expression_function_first($collection, callable $callback)
+{
+    if (!is_array($collection) && !$collection instanceof \Traversable) {
+        throw new \InvalidArgumentException('$collection must be an array or Traversable object');
+    }
+
+    foreach ($collection as $key => $item) {
+        if ($callback($item, $key)) {
+            return $item;
+        }
+    }
+
+    return null;
 }
 
 function expression_function_map($collection, callable $callback)

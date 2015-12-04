@@ -6,7 +6,11 @@ use Expresso\Compiler\CompilerConfiguration;
 use Expresso\Compiler\ExpressionFunction;
 use Expresso\Compiler\Operator;
 use Expresso\Compiler\Operators\Binary\ConcatenationOperator;
+use Expresso\Compiler\Operators\Binary\EqualsOperator;
 use Expresso\Compiler\Operators\Binary\FilterOperator;
+use Expresso\Compiler\Operators\Binary\IdenticalOperator;
+use Expresso\Compiler\Operators\Binary\NotEqualsOperator;
+use Expresso\Compiler\Operators\Binary\NotIdenticalOperator;
 use Expresso\Compiler\Operators\Binary\NullSafeAccessOperator;
 use Expresso\Compiler\Operators\Binary\RangeOperator;
 use Expresso\Compiler\Operators\Binary\SimpleAccessOperator;
@@ -35,12 +39,12 @@ class Core extends Extension
     {
         return [
             //comparison
-            /*new EqualsOperator(7),
+            new EqualsOperator(7),
             new IdenticalOperator(7),
             new NotIdenticalOperator(7),
             new NotEqualsOperator(7),
             //test
-            new ContainsOperator(8, Operator::NONE),
+            /*new ContainsOperator(8, Operator::NONE),
             new EndsOperator(8, Operator::NONE),
             new MatchesOperator(8, Operator::NONE),
             new NotContainsOperator(8, Operator::NONE),

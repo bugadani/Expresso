@@ -1,0 +1,6 @@
+--TEST--
+Test not identical operator
+--EXPRESSION--
+1 !== '1' ? :true : :false
+--EXPECT--
+true
