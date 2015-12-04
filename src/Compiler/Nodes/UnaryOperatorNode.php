@@ -9,13 +9,8 @@ use Expresso\Compiler\Operators\UnaryOperator;
 use Expresso\EvaluationContext;
 use Expresso\ExecutionContext;
 
-class UnaryOperatorNode extends Node
+class UnaryOperatorNode extends OperatorNode
 {
-    /**
-     * @var UnaryOperator
-     */
-    private $operator;
-
     /**
      * @var NodeInterface
      */
@@ -23,28 +18,20 @@ class UnaryOperatorNode extends Node
 
     public function __construct(UnaryOperator $operator, NodeInterface $operand)
     {
-        $this->operator = $operator;
+        parent::__construct($operator);
         $this->operand  = $operand;
     }
 
     public function compile(Compiler $compiler)
     {
-        $this->operator->compile($compiler, $this->operand);
+        $this->getOperator()->compile($compiler, $this->operand);
     }
 
     public function evaluate(EvaluationContext $context)
     {
-        return $this->operator->execute(
+        return $this->getOperator()->execute(
             $context,
             $this->operand
         );
-    }
-
-    /**
-     * @return UnaryOperator
-     */
-    public function getOperator()
-    {
-        return $this->operator;
     }
 }

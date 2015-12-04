@@ -23,12 +23,18 @@ class FunctionCallOperator extends Operator
     public function createNode($left)
     {
         if (!$left instanceof FunctionCallNode) {
-
-            if($left instanceof TernaryOperatorNode) {
-                //TODO
+            if ($left instanceof TernaryOperatorNode) {
+                $left = new TernaryOperatorNode(
+                    $left->getOperator(),
+                    $left->getLeft(),
+                    $left->getMiddle(),
+                    new FunctionCallNode(
+                        $left->getRight()
+                    )
+                );
+            } else {
+                $left = new FunctionCallNode($left);
             }
-
-            $left = new FunctionCallNode($left);
         }
 
         return $left;

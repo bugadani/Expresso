@@ -65,7 +65,7 @@ class FunctionCallNode extends Node
             return $context->getFunction($functionName->getName())->call($arguments);
         } else {
             if ($this->functionName instanceof BinaryOperatorNode && $this->functionName->getOperator() instanceof SimpleAccessOperator) {
-                $object     = $this->functionName->getLeft()->evaluate($context);
+                $object = $this->functionName->getLeft()->evaluate($context);
                 $methodName = $this->functionName->getRight()->getName();
 
                 return call_user_func_array([$object, $methodName], $arguments);
