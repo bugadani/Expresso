@@ -7,7 +7,6 @@ use Expresso\Compiler\Node;
 use Expresso\Compiler\NodeInterface;
 use Expresso\Compiler\Operators\BinaryOperator;
 use Expresso\EvaluationContext;
-use Expresso\ExecutionContext;
 
 class BinaryOperatorNode extends Node
 {
@@ -49,5 +48,21 @@ class BinaryOperatorNode extends Node
     public function getOperator()
     {
         return $this->operator;
+    }
+
+    /**
+     * @return NodeInterface
+     */
+    public function getLeft()
+    {
+        return $this->left;
+    }
+
+    /**
+     * @return NodeInterface
+     */
+    public function getRight()
+    {
+        return $this->right;
     }
 }

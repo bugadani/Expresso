@@ -5,6 +5,7 @@ namespace Expresso\Extensions\Logical\Operators\Unary\Prefix;
 use Expresso\Compiler\Compiler;
 use Expresso\Compiler\NodeInterface;
 use Expresso\Compiler\Operators\UnaryOperator;
+use Expresso\EvaluationContext;
 
 class NotOperator extends UnaryOperator
 {
@@ -14,9 +15,9 @@ class NotOperator extends UnaryOperator
         return '!';
     }
 
-    public function execute($operand)
+    public function execute(EvaluationContext $context, NodeInterface $operand)
     {
-        return !$operand;
+        return !$operand->evaluate($context);
     }
 
     public function compile(Compiler $compiler, NodeInterface $operand)

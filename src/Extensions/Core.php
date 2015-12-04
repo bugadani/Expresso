@@ -16,6 +16,8 @@ use Expresso\Compiler\Operators\Binary\RangeOperator;
 use Expresso\Compiler\Operators\Binary\SimpleAccessOperator;
 use Expresso\Compiler\Operators\FunctionCallOperator;
 use Expresso\Compiler\Operators\Unary\Postfix\InfiniteRangeOperator;
+use Expresso\Compiler\Operators\Unary\Postfix\IsNotSetOperator;
+use Expresso\Compiler\Operators\Unary\Postfix\IsSetOperator;
 use Expresso\Compiler\ParserAlternativeCollection;
 use Expresso\Compiler\Parsers\ArgumentListParser;
 use Expresso\Compiler\Parsers\ArrayAccessParser;
@@ -73,9 +75,9 @@ class Core extends Extension
     public function getPostfixUnaryOperators()
     {
         return [
-            /*new IsSetOperator(15, Operator::RIGHT),
-             new IsNotSetOperator(15, Operator::RIGHT),
-             new PostDecrementOperator(15),
+            new IsSetOperator(15, Operator::RIGHT),
+            new IsNotSetOperator(15, Operator::RIGHT),
+            /* new PostDecrementOperator(15),
              new PostIncrementOperator(15),
              new EmptyOperator(15),
              new NotEmptyOperator(15)*/

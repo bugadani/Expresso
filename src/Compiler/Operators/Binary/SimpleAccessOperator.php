@@ -4,6 +4,7 @@ namespace Expresso\Compiler\Operators\Binary;
 
 use Expresso\Compiler\Compiler;
 use Expresso\Compiler\NodeInterface;
+use Expresso\Compiler\Nodes\BinaryOperatorNode;
 use Expresso\Compiler\Nodes\IdentifierNode;
 use Expresso\Compiler\Nodes\VariableAccessNode;
 use Expresso\EvaluationContext;
@@ -19,7 +20,7 @@ class SimpleAccessOperator extends ArrayAccessOperator
 
     public function createNode($left, $right)
     {
-        return new VariableAccessNode($this, $left, $right);
+        return new BinaryOperatorNode($this, $left, $right);
     }
 
     public function execute(EvaluationContext $context, NodeInterface $left, NodeInterface $right)

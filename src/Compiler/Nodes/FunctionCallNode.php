@@ -5,6 +5,8 @@ namespace Expresso\Compiler\Nodes;
 use Expresso\Compiler\Compiler;
 use Expresso\Compiler\Node;
 use Expresso\Compiler\NodeInterface;
+use Expresso\Compiler\Operators\Binary\ArrayAccessOperator;
+use Expresso\Compiler\Operators\Binary\SimpleAccessOperator;
 use Expresso\EvaluationContext;
 
 class FunctionCallNode extends Node
@@ -39,7 +41,7 @@ class FunctionCallNode extends Node
                 ->getFunctionName();
             $compiler->compileFunction($functionName, $this->arguments);
         } else {
-            if ($this->functionName instanceof VariableAccessNode) {
+            if ($this->functionName instanceof BinaryOperatorNode && $this->functionName->getOperator() instanceof SimpleAccessOperator) {
                 $compiler->compileNode($this->functionName->getLeft())
                          ->add('->')
                          ->compileFunction($this->functionName->getRight()->getName(), $this->arguments);
@@ -62,7 +64,7 @@ class FunctionCallNode extends Node
 
             return $context->getFunction($functionName->getName())->call($arguments);
         } else {
-            if ($this->functionName instanceof VariableAccessNode) {
+            if ($this->functionName instanceof BinaryOperatorNode && $this->functionName->getOperator() instanceof SimpleAccessOperator) {
                 $object     = $this->functionName->getLeft()->evaluate($context);
                 $methodName = $this->functionName->getRight()->getName();
 

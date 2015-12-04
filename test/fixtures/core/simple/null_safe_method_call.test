@@ -1,0 +1,8 @@
+--TEST--
+Test safe method calls
+--EXPRESSION--
+foo?.bar() ~ array?.count()
+--DATA--
+'array' => [1, 2, 3]
+--EXPECT--
+3

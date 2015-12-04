@@ -2,6 +2,7 @@
 
 namespace Expresso\Compiler\Parsers;
 
+use Expresso\Compiler\Nodes\BinaryOperatorNode;
 use Expresso\Compiler\Nodes\VariableAccessNode;
 use Expresso\Compiler\Operators\Binary\ArrayAccessOperator;
 use Expresso\Compiler\Parser;
@@ -18,6 +19,10 @@ class ArrayAccessParser extends Parser
         $this->accessOperator = new ArrayAccessOperator(0);
     }
 
+    /**
+     * @param TokenStream $stream
+     * @param TokenStreamParser $parser
+     */
     public function parse(TokenStream $stream, TokenStreamParser $parser)
     {
         $node = $parser->popOperand();
@@ -26,7 +31,7 @@ class ArrayAccessParser extends Parser
         $parser->parse('expression');
 
         $stream->expectCurrent(Token::PUNCTUATION, ']');
-        $node = new VariableAccessNode($this->accessOperator, $node, $parser->popOperand());
+        $node = new BinaryOperatorNode($this->accessOperator, $node, $parser->popOperand());
         $parser->pushOperand($node);
 
         $stream->next();

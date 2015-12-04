@@ -35,7 +35,8 @@ class UnaryOperatorNode extends Node
     public function evaluate(EvaluationContext $context)
     {
         return $this->operator->execute(
-            $this->operand->evaluate($context)
+            $context,
+            $this->operand
         );
     }
 

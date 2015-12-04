@@ -5,6 +5,7 @@ namespace Expresso\Extensions\Arithmetic\Operators\Unary\Postfix;
 use Expresso\Compiler\Compiler;
 use Expresso\Compiler\NodeInterface;
 use Expresso\Compiler\Operators\UnaryOperator;
+use Expresso\EvaluationContext;
 
 class EvenOperator extends UnaryOperator
 {
@@ -14,9 +15,9 @@ class EvenOperator extends UnaryOperator
         return 'is even';
     }
 
-    public function execute($operand)
+    public function execute(EvaluationContext $context, NodeInterface $operand)
     {
-        return ($operand & 0x01) == 0;
+        return ($operand->evaluate($context) & 0x01) == 0;
     }
 
     public function compile(Compiler $compiler, NodeInterface $operand)
