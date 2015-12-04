@@ -1,8 +1,8 @@
 --TEST--
 Test null safe array access
 --EXPRESSION--
-a?.0 ~ a?.nested.foobar
+a?.0 ~ b?.c?.d
 --DATA--
-'a' => ['a', 'b']
+'a' => ['a', 'b'], 'b' => null
 --EXPECT--
 a

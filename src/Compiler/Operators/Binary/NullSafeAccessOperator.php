@@ -4,12 +4,15 @@ namespace Expresso\Compiler\Operators\Binary;
 
 use Expresso\Compiler\Compiler;
 use Expresso\Compiler\NodeInterface;
-use Expresso\Compiler\Nodes\IdentifierNode;
+use Expresso\Compiler\Nodes\BinaryOperatorNode;
+use Expresso\Compiler\Nodes\DataNode;
+use Expresso\Compiler\Nodes\TernaryOperatorNode;
 use Expresso\Compiler\Nodes\VariableAccessNode;
+use Expresso\Compiler\Operators\BinaryOperator;
+use Expresso\Compiler\Operators\Ternary\ConditionalOperator;
 use Expresso\EvaluationContext;
-use Expresso\ExecutionContext;
 
-class NullSafeAccessOperator extends SimpleAccessOperator
+class NullSafeAccessOperator extends BinaryOperator
 {
 
     public function operators()
@@ -19,36 +22,23 @@ class NullSafeAccessOperator extends SimpleAccessOperator
 
     public function createNode($left, $right)
     {
-        return new VariableAccessNode($this, $left, $right);
+        return new TernaryOperatorNode(
+            new ConditionalOperator(1),
+            new BinaryOperatorNode(
+                new IdenticalOperator(1),
+                $left,
+                new DataNode(null)
+            ),
+            new DataNode(null),
+            new VariableAccessNode(new SimpleAccessOperator(0), $left, $right)
+        );
     }
 
     public function execute(EvaluationContext $context, NodeInterface $left, NodeInterface $right)
     {
-        $left = $left->evaluate($context);
-
-        if ($right instanceof IdentifierNode) {
-            $right = $right->getName();
-        } else {
-            $right = $right->evaluate($context);
-        }
-
-        if (isset($left, $left[ $right ])) {
-            return $left[ $right ];
-        }
     }
 
     public function compile(Compiler $compiler, NodeInterface $left, NodeInterface $right)
     {
-        $compiler->add('$context->access(')
-                 ->compileNode($left)
-                 ->add(', ');
-
-        if ($right instanceof IdentifierNode) {
-            $compiler->compileString($right->getName());
-        } else {
-            $compiler->compileNode($right);
-        }
-
-        $compiler->add(', true)');
     }
 }

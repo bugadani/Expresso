@@ -46,9 +46,10 @@ class TernaryOperatorNode extends Node
     public function evaluate(EvaluationContext $context)
     {
         return $this->operator->execute(
-            $this->left->evaluate($context),
-            $this->middle->evaluate($context),
-            $this->right->evaluate($context)
+            $context,
+            $this->left,
+            $this->middle,
+            $this->right
         );
     }
 }

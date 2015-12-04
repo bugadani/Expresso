@@ -40,8 +40,8 @@ class CompilerConfiguration
         $this->prefixOperators->addOperators($ext->getPrefixUnaryOperators());
         $this->unaryOperators->addOperators($ext->getPostfixUnaryOperators());
 
-        foreach($ext->getFunctions() as $function) {
-            $this->functions[$function->getName()] = $function;
+        foreach ($ext->getFunctions() as $function) {
+            $this->functions[ $function->getName() ] = $function;
         }
     }
 
