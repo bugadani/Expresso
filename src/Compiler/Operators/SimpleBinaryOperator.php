@@ -18,7 +18,7 @@ abstract class SimpleBinaryOperator extends BinaryOperator
                  ->add(')');
     }
 
-    public function execute(EvaluationContext $context, Node $left, Node $right)
+    public function evaluate(EvaluationContext $context, Node $left, Node $right)
     {
         return $this->executeSimple(
             $left->evaluate($context),

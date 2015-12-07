@@ -17,7 +17,7 @@ class IsSetOperator extends UnaryOperator
         return 'is set';
     }
 
-    public function execute(EvaluationContext $context, Node $operand)
+    public function evaluate(EvaluationContext $context, Node $operand)
     {
         /** @var IdentifierNode $operand */
         return $context->offsetExists($operand->getName());

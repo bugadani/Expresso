@@ -42,7 +42,7 @@ class NullSafeAccessOperator extends BinaryOperator
         );
     }
 
-    public function execute(EvaluationContext $context, Node $left, Node $right)
+    public function evaluate(EvaluationContext $context, Node $left, Node $right)
     {
     }
 

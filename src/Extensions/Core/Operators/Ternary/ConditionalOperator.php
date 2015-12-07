@@ -15,7 +15,7 @@ class ConditionalOperator extends TernaryOperator
         return '?:';
     }
 
-    public function execute(EvaluationContext $context, Node $left, Node $middle, Node $right)
+    public function evaluate(EvaluationContext $context, Node $left, Node $middle, Node $right)
     {
         return $left->evaluate($context) ? $middle->evaluate($context) : $right->evaluate($context);
     }

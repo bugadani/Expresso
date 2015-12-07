@@ -15,7 +15,7 @@ class SimpleAccessOperator extends ArrayAccessOperator
         return '.';
     }
 
-    public function execute(EvaluationContext $context, Node $left, Node $right)
+    public function evaluate(EvaluationContext $context, Node $left, Node $right)
     {
         $left = $left->evaluate($context);
 

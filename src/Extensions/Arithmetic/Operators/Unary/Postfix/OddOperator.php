@@ -16,7 +16,7 @@ class OddOperator extends UnaryOperator
         return 'is odd';
     }
 
-    public function execute(EvaluationContext $context, Node $operand)
+    public function evaluate(EvaluationContext $context, Node $operand)
     {
         return ($operand->evaluate($context) & 0x01) == 1;
     }

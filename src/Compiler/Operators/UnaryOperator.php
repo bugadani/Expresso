@@ -12,7 +12,7 @@ use Expresso\EvaluationContext;
 
 abstract class UnaryOperator extends Operator
 {
-    abstract public function execute(EvaluationContext $context, Node $operand);
+    abstract public function evaluate(EvaluationContext $context, Node $operand);
 
     abstract public function compile(Compiler $compiler, Node $operand);
 

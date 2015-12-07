@@ -14,7 +14,7 @@ class XorOperator extends BinaryOperator
         return 'xor';
     }
 
-    public function execute(EvaluationContext $context, Node $left, Node $right)
+    public function evaluate(EvaluationContext $context, Node $left, Node $right)
     {
         $left  = $left->evaluate($context);
         $right = $right->evaluate($context);

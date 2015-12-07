@@ -29,7 +29,7 @@ class UnaryOperatorNode extends OperatorNode
 
     public function evaluate(EvaluationContext $context)
     {
-        return $this->getOperator()->execute(
+        return $this->getOperator()->evaluate(
             $context,
             $this->operand
         );

@@ -40,7 +40,7 @@ class TernaryOperatorNode extends OperatorNode
 
     public function evaluate(EvaluationContext $context)
     {
-        return $this->getOperator()->execute(
+        return $this->getOperator()->evaluate(
             $context,
             $this->left,
             $this->middle,

@@ -33,7 +33,7 @@ class BinaryOperatorNode extends OperatorNode
 
     public function evaluate(EvaluationContext $context)
     {
-        return $this->getOperator()->execute($context, $this->left, $this->right);
+        return $this->getOperator()->evaluate($context, $this->left, $this->right);
     }
 
     /**

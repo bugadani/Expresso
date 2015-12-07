@@ -11,7 +11,7 @@ use Expresso\EvaluationContext;
 
 abstract class TernaryOperator extends Operator
 {
-    abstract public function execute(EvaluationContext $context, Node $left, Node $middle, Node $right);
+    abstract public function evaluate(EvaluationContext $context, Node $left, Node $middle, Node $right);
 
     abstract public function compile(Compiler $compiler, Node $left, Node $middle, Node $right);
 

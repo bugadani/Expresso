@@ -12,7 +12,7 @@ use Expresso\EvaluationContext;
 
 abstract class BinaryOperator extends Operator
 {
-    abstract public function execute(EvaluationContext $context, Node $left, Node $right);
+    abstract public function evaluate(EvaluationContext $context, Node $left, Node $right);
 
     abstract public function compile(Compiler $compiler, Node $left, Node $right);
 

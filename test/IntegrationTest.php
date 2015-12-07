@@ -48,10 +48,13 @@ class IntegrationTest extends \PHPUnit_Framework_TestCase
             $tests[ $file->getPathname() ] = $this->parseDescriptor($file);
         }
 
-        return array_filter($tests, function($descriptor) {
-            //return $descriptor[1] === 'Test array access using both constant and variable keys';
-            return true;
-        });
+        return array_filter(
+            $tests,
+            function ($descriptor) {
+                //return $descriptor[1] === 'Test array access using both constant and variable keys';
+                return is_array($descriptor);
+            }
+        );
     }
 
     private function getBlock($string, $block)
@@ -67,7 +70,7 @@ class IntegrationTest extends \PHPUnit_Framework_TestCase
     private function parseDescriptor($file)
     {
         $testDescriptor = file_get_contents($file);
-        $file = basename($file);
+        $file           = basename($file);
 
         $testDescriptor = strtr(
             $testDescriptor,
@@ -77,6 +80,7 @@ class IntegrationTest extends \PHPUnit_Framework_TestCase
             ]
         );
 
+        $skip       = $this->getBlock($testDescriptor, 'SKIP');
         $test       = $this->getBlock($testDescriptor, 'TEST');
         $expression = $this->getBlock($testDescriptor, 'EXPRESSION');
         $expect     = $this->getBlock($testDescriptor, 'EXPECT');
@@ -84,6 +88,10 @@ class IntegrationTest extends \PHPUnit_Framework_TestCase
         $data       = $this->getBlock($testDescriptor, 'DATA');
 
         $exceptionMessage = null;
+
+        if ($skip) {
+            return false;
+        }
 
         if (!$test) {
             throw new \RuntimeException("{$file} does not contain a TEST block");
