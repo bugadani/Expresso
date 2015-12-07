@@ -8,6 +8,17 @@ use Expresso\EvaluationContext;
 
 class DataNode extends Node
 {
+    private static $nullInstance;
+
+    public static function nullNode()
+    {
+        if (self::$nullInstance === null) {
+            self::$nullInstance = new DataNode(null);
+        }
+
+        return self::$nullInstance;
+    }
+
     private $value;
 
     public function __construct($value)

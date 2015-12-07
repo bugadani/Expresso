@@ -2,9 +2,9 @@
 
 namespace Expresso\Compiler\Parsers;
 
-
 use Expresso\Compiler\Operators\FunctionCallOperator;
 use Expresso\Compiler\Parser;
+use Expresso\Compiler\Token;
 use Expresso\Compiler\TokenStream;
 use Expresso\Compiler\TokenStreamParser;
 
@@ -26,13 +26,22 @@ class FunctionCallParser extends Parser
         $parser->popOperatorsWithHigherPrecedence($operator);
 
         //either identifier or filter/access node
-        $parser->pushOperand(
-            $operator->createNode(
-                $parser->popOperand() //function name or filter/access node
-            )
+        $functionNode = $operator->createNode(
+            $parser->popOperand() //function name or filter/access node
         );
 
         $stream->next();
-        $parser->parse('argumentList');
+        $currentToken = $stream->current();
+        if (!$currentToken->test(Token::PUNCTUATION, ')')) {
+            while (!$currentToken->test(Token::PUNCTUATION, ')')) {
+                $parser->parse('expression');
+                $functionNode->addArgument($parser->popOperand());
+                $currentToken = $stream->expectCurrent(Token::PUNCTUATION, [',', ')']);
+                $stream->next();
+            }
+        } else {
+            $stream->next();
+        }
+        $parser->pushOperand($functionNode);
     }
 }

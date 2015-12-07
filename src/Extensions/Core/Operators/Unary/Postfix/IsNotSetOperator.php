@@ -1,6 +1,6 @@
 <?php
 
-namespace Expresso\Compiler\Operators\Unary\Postfix;
+namespace Expresso\Extensions\Core\Operators\Unary\Postfix;
 
 use Expresso\Compiler\Compiler;
 use Expresso\Compiler\Node;

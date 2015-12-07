@@ -4,8 +4,8 @@ namespace Expresso\Compiler\Nodes;
 
 use Expresso\Compiler\Compiler;
 use Expresso\Compiler\Node;
-use Expresso\Compiler\Operators\Binary\SimpleAccessOperator;
 use Expresso\EvaluationContext;
+use Expresso\Extensions\Core\Operators\Binary\SimpleAccessOperator;
 
 class FunctionCallNode extends Node
 {

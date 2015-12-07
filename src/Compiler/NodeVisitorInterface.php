@@ -4,9 +4,6 @@ namespace Expresso\Compiler;
 
 interface NodeVisitorInterface
 {
-    /**
-     * @param Node $node
-     * @return mixed
-     */
-    public function visit(Node $node);
+    public function enterNode(Node $node);
+    public function leaveNode(Node $node);
 }

@@ -1,17 +1,17 @@
 <?php
 
-namespace Expresso\Compiler\Parsers;
+namespace Expresso\Extensions\Core\Parsers;
 
 use Expresso\Compiler\Exceptions\ParseException;
 use Expresso\Compiler\Nodes\ArrayDataNode;
-use Expresso\Compiler\Nodes\BinaryOperatorNode;
-use Expresso\Compiler\Nodes\UnaryOperatorNode;
-use Expresso\Compiler\Operators\Binary\RangeOperator;
-use Expresso\Compiler\Operators\Unary\Postfix\InfiniteRangeOperator;
+use Expresso\Compiler\Nodes\DataNode;
+use Expresso\Compiler\Nodes\OperatorNode;
 use Expresso\Compiler\Parser;
 use Expresso\Compiler\Token;
 use Expresso\Compiler\TokenStream;
 use Expresso\Compiler\TokenStreamParser;
+use Expresso\Extensions\Core\Operators\Binary\RangeOperator;
+use Expresso\Extensions\Core\Operators\Unary\Postfix\InfiniteRangeOperator;
 
 class ArrayDefinitionParser extends Parser
 {
@@ -24,7 +24,7 @@ class ArrayDefinitionParser extends Parser
     {
         $array = new ArrayDataNode();
 
-        $isMap = self::TYPE_INDETERMINATE;
+        $listType = self::TYPE_INDETERMINATE;
 
         //Step to the first data token or closing bracket
         $stream->next();
@@ -35,29 +35,29 @@ class ArrayDefinitionParser extends Parser
 
             //Optional key support
             if ($this->isRangeOperator($value)) {
-                if (!($isMap === self::TYPE_INDETERMINATE)) {
+                if (!($listType === self::TYPE_INDETERMINATE)) {
                     throw new ParseException('Can not mix range definitions with array or map declarations');
                 }
-                $isMap = self::TYPE_RANGE;
+                $listType = self::TYPE_RANGE;
                 $stream->expectCurrent(Token::PUNCTUATION, ']');
                 $array = $value;
             } else {
                 if ($stream->current()->test(Token::PUNCTUATION, [':', '=>'])) {
-                    if (!($isMap === self::TYPE_INDETERMINATE || $isMap === self::TYPE_MAP)) {
+                    if (!($listType === self::TYPE_INDETERMINATE || $listType === self::TYPE_MAP)) {
                         throw new ParseException('Can not array and map declarations');
                     }
-                    $isMap = self::TYPE_MAP;
+                    $listType = self::TYPE_MAP;
                     //the previous value was a key
                     $stream->next();
                     $parser->parse('expression');
                     $key   = $value;
                     $value = $parser->popOperand();
                 } else {
-                    if (!($isMap === self::TYPE_INDETERMINATE || $isMap === self::TYPE_LIST)) {
+                    if (!($listType === self::TYPE_INDETERMINATE || $listType === self::TYPE_LIST)) {
                         throw new ParseException('Can not array and map declarations');
                     }
-                    $isMap = self::TYPE_LIST;
-                    $key   = null;
+                    $listType = self::TYPE_LIST;
+                    $key   = DataNode::nullNode();
                 }
 
                 $array->add($value, $key);
@@ -80,13 +80,10 @@ class ArrayDefinitionParser extends Parser
      */
     private function isRangeOperator($value)
     {
-        if ($value instanceof BinaryOperatorNode && $value->getOperator() instanceof RangeOperator) {
-            return true;
-        }
-        if ($value instanceof UnaryOperatorNode && $value->getOperator() instanceof InfiniteRangeOperator) {
-            return true;
+        if (!$value instanceof OperatorNode) {
+            return false;
         }
 
-        return false;
+        return $value->isOperator(RangeOperator::class) || $value->isOperator(InfiniteRangeOperator::class);
     }
 }

@@ -3,11 +3,11 @@
 namespace Expresso\Compiler\Parsers;
 
 use Expresso\Compiler\CompilerConfiguration;
-use Expresso\Compiler\Operators\Ternary\ConditionalOperator;
 use Expresso\Compiler\Parser;
 use Expresso\Compiler\Token;
 use Expresso\Compiler\TokenStream;
 use Expresso\Compiler\TokenStreamParser;
+use Expresso\Extensions\Core\Operators\Ternary\ConditionalOperator;
 
 class ConditionalParser extends Parser
 {

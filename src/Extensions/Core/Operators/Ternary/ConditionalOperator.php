@@ -1,6 +1,6 @@
 <?php
 
-namespace Expresso\Compiler\Operators\Ternary;
+namespace Expresso\Extensions\Core\Operators\Ternary;
 
 use Expresso\Compiler\Compiler;
 use Expresso\Compiler\Node;

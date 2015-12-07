@@ -1,13 +1,13 @@
 <?php
 
-namespace Expresso\Compiler\Parsers;
+namespace Expresso\Extensions\Core\Parsers;
 
 use Expresso\Compiler\Nodes\BinaryOperatorNode;
-use Expresso\Compiler\Operators\Binary\ArrayAccessOperator;
 use Expresso\Compiler\Parser;
 use Expresso\Compiler\Token;
 use Expresso\Compiler\TokenStream;
 use Expresso\Compiler\TokenStreamParser;
+use Expresso\Extensions\Core\Operators\Binary\ArrayAccessOperator;
 
 class ArrayAccessParser extends Parser
 {

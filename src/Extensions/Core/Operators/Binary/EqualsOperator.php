@@ -1,24 +1,24 @@
 <?php
 
-namespace Expresso\Compiler\Operators\Binary;
+namespace Expresso\Extensions\Core\Operators\Binary;
 
 use Expresso\Compiler\Operators\SimpleBinaryOperator;
 
-class NotEqualsOperator extends SimpleBinaryOperator
+class EqualsOperator extends SimpleBinaryOperator
 {
 
     public function operators()
     {
-        return '!=';
+        return '=';
     }
 
     public function executeSimple($left, $right)
     {
-        return $left != $right;
+        return $left == $right;
     }
 
     public function compiledOperator()
     {
-        return '!=';
+        return '==';
     }
 }

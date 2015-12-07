@@ -1,6 +1,6 @@
 <?php
 
-namespace Expresso\Compiler\Operators\Binary;
+namespace Expresso\Extensions\Core\Operators\Binary;
 
 use Expresso\Compiler\Compiler;
 use Expresso\Compiler\CompilerConfiguration;

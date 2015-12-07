@@ -5,25 +5,8 @@ namespace Expresso\Extensions;
 use Expresso\Compiler\CompilerConfiguration;
 use Expresso\Compiler\ExpressionFunction;
 use Expresso\Compiler\Operator;
-use Expresso\Compiler\Operators\Binary\ArrayAccessOperator;
-use Expresso\Compiler\Operators\Binary\ConcatenationOperator;
-use Expresso\Compiler\Operators\Binary\EqualsOperator;
-use Expresso\Compiler\Operators\Binary\FilterOperator;
-use Expresso\Compiler\Operators\Binary\IdenticalOperator;
-use Expresso\Compiler\Operators\Binary\NotEqualsOperator;
-use Expresso\Compiler\Operators\Binary\NotIdenticalOperator;
-use Expresso\Compiler\Operators\Binary\NullSafeAccessOperator;
-use Expresso\Compiler\Operators\Binary\RangeOperator;
-use Expresso\Compiler\Operators\Binary\SimpleAccessOperator;
 use Expresso\Compiler\Operators\FunctionCallOperator;
-use Expresso\Compiler\Operators\Ternary\ConditionalOperator;
-use Expresso\Compiler\Operators\Unary\Postfix\InfiniteRangeOperator;
-use Expresso\Compiler\Operators\Unary\Postfix\IsNotSetOperator;
-use Expresso\Compiler\Operators\Unary\Postfix\IsSetOperator;
 use Expresso\Compiler\ParserAlternativeCollection;
-use Expresso\Compiler\Parsers\ArgumentListParser;
-use Expresso\Compiler\Parsers\ArrayAccessParser;
-use Expresso\Compiler\Parsers\ArrayDefinitionParser;
 use Expresso\Compiler\Parsers\BinaryOperatorParser;
 use Expresso\Compiler\Parsers\ConditionalParser;
 use Expresso\Compiler\Parsers\DataTokenParser;
@@ -36,6 +19,21 @@ use Expresso\Compiler\Parsers\PrefixOperatorParser;
 use Expresso\Compiler\Token;
 use Expresso\Compiler\TokenStreamParser;
 use Expresso\Extension;
+use Expresso\Extensions\Core\Operators\Binary\ConcatenationOperator;
+use Expresso\Extensions\Core\Operators\Binary\EqualsOperator;
+use Expresso\Extensions\Core\Operators\Binary\FilterOperator;
+use Expresso\Extensions\Core\Operators\Binary\IdenticalOperator;
+use Expresso\Extensions\Core\Operators\Binary\NotEqualsOperator;
+use Expresso\Extensions\Core\Operators\Binary\NotIdenticalOperator;
+use Expresso\Extensions\Core\Operators\Binary\NullSafeAccessOperator;
+use Expresso\Extensions\Core\Operators\Binary\RangeOperator;
+use Expresso\Extensions\Core\Operators\Binary\SimpleAccessOperator;
+use Expresso\Extensions\Core\Operators\Ternary\ConditionalOperator;
+use Expresso\Extensions\Core\Operators\Unary\Postfix\InfiniteRangeOperator;
+use Expresso\Extensions\Core\Operators\Unary\Postfix\IsNotSetOperator;
+use Expresso\Extensions\Core\Operators\Unary\Postfix\IsSetOperator;
+use Expresso\Extensions\Core\Parsers\ArrayAccessParser;
+use Expresso\Extensions\Core\Parsers\ArrayDefinitionParser;
 
 class Core extends Extension
 {
@@ -107,7 +105,6 @@ class Core extends Extension
         $arrayDefinitionParser   = new ArrayDefinitionParser();
         $functionCallParser      = new FunctionCallParser(new FunctionCallOperator(11, $configuration->getFunctions()));
         $expressionParser        = new ExpressionParser();
-        $argumentListParser      = new ArgumentListParser();
 
         $tokenParsers = new ParserAlternativeCollection($prefixOperatorParser);
         $tokenParsers->addAlternative($identifierParser, Token::IDENTIFIER);
@@ -130,7 +127,6 @@ class Core extends Extension
         $parser->addParser('postfix no function call', $postfixNoFcParsers);
         $parser->addParser('expression', $expressionParser);
         $parser->addParser('conditional', $ternaryOperatorParser);
-        $parser->addParser('argumentList', $argumentListParser);
 
         $parser->setDefaultParser($expressionParser);
     }
