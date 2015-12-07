@@ -4,7 +4,7 @@ namespace Expresso;
 
 use Expresso\Compiler\Compiler;
 use Expresso\Compiler\CompilerConfiguration;
-use Expresso\Compiler\NodeInterface;
+use Expresso\Compiler\Node;
 use Expresso\Compiler\Nodes\ExpressionNode;
 use Expresso\Compiler\Tokenizer;
 use Expresso\Compiler\TokenStreamParser;
@@ -97,7 +97,7 @@ class Expresso
 
     /**
      * @param $expression
-     * @return NodeInterface
+     * @return Node
      */
     private function parse($expression)
     {

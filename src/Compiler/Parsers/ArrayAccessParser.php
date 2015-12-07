@@ -3,7 +3,6 @@
 namespace Expresso\Compiler\Parsers;
 
 use Expresso\Compiler\Nodes\BinaryOperatorNode;
-use Expresso\Compiler\Nodes\VariableAccessNode;
 use Expresso\Compiler\Operators\Binary\ArrayAccessOperator;
 use Expresso\Compiler\Parser;
 use Expresso\Compiler\Token;

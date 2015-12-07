@@ -3,10 +3,10 @@
 namespace Expresso\Compiler\Nodes;
 
 use Expresso\Compiler\Compiler;
-use Expresso\Compiler\Leaf;
+use Expresso\Compiler\Node;
 use Expresso\EvaluationContext;
 
-class DataNode extends Leaf
+class DataNode extends Node
 {
     private $value;
 

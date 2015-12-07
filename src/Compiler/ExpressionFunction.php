@@ -5,12 +5,12 @@ namespace Expresso\Compiler;
 class ExpressionFunction
 {
     private $name;
-    private $called;
+    private $callbackName;
 
-    public function __construct($name, $called)
+    public function __construct($name, $callbackName)
     {
-        $this->name = $name;
-        $this->called = $called;
+        $this->name         = $name;
+        $this->callbackName = $callbackName;
     }
 
     public function getName()
@@ -20,11 +20,6 @@ class ExpressionFunction
 
     public function getFunctionName()
     {
-        return $this->called;
-    }
-
-    public function call(array $arguments = [])
-    {
-        return call_user_func_array($this->called, $arguments);
+        return $this->callbackName;
     }
 }

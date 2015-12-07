@@ -3,19 +3,20 @@
 namespace Expresso\Compiler\Operators;
 
 use Expresso\Compiler\Compiler;
-use Expresso\Compiler\NodeInterface;
-use Expresso\Compiler\Nodes\BinaryOperatorNode;
+use Expresso\Compiler\CompilerConfiguration;
+use Expresso\Compiler\Node;
+
 use Expresso\Compiler\Nodes\UnaryOperatorNode;
 use Expresso\Compiler\Operator;
 use Expresso\EvaluationContext;
 
 abstract class UnaryOperator extends Operator
 {
-    abstract public function execute(EvaluationContext $context, NodeInterface $operand);
+    abstract public function execute(EvaluationContext $context, Node $operand);
 
-    abstract public function compile(Compiler $compiler, NodeInterface $operand);
+    abstract public function compile(Compiler $compiler, Node $operand);
 
-    public function createNode($operand)
+    public function createNode(CompilerConfiguration $config, $operand)
     {
         return new UnaryOperatorNode($this, $operand);
     }

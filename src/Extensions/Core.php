@@ -5,6 +5,7 @@ namespace Expresso\Extensions;
 use Expresso\Compiler\CompilerConfiguration;
 use Expresso\Compiler\ExpressionFunction;
 use Expresso\Compiler\Operator;
+use Expresso\Compiler\Operators\Binary\ArrayAccessOperator;
 use Expresso\Compiler\Operators\Binary\ConcatenationOperator;
 use Expresso\Compiler\Operators\Binary\EqualsOperator;
 use Expresso\Compiler\Operators\Binary\FilterOperator;
@@ -15,6 +16,7 @@ use Expresso\Compiler\Operators\Binary\NullSafeAccessOperator;
 use Expresso\Compiler\Operators\Binary\RangeOperator;
 use Expresso\Compiler\Operators\Binary\SimpleAccessOperator;
 use Expresso\Compiler\Operators\FunctionCallOperator;
+use Expresso\Compiler\Operators\Ternary\ConditionalOperator;
 use Expresso\Compiler\Operators\Unary\Postfix\InfiniteRangeOperator;
 use Expresso\Compiler\Operators\Unary\Postfix\IsNotSetOperator;
 use Expresso\Compiler\Operators\Unary\Postfix\IsSetOperator;
@@ -85,40 +87,50 @@ class Core extends Extension
         ];
     }
 
+    public function getTernaryOperators()
+    {
+        return [
+            new ConditionalOperator(0)
+        ];
+    }
+
     public function addParsers(TokenStreamParser $parser, CompilerConfiguration $configuration)
     {
-        $tokenParsers          = new ParserAlternativeCollection(
-            new PrefixOperatorParser($configuration->getPrefixOperators())
-        );
-        $postfixOperatorParser = new PostfixOperatorParser($configuration->getUnaryOperators());
-        $identifierParser      = new IdentifierParser();
+        $binaryOperatorParser    = new BinaryOperatorParser($configuration->getBinaryOperators());
+        $prefixOperatorParser    = new PrefixOperatorParser($configuration->getPrefixOperators());
+        $postfixOperatorParser   = new PostfixOperatorParser($configuration->getUnaryOperators());
+        $ternaryOperatorParser   = new ConditionalParser($configuration);
+        $identifierParser        = new IdentifierParser();
+        $arrayAccessParser       = new ArrayAccessParser();
+        $dataTokenParser         = new DataTokenParser();
+        $groupedExpressionParser = new ParenthesisGroupedExpressionParser();
+        $arrayDefinitionParser   = new ArrayDefinitionParser();
+        $functionCallParser      = new FunctionCallParser(new FunctionCallOperator(11, $configuration->getFunctions()));
+        $expressionParser        = new ExpressionParser();
+        $argumentListParser      = new ArgumentListParser();
 
+        $tokenParsers = new ParserAlternativeCollection($prefixOperatorParser);
         $tokenParsers->addAlternative($identifierParser, Token::IDENTIFIER);
-        $tokenParsers->addAlternative(new DataTokenParser(), Token::CONSTANT);
-        $tokenParsers->addAlternative(new DataTokenParser(), Token::STRING);
-        $tokenParsers->addAlternative(new ParenthesisGroupedExpressionParser(), [Token::PUNCTUATION, '(']);
-        $tokenParsers->addAlternative(new ArrayDefinitionParser(), [Token::PUNCTUATION, '[']);
+        $tokenParsers->addAlternative($dataTokenParser, Token::CONSTANT);
+        $tokenParsers->addAlternative($dataTokenParser, Token::STRING);
+        $tokenParsers->addAlternative($groupedExpressionParser, [Token::PUNCTUATION, '(']);
+        $tokenParsers->addAlternative($arrayDefinitionParser, [Token::PUNCTUATION, '[']);
 
         $postfixParsers = new ParserAlternativeCollection($postfixOperatorParser);
-        $postfixParsers->addAlternative(
-            new FunctionCallParser(new FunctionCallOperator(11, $configuration->getFunctions())),
-            [Token::PUNCTUATION, '(']
-        );
-        $postfixParsers->addAlternative(new ArrayAccessParser(), [Token::PUNCTUATION, '[']);
+        $postfixParsers->addAlternative($functionCallParser, [Token::PUNCTUATION, '(']);
+        $postfixParsers->addAlternative($arrayAccessParser, [Token::PUNCTUATION, '[']);
 
         $postfixNoFcParsers = new ParserAlternativeCollection($postfixOperatorParser);
-        $postfixNoFcParsers->addAlternative(new ArrayAccessParser(), [Token::PUNCTUATION, '[']);
-
-        $expressionParser = new ExpressionParser();
+        $postfixNoFcParsers->addAlternative($arrayAccessParser, [Token::PUNCTUATION, '[']);
 
         $parser->addParser('term', $tokenParsers);
         $parser->addParser('identifier', $identifierParser);
-        $parser->addParser('binary', new BinaryOperatorParser($configuration->getBinaryOperators()));
+        $parser->addParser('binary', $binaryOperatorParser);
         $parser->addParser('postfix', $postfixParsers);
         $parser->addParser('postfix no function call', $postfixNoFcParsers);
         $parser->addParser('expression', $expressionParser);
-        $parser->addParser('conditional', new ConditionalParser());
-        $parser->addParser('argumentList', new ArgumentListParser());
+        $parser->addParser('conditional', $ternaryOperatorParser);
+        $parser->addParser('argumentList', $argumentListParser);
 
         $parser->setDefaultParser($expressionParser);
     }

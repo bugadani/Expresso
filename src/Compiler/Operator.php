@@ -22,11 +22,6 @@ abstract class Operator
         return $this->precedence;
     }
 
-    public function isAssociativity($associativity)
-    {
-        return $this->associativity === $associativity;
-    }
-
     /**
      * @return int
      */

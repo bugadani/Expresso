@@ -4,11 +4,11 @@ namespace Expresso\Extensions;
 
 use Expresso\Compiler\CompilerConfiguration;
 use Expresso\Compiler\ExpressionFunction;
-use Expresso\Compiler\Operators\Binary\LambdaOperator;
 use Expresso\Compiler\ParserAlternativeCollection;
 use Expresso\Compiler\Token;
 use Expresso\Compiler\TokenStreamParser;
 use Expresso\Extension;
+use Expresso\Extensions\Lambda\Operators\Binary\LambdaOperator;
 use Expresso\Extensions\Lambda\Parsers\LambdaParser;
 use Expresso\Utils\TransformIterator;
 

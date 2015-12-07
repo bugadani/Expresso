@@ -4,22 +4,21 @@ namespace Expresso\Compiler\Nodes;
 
 use Expresso\Compiler\Compiler;
 use Expresso\Compiler\Node;
-use Expresso\Compiler\NodeInterface;
 use Expresso\EvaluationContext;
 
 class ArrayDataNode extends Node
 {
     /**
-     * @var NodeInterface[]
+     * @var Node[]
      */
     private $keys = [];
 
     /**
-     * @var NodeInterface[]
+     * @var Node[]
      */
     private $values = [];
 
-    public function add(NodeInterface $value, NodeInterface $key = null)
+    public function add(Node $value, Node $key = null)
     {
         $this->values[] = $value;
         $this->keys[]   = $key;
@@ -30,7 +29,7 @@ class ArrayDataNode extends Node
         $compiler->add('[');
         foreach ($this->values as $index => $value) {
             $key = $this->keys[ $index ];
-            if ($key instanceof NodeInterface) {
+            if ($key instanceof Node) {
                 $compiler->compileNode($this->keys[ $index ]);
                 $compiler->add(' => ');
             }
@@ -47,7 +46,7 @@ class ArrayDataNode extends Node
         foreach ($this->values as $index => $value) {
             $key = $this->keys[ $index ];
 
-            if ($key instanceof NodeInterface) {
+            if ($key instanceof Node) {
                 $array[ $key->evaluate($context) ] = $value->evaluate($context);
             } else {
                 $array[] = $value->evaluate($context);

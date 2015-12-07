@@ -2,7 +2,7 @@
 
 namespace Expresso\Compiler\Parsers;
 
-use Expresso\Compiler\Nodes\TernaryOperatorNode;
+
 use Expresso\Compiler\Operators\FunctionCallOperator;
 use Expresso\Compiler\Parser;
 use Expresso\Compiler\TokenStream;

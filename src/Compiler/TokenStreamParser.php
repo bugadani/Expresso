@@ -37,9 +37,14 @@ class TokenStreamParser
      */
     private $defaultParser;
 
-    public function addParser($name, Parser $parser)
+    /**
+     * @var CompilerConfiguration
+     */
+    private $configuration;
+
+    public function __construct(CompilerConfiguration $configuration)
     {
-        $this->parsers[ $name ] = $parser;
+        $this->configuration = $configuration;
     }
 
     public function setDefaultParser(Parser $parser)
@@ -59,17 +64,19 @@ class TokenStreamParser
         return $this->operandStack->pop();
     }
 
-    public function pushOperatorSentinel()
+    public function inOperatorStack(callable $callback)
     {
         $this->operatorStack->push(null);
-    }
-
-    public function popOperatorSentinel()
-    {
+        $callback($this->tokens, $this);
         while ($this->operatorStack->top() !== null) {
             $this->popOperator();
         }
         $this->operatorStack->pop();
+    }
+
+    public function addParser($name, Parser $parser)
+    {
+        $this->parsers[ $name ] = $parser;
     }
 
     public function hasParser($parser)
@@ -79,6 +86,10 @@ class TokenStreamParser
 
     public function getParser($parser)
     {
+        if (!isset($this->parsers[ $parser ])) {
+            throw new \OutOfBoundsException("Parser not found: {$parser}");
+        }
+
         return $this->parsers[ $parser ];
     }
 
@@ -87,9 +98,9 @@ class TokenStreamParser
         $operator = $this->operatorStack->pop();
         $right    = $this->operandStack->pop();
         if ($operator instanceof BinaryOperator) {
-            $operatorNode = $operator->createNode($this->operandStack->pop(), $right);
+            $operatorNode = $operator->createNode($this->configuration, $this->operandStack->pop(), $right);
         } else {
-            $operatorNode = $operator->createNode($right);
+            $operatorNode = $operator->createNode($this->configuration, $right);
         }
         $this->operandStack->push($operatorNode);
     }
@@ -125,7 +136,7 @@ class TokenStreamParser
         return $top->getPrecedence() >= $operator->getPrecedence();
     }
 
-    public function pushOperand(NodeInterface $node)
+    public function pushOperand(Node $node)
     {
         $this->operandStack->push($node);
     }

@@ -15,14 +15,6 @@ class OperatorCollection
     }
 
     /**
-     * @param Operator[] $operators
-     */
-    public function addOperators(array $operators)
-    {
-        array_map([$this, 'addOperator'], $operators);
-    }
-
-    /**
      * @param Operator $operator
      */
     public function addOperator(Operator $operator)

@@ -3,7 +3,7 @@
 namespace Expresso\Compiler\Operators\Binary;
 
 use Expresso\Compiler\Compiler;
-use Expresso\Compiler\NodeInterface;
+use Expresso\Compiler\Node;
 use Expresso\Compiler\Operators\BinaryOperator;
 use Expresso\EvaluationContext;
 
@@ -15,7 +15,7 @@ class RangeOperator extends BinaryOperator
         return '..';
     }
 
-    public function execute(EvaluationContext $context, NodeInterface $left, NodeInterface $right)
+    public function execute(EvaluationContext $context, Node $left, Node $right)
     {
         return range(
             $left->evaluate($context),
@@ -23,7 +23,7 @@ class RangeOperator extends BinaryOperator
         );
     }
 
-    public function compile(Compiler $compiler, NodeInterface $left, NodeInterface $right)
+    public function compile(Compiler $compiler, Node $left, Node $right)
     {
         $compiler->add('range(')
             ->compileNode($left)

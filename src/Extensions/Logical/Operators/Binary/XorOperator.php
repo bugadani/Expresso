@@ -3,7 +3,7 @@
 namespace Expresso\Extensions\Logical\Operators\Binary;
 
 use Expresso\Compiler\Compiler;
-use Expresso\Compiler\NodeInterface;
+use Expresso\Compiler\Node;
 use Expresso\Compiler\Operators\BinaryOperator;
 use Expresso\EvaluationContext;
 
@@ -14,7 +14,7 @@ class XorOperator extends BinaryOperator
         return 'xor';
     }
 
-    public function execute(EvaluationContext $context, NodeInterface $left, NodeInterface $right)
+    public function execute(EvaluationContext $context, Node $left, Node $right)
     {
         $left  = $left->evaluate($context);
         $right = $right->evaluate($context);
@@ -22,7 +22,7 @@ class XorOperator extends BinaryOperator
         return ($left || $right) && !($left && $right);
     }
 
-    public function compile(Compiler $compiler, NodeInterface $left, NodeInterface $right)
+    public function compile(Compiler $compiler, Node $left, Node $right)
     {
         $compiler->add('((')
                  ->compileNode($left)

@@ -3,12 +3,11 @@
 namespace Expresso\Compiler\Operators\Binary;
 
 use Expresso\Compiler\Compiler;
-use Expresso\Compiler\NodeInterface;
+use Expresso\Compiler\CompilerConfiguration;
+use Expresso\Compiler\Node;
 use Expresso\Compiler\Nodes\BinaryOperatorNode;
-use Expresso\Compiler\Nodes\VariableAccessNode;
 use Expresso\Compiler\Operators\BinaryOperator;
 use Expresso\EvaluationContext;
-use Expresso\ExecutionContext;
 
 class ArrayAccessOperator extends BinaryOperator
 {
@@ -18,12 +17,12 @@ class ArrayAccessOperator extends BinaryOperator
 
     }
 
-    public function createNode($left, $right)
+    public function createNode(CompilerConfiguration $config, $left, $right)
     {
         return new BinaryOperatorNode($this, $left, $right);
     }
 
-    public function execute(EvaluationContext $context, NodeInterface $left, NodeInterface $right)
+    public function execute(EvaluationContext $context, Node $left, Node $right)
     {
         $left  = $left->evaluate($context);
         $right = $right->evaluate($context);
@@ -31,7 +30,7 @@ class ArrayAccessOperator extends BinaryOperator
         return $left[ $right ];
     }
 
-    public function compile(Compiler $compiler, NodeInterface $left, NodeInterface $right)
+    public function compile(Compiler $compiler, Node $left, Node $right)
     {
         $compiler->add('$context->access(')
                  ->compileNode($left)

@@ -15,12 +15,10 @@ class ExecutionContext extends \ArrayObject
         $this->parentContext = $parentContext;
     }
 
-    public function access($where, $what, $nullSafe = false)
+    public function access($where, $what)
     {
         if (is_array($where)) {
-            if (!$nullSafe || isset($where[ $what ])) {
-                return $where[ $what ];
-            }
+            return $where[ $what ];
         }
     }
 

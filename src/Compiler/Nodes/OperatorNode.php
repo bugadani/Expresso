@@ -14,6 +14,11 @@ abstract class OperatorNode extends Node
         $this->operator = $operator;
     }
 
+    public function isOperator($class)
+    {
+        return $this->operator instanceof $class;
+    }
+
     /**
      * @return Operator
      */

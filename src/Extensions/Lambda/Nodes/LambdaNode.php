@@ -4,14 +4,13 @@ namespace Expresso\Extensions\Lambda\Nodes;
 
 use Expresso\Compiler\Compiler;
 use Expresso\Compiler\Node;
-use Expresso\Compiler\NodeInterface;
 use Expresso\Compiler\Nodes\IdentifierNode;
 use Expresso\EvaluationContext;
 
 class LambdaNode extends Node
 {
     /**
-     * @var NodeInterface
+     * @var Node
      */
     private $functionBody;
 
@@ -20,7 +19,7 @@ class LambdaNode extends Node
      */
     private $arguments;
 
-    public function __construct(NodeInterface $functionBody, array $arguments)
+    public function __construct(Node $functionBody, array $arguments)
     {
         $this->functionBody = $functionBody;
         $this->arguments    = $arguments;

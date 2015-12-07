@@ -3,23 +3,23 @@
 namespace Expresso\Compiler\Nodes;
 
 use Expresso\Compiler\Compiler;
-use Expresso\Compiler\NodeInterface;
+use Expresso\Compiler\Node;
 use Expresso\Compiler\Operators\BinaryOperator;
 use Expresso\EvaluationContext;
 
 class BinaryOperatorNode extends OperatorNode
 {
     /**
-     * @var NodeInterface
+     * @var Node
      */
     private $left;
 
     /**
-     * @var NodeInterface
+     * @var Node
      */
     private $right;
 
-    public function __construct(BinaryOperator $operator, NodeInterface $left, NodeInterface $right)
+    public function __construct(BinaryOperator $operator, Node $left, Node $right)
     {
         parent::__construct($operator);
         $this->left     = $left;
@@ -37,7 +37,7 @@ class BinaryOperatorNode extends OperatorNode
     }
 
     /**
-     * @return NodeInterface
+     * @return Node
      */
     public function getLeft()
     {
@@ -45,7 +45,7 @@ class BinaryOperatorNode extends OperatorNode
     }
 
     /**
-     * @return NodeInterface
+     * @return Node
      */
     public function getRight()
     {

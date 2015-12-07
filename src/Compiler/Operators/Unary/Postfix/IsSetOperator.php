@@ -3,11 +3,11 @@
 namespace Expresso\Compiler\Operators\Unary\Postfix;
 
 use Expresso\Compiler\Compiler;
-use Expresso\Compiler\NodeInterface;
+use Expresso\Compiler\Node;
 use Expresso\Compiler\Nodes\IdentifierNode;
 use Expresso\Compiler\Operators\UnaryOperator;
 use Expresso\EvaluationContext;
-use Expresso\Extensions\Core\InfiniteRangeIterator;
+
 
 class IsSetOperator extends UnaryOperator
 {
@@ -17,13 +17,13 @@ class IsSetOperator extends UnaryOperator
         return 'is set';
     }
 
-    public function execute(EvaluationContext $context, NodeInterface $operand)
+    public function execute(EvaluationContext $context, Node $operand)
     {
         /** @var IdentifierNode $operand */
         return $context->offsetExists($operand->getName());
     }
 
-    public function compile(Compiler $compiler, NodeInterface $operand)
+    public function compile(Compiler $compiler, Node $operand)
     {
         /** @var IdentifierNode $operand */
         $compiler->add('$context->offsetExists(')

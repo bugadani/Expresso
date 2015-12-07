@@ -46,6 +46,14 @@ class Compiler
         return $this;
     }
 
+    public function compileExtensionFunction($name, $arguments)
+    {
+        $functions    = $this->configuration->getFunctions();
+        $functionName = $functions[ $name ]->getFunctionName();
+
+        return $this->compileFunction($functionName, $arguments);
+    }
+
     public function compileString($string)
     {
         $string = strtr(
@@ -110,14 +118,14 @@ class Compiler
         return $this;
     }
 
-    public function compileNode(NodeInterface $node)
+    public function compileNode(Node $node)
     {
         $node->compile($this);
 
         return $this;
     }
 
-    public function compile(NodeInterface $rootNode)
+    public function compile(Node $rootNode)
     {
         $this->source = '';
         $rootNode->compile($this);

@@ -3,7 +3,8 @@
 namespace Expresso\Compiler\Operators\Binary;
 
 use Expresso\Compiler\Compiler;
-use Expresso\Compiler\NodeInterface;
+use Expresso\Compiler\CompilerConfiguration;
+use Expresso\Compiler\Node;
 use Expresso\Compiler\Nodes\FunctionCallNode;
 use Expresso\Compiler\Operators\BinaryOperator;
 use Expresso\EvaluationContext;
@@ -16,21 +17,18 @@ class FilterOperator extends BinaryOperator
         return '|';
     }
 
-    public function execute(EvaluationContext $context, NodeInterface $left, NodeInterface $right)
+    public function execute(EvaluationContext $context, Node $left, Node $right)
     {
         //intentionally empty
     }
 
-    public function compile(Compiler $compiler, NodeInterface $left, NodeInterface $right)
+    public function compile(Compiler $compiler, Node $left, Node $right)
     {
         //intentionally empty
     }
 
-    public function createNode($left, $right)
+    public function createNode(CompilerConfiguration $config, $left, $right)
     {
-        $node = new FunctionCallNode($right);
-        $node->addArgument($left);
-
-        return $node;
+        return new FunctionCallNode($right, [$left]);
     }
 }

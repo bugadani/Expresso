@@ -3,13 +3,13 @@
 namespace Expresso\Compiler\Operators;
 
 use Expresso\Compiler\Compiler;
-use Expresso\Compiler\NodeInterface;
+use Expresso\Compiler\Node;
 use Expresso\EvaluationContext;
-use Expresso\ExecutionContext;
+
 
 abstract class SimpleBinaryOperator extends BinaryOperator
 {
-    public function compile(Compiler $compiler, NodeInterface $left, NodeInterface $right)
+    public function compile(Compiler $compiler, Node $left, Node $right)
     {
         $compiler->add('(')
                  ->compileNode($left)
@@ -18,7 +18,7 @@ abstract class SimpleBinaryOperator extends BinaryOperator
                  ->add(')');
     }
 
-    public function execute(EvaluationContext $context, NodeInterface $left, NodeInterface $right)
+    public function execute(EvaluationContext $context, Node $left, Node $right)
     {
         return $this->executeSimple(
             $left->evaluate($context),

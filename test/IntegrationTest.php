@@ -49,7 +49,7 @@ class IntegrationTest extends \PHPUnit_Framework_TestCase
         }
 
         return array_filter($tests, function($descriptor) {
-            //return $descriptor[1] === 'Test safe method calls';
+            //return $descriptor[1] === 'Test array access using both constant and variable keys';
             return true;
         });
     }

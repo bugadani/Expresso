@@ -3,29 +3,29 @@
 namespace Expresso\Compiler\Nodes;
 
 use Expresso\Compiler\Compiler;
+
 use Expresso\Compiler\Node;
-use Expresso\Compiler\NodeInterface;
 use Expresso\Compiler\Operators\TernaryOperator;
 use Expresso\EvaluationContext;
 
 class TernaryOperatorNode extends OperatorNode
 {
     /**
-     * @var NodeInterface
+     * @var Node
      */
     private $left;
 
     /**
-     * @var NodeInterface
+     * @var Node
      */
     private $middle;
 
     /**
-     * @var NodeInterface
+     * @var Node
      */
     private $right;
 
-    public function __construct(TernaryOperator $operator, NodeInterface $left, NodeInterface $middle, NodeInterface $right)
+    public function __construct(TernaryOperator $operator, Node $left, Node $middle, Node $right)
     {
         parent::__construct($operator);
         $this->left     = $left;
@@ -49,7 +49,7 @@ class TernaryOperatorNode extends OperatorNode
     }
 
     /**
-     * @return NodeInterface
+     * @return Node
      */
     public function getLeft()
     {
@@ -57,7 +57,7 @@ class TernaryOperatorNode extends OperatorNode
     }
 
     /**
-     * @return NodeInterface
+     * @return Node
      */
     public function getMiddle()
     {
@@ -65,7 +65,7 @@ class TernaryOperatorNode extends OperatorNode
     }
 
     /**
-     * @return NodeInterface
+     * @return Node
      */
     public function getRight()
     {

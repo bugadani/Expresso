@@ -3,7 +3,7 @@
 namespace Expresso\Extensions\Arithmetic\Operators\Unary\Postfix;
 
 use Expresso\Compiler\Compiler;
-use Expresso\Compiler\NodeInterface;
+use Expresso\Compiler\Node;
 use Expresso\Compiler\Operators\UnaryOperator;
 use Expresso\EvaluationContext;
 use Expresso\Extensions\Core\InfiniteRangeIterator;
@@ -16,12 +16,12 @@ class OddOperator extends UnaryOperator
         return 'is odd';
     }
 
-    public function execute(EvaluationContext $context, NodeInterface $operand)
+    public function execute(EvaluationContext $context, Node $operand)
     {
         return ($operand->evaluate($context) & 0x01) == 1;
     }
 
-    public function compile(Compiler $compiler, NodeInterface $operand)
+    public function compile(Compiler $compiler, Node $operand)
     {
         $compiler->add('(')
                  ->compileNode($operand)

@@ -2,7 +2,6 @@
 
 namespace Expresso\Compiler\Parsers;
 
-use Expresso\Compiler\Exceptions\InconsistentMapDeclarationException;
 use Expresso\Compiler\Exceptions\ParseException;
 use Expresso\Compiler\Nodes\ArrayDataNode;
 use Expresso\Compiler\Nodes\BinaryOperatorNode;

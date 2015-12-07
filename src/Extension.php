@@ -34,6 +34,14 @@ abstract class Extension
     }
 
     /**
+     * @return Operator[]
+     */
+    public function getTernaryOperators()
+    {
+        return [];
+    }
+
+    /**
      * @return ExpressionFunction[]
      */
     public function getFunctions()
