@@ -1,0 +1,10 @@
+--TEST--
+Test isNotSet operator
+--EXPRESSION--
+(a is not set ? :true : :false)
+~' '~
+(b is not set ? :true : :false)
+--DATA--
+'a' => 0
+--EXPECT--
+false true

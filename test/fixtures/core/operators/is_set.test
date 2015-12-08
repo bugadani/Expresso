@@ -1,0 +1,10 @@
+--TEST--
+Test isset operator
+--EXPRESSION--
+(a is set ? :true : :false)
+~' '~
+(b is set ? :true : :false)
+--DATA--
+'a' => 0
+--EXPECT--
+true false

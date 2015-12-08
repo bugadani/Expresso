@@ -51,7 +51,7 @@ class IntegrationTest extends \PHPUnit_Framework_TestCase
         return array_filter(
             $tests,
             function ($descriptor) {
-                //return $descriptor[1] === 'Test safe method calls';
+                //return $descriptor[1] === 'Test the logical negation expression';
                 return is_array($descriptor);
             }
         );
@@ -143,7 +143,7 @@ class IntegrationTest extends \PHPUnit_Framework_TestCase
         }
 
         $return = $this->expresso->execute($expression, $data);
-        if ($expectation) {
+        if ($expectation !== false) {
             $this->assertEquals(
                 $expectation,
                 $return,

@@ -24,7 +24,6 @@ class ParserAlternativeCollection extends Parser
     {
         $this->alternatives    = [];
         $this->tests           = [];
-        $this->repetitionModes = [];
         $this->defaultParser   = $defaultParser;
     }
 
