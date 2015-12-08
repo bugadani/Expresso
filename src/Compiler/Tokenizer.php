@@ -34,7 +34,6 @@ class Tokenizer
     {
         $signs    = ' ';
         $patterns = [
-            '\$[a-zA-Z_]+[a-zA-Z_0-9]+' => 25, //$variable
             ':[a-zA-Z_\-0-9]+'          => 16, //:short-string
             '"(?:\\\\.|[^"\\\\])*"'     => 21, //double quoted string
             "'(?:\\\\.|[^'\\\\])*'"     => 21, //single quoted string
