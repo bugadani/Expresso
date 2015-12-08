@@ -10,18 +10,15 @@ use Expresso\EvaluationContext;
 class LambdaNode extends Node
 {
     /**
-     * @var Node
-     */
-    private $functionBody;
-
-    /**
+     * Arguments are not children because they are not strictly nodes, but a list of names
+     *
      * @var IdentifierNode[]
      */
     private $arguments;
 
     public function __construct(Node $functionBody, array $arguments)
     {
-        $this->functionBody = $functionBody;
+        $this->addChild($functionBody);
         $this->arguments    = $arguments;
     }
 
@@ -54,7 +51,7 @@ class LambdaNode extends Node
         }
         $compiler->add('], $context);')
                  ->add('return ')
-                 ->compileNode($this->functionBody)
+                 ->compileNode($this->getChildAt(0))
                  ->add(';}');
     }
 
@@ -70,7 +67,7 @@ class LambdaNode extends Node
             );
             $innerContext = $context->createInnerScope(array_combine($argNames, $arguments));
 
-            return $this->functionBody->evaluate($innerContext);
+            return $this->getChildAt(0)->evaluate($innerContext);
         };
     }
 }

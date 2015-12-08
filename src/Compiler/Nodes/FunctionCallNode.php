@@ -29,26 +29,40 @@ class FunctionCallNode extends Node
             $functions             = $compiler->getConfiguration()->getFunctions();
             $extensionFunctionName = $functions[ $functionName ]->getFunctionName();
 
-            $compiler->add($extensionFunctionName)
-                     ->add('(')
-                     ->compileNode($this->getChildAt(1))
-                     ->add(')');
+            $compiler->add($extensionFunctionName);
         } else {
-            if ($this->isSimpleAccessOperator()) {
+            if ($this->isSimpleAccessOperator($functionName)) {
                 $object = $functionName->getChildAt(0);
                 $method = $functionName->getChildAt(1);
+
                 $compiler->compileNode($object)
                          ->add('->')
-                         ->add($method->getName())
-                         ->add('(')
-                         ->compileNode($this->getChildAt(1))
-                         ->add(')');
+                         ->add($method->getName());
             }
         }
+
+        $arguments = $this->getChildAt(1);
+        $compiler
+            ->add('(')
+            ->compileNode($arguments)
+            ->add(')');
     }
 
     public function evaluate(EvaluationContext $context)
     {
+        $functionName = $this->getChildAt(0);
+        if ($functionName instanceof IdentifierNode) {
+            $functionName = $functionName->getName();
+            $callback     = $context->getFunction($functionName)->getFunctionName();
+        } else {
+            if ($this->isSimpleAccessOperator($functionName)) {
+                $object     = $functionName->getChildAt(0)->evaluate($context);
+                $methodName = $functionName->getChildAt(1)->getName();
+
+                $callback = [$object, $methodName];
+            }
+        }
+
         $arguments = array_map(
             function (Node $nodeInterface) use ($context) {
                 return $nodeInterface->evaluate($context);
@@ -56,29 +70,12 @@ class FunctionCallNode extends Node
             $this->getChildAt(1)->getChildren()
         );
 
-        if ($this->getChildAt(0) instanceof IdentifierNode) {
-            /** @var IdentifierNode $functionName */
-            $functionName = $this->getChildAt(0);
-
-            $callback = $context->getFunction($functionName->getName())->getFunctionName();
-
-            return call_user_func_array($callback, $arguments);
-        } else {
-            if ($this->isSimpleAccessOperator()) {
-                $object     = $this->getChildAt(0)->getChildAt(0)->evaluate($context);
-                $methodName = $this->getChildAt(0)->getChildAt(1)->getName();
-
-                return call_user_func_array([$object, $methodName], $arguments);
-            }
-        }
+        return call_user_func_array($callback, $arguments);
     }
 
-    /**
-     * @return bool
-     */
-    private function isSimpleAccessOperator()
+    private function isSimpleAccessOperator(Node $node)
     {
-        return $this->getChildAt(0) instanceof BinaryOperatorNode &&
-               $this->getChildAt(0)->isOperator(SimpleAccessOperator::class);
+        return $node instanceof BinaryOperatorNode &&
+               $node->isOperator(SimpleAccessOperator::class);
     }
 }

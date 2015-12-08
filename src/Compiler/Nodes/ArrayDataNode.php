@@ -8,34 +8,34 @@ use Expresso\EvaluationContext;
 
 class ArrayDataNode extends Node
 {
-    /**
-     * @var Node[]
-     */
-    private $keys = [];
-
-    /**
-     * @var Node[]
-     */
-    private $values = [];
-
     public function add(Node $value, Node $key)
     {
-        $this->values[] = $value;
-        $this->keys[]   = $key;
+        $this->addChild($key);
+        $this->addChild($value);
     }
 
     public function compile(Compiler $compiler)
     {
         $compiler->add('[');
-        foreach ($this->values as $index => $value) {
-            $key = $this->keys[ $index ];
+
+        $childCount = $this->getChildCount();
+        $first      = true;
+        for ($i = 0; $i < $childCount; $i += 2) {
+            if ($first) {
+                $first = false;
+            } else {
+                $compiler->add(', ');
+            }
+            $key   = $this->getChildAt($i);
+            $value = $this->getChildAt($i + 1);
+
             if ($key !== DataNode::nullNode()) {
-                $compiler->compileNode($this->keys[ $index ]);
+                $compiler->compileNode($key);
                 $compiler->add(' => ');
             }
-            $compiler->compileNode($value)
-                     ->add(',');
+            $compiler->compileNode($value);
         }
+
         $compiler->add(']');
     }
 
@@ -43,8 +43,10 @@ class ArrayDataNode extends Node
     {
         $array = [];
 
-        foreach ($this->values as $index => $value) {
-            $key = $this->keys[ $index ];
+        $childCount = $this->getChildCount();
+        for ($i = 0; $i < $childCount; $i += 2) {
+            $key   = $this->getChildAt($i);
+            $value = $this->getChildAt($i + 1);
 
             if ($key !== DataNode::nullNode()) {
                 $array[ $key->evaluate($context) ] = $value->evaluate($context);
