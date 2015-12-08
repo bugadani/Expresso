@@ -9,44 +9,40 @@ use Expresso\Extensions\Core\Operators\Binary\SimpleAccessOperator;
 
 class FunctionCallNode extends Node
 {
-    /**
-     * @var Node
-     */
-    private $functionName;
-
-    /**
-     * @var Node[]
-     */
-    private $arguments;
 
     public function __construct($functionName, array $arguments = [])
     {
-        $this->functionName = $functionName;
-        $this->arguments    = $arguments;
+        $this->addChild($functionName);
+        $this->addChild(new ArgumentListNode($arguments));
     }
 
     public function addArgument(Node $node)
     {
-        $this->arguments[] = $node;
+        $this->getChildAt(1)->addChild($node);
     }
 
     public function compile(Compiler $compiler)
     {
-        if ($this->functionName instanceof IdentifierNode) {
-            /** @var IdentifierNode $functionName */
-            $functionName = $this->functionName;
+        $functionName = $this->getChildAt(0);
+        if ($functionName instanceof IdentifierNode) {
+            $functionName          = $functionName->getName();
+            $functions             = $compiler->getConfiguration()->getFunctions();
+            $extensionFunctionName = $functions[ $functionName ]->getFunctionName();
 
-            $compiler->compileExtensionFunction($functionName->getName(), $this->arguments);
+            $compiler->add($extensionFunctionName)
+                     ->add('(')
+                     ->compileNode($this->getChildAt(1))
+                     ->add(')');
         } else {
             if ($this->isSimpleAccessOperator()) {
-                $object = $this->functionName->getLeft();
-                $method = $this->functionName->getRight();
+                $object = $functionName->getChildAt(0);
+                $method = $functionName->getChildAt(1);
                 $compiler->compileNode($object)
                          ->add('->')
-                         ->compileFunction(
-                             $method->getName(),
-                             $this->arguments
-                         );
+                         ->add($method->getName())
+                         ->add('(')
+                         ->compileNode($this->getChildAt(1))
+                         ->add(')');
             }
         }
     }
@@ -57,20 +53,20 @@ class FunctionCallNode extends Node
             function (Node $nodeInterface) use ($context) {
                 return $nodeInterface->evaluate($context);
             },
-            $this->arguments
+            $this->getChildAt(1)->getChildren()
         );
 
-        if ($this->functionName instanceof IdentifierNode) {
+        if ($this->getChildAt(0) instanceof IdentifierNode) {
             /** @var IdentifierNode $functionName */
-            $functionName = $this->functionName;
+            $functionName = $this->getChildAt(0);
 
             $callback = $context->getFunction($functionName->getName())->getFunctionName();
 
             return call_user_func_array($callback, $arguments);
         } else {
             if ($this->isSimpleAccessOperator()) {
-                $object     = $this->functionName->getLeft()->evaluate($context);
-                $methodName = $this->functionName->getRight()->getName();
+                $object     = $this->getChildAt(0)->getChildAt(0)->evaluate($context);
+                $methodName = $this->getChildAt(0)->getChildAt(1)->getName();
 
                 return call_user_func_array([$object, $methodName], $arguments);
             }
@@ -82,7 +78,7 @@ class FunctionCallNode extends Node
      */
     private function isSimpleAccessOperator()
     {
-        return $this->functionName instanceof BinaryOperatorNode &&
-               $this->functionName->isOperator(SimpleAccessOperator::class);
+        return $this->getChildAt(0) instanceof BinaryOperatorNode &&
+               $this->getChildAt(0)->isOperator(SimpleAccessOperator::class);
     }
 }

@@ -11,27 +11,23 @@ use Expresso\EvaluationContext;
 
 class UnaryOperatorNode extends OperatorNode
 {
-    /**
-     * @var Node
-     */
-    private $operand;
-
     public function __construct(UnaryOperator $operator, Node $operand)
     {
         parent::__construct($operator);
-        $this->operand  = $operand;
+        $this->addChild($operand);
     }
 
     public function compile(Compiler $compiler)
     {
-        $this->getOperator()->compile($compiler, $this->operand);
+        $this->expectChildCount(1);
+        $this->getOperator()->compile($compiler, $this->getChildAt(0));
     }
 
     public function evaluate(EvaluationContext $context)
     {
         return $this->getOperator()->evaluate(
             $context,
-            $this->operand
+            $this->getChildAt(0)
         );
     }
 }

@@ -6,7 +6,6 @@ use Expresso\Compiler\Compiler;
 use Expresso\Compiler\Node;
 use Expresso\EvaluationContext;
 
-
 abstract class SimpleBinaryOperator extends BinaryOperator
 {
     public function compile(Compiler $compiler, Node $left, Node $right)

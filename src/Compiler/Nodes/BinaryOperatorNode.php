@@ -9,31 +9,23 @@ use Expresso\EvaluationContext;
 
 class BinaryOperatorNode extends OperatorNode
 {
-    /**
-     * @var Node
-     */
-    private $left;
-
-    /**
-     * @var Node
-     */
-    private $right;
-
     public function __construct(BinaryOperator $operator, Node $left, Node $right)
     {
         parent::__construct($operator);
-        $this->left     = $left;
-        $this->right    = $right;
+        $this->addChild($left);
+        $this->addChild($right);
     }
 
     public function compile(Compiler $compiler)
     {
-        $this->getOperator()->compile($compiler, $this->left, $this->right);
+        $this->expectChildCount(2);
+        $this->getOperator()->compile($compiler, $this->getLeft(), $this->getRight());
     }
 
     public function evaluate(EvaluationContext $context)
     {
-        return $this->getOperator()->evaluate($context, $this->left, $this->right);
+        $this->expectChildCount(2);
+        return $this->getOperator()->evaluate($context, $this->getLeft(), $this->getRight());
     }
 
     /**
@@ -41,7 +33,7 @@ class BinaryOperatorNode extends OperatorNode
      */
     public function getLeft()
     {
-        return $this->left;
+        return $this->getChildAt(0);
     }
 
     /**
@@ -49,6 +41,6 @@ class BinaryOperatorNode extends OperatorNode
      */
     public function getRight()
     {
-        return $this->right;
+        return $this->getChildAt(1);
     }
 }
