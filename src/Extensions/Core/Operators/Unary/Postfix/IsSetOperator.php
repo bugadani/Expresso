@@ -3,8 +3,11 @@
 namespace Expresso\Extensions\Core\Operators\Unary\Postfix;
 
 use Expresso\Compiler\Compiler;
+use Expresso\Compiler\CompilerConfiguration;
 use Expresso\Compiler\Node;
+use Expresso\Compiler\Nodes\DataNode;
 use Expresso\Compiler\Nodes\IdentifierNode;
+use Expresso\Compiler\Nodes\UnaryOperatorNode;
 use Expresso\Compiler\Operators\UnaryOperator;
 use Expresso\EvaluationContext;
 
@@ -17,17 +20,21 @@ class IsSetOperator extends UnaryOperator
         return 'is set';
     }
 
-    public function evaluate(EvaluationContext $context, Node $operand)
+    public function createNode(CompilerConfiguration $config, $operand)
     {
-        /** @var IdentifierNode $operand */
-        return $context->offsetExists($operand->getName());
+        return new UnaryOperatorNode($this, new DataNode($operand->getName()));
+    }
+
+    public function evaluate(EvaluationContext $context, Node $node, array $childResults)
+    {
+        return $context->offsetExists($childResults[0]);
     }
 
     public function compile(Compiler $compiler, Node $operand)
     {
         /** @var IdentifierNode $operand */
         $compiler->add('$context->offsetExists(')
-                 ->compileString($operand->getName())
+                 ->compileString($operand->getValue())
                  ->add(')');
     }
 }

@@ -6,6 +6,7 @@ use Expresso\Compiler\Compiler;
 use Expresso\Compiler\CompilerConfiguration;
 use Expresso\Compiler\Node;
 use Expresso\Compiler\Nodes\ExpressionNode;
+use Expresso\Compiler\NodeTreeEvaluator;
 use Expresso\Compiler\Tokenizer;
 use Expresso\Compiler\TokenStreamParser;
 
@@ -130,6 +131,7 @@ class Expresso
     {
         $nodes = $this->parse($expression);
 
-        return $nodes->evaluate(new EvaluationContext($parameters, $this->configuration));
+        $evaluator = new NodeTreeEvaluator();
+        return $evaluator->evaluate($nodes, new EvaluationContext($parameters, $this->configuration));
     }
 }

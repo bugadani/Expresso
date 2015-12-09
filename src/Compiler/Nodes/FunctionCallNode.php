@@ -38,10 +38,9 @@ class FunctionCallNode extends Node
             ->add(')');
     }
 
-    public function evaluate(EvaluationContext $context)
+    public function evaluate(EvaluationContext $context, array $childResults)
     {
-        $callback = $this->getChildAt(0)->evaluate($context);
-        $arguments = $this->getChildAt(1)->evaluate($context);
+        list($callback, $arguments) = $childResults;
 
         return call_user_func_array($callback, $arguments);
     }

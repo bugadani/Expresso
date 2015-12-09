@@ -12,6 +12,7 @@ class MethodNameNode extends Node
     public function __construct(BinaryOperatorNode $functionName)
     {
         $this->addChild($functionName);
+        $functionName->getChildAt(1)->addData('noEvaluate');
     }
 
     public function compile(Compiler $compiler)
@@ -25,10 +26,10 @@ class MethodNameNode extends Node
                  ->add($method->getName());
     }
 
-    public function evaluate(EvaluationContext $context)
+    public function evaluate(EvaluationContext $context, array $childResults)
     {
         $functionName = $this->getChildAt(0);
-        $object       = $functionName->getChildAt(0)->evaluate($context);
+        $object       = $childResults[0];
         $methodName   = $functionName->getChildAt(1)->getName();
 
         return [$object, $methodName];

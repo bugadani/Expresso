@@ -15,19 +15,6 @@ class SimpleAccessOperator extends ArrayAccessOperator
         return '.';
     }
 
-    public function evaluate(EvaluationContext $context, Node $left, Node $right)
-    {
-        $left = $left->evaluate($context);
-
-        if ($right instanceof IdentifierNode) {
-            $right = $right->getName();
-        } else {
-            $right = $right->evaluate($context);
-        }
-
-        return $left[ $right ];
-    }
-
     public function compile(Compiler $compiler, Node $left, Node $right)
     {
         $compiler->add('$context->access(')

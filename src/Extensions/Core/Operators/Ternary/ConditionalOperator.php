@@ -7,6 +7,7 @@ use Expresso\Compiler\CompilerConfiguration;
 use Expresso\Compiler\Node;
 use Expresso\Compiler\Nodes\IdentifierNode;
 use Expresso\Compiler\Nodes\OperatorNode;
+use Expresso\Compiler\NodeTreeEvaluator;
 use Expresso\Compiler\Operators\TernaryOperator;
 use Expresso\EvaluationContext;
 use Expresso\Extensions\Core\Operators\Binary\ArrayAccessOperator;
@@ -26,7 +27,7 @@ class ConditionalOperator extends TernaryOperator
         $isSetOperator = $config->getOperatorByClass(IsSetOperator::class);
         $andOperator   = $config->getOperatorByClass(AndOperator::class);
 
-        return parent::createNode(
+        $node = parent::createNode(
             $config,
             $this->shouldCheckExistence($left) ?
                 $andOperator->createNode(
@@ -37,12 +38,22 @@ class ConditionalOperator extends TernaryOperator
             $middle,
             $right
         );
+
+        $middle->addData('noEvaluate');
+        $right->addData('noEvaluate');
+
+        return $node;
     }
 
 
-    public function evaluate(EvaluationContext $context, Node $left, Node $middle, Node $right)
+    public function evaluate(EvaluationContext $context, Node $node, array $childResults)
     {
-        return $left->evaluate($context) ? $middle->evaluate($context) : $right->evaluate($context);
+        $evaluator = new NodeTreeEvaluator();
+
+        $childNode = $node->getChildAt($childResults[0] ? 1 : 2);
+        $childNode->removeData('noEvaluate');
+
+        return $evaluator->evaluate($childNode, $context);
     }
 
     public function compile(Compiler $compiler, Node $left, Node $middle, Node $right)

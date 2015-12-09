@@ -22,7 +22,7 @@ class FunctionNameNode extends Node
         $compiler->add($functions[ $this->functionName ]->getFunctionName());
     }
 
-    public function evaluate(EvaluationContext $context)
+    public function evaluate(EvaluationContext $context, array $childResults)
     {
         return $context->getFunction($this->functionName)->getFunctionName();
     }

@@ -39,19 +39,19 @@ class ArrayDataNode extends Node
         $compiler->add(']');
     }
 
-    public function evaluate(EvaluationContext $context)
+    public function evaluate(EvaluationContext $context, array $childResults)
     {
         $array = [];
 
-        $childCount = $this->getChildCount();
+        $childCount = count($childResults);
         for ($i = 0; $i < $childCount; $i += 2) {
-            $key   = $this->getChildAt($i);
-            $value = $this->getChildAt($i + 1);
+            $key   = $childResults[ $i ];
+            $value = $childResults[ $i + 1 ];
 
-            if ($key !== DataNode::nullNode()) {
-                $array[ $key->evaluate($context) ] = $value->evaluate($context);
+            if ($key !== null) {
+                $array[ $key ] = $value;
             } else {
-                $array[] = $value->evaluate($context);
+                $array[] = $value;
             }
         }
 

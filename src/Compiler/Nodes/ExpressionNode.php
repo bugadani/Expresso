@@ -29,9 +29,8 @@ class ExpressionNode extends Node
                  ->add(';};');
     }
 
-    public function evaluate(EvaluationContext $context)
+    public function evaluate(EvaluationContext $context, array $childResults)
     {
-        $this->expectChildCount(1);
-        return $this->getChildAt(0)->evaluate($context);
+        return $childResults[0];
     }
 }

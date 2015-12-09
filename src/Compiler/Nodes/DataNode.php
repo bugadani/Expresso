@@ -31,7 +31,7 @@ class DataNode extends Node
         $compiler->addData($this->value);
     }
 
-    public function evaluate(EvaluationContext $context)
+    public function evaluate(EvaluationContext $context, array $childResults)
     {
         return $this->value;
     }

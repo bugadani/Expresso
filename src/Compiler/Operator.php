@@ -2,6 +2,8 @@
 
 namespace Expresso\Compiler;
 
+use Expresso\EvaluationContext;
+
 abstract class Operator
 {
     const LEFT = 0;
@@ -31,4 +33,6 @@ abstract class Operator
     }
 
     abstract public function operators();
+
+    public abstract function evaluate(EvaluationContext $context, Node $node, array $childResults);
 }

@@ -19,6 +19,7 @@ class LambdaNode extends Node
     public function __construct(Node $functionBody, array $arguments)
     {
         $this->addChild($functionBody);
+        $functionBody->addData('noEvaluate');
         $this->arguments    = $arguments;
     }
 
@@ -55,7 +56,7 @@ class LambdaNode extends Node
                  ->add(';}');
     }
 
-    public function evaluate(EvaluationContext $context)
+    public function evaluate(EvaluationContext $context, array $childResults)
     {
         return function () use ($context) {
             $arguments    = array_slice(func_get_args(), 0, count($this->arguments));

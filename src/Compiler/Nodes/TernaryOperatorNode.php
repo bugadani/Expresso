@@ -28,17 +28,6 @@ class TernaryOperatorNode extends OperatorNode
         );
     }
 
-    public function evaluate(EvaluationContext $context)
-    {
-        $this->expectChildCount(3);
-        return $this->getOperator()->evaluate(
-            $context,
-            $this->getLeft(),
-            $this->getMiddle(),
-            $this->getRight()
-        );
-    }
-
     /**
      * @return Node
      */

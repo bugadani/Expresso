@@ -22,12 +22,6 @@ class BinaryOperatorNode extends OperatorNode
         $this->getOperator()->compile($compiler, $this->getLeft(), $this->getRight());
     }
 
-    public function evaluate(EvaluationContext $context)
-    {
-        $this->expectChildCount(2);
-        return $this->getOperator()->evaluate($context, $this->getLeft(), $this->getRight());
-    }
-
     /**
      * @return Node
      */

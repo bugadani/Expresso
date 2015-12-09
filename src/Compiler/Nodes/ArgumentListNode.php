@@ -27,13 +27,8 @@ class ArgumentListNode extends Node
         }
     }
 
-    public function evaluate(EvaluationContext $context)
+    public function evaluate(EvaluationContext $context, array $childResults)
     {
-        $args = [];
-        foreach ($this->getChildren() as $child) {
-            $args[] = $child->evaluate($context);
-        }
-
-        return $args;
+        return $childResults;
     }
 }

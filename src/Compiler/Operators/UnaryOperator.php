@@ -11,9 +11,10 @@ use Expresso\EvaluationContext;
 
 abstract class UnaryOperator extends Operator
 {
-    public function evaluate(EvaluationContext $context, Node $operand)
+
+    public function evaluate(EvaluationContext $context, Node $node, array $childResults)
     {
-        return $this->evaluateSimple($operand->evaluate($context));
+        return $this->evaluateSimple($childResults[0]);
     }
 
     public function evaluateSimple($operand)
