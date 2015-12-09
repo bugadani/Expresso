@@ -29,7 +29,7 @@ class ArrayDataNode extends Node
             $key   = $this->getChildAt($i);
             $value = $this->getChildAt($i + 1);
 
-            if ($key !== DataNode::nullNode()) {
+            if (!$key instanceof DataNode || $key->getValue() !== null) {
                 $compiler->compileNode($key);
                 $compiler->add(' => ');
             }

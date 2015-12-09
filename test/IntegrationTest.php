@@ -45,7 +45,7 @@ class IntegrationTest extends \PHPUnit_Framework_TestCase
         return array_filter(
             $tests,
             function ($descriptor) {
-                //return $descriptor[1] === 'Test equals operator';
+                //return $descriptor[1] === 'Test map declaration';
                 return is_array($descriptor);
             }
         );

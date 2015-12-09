@@ -5,6 +5,7 @@ namespace Expresso\Extensions\Lambda\Nodes;
 use Expresso\Compiler\Compiler;
 use Expresso\Compiler\Node;
 use Expresso\Compiler\Nodes\IdentifierNode;
+use Expresso\Compiler\NodeTreeEvaluator;
 use Expresso\EvaluationContext;
 
 class LambdaNode extends Node
@@ -59,6 +60,7 @@ class LambdaNode extends Node
     public function evaluate(EvaluationContext $context, array $childResults)
     {
         return function () use ($context) {
+            $evaluator = new NodeTreeEvaluator();
             $arguments    = array_slice(func_get_args(), 0, count($this->arguments));
             $argNames     = array_map(
                 function (IdentifierNode $node) {
@@ -68,7 +70,11 @@ class LambdaNode extends Node
             );
             $innerContext = $context->createInnerScope(array_combine($argNames, $arguments));
 
-            return $this->getChildAt(0)->evaluate($innerContext);
+            $this->getChildAt(0)->removeData('noEvaluate');
+            $result = $evaluator->evaluate($this->getChildAt(0), $innerContext);
+
+            $this->getChildAt(0)->addData('noEvaluate');
+            return $result;
         };
     }
 }

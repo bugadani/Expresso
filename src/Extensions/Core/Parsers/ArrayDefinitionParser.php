@@ -38,7 +38,7 @@ class ArrayDefinitionParser extends Parser
                 } else if ($stream->current()->test(Token::PUNCTUATION, [':', '=>'])) {
                     $listType = self::TYPE_MAP;
                 } else {
-                    $key      = DataNode::nullNode();
+                    $key      = new DataNode(null);
                     $listType = self::TYPE_LIST;
                 }
             }

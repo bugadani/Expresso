@@ -32,9 +32,9 @@ class NullSafeAccessOperator extends BinaryOperator
             $orOperator->createNode(
                 $config,
                 $left instanceof IdentifierNode ? $isNotSetOperator->createNode($config, $left) : $left,
-                $identicalOperator->createNode($config, $left, DataNode::nullNode())
+                $identicalOperator->createNode($config, $left, new DataNode(null))
             ),
-            DataNode::nullNode(),
+            new DataNode(null),
             $simpleAccessOperator->createNode($config, $left, $right)
         );
     }

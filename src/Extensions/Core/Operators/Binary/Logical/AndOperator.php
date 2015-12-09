@@ -32,7 +32,9 @@ class AndOperator extends BinaryOperator
             $childNode->removeData('noEvaluate');
             $evaluator = new NodeTreeEvaluator();
 
-            return $evaluator->evaluate($childNode, $context);
+            $result = $evaluator->evaluate($childNode, $context);
+            $childNode->addData('noEvaluate');
+            return $result;
         } else {
             return false;
         }

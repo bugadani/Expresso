@@ -53,7 +53,9 @@ class ConditionalOperator extends TernaryOperator
         $childNode = $node->getChildAt($childResults[0] ? 1 : 2);
         $childNode->removeData('noEvaluate');
 
-        return $evaluator->evaluate($childNode, $context);
+        $result = $evaluator->evaluate($childNode, $context);
+        $childNode->addData('noEvaluate');
+        return $result;
     }
 
     public function compile(Compiler $compiler, Node $left, Node $middle, Node $right)
