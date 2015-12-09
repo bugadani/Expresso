@@ -3,7 +3,9 @@
 namespace Expresso\Compiler\Operators;
 
 use Expresso\Compiler\ExpressionFunction;
+use Expresso\Compiler\Nodes\DataNode;
 use Expresso\Compiler\Nodes\FunctionCallNode;
+use Expresso\Compiler\Nodes\IdentifierNode;
 use Expresso\Compiler\Nodes\TernaryOperatorNode;
 use Expresso\Compiler\Operator;
 

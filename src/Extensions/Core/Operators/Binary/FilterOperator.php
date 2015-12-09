@@ -2,12 +2,12 @@
 
 namespace Expresso\Extensions\Core\Operators\Binary;
 
-use Expresso\Compiler\Compiler;
 use Expresso\Compiler\CompilerConfiguration;
-use Expresso\Compiler\Node;
+use Expresso\Compiler\Exceptions\ParseException;
+use Expresso\Compiler\Nodes\DataNode;
 use Expresso\Compiler\Nodes\FunctionCallNode;
+use Expresso\Compiler\Nodes\IdentifierNode;
 use Expresso\Compiler\Operators\BinaryOperator;
-use Expresso\EvaluationContext;
 
 class FilterOperator extends BinaryOperator
 {
@@ -19,6 +19,10 @@ class FilterOperator extends BinaryOperator
 
     public function createNode(CompilerConfiguration $config, $left, $right)
     {
+        if (!$right instanceof IdentifierNode) {
+            throw new ParseException("The right hand operand of filter node must be a function name");
+        }
+
         return new FunctionCallNode($right, [$left]);
     }
 }
