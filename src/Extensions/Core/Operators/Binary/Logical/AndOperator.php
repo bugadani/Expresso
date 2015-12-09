@@ -1,31 +1,32 @@
 <?php
 
-namespace Expresso\Extensions\Core\Operators\Binary;
+namespace Expresso\Extensions\Core\Operators\Binary\Logical;
 
 use Expresso\Compiler\Compiler;
 use Expresso\Compiler\Node;
 use Expresso\Compiler\Operators\BinaryOperator;
+use Expresso\EvaluationContext;
 
-class DivisibleOperator extends BinaryOperator
+class AndOperator extends BinaryOperator
 {
 
     public function operators()
     {
-        return 'is divisible by';
+        return '&&';
     }
 
-    public function evaluateSimple($left, $right)
+    public function evaluate(EvaluationContext $context, Node $left, Node $right)
     {
-        return $left % $right === 0;
+        //This implements short-circuit evaluation
+        return $left->evaluate($context) && $right->evaluate($context);
     }
 
     public function compile(Compiler $compiler, Node $left, Node $right)
     {
         $compiler->add('(')
                  ->compileNode($left)
-                 ->add('%')
+                 ->add('&&')
                  ->compileNode($right)
-                 ->add(' === 0')
                  ->add(')');
     }
 }

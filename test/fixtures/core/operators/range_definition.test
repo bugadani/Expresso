@@ -1,0 +1,6 @@
+--TEST--
+Test range declaration without array definition
+--EXPRESSION--
+5..15|take(5)|join
+--EXPECT--
+56789

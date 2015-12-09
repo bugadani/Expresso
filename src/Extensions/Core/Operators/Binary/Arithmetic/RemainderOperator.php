@@ -1,23 +1,24 @@
 <?php
 
-namespace Expresso\Extensions\Core\Operators\Binary;
+namespace Expresso\Extensions\Core\Operators\Binary\Arithmetic;
 
 use Expresso\Compiler\Operators\BinaryOperator;
 
-class BitwiseOrOperator extends BinaryOperator
+class RemainderOperator extends BinaryOperator
 {
+
     public function operators()
     {
-        return 'b-or';
+        return '%';
     }
 
     public function evaluateSimple($left, $right)
     {
-        return $left | $right;
+        return $left % $right;
     }
 
     public function compiledOperator()
     {
-        return '|';
+        return '%';
     }
 }

@@ -1,6 +1,6 @@
 <?php
 
-namespace Expresso\Extensions\Core\Operators\Binary;
+namespace Expresso\Extensions\Core\Operators\Binary\Comparison;
 
 use Expresso\Compiler\Operators\BinaryOperator;
 

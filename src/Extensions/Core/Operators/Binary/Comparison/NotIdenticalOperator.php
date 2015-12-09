@@ -1,27 +1,27 @@
 <?php
 
-namespace Expresso\Extensions\Core\Operators\Binary;
+namespace Expresso\Extensions\Core\Operators\Binary\Comparison;
 
 use Expresso\Compiler\CompilerConfiguration;
 use Expresso\Compiler\Operators\BinaryOperator;
 use Expresso\Extensions\Core\Operators\Unary\Prefix\NotOperator;
 
-class NotEqualsOperator extends BinaryOperator
+class NotIdenticalOperator extends BinaryOperator
 {
 
     public function operators()
     {
-        return '!=';
+        return '!==';
     }
 
     public function createNode(CompilerConfiguration $config, $left, $right)
     {
-        $notOperator    = $config->getOperatorByClass(NotOperator::class);
-        $equalsOperator = $config->getOperatorByClass(EqualsOperator::class);
+        $notOperator       = $config->getOperatorByClass(NotOperator::class);
+        $identicalOperator = $config->getOperatorByClass(IdenticalOperator::class);
 
         return $notOperator->createNode(
             $config,
-            $equalsOperator->createNode($config, $left, $right)
+            $identicalOperator->createNode($config, $left, $right)
         );
     }
 }

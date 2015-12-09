@@ -9,8 +9,8 @@ use Expresso\Compiler\Nodes\IdentifierNode;
 use Expresso\Compiler\Nodes\OperatorNode;
 use Expresso\Compiler\Operators\TernaryOperator;
 use Expresso\EvaluationContext;
-use Expresso\Extensions\Core\Operators\Binary\AndOperator;
 use Expresso\Extensions\Core\Operators\Binary\ArrayAccessOperator;
+use Expresso\Extensions\Core\Operators\Binary\Logical\AndOperator;
 use Expresso\Extensions\Core\Operators\Unary\Postfix\IsSetOperator;
 
 class ConditionalOperator extends TernaryOperator

@@ -19,37 +19,37 @@ use Expresso\Compiler\Parsers\PrefixOperatorParser;
 use Expresso\Compiler\Token;
 use Expresso\Compiler\TokenStreamParser;
 use Expresso\Extension;
-use Expresso\Extensions\Core\Operators\Binary\AdditionOperator;
-use Expresso\Extensions\Core\Operators\Binary\AndOperator;
-use Expresso\Extensions\Core\Operators\Binary\BitwiseAndOperator;
-use Expresso\Extensions\Core\Operators\Binary\BitwiseOrOperator;
-use Expresso\Extensions\Core\Operators\Binary\BitwiseXorOperator;
-use Expresso\Extensions\Core\Operators\Binary\ConcatenationOperator;
+use Expresso\Extensions\Core\Operators\Binary\Arithmetic\AdditionOperator;
+use Expresso\Extensions\Core\Operators\Binary\Arithmetic\DivisionOperator;
+use Expresso\Extensions\Core\Operators\Binary\Arithmetic\ExponentialOperator;
+use Expresso\Extensions\Core\Operators\Binary\Arithmetic\ModuloOperator;
+use Expresso\Extensions\Core\Operators\Binary\Arithmetic\MultiplicationOperator;
+use Expresso\Extensions\Core\Operators\Binary\Arithmetic\RemainderOperator;
+use Expresso\Extensions\Core\Operators\Binary\Bitwise\BitwiseAndOperator;
+use Expresso\Extensions\Core\Operators\Binary\Bitwise\BitwiseOrOperator;
+use Expresso\Extensions\Core\Operators\Binary\Bitwise\BitwiseXorOperator;
+use Expresso\Extensions\Core\Operators\Binary\Bitwise\LeftArithmeticShiftOperator;
+use Expresso\Extensions\Core\Operators\Binary\Bitwise\RightArithmeticShiftOperator;
+use Expresso\Extensions\Core\Operators\Binary\Comparison\EqualsOperator;
+use Expresso\Extensions\Core\Operators\Binary\Comparison\GreaterThanOperator;
+use Expresso\Extensions\Core\Operators\Binary\Comparison\GreaterThanOrEqualsOperator;
+use Expresso\Extensions\Core\Operators\Binary\Comparison\IdenticalOperator;
+use Expresso\Extensions\Core\Operators\Binary\Comparison\LessThanOperator;
+use Expresso\Extensions\Core\Operators\Binary\Comparison\LessThanOrEqualsOperator;
+use Expresso\Extensions\Core\Operators\Binary\Comparison\NotEqualsOperator;
+use Expresso\Extensions\Core\Operators\Binary\Comparison\NotIdenticalOperator;
 use Expresso\Extensions\Core\Operators\Binary\ConditionalOperator as BinaryConditionalOperator;
-use Expresso\Extensions\Core\Operators\Binary\DivisibleOperator;
-use Expresso\Extensions\Core\Operators\Binary\DivisionOperator;
-use Expresso\Extensions\Core\Operators\Binary\EqualsOperator;
-use Expresso\Extensions\Core\Operators\Binary\ExponentialOperator;
 use Expresso\Extensions\Core\Operators\Binary\FilterOperator;
-use Expresso\Extensions\Core\Operators\Binary\GreaterThanOperator;
-use Expresso\Extensions\Core\Operators\Binary\GreaterThanOrEqualsOperator;
-use Expresso\Extensions\Core\Operators\Binary\IdenticalOperator;
-use Expresso\Extensions\Core\Operators\Binary\LeftArithmeticShiftOperator;
-use Expresso\Extensions\Core\Operators\Binary\LessThanOperator;
-use Expresso\Extensions\Core\Operators\Binary\LessThanOrEqualsOperator;
-use Expresso\Extensions\Core\Operators\Binary\ModuloOperator;
-use Expresso\Extensions\Core\Operators\Binary\MultiplicationOperator;
-use Expresso\Extensions\Core\Operators\Binary\NotDivisibleOperator;
-use Expresso\Extensions\Core\Operators\Binary\NotEqualsOperator;
-use Expresso\Extensions\Core\Operators\Binary\NotIdenticalOperator;
+use Expresso\Extensions\Core\Operators\Binary\Logical\AndOperator;
+use Expresso\Extensions\Core\Operators\Binary\Logical\OrOperator;
+use Expresso\Extensions\Core\Operators\Binary\Logical\XorOperator;
 use Expresso\Extensions\Core\Operators\Binary\NullSafeAccessOperator;
-use Expresso\Extensions\Core\Operators\Binary\OrOperator;
 use Expresso\Extensions\Core\Operators\Binary\RangeOperator;
-use Expresso\Extensions\Core\Operators\Binary\RemainderOperator;
-use Expresso\Extensions\Core\Operators\Binary\RightArithmeticShiftOperator;
 use Expresso\Extensions\Core\Operators\Binary\SimpleAccessOperator;
+use Expresso\Extensions\Core\Operators\Binary\Strings\ConcatenationOperator;
 use Expresso\Extensions\Core\Operators\Binary\SubtractionOperator;
-use Expresso\Extensions\Core\Operators\Binary\XorOperator;
+use Expresso\Extensions\Core\Operators\Binary\Test\DivisibleOperator;
+use Expresso\Extensions\Core\Operators\Binary\Test\NotDivisibleOperator;
 use Expresso\Extensions\Core\Operators\Ternary\ConditionalOperator;
 use Expresso\Extensions\Core\Operators\Unary\Postfix\EvenOperator;
 use Expresso\Extensions\Core\Operators\Unary\Postfix\InfiniteRangeOperator;
@@ -107,7 +107,7 @@ class Core extends Extension
             new SimpleAccessOperator(16),
             new NullSafeAccessOperator(16),
             new FilterOperator(11),
-            new RangeOperator(9)
+            new RangeOperator(12)
         ];
     }
 

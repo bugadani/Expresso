@@ -1,23 +1,24 @@
 <?php
 
-namespace Expresso\Extensions\Core\Operators\Binary;
+namespace Expresso\Extensions\Core\Operators\Binary\Comparison;
 
 use Expresso\Compiler\Operators\BinaryOperator;
 
-class BitwiseAndOperator extends BinaryOperator
+class GreaterThanOperator extends BinaryOperator
 {
+
     public function operators()
     {
-        return 'b-and';
+        return '>';
     }
 
     public function evaluateSimple($left, $right)
     {
-        return $left & $right;
+        return $left > $right;
     }
 
     public function compiledOperator()
     {
-        return '&';
+        return '>';
     }
 }
