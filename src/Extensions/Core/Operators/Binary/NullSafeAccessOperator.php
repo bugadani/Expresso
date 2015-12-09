@@ -6,6 +6,7 @@ use Expresso\Compiler\CompilerConfiguration;
 use Expresso\Compiler\Nodes\DataNode;
 use Expresso\Compiler\Nodes\IdentifierNode;
 use Expresso\Compiler\Operators\BinaryOperator;
+use Expresso\Extensions\Core\Operators\Binary\Comparison\EqualsOperator;
 use Expresso\Extensions\Core\Operators\Binary\Comparison\IdenticalOperator;
 use Expresso\Extensions\Core\Operators\Binary\Logical\OrOperator;
 use Expresso\Extensions\Core\Operators\Ternary\ConditionalOperator as TernaryConditionalOperator;

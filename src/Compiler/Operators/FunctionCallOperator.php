@@ -28,13 +28,16 @@ class FunctionCallOperator extends Operator
     {
         if (!$left instanceof FunctionCallNode) {
             if ($left instanceof TernaryOperatorNode) {
+                $node  = $left->getRight();
+                $right = new FunctionCallNode($node);
+                if ($node->hasData('noEvaluate')) {
+                    $right->addData('noEvaluate');
+                }
                 $left = new TernaryOperatorNode(
                     $left->getOperator(),
                     $left->getLeft(),
                     $left->getMiddle(),
-                    new FunctionCallNode(
-                        $left->getRight()
-                    )
+                    $right
                 );
             } else {
                 $left = new FunctionCallNode($left);
