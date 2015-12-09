@@ -1,0 +1,31 @@
+<?php
+
+namespace Expresso\Extensions\Core\Operators\Binary;
+
+use Expresso\Compiler\Compiler;
+use Expresso\Compiler\Node;
+use Expresso\Compiler\Operators\BinaryOperator;
+use Expresso\EvaluationContext;
+
+class OrOperator extends BinaryOperator
+{
+    public function operators()
+    {
+        return '||';
+    }
+
+    public function evaluate(EvaluationContext $context, Node $left, Node $right)
+    {
+        //This implements short-circuit evaluation
+        return $left->evaluate($context) || $right->evaluate($context);
+    }
+
+    public function compile(Compiler $compiler, Node $left, Node $right)
+    {
+        $compiler->add('(')
+                 ->compileNode($left)
+                 ->add('||')
+                 ->compileNode($right)
+                 ->add(')');
+    }
+}

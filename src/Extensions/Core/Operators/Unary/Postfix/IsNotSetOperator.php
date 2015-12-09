@@ -6,7 +6,7 @@ use Expresso\Compiler\Compiler;
 use Expresso\Compiler\CompilerConfiguration;
 use Expresso\Compiler\Node;
 use Expresso\Compiler\Operators\UnaryOperator;
-use Expresso\Extensions\Logical\Operators\Unary\Prefix\NotOperator;
+use Expresso\Extensions\Core\Operators\Unary\Prefix\NotOperator;
 
 
 class IsNotSetOperator extends UnaryOperator

@@ -2,17 +2,13 @@
 
 namespace Expresso\Extensions\Core\Operators\Binary;
 
-use Expresso\Compiler\Compiler;
 use Expresso\Compiler\CompilerConfiguration;
-use Expresso\Compiler\Node;
 use Expresso\Compiler\Nodes\DataNode;
 use Expresso\Compiler\Nodes\IdentifierNode;
 use Expresso\Compiler\Nodes\TernaryOperatorNode;
 use Expresso\Compiler\Operators\BinaryOperator;
-use Expresso\EvaluationContext;
 use Expresso\Extensions\Core\Operators\Ternary\ConditionalOperator;
 use Expresso\Extensions\Core\Operators\Unary\Postfix\IsNotSetOperator;
-use Expresso\Extensions\Logical\Operators\Binary\OrOperator;
 
 class NullSafeAccessOperator extends BinaryOperator
 {

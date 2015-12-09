@@ -3,12 +3,11 @@
 namespace Expresso\Test;
 
 use Expresso\Expresso;
-use Expresso\Extensions\Arithmetic\Arithmetic;
 use Expresso\Extensions\Bitwise\Bitwise;
 use Expresso\Extensions\Core\Core;
+use Expresso\Extensions\Core\Logical;
 use Expresso\Extensions\Generator\Generator;
 use Expresso\Extensions\Lambda\Lambda;
-use Expresso\Extensions\Logical\Logical;
 use Expresso\Extensions\Strings\Strings;
 
 class IntegrationTest extends \PHPUnit_Framework_TestCase
@@ -22,12 +21,8 @@ class IntegrationTest extends \PHPUnit_Framework_TestCase
     {
         $this->expresso = new Expresso();
         $this->expresso->addExtension(new Core());
-        $this->expresso->addExtension(new Arithmetic());
-        $this->expresso->addExtension(new Bitwise());
         $this->expresso->addExtension(new Lambda());
-        $this->expresso->addExtension(new Logical());
         $this->expresso->addExtension(new Generator());
-        $this->expresso->addExtension(new Strings());
     }
 
     public function getTests()

@@ -19,18 +19,45 @@ use Expresso\Compiler\Parsers\PrefixOperatorParser;
 use Expresso\Compiler\Token;
 use Expresso\Compiler\TokenStreamParser;
 use Expresso\Extension;
+use Expresso\Extensions\Core\Operators\Binary\AdditionOperator;
+use Expresso\Extensions\Core\Operators\Binary\AndOperator;
+use Expresso\Extensions\Core\Operators\Binary\BitwiseAndOperator;
+use Expresso\Extensions\Core\Operators\Binary\BitwiseOrOperator;
+use Expresso\Extensions\Core\Operators\Binary\BitwiseXorOperator;
+use Expresso\Extensions\Core\Operators\Binary\ConcatenationOperator;
+use Expresso\Extensions\Core\Operators\Binary\DivisibleOperator;
+use Expresso\Extensions\Core\Operators\Binary\DivisionOperator;
 use Expresso\Extensions\Core\Operators\Binary\EqualsOperator;
+use Expresso\Extensions\Core\Operators\Binary\ExponentialOperator;
 use Expresso\Extensions\Core\Operators\Binary\FilterOperator;
+use Expresso\Extensions\Core\Operators\Binary\GreaterThanOperator;
+use Expresso\Extensions\Core\Operators\Binary\GreaterThanOrEqualsOperator;
 use Expresso\Extensions\Core\Operators\Binary\IdenticalOperator;
+use Expresso\Extensions\Core\Operators\Binary\LeftArithmeticShiftOperator;
+use Expresso\Extensions\Core\Operators\Binary\LessThanOperator;
+use Expresso\Extensions\Core\Operators\Binary\LessThanOrEqualsOperator;
+use Expresso\Extensions\Core\Operators\Binary\ModuloOperator;
+use Expresso\Extensions\Core\Operators\Binary\MultiplicationOperator;
+use Expresso\Extensions\Core\Operators\Binary\NotDivisibleOperator;
 use Expresso\Extensions\Core\Operators\Binary\NotEqualsOperator;
 use Expresso\Extensions\Core\Operators\Binary\NotIdenticalOperator;
 use Expresso\Extensions\Core\Operators\Binary\NullSafeAccessOperator;
+use Expresso\Extensions\Core\Operators\Binary\OrOperator;
 use Expresso\Extensions\Core\Operators\Binary\RangeOperator;
+use Expresso\Extensions\Core\Operators\Binary\RemainderOperator;
+use Expresso\Extensions\Core\Operators\Binary\RightArithmeticShiftOperator;
 use Expresso\Extensions\Core\Operators\Binary\SimpleAccessOperator;
+use Expresso\Extensions\Core\Operators\Binary\SubtractionOperator;
+use Expresso\Extensions\Core\Operators\Binary\XorOperator;
 use Expresso\Extensions\Core\Operators\Ternary\ConditionalOperator;
+use Expresso\Extensions\Core\Operators\Unary\Postfix\EvenOperator;
 use Expresso\Extensions\Core\Operators\Unary\Postfix\InfiniteRangeOperator;
 use Expresso\Extensions\Core\Operators\Unary\Postfix\IsNotSetOperator;
 use Expresso\Extensions\Core\Operators\Unary\Postfix\IsSetOperator;
+use Expresso\Extensions\Core\Operators\Unary\Postfix\OddOperator;
+use Expresso\Extensions\Core\Operators\Unary\Prefix\BitwiseNotOperator;
+use Expresso\Extensions\Core\Operators\Unary\Prefix\MinusOperator;
+use Expresso\Extensions\Core\Operators\Unary\Prefix\NotOperator;
 use Expresso\Extensions\Core\Parsers\ArrayAccessParser;
 use Expresso\Extensions\Core\Parsers\ArrayDefinitionParser;
 
@@ -44,12 +71,38 @@ class Core extends Extension
             new IdenticalOperator(7),
             new NotIdenticalOperator(7),
             new NotEqualsOperator(7),
+            //logical
+            new AndOperator(3),
+            new OrOperator(2),
+            new XorOperator(1),
+            //bitwise
+            new BitwiseAndOperator(6),
+            new BitwiseOrOperator(4),
+            new BitwiseXorOperator(5),
+            new LeftArithmeticShiftOperator(9),
+            new RightArithmeticShiftOperator(9),
+            //arithmetic operators
+            new AdditionOperator(10),
+            new SubtractionOperator(10),
+            new MultiplicationOperator(11),
+            new DivisionOperator(11),
+            new RemainderOperator(11),
+            new ModuloOperator(11),
+            new ExponentialOperator(14, Operator::RIGHT),
+            new DivisibleOperator(8, Operator::NONE),
+            new NotDivisibleOperator(8, Operator::NONE),
+            //comparison
+            new LessThanOperator(8),
+            new LessThanOrEqualsOperator(8),
+            new GreaterThanOperator(8),
+            new GreaterThanOrEqualsOperator(8),
             //test
             /*
             new ContainsOperator(8, Operator::NONE),
             new NotContainsOperator(8, Operator::NONE),
             //other
             new NullCoalescingOperator(1),*/
+            new ConcatenationOperator(10),
             new SimpleAccessOperator(16),
             new NullSafeAccessOperator(16),
             new FilterOperator(11),
@@ -62,6 +115,9 @@ class Core extends Extension
         return [
             /*new PreDecrementOperator(13, Operator::RIGHT),
             new PreIncrementOperator(13, Operator::RIGHT)*/
+            new NotOperator(12, Operator::RIGHT),
+            new BitwiseNotOperator(13, Operator::RIGHT),
+            new MinusOperator(13, Operator::RIGHT)
         ];
     }
 
@@ -70,6 +126,8 @@ class Core extends Extension
         return [
             new IsSetOperator(15, Operator::RIGHT),
             new IsNotSetOperator(15, Operator::RIGHT),
+            new EvenOperator(15, Operator::NONE),
+            new OddOperator(15, Operator::NONE),
             /* new PostDecrementOperator(15),
              new PostIncrementOperator(15),
              new EmptyOperator(15),
@@ -130,9 +188,42 @@ class Core extends Extension
             new ExpressionFunction('count', 'count'),
             new ExpressionFunction('join', __NAMESPACE__ . '\expression_function_join'),
             new ExpressionFunction('skip', __NAMESPACE__ . '\expression_function_skip'),
+            new ExpressionFunction('popcount', __NAMESPACE__ . '\\expression_function_population_count'),
+            new ExpressionFunction('replace', __NAMESPACE__ . '\expression_function_replace'),
             new ExpressionFunction('reverse', 'strrev'),
             new ExpressionFunction('take', __NAMESPACE__ . '\expression_function_take'),
         ];
+    }
+}
+
+function expression_function_population_count($data)
+{
+    if ($data & 0x00000000 > 0) {
+        //64 bits, not yet supported
+        return 0;
+    } else {
+        $data -= (($data >> 1) & 0x55555555);
+        $data = ((($data >> 2) & 0x33333333) + ($data & 0x33333333));
+        $data = ((($data >> 4) + $data) & 0x0f0f0f0f);
+        $data += ($data >> 8);
+        $data += ($data >> 16);
+
+        return ($data & 0x0000003f);
+    }
+}
+
+function expression_function_replace($string, $search, $replacement = null)
+{
+    if ($replacement === null) {
+        if (!is_array($search)) {
+            throw new \InvalidArgumentException(
+                '$search must be an array if only two arguments are supplied to replace'
+            );
+        }
+
+        return str_replace(array_keys($search), $search, $string);
+    } else {
+        return str_replace($search, $replacement, $string);
     }
 }
 

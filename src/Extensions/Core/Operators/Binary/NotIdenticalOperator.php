@@ -4,7 +4,7 @@ namespace Expresso\Extensions\Core\Operators\Binary;
 
 use Expresso\Compiler\CompilerConfiguration;
 use Expresso\Compiler\Operators\BinaryOperator;
-use Expresso\Extensions\Logical\Operators\Unary\Prefix\NotOperator;
+use Expresso\Extensions\Core\Operators\Unary\Prefix\NotOperator;
 
 class NotIdenticalOperator extends BinaryOperator
 {
