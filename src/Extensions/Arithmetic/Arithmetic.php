@@ -1,6 +1,6 @@
 <?php
 
-namespace Expresso\Extensions;
+namespace Expresso\Extensions\Arithmetic;
 
 use Expresso\Compiler\Operator;
 use Expresso\Extension;
@@ -20,6 +20,7 @@ use Expresso\Extensions\Arithmetic\Operators\Binary\SubtractionOperator;
 use Expresso\Extensions\Arithmetic\Operators\Unary\Postfix\EvenOperator;
 use Expresso\Extensions\Arithmetic\Operators\Unary\Postfix\OddOperator;
 use Expresso\Extensions\Arithmetic\Operators\Unary\Prefix\MinusOperator;
+use Expresso\Extensions\Core\Core;
 
 class Arithmetic extends Extension
 {
@@ -62,7 +63,7 @@ class Arithmetic extends Extension
     public function getDependencies()
     {
         return [
-            __NAMESPACE__ . '\\Core'
+            Core::class
         ];
     }
 }

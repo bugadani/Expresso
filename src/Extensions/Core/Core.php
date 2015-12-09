@@ -1,6 +1,6 @@
 <?php
 
-namespace Expresso\Extensions;
+namespace Expresso\Extensions\Core;
 
 use Expresso\Compiler\CompilerConfiguration;
 use Expresso\Compiler\ExpressionFunction;
@@ -19,7 +19,6 @@ use Expresso\Compiler\Parsers\PrefixOperatorParser;
 use Expresso\Compiler\Token;
 use Expresso\Compiler\TokenStreamParser;
 use Expresso\Extension;
-use Expresso\Extensions\Core\Operators\Binary\ConcatenationOperator;
 use Expresso\Extensions\Core\Operators\Binary\EqualsOperator;
 use Expresso\Extensions\Core\Operators\Binary\FilterOperator;
 use Expresso\Extensions\Core\Operators\Binary\IdenticalOperator;
@@ -46,17 +45,11 @@ class Core extends Extension
             new NotIdenticalOperator(7),
             new NotEqualsOperator(7),
             //test
-            /*new ContainsOperator(8, Operator::NONE),
-            new EndsOperator(8, Operator::NONE),
-            new MatchesOperator(8, Operator::NONE),
+            /*
+            new ContainsOperator(8, Operator::NONE),
             new NotContainsOperator(8, Operator::NONE),
-            new NotEndsOperator(8, Operator::NONE),
-            new NotMatchesOperator(8, Operator::NONE),
-            new NotStartsOperator(8, Operator::NONE),
-            new StartsOperator(8, Operator::NONE),
             //other
             new NullCoalescingOperator(1),*/
-            new ConcatenationOperator(10),
             new SimpleAccessOperator(16),
             new NullSafeAccessOperator(16),
             new FilterOperator(11),
@@ -137,16 +130,10 @@ class Core extends Extension
             new ExpressionFunction('count', 'count'),
             new ExpressionFunction('join', __NAMESPACE__ . '\expression_function_join'),
             new ExpressionFunction('skip', __NAMESPACE__ . '\expression_function_skip'),
-            new ExpressionFunction('replace', __NAMESPACE__ . '\expression_function_replace'),
             new ExpressionFunction('reverse', 'strrev'),
             new ExpressionFunction('take', __NAMESPACE__ . '\expression_function_take'),
         ];
     }
-}
-
-function expression_function_replace($string, $search, $replacement)
-{
-    return str_replace($search, $replacement, $string);
 }
 
 function expression_function_join($collection, $glue = '')

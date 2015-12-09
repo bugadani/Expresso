@@ -1,0 +1,6 @@
+--TEST--
+Test replace function
+--EXPRESSION--
+:some_string|replace('ome', 'ame')
+--EXPECT--
+same_string

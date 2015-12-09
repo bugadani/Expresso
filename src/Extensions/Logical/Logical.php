@@ -1,9 +1,10 @@
 <?php
 
-namespace Expresso\Extensions;
+namespace Expresso\Extensions\Logical;
 
 use Expresso\Compiler\Operator;
 use Expresso\Extension;
+use Expresso\Extensions\Core\Core;
 use Expresso\Extensions\Logical\Operators\Binary\AndOperator;
 use Expresso\Extensions\Logical\Operators\Binary\OrOperator;
 use Expresso\Extensions\Logical\Operators\Binary\XorOperator;
@@ -31,7 +32,7 @@ class Logical extends Extension
     public function getDependencies()
     {
         return [
-            __NAMESPACE__ . '\\Core'
+            Core::class
         ];
     }
 }

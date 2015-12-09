@@ -1,6 +1,6 @@
 <?php
 
-namespace Expresso\Extensions;
+namespace Expresso\Extensions\Lambda;
 
 use Expresso\Compiler\CompilerConfiguration;
 use Expresso\Compiler\ExpressionFunction;
@@ -8,6 +8,7 @@ use Expresso\Compiler\ParserAlternativeCollection;
 use Expresso\Compiler\Token;
 use Expresso\Compiler\TokenStreamParser;
 use Expresso\Extension;
+use Expresso\Extensions\Core\Core;
 use Expresso\Extensions\Lambda\Operators\Binary\LambdaOperator;
 use Expresso\Extensions\Lambda\Parsers\LambdaParser;
 use Expresso\Utils\TransformIterator;
@@ -45,7 +46,7 @@ class Lambda extends Extension
     public function getDependencies()
     {
         return [
-            __NAMESPACE__ . '\\Core'
+            Core::class
         ];
     }
 }

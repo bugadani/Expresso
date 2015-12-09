@@ -1,0 +1,6 @@
+--TEST--
+Test replace function with array arguments
+--EXPRESSION--
+:some_string|replace([:o => :a, '_' => ' '])
+--EXPECT--
+same string

@@ -1,16 +1,17 @@
 <?php
 
-namespace Expresso\Extensions;
+namespace Expresso\Extensions\Bitwise;
 
 use Expresso\Compiler\ExpressionFunction;
 use Expresso\Compiler\Operator;
 use Expresso\Extension;
 use Expresso\Extensions\Bitwise\Operators\Binary\AndOperator;
-use Expresso\Extensions\Bitwise\Operators\Binary\OrOperator;
-use Expresso\Extensions\Bitwise\Operators\Binary\XorOperator;
 use Expresso\Extensions\Bitwise\Operators\Binary\LeftArithmeticShiftOperator;
+use Expresso\Extensions\Bitwise\Operators\Binary\OrOperator;
 use Expresso\Extensions\Bitwise\Operators\Binary\RightArithmeticShiftOperator;
+use Expresso\Extensions\Bitwise\Operators\Binary\XorOperator;
 use Expresso\Extensions\Bitwise\Operators\Unary\Prefix\BitwiseNotOperator;
+use Expresso\Extensions\Core\Core;
 
 class Bitwise extends Extension
 {
@@ -50,7 +51,7 @@ class Bitwise extends Extension
     public function getDependencies()
     {
         return [
-            __NAMESPACE__ . '\\Core'
+            Core::class
         ];
     }
 }
