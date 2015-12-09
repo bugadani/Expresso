@@ -6,7 +6,7 @@ use Expresso\Compiler\CompilerConfiguration;
 use Expresso\Compiler\Nodes\DataNode;
 use Expresso\Compiler\Nodes\IdentifierNode;
 use Expresso\Compiler\Operators\BinaryOperator;
-use Expresso\Extensions\Core\Operators\Ternary\ConditionalOperator;
+use Expresso\Extensions\Core\Operators\Ternary\ConditionalOperator as TernaryConditionalOperator;
 use Expresso\Extensions\Core\Operators\Unary\Postfix\IsNotSetOperator;
 
 class NullSafeAccessOperator extends BinaryOperator
@@ -19,7 +19,7 @@ class NullSafeAccessOperator extends BinaryOperator
 
     public function createNode(CompilerConfiguration $config, $left, $right)
     {
-        $conditionalOperator  = $config->getOperatorByClass(ConditionalOperator::class);
+        $conditionalOperator  = $config->getOperatorByClass(TernaryConditionalOperator::class);
         $orOperator           = $config->getOperatorByClass(OrOperator::class);
         $isNotSetOperator     = $config->getOperatorByClass(IsNotSetOperator::class);
         $identicalOperator    = $config->getOperatorByClass(IdenticalOperator::class);

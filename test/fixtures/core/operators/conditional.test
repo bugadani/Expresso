@@ -1,0 +1,8 @@
+--TEST--
+Test conditional operator
+--EXPRESSION--
+('something' ?: 'else') ~ ' ' ~ (foobar ?: 'else') ~ ' ' ~ (nullVar ?: 'else')
+--DATA--
+'nullVar' => null
+--EXPECT--
+something else else

@@ -20,6 +20,8 @@ class ExecutionContext extends \ArrayObject
         if (is_array($where)) {
             return $where[ $what ];
         }
+
+        throw new \OutOfBoundsException("{$what} is not present in \$where");
     }
 
     public function offsetGet($index)

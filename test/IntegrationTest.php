@@ -3,12 +3,9 @@
 namespace Expresso\Test;
 
 use Expresso\Expresso;
-use Expresso\Extensions\Bitwise\Bitwise;
 use Expresso\Extensions\Core\Core;
-use Expresso\Extensions\Core\Logical;
 use Expresso\Extensions\Generator\Generator;
 use Expresso\Extensions\Lambda\Lambda;
-use Expresso\Extensions\Strings\Strings;
 
 class IntegrationTest extends \PHPUnit_Framework_TestCase
 {

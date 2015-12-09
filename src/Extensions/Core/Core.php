@@ -25,6 +25,7 @@ use Expresso\Extensions\Core\Operators\Binary\BitwiseAndOperator;
 use Expresso\Extensions\Core\Operators\Binary\BitwiseOrOperator;
 use Expresso\Extensions\Core\Operators\Binary\BitwiseXorOperator;
 use Expresso\Extensions\Core\Operators\Binary\ConcatenationOperator;
+use Expresso\Extensions\Core\Operators\Binary\ConditionalOperator as BinaryConditionalOperator;
 use Expresso\Extensions\Core\Operators\Binary\DivisibleOperator;
 use Expresso\Extensions\Core\Operators\Binary\DivisionOperator;
 use Expresso\Extensions\Core\Operators\Binary\EqualsOperator;
@@ -99,9 +100,9 @@ class Core extends Extension
             //test
             /*
             new ContainsOperator(8, Operator::NONE),
-            new NotContainsOperator(8, Operator::NONE),
+            new NotContainsOperator(8, Operator::NONE),*/
             //other
-            new NullCoalescingOperator(1),*/
+            new BinaryConditionalOperator(1),
             new ConcatenationOperator(10),
             new SimpleAccessOperator(16),
             new NullSafeAccessOperator(16),
