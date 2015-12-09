@@ -41,12 +41,7 @@ class FunctionCallNode extends Node
     public function evaluate(EvaluationContext $context)
     {
         $callback = $this->getChildAt(0)->evaluate($context);
-        $arguments = array_map(
-            function (Node $nodeInterface) use ($context) {
-                return $nodeInterface->evaluate($context);
-            },
-            $this->getChildAt(1)->getChildren()
-        );
+        $arguments = $this->getChildAt(1)->evaluate($context);
 
         return call_user_func_array($callback, $arguments);
     }
