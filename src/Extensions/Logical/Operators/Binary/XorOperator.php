@@ -2,10 +2,9 @@
 
 namespace Expresso\Extensions\Logical\Operators\Binary;
 
-use Expresso\Compiler\Compiler;
-use Expresso\Compiler\Node;
+use Expresso\Compiler\CompilerConfiguration;
 use Expresso\Compiler\Operators\BinaryOperator;
-use Expresso\EvaluationContext;
+use Expresso\Extensions\Logical\Operators\Unary\Prefix\NotOperator;
 
 class XorOperator extends BinaryOperator
 {
@@ -14,24 +13,20 @@ class XorOperator extends BinaryOperator
         return 'xor';
     }
 
-    public function evaluate(EvaluationContext $context, Node $left, Node $right)
+    public function createNode(CompilerConfiguration $config, $left, $right)
     {
-        $left  = $left->evaluate($context);
-        $right = $right->evaluate($context);
+        $orOperator  = $config->getOperatorByClass(OrOperator::class);
+        $andOperator = $config->getOperatorByClass(AndOperator::class);
+        $notOperator = $config->getOperatorByClass(NotOperator::class);
 
-        return ($left || $right) && !($left && $right);
-    }
-
-    public function compile(Compiler $compiler, Node $left, Node $right)
-    {
-        $compiler->add('((')
-                 ->compileNode($left)
-                 ->add('||')
-                 ->compileNode($right)
-                 ->add(') && !(')
-                 ->compileNode($left)
-                 ->add('&&')
-                 ->compileNode($right)
-                 ->add('))');
+        //(left || right) && !(left && right)
+        return $andOperator->createNode(
+            $config,
+            $orOperator->createNode($config, $left, $right),
+            $notOperator->createNode(
+                $config,
+                $andOperator->createNode($config, $left, $right)
+            )
+        );
     }
 }

@@ -2,9 +2,9 @@
 
 namespace Expresso\Extensions\Arithmetic\Operators\Binary;
 
-use Expresso\Compiler\Operators\SimpleBinaryOperator;
+use Expresso\Compiler\Operators\BinaryOperator;
 
-class SubtractionOperator extends SimpleBinaryOperator
+class SubtractionOperator extends BinaryOperator
 {
 
     public function operators()
@@ -17,7 +17,7 @@ class SubtractionOperator extends SimpleBinaryOperator
         return '-';
     }
 
-    public function executeSimple($left, $right)
+    public function evaluateSimple($left, $right)
     {
         return $left - $right;
     }

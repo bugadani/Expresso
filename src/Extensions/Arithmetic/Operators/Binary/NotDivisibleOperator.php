@@ -3,9 +3,11 @@
 namespace Expresso\Extensions\Arithmetic\Operators\Binary;
 
 use Expresso\Compiler\Compiler;
+use Expresso\Compiler\CompilerConfiguration;
 use Expresso\Compiler\Node;
 use Expresso\Compiler\Operators\BinaryOperator;
 use Expresso\EvaluationContext;
+use Expresso\Extensions\Logical\Operators\Unary\Prefix\NotOperator;
 
 class NotDivisibleOperator extends BinaryOperator
 {
@@ -15,18 +17,18 @@ class NotDivisibleOperator extends BinaryOperator
         return 'is not divisible by';
     }
 
-    public function evaluate(EvaluationContext $context, Node $left, Node $right)
+    public function createNode(CompilerConfiguration $config, $left, $right)
     {
-        return $left->evaluate($context) % $right->evaluate($context) !== 0;
+        $notOperator   = $config->getOperatorByClass(NotOperator::class);
+        $isSetOperator = $config->getOperatorByClass(DivisibleOperator::class);
+
+        return $notOperator->createNode(
+            $config,
+            $isSetOperator->createNode($config, $left, $right)
+        );
     }
 
     public function compile(Compiler $compiler, Node $left, Node $right)
     {
-        $compiler->add('(')
-                 ->compileNode($left)
-                 ->add('%')
-                 ->compileNode($right)
-                 ->add(' !== 0')
-                 ->add(')');
     }
 }

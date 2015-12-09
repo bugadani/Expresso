@@ -14,14 +14,4 @@ class LambdaOperator extends BinaryOperator
     {
         return '->';
     }
-
-    public function evaluate(EvaluationContext $context, Node $left, Node $right)
-    {
-        //intentionally empty
-    }
-
-    public function compile(Compiler $compiler, Node $left, Node $right)
-    {
-        //intentionally empty
-    }
 }

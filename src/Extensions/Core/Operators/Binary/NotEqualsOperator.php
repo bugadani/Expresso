@@ -2,9 +2,11 @@
 
 namespace Expresso\Extensions\Core\Operators\Binary;
 
-use Expresso\Compiler\Operators\SimpleBinaryOperator;
+use Expresso\Compiler\CompilerConfiguration;
+use Expresso\Compiler\Operators\BinaryOperator;
+use Expresso\Extensions\Logical\Operators\Unary\Prefix\NotOperator;
 
-class NotEqualsOperator extends SimpleBinaryOperator
+class NotEqualsOperator extends BinaryOperator
 {
 
     public function operators()
@@ -12,13 +14,14 @@ class NotEqualsOperator extends SimpleBinaryOperator
         return '!=';
     }
 
-    public function executeSimple($left, $right)
+    public function createNode(CompilerConfiguration $config, $left, $right)
     {
-        return $left != $right;
-    }
+        $notOperator    = $config->getOperatorByClass(NotOperator::class);
+        $equalsOperator = $config->getOperatorByClass(EqualsOperator::class);
 
-    public function compiledOperator()
-    {
-        return '!=';
+        return $notOperator->createNode(
+            $config,
+            $equalsOperator->createNode($config, $left, $right)
+        );
     }
 }

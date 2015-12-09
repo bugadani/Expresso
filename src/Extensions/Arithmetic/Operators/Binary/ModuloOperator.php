@@ -15,11 +15,8 @@ class ModuloOperator extends BinaryOperator
         return 'mod';
     }
 
-    public function evaluate(EvaluationContext $context, Node $left, Node $right)
+    public function evaluateSimple($left, $right)
     {
-        $left  = $left->evaluate($context);
-        $right = $right->evaluate($context);
-
         if ($left < 0 && $right >= 0 || $left >= 0 && $right < 0) {
             return $right + $left % $right;
         } else {

@@ -16,9 +16,9 @@ class InfiniteRangeOperator extends UnaryOperator
         return '...';
     }
 
-    public function evaluate(EvaluationContext $context, Node $operand)
+    public function evaluateSimple($operand)
     {
-        return new InfiniteRangeIterator($operand->evaluate($context));
+        return new InfiniteRangeIterator($operand);
     }
 
     public function compile(Compiler $compiler, Node $operand)

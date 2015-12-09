@@ -15,9 +15,9 @@ class BitwiseNotOperator extends UnaryOperator
         return '~';
     }
 
-    public function evaluate(EvaluationContext $context, Node $operand)
+    public function evaluateSimple($operand)
     {
-        return ~$operand->evaluate($context);
+        return ~$operand;
     }
 
     public function compile(Compiler $compiler, Node $operand)

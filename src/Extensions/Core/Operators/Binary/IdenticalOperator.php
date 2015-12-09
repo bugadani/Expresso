@@ -2,9 +2,9 @@
 
 namespace Expresso\Extensions\Core\Operators\Binary;
 
-use Expresso\Compiler\Operators\SimpleBinaryOperator;
+use Expresso\Compiler\Operators\BinaryOperator;
 
-class IdenticalOperator extends SimpleBinaryOperator
+class IdenticalOperator extends BinaryOperator
 {
 
     public function operators()
@@ -12,7 +12,7 @@ class IdenticalOperator extends SimpleBinaryOperator
         return '==';
     }
 
-    public function executeSimple($left, $right)
+    public function evaluateSimple($left, $right)
     {
         return $left === $right;
     }

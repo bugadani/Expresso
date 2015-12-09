@@ -15,9 +15,9 @@ class EvenOperator extends UnaryOperator
         return 'is even';
     }
 
-    public function evaluate(EvaluationContext $context, Node $operand)
+    public function evaluateSimple($operand)
     {
-        return ($operand->evaluate($context) & 0x01) == 0;
+        return ($operand & 0x01) == 0;
     }
 
     public function compile(Compiler $compiler, Node $operand)

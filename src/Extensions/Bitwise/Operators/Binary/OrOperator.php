@@ -2,16 +2,16 @@
 
 namespace Expresso\Extensions\Bitwise\Operators\Binary;
 
-use Expresso\Compiler\Operators\SimpleBinaryOperator;
+use Expresso\Compiler\Operators\BinaryOperator;
 
-class OrOperator extends SimpleBinaryOperator
+class OrOperator extends BinaryOperator
 {
     public function operators()
     {
         return 'b-or';
     }
 
-    public function executeSimple($left, $right)
+    public function evaluateSimple($left, $right)
     {
         return $left | $right;
     }

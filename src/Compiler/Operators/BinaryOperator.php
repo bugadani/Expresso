@@ -12,9 +12,41 @@ use Expresso\EvaluationContext;
 
 abstract class BinaryOperator extends Operator
 {
-    abstract public function evaluate(EvaluationContext $context, Node $left, Node $right);
+    public function evaluate(EvaluationContext $context, Node $left, Node $right)
+    {
+        return $this->evaluateSimple(
+            $left->evaluate($context),
+            $right->evaluate($context)
+        );
+    }
 
-    abstract public function compile(Compiler $compiler, Node $left, Node $right);
+    /**
+     * @param $left
+     * @param $right
+     *
+     * @return mixed
+     */
+    public function evaluateSimple($left, $right)
+    {
+        throw new \BadMethodCallException('Either evaluate or evaluateSimple must be overridden');
+    }
+
+    public function compile(Compiler $compiler, Node $left, Node $right)
+    {
+        $compiler->add('(')
+                 ->compileNode($left)
+                 ->add($this->compiledOperator())
+                 ->compileNode($right)
+                 ->add(')');
+    }
+
+    /**
+     * @return string
+     */
+    public function compiledOperator()
+    {
+        throw new \BadMethodCallException('Either compile or compiledOperator must be overridden');
+    }
 
     public function createNode(CompilerConfiguration $config, $left, $right)
     {

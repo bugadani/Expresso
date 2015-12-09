@@ -17,16 +17,6 @@ class FilterOperator extends BinaryOperator
         return '|';
     }
 
-    public function evaluate(EvaluationContext $context, Node $left, Node $right)
-    {
-        //intentionally empty
-    }
-
-    public function compile(Compiler $compiler, Node $left, Node $right)
-    {
-        //intentionally empty
-    }
-
     public function createNode(CompilerConfiguration $config, $left, $right)
     {
         return new FunctionCallNode($right, [$left]);

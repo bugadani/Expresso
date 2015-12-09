@@ -2,9 +2,9 @@
 
 namespace Expresso\Extensions\Arithmetic\Operators\Binary;
 
-use Expresso\Compiler\Operators\SimpleBinaryOperator;
+use Expresso\Compiler\Operators\BinaryOperator;
 
-class LessThanOrEqualsOperator extends SimpleBinaryOperator
+class LessThanOrEqualsOperator extends BinaryOperator
 {
 
     public function operators()
@@ -12,7 +12,7 @@ class LessThanOrEqualsOperator extends SimpleBinaryOperator
         return '<=';
     }
 
-    public function executeSimple($left, $right)
+    public function evaluateSimple($left, $right)
     {
         return $left <= $right;
     }

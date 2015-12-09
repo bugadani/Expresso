@@ -3,10 +3,10 @@
 namespace Expresso\Extensions\Core\Operators\Unary\Postfix;
 
 use Expresso\Compiler\Compiler;
+use Expresso\Compiler\CompilerConfiguration;
 use Expresso\Compiler\Node;
-use Expresso\Compiler\Nodes\IdentifierNode;
 use Expresso\Compiler\Operators\UnaryOperator;
-use Expresso\EvaluationContext;
+use Expresso\Extensions\Logical\Operators\Unary\Prefix\NotOperator;
 
 
 class IsNotSetOperator extends UnaryOperator
@@ -17,17 +17,18 @@ class IsNotSetOperator extends UnaryOperator
         return 'is not set';
     }
 
-    public function evaluate(EvaluationContext $context, Node $operand)
+    public function createNode(CompilerConfiguration $config, $operand)
     {
-        /** @var IdentifierNode $operand */
-        return !$context->offsetExists($operand->getName());
+        $notOperator   = $config->getOperatorByClass(NotOperator::class);
+        $isSetOperator = $config->getOperatorByClass(IsSetOperator::class);
+
+        return $notOperator->createNode(
+            $config,
+            $isSetOperator->createNode($config, $operand)
+        );
     }
 
     public function compile(Compiler $compiler, Node $operand)
     {
-        /** @var IdentifierNode $operand */
-        $compiler->add('!$context->offsetExists(')
-                 ->compileString($operand->getName())
-                 ->add(')');
     }
 }

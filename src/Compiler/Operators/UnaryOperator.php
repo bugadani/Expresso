@@ -5,14 +5,21 @@ namespace Expresso\Compiler\Operators;
 use Expresso\Compiler\Compiler;
 use Expresso\Compiler\CompilerConfiguration;
 use Expresso\Compiler\Node;
-
 use Expresso\Compiler\Nodes\UnaryOperatorNode;
 use Expresso\Compiler\Operator;
 use Expresso\EvaluationContext;
 
 abstract class UnaryOperator extends Operator
 {
-    abstract public function evaluate(EvaluationContext $context, Node $operand);
+    public function evaluate(EvaluationContext $context, Node $operand)
+    {
+        return $this->evaluateSimple($operand->evaluate($context));
+    }
+
+    public function evaluateSimple($operand)
+    {
+        throw new \BadMethodCallException('Either evaluate or evaluateSimple must be overridden');
+    }
 
     abstract public function compile(Compiler $compiler, Node $operand);
 

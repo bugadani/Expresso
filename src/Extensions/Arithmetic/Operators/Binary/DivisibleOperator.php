@@ -15,9 +15,9 @@ class DivisibleOperator extends BinaryOperator
         return 'is divisible by';
     }
 
-    public function evaluate(EvaluationContext $context, Node $left, Node $right)
+    public function evaluateSimple($left, $right)
     {
-        return $left->evaluate($context) % $right->evaluate($context) === 0;
+        return $left % $right === 0;
     }
 
     public function compile(Compiler $compiler, Node $left, Node $right)

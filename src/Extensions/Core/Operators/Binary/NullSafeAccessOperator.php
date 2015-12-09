@@ -41,12 +41,4 @@ class NullSafeAccessOperator extends BinaryOperator
             $simpleAccessOperator->createNode($config, $left, $right)
         );
     }
-
-    public function evaluate(EvaluationContext $context, Node $left, Node $right)
-    {
-    }
-
-    public function compile(Compiler $compiler, Node $left, Node $right)
-    {
-    }
 }

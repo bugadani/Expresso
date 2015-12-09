@@ -16,6 +16,7 @@ class OrOperator extends BinaryOperator
 
     public function evaluate(EvaluationContext $context, Node $left, Node $right)
     {
+        //This implements short-circuit evaluation
         return $left->evaluate($context) || $right->evaluate($context);
     }
 

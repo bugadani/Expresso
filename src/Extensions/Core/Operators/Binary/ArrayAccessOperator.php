@@ -7,7 +7,6 @@ use Expresso\Compiler\CompilerConfiguration;
 use Expresso\Compiler\Node;
 use Expresso\Compiler\Nodes\BinaryOperatorNode;
 use Expresso\Compiler\Operators\BinaryOperator;
-use Expresso\EvaluationContext;
 
 class ArrayAccessOperator extends BinaryOperator
 {
@@ -22,11 +21,8 @@ class ArrayAccessOperator extends BinaryOperator
         return new BinaryOperatorNode($this, $left, $right);
     }
 
-    public function evaluate(EvaluationContext $context, Node $left, Node $right)
+    public function evaluateSimple($left, $right)
     {
-        $left  = $left->evaluate($context);
-        $right = $right->evaluate($context);
-
         return $left[ $right ];
     }
 

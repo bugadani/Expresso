@@ -5,7 +5,6 @@ namespace Expresso\Extensions\Core\Operators\Binary;
 use Expresso\Compiler\Compiler;
 use Expresso\Compiler\Node;
 use Expresso\Compiler\Operators\BinaryOperator;
-use Expresso\EvaluationContext;
 
 class RangeOperator extends BinaryOperator
 {
@@ -15,20 +14,17 @@ class RangeOperator extends BinaryOperator
         return '..';
     }
 
-    public function evaluate(EvaluationContext $context, Node $left, Node $right)
+    public function evaluateSimple($left, $right)
     {
-        return range(
-            $left->evaluate($context),
-            $right->evaluate($context)
-        );
+        return range($left, $right);
     }
 
     public function compile(Compiler $compiler, Node $left, Node $right)
     {
         $compiler->add('range(')
-            ->compileNode($left)
-            ->add(',')
-            ->compileNode($right)
-            ->add(')');
+                 ->compileNode($left)
+                 ->add(',')
+                 ->compileNode($right)
+                 ->add(')');
     }
 }
