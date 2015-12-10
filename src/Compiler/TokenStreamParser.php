@@ -59,7 +59,7 @@ class TokenStreamParser
         $this->tokens        = $tokens;
 
         $tokens->next();
-        $this->defaultParser->parse($tokens, $this);
+        $this->parse($this->defaultParser);
 
         return $this->operandStack->pop();
     }
@@ -148,7 +148,10 @@ class TokenStreamParser
 
     public function parse($parser)
     {
-        $this->getParser($parser)->parse($this->tokens, $this);
+        if (!$parser instanceof Parser) {
+            $parser = $this->getParser($parser);
+        }
+        $parser->parse($this->tokens, $this);
     }
 
     /**
