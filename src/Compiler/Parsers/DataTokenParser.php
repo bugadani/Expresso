@@ -3,18 +3,12 @@
 namespace Expresso\Compiler\Parsers;
 
 use Expresso\Compiler\Nodes\DataNode;
-use Expresso\Compiler\Parser;
-use Expresso\Compiler\TokenStream;
-use Expresso\Compiler\TokenStreamParser;
+use Expresso\Compiler\Token;
 
-class DataTokenParser extends Parser
+class DataTokenParser extends TermParser
 {
-    public function parse(TokenStream $stream, TokenStreamParser $parser)
+    public function parseToken(Token $token)
     {
-        $node = new DataNode($stream->current()->getValue());
-        $parser->pushOperand($node);
-        $stream->next();
-
-        $parser->parse('postfix');
+        return new DataNode($token->getValue());
     }
 }

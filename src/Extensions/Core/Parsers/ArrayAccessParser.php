@@ -18,22 +18,27 @@ class ArrayAccessParser extends Parser
         $this->accessOperator = new ArrayAccessOperator(0);
     }
 
+    public function parse(TokenStream $stream, TokenStreamParser $parser)
+    {
+        return $this->p($stream, $parser);
+    }
+
     /**
      * @param TokenStream $stream
      * @param TokenStreamParser $parser
      */
-    public function parse(TokenStream $stream, TokenStreamParser $parser)
+    public function p(TokenStream $stream, TokenStreamParser $parser)
     {
         $node = $parser->popOperand();
 
         $stream->next();
-        $parser->parse('expression');
+        yield $parser->parse('expression');
 
         $stream->expectCurrent(Token::PUNCTUATION, ']');
         $node = new BinaryOperatorNode($this->accessOperator, $node, $parser->popOperand());
         $parser->pushOperand($node);
 
         $stream->next();
-        $parser->parse('postfix no function call');
+        yield $parser->parse('postfix no function call');
     }
 }

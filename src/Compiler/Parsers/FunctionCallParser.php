@@ -22,6 +22,11 @@ class FunctionCallParser extends Parser
 
     public function parse(TokenStream $stream, TokenStreamParser $parser)
     {
+        return $this->p($stream, $parser);
+    }
+
+    public function p(TokenStream $stream, TokenStreamParser $parser)
+    {
         $operator = $this->functionOperator;
         $parser->popOperatorsWithHigherPrecedence($operator);
 
@@ -34,7 +39,7 @@ class FunctionCallParser extends Parser
         $currentToken = $stream->current();
         if (!$currentToken->test(Token::PUNCTUATION, ')')) {
             do {
-                $parser->parse('expression');
+                yield $parser->parse('expression');
                 $functionNode->addArgument($parser->popOperand());
                 $currentToken = $stream->expectCurrent(Token::PUNCTUATION, [',', ')']);
                 $stream->next();

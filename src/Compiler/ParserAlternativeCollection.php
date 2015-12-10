@@ -43,14 +43,12 @@ class ParserAlternativeCollection extends Parser
         $currentToken = $stream->current();
         foreach ($this->tests as $index => $test) {
             if ($currentToken->test($test[0], $test[1])) {
-                $this->alternatives[ $index ]->parse($stream, $parser);
-
-                return;
+                return $this->alternatives[ $index ]->parse($stream, $parser);
             }
         }
 
         if ($this->defaultParser !== null) {
-            $this->defaultParser->parse($stream, $parser);
+            return $this->defaultParser->parse($stream, $parser);
         }
     }
 }

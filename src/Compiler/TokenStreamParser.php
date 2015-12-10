@@ -59,15 +59,45 @@ class TokenStreamParser
         $this->tokens        = $tokens;
 
         $tokens->next();
-        $this->parse($this->defaultParser);
+        $generator = $this->parse($this->defaultParser);
+
+        $this->runGen($generator);
 
         return $this->operandStack->pop();
     }
 
-    public function inOperatorStack(callable $callback)
+    private function runGen(\Generator $g)
+    {
+        if (false) {
+            $stack = new \SplStack();
+            $stack->push($g);
+            while (!$stack->isEmpty()) {
+                /** @var \Generator $current */
+                $current = $stack->pop();
+                //valid runs generator until first yield
+                while ($current !== null && $current->valid()) {
+                    $stack->push($current);
+                    $new     = $current->current();
+                    $current->next();//run to next yield
+                    $current = $new;
+                }
+            }
+        } else {
+            foreach ($g as $child) {
+                if ($child instanceof \Generator) {
+                    $this->runGen($child);
+                }
+            }
+        }
+    }
+
+    public function pushOperatorSentinel()
     {
         $this->operatorStack->push(null);
-        $callback($this->tokens, $this);
+    }
+
+    public function popOperatorSentinel()
+    {
         while ($this->operatorStack->top() !== null) {
             $this->popOperator();
         }
@@ -151,7 +181,8 @@ class TokenStreamParser
         if (!$parser instanceof Parser) {
             $parser = $this->getParser($parser);
         }
-        $parser->parse($this->tokens, $this);
+
+        return $parser->parse($this->tokens, $this);
     }
 
     /**

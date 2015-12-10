@@ -18,7 +18,13 @@ class ArrayDefinitionParser extends Parser
     const TYPE_LIST = 1;
     const TYPE_MAP = 2;
 
+
     public function parse(TokenStream $stream, TokenStreamParser $parser)
+    {
+        return $this->p($stream, $parser);
+    }
+
+    public function p(TokenStream $stream, TokenStreamParser $parser)
     {
         $array    = new ArrayDataNode();
         $listType = self::TYPE_INDETERMINATE;
@@ -27,7 +33,7 @@ class ArrayDefinitionParser extends Parser
         $stream->next();
         while (!$stream->current()->test(Token::PUNCTUATION, ']')) {
             //expressions are allowed as both array keys and values.
-            $parser->parse('expression');
+            yield $parser->parse('expression');
             $value = $parser->popOperand();
 
             if ($listType === self::TYPE_INDETERMINATE) {
@@ -47,7 +53,7 @@ class ArrayDefinitionParser extends Parser
                 $stream->expectCurrent(Token::PUNCTUATION, [':', '=>']);
                 //the previous value was a key
                 $stream->next();
-                $parser->parse('expression');
+                yield $parser->parse('expression');
                 $key   = $value;
                 $value = $parser->popOperand();
             }

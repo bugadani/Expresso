@@ -21,6 +21,11 @@ class PostfixOperatorParser extends Parser
 
     public function parse(TokenStream $stream, TokenStreamParser $parser)
     {
+        return $this->p($stream, $parser);
+    }
+
+    public function p(TokenStream $stream, TokenStreamParser $parser)
+    {
         $currentSymbol = $stream->current()->getValue();
         if ($this->postfixOperators->isOperator($currentSymbol)) {
             $parser->pushOperator(
@@ -28,5 +33,6 @@ class PostfixOperatorParser extends Parser
             );
             $stream->next();
         }
+        yield;
     }
 }

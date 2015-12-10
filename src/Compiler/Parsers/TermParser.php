@@ -7,8 +7,9 @@ use Expresso\Compiler\Token;
 use Expresso\Compiler\TokenStream;
 use Expresso\Compiler\TokenStreamParser;
 
-class ParenthesisGroupedExpressionParser extends Parser
+abstract class TermParser extends Parser
 {
+    public abstract function parseToken(Token $token);
 
     public function parse(TokenStream $stream, TokenStreamParser $parser)
     {
@@ -17,9 +18,9 @@ class ParenthesisGroupedExpressionParser extends Parser
 
     public function p(TokenStream $stream, TokenStreamParser $parser)
     {
+        $parser->pushOperand($this->parseToken($stream->current()));
         $stream->next();
-        yield $parser->parse('expression');
-        $stream->expectCurrent(Token::PUNCTUATION, ')');
-        $stream->next();
+
+        yield $parser->parse('postfix');
     }
 }

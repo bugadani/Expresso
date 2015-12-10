@@ -11,7 +11,13 @@ use Expresso\Extensions\Lambda\Nodes\LambdaNode;
 
 class LambdaParser extends Parser
 {
+
     public function parse(TokenStream $stream, TokenStreamParser $parser)
+    {
+        return $this->p($stream, $parser);
+    }
+
+    public function p(TokenStream $stream, TokenStreamParser $parser)
     {
         $arguments = [];
         if ($stream->nextTokenIf(Token::PUNCTUATION, '(')) {
@@ -28,7 +34,7 @@ class LambdaParser extends Parser
         $stream->expect(Token::OPERATOR, '->');
         $stream->next();
 
-        $parser->parse('expression');
+        yield $parser->parse('expression');
         $body = $parser->popOperand();
 
         $parser->pushOperand(new LambdaNode($body, $arguments));

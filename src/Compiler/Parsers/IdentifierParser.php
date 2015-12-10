@@ -3,18 +3,12 @@
 namespace Expresso\Compiler\Parsers;
 
 use Expresso\Compiler\Nodes\IdentifierNode;
-use Expresso\Compiler\Parser;
-use Expresso\Compiler\TokenStream;
-use Expresso\Compiler\TokenStreamParser;
+use Expresso\Compiler\Token;
 
-class IdentifierParser extends Parser
+class IdentifierParser extends TermParser
 {
-    public function parse(TokenStream $stream, TokenStreamParser $parser)
+    public function parseToken(Token $token)
     {
-        $identifier = new IdentifierNode($stream->current()->getValue());
-        $parser->pushOperand($identifier);
-        $stream->next();
-
-        $parser->parse('postfix');
+        return new IdentifierNode($token->getValue());
     }
 }
