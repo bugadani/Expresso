@@ -33,12 +33,12 @@ class FunctionCallParser extends Parser
         $stream->next();
         $currentToken = $stream->current();
         if (!$currentToken->test(Token::PUNCTUATION, ')')) {
-            while (!$currentToken->test(Token::PUNCTUATION, ')')) {
+            do {
                 $parser->parse('expression');
                 $functionNode->addArgument($parser->popOperand());
                 $currentToken = $stream->expectCurrent(Token::PUNCTUATION, [',', ')']);
                 $stream->next();
-            }
+            } while (!$currentToken->test(Token::PUNCTUATION, ')'));
         } else {
             $stream->next();
         }
