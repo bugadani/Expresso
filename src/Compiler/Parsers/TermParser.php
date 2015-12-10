@@ -13,11 +13,6 @@ abstract class TermParser extends Parser
 
     public function parse(TokenStream $stream, TokenStreamParser $parser)
     {
-        return $this->p($stream, $parser);
-    }
-
-    public function p(TokenStream $stream, TokenStreamParser $parser)
-    {
         $parser->pushOperand($this->parseToken($stream->current()));
         $stream->next();
 

@@ -21,11 +21,6 @@ class ArrayDefinitionParser extends Parser
 
     public function parse(TokenStream $stream, TokenStreamParser $parser)
     {
-        return $this->p($stream, $parser);
-    }
-
-    public function p(TokenStream $stream, TokenStreamParser $parser)
-    {
         $array    = new ArrayDataNode();
         $listType = self::TYPE_INDETERMINATE;
 

@@ -14,11 +14,6 @@ class LambdaParser extends Parser
 
     public function parse(TokenStream $stream, TokenStreamParser $parser)
     {
-        return $this->p($stream, $parser);
-    }
-
-    public function p(TokenStream $stream, TokenStreamParser $parser)
-    {
         $arguments = [];
         if ($stream->nextTokenIf(Token::PUNCTUATION, '(')) {
             if (!$stream->nextTokenIf(Token::PUNCTUATION, ')')) {

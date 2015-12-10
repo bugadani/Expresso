@@ -22,9 +22,9 @@ class ParserAlternativeCollection extends Parser
 
     public function __construct(Parser $defaultParser = null)
     {
-        $this->alternatives    = [];
-        $this->tests           = [];
-        $this->defaultParser   = $defaultParser;
+        $this->alternatives  = [];
+        $this->tests         = [];
+        $this->defaultParser = $defaultParser;
     }
 
     public function addAlternative(Parser $parser, $test)
@@ -40,15 +40,17 @@ class ParserAlternativeCollection extends Parser
 
     public function parse(TokenStream $stream, TokenStreamParser $parser)
     {
-        $currentToken = $stream->current();
+        $currentToken      = $stream->current();
+        $alternativeParser = $this->defaultParser;
         foreach ($this->tests as $index => $test) {
             if ($currentToken->test($test[0], $test[1])) {
-                return $this->alternatives[ $index ]->parse($stream, $parser);
+                $alternativeParser = $this->alternatives[ $index ];
+                break;
             }
         }
 
-        if ($this->defaultParser !== null) {
-            return $this->defaultParser->parse($stream, $parser);
+        if ($alternativeParser !== null) {
+            return $alternativeParser->parse($stream, $parser);
         }
     }
 }

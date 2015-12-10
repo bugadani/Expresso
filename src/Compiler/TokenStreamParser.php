@@ -61,35 +61,35 @@ class TokenStreamParser
         $tokens->next();
         $generator = $this->parse($this->defaultParser);
 
-        $this->runGen($generator);
+        $stack                 = new \SplStack();
+        $beforeFirstYieldStack = new \SplStack();
+        $stack->push($generator);
+        $beforeFirstYieldStack->push(true);
+        while (!$stack->isEmpty()) {
+            /** @var \Generator $current */
+            $current = $stack->top();
+            if (!$beforeFirstYieldStack->top()) {
+                $current->next();
+            } else {
+                $beforeFirstYieldStack->pop();
+                $beforeFirstYieldStack->push(false);
+            }
+
+            if ($current->valid()) {
+                $child = $current->current();
+                if ($child !== null) {
+                    $stack->push($child);
+                    $beforeFirstYieldStack->push(true);
+                }
+            } else {
+                $stack->pop();
+                $beforeFirstYieldStack->pop();
+            }
+        }
 
         return $this->operandStack->pop();
     }
 
-    private function runGen(\Generator $g)
-    {
-        if (false) {
-            $stack = new \SplStack();
-            $stack->push($g);
-            while (!$stack->isEmpty()) {
-                /** @var \Generator $current */
-                $current = $stack->pop();
-                //valid runs generator until first yield
-                while ($current !== null && $current->valid()) {
-                    $stack->push($current);
-                    $new     = $current->current();
-                    $current->next();//run to next yield
-                    $current = $new;
-                }
-            }
-        } else {
-            foreach ($g as $child) {
-                if ($child instanceof \Generator) {
-                    $this->runGen($child);
-                }
-            }
-        }
-    }
 
     public function pushOperatorSentinel()
     {

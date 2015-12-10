@@ -12,11 +12,6 @@ class ParenthesisGroupedExpressionParser extends Parser
 
     public function parse(TokenStream $stream, TokenStreamParser $parser)
     {
-        return $this->p($stream, $parser);
-    }
-
-    public function p(TokenStream $stream, TokenStreamParser $parser)
-    {
         $stream->next();
         yield $parser->parse('expression');
         $stream->expectCurrent(Token::PUNCTUATION, ')');

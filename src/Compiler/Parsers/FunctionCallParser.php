@@ -22,11 +22,6 @@ class FunctionCallParser extends Parser
 
     public function parse(TokenStream $stream, TokenStreamParser $parser)
     {
-        return $this->p($stream, $parser);
-    }
-
-    public function p(TokenStream $stream, TokenStreamParser $parser)
-    {
         $operator = $this->functionOperator;
         $parser->popOperatorsWithHigherPrecedence($operator);
 

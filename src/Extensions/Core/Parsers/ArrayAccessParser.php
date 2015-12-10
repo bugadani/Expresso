@@ -20,15 +20,6 @@ class ArrayAccessParser extends Parser
 
     public function parse(TokenStream $stream, TokenStreamParser $parser)
     {
-        return $this->p($stream, $parser);
-    }
-
-    /**
-     * @param TokenStream $stream
-     * @param TokenStreamParser $parser
-     */
-    public function p(TokenStream $stream, TokenStreamParser $parser)
-    {
         $node = $parser->popOperand();
 
         $stream->next();
