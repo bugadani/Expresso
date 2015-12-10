@@ -4,7 +4,10 @@ namespace Expresso\Compiler;
 
 class Compiler
 {
-    private $source;
+    /**
+     * @var \SplQueue
+     */
+    private $taskQueue;
 
     /**
      * @var CompilerConfiguration
@@ -26,7 +29,7 @@ class Compiler
 
     public function add($string)
     {
-        $this->source .= $string;
+        $this->taskQueue->enqueue($string);
 
         return $this;
     }
@@ -97,16 +100,45 @@ class Compiler
 
     public function compileNode(Node $node)
     {
-        $node->compile($this);
+        $this->taskQueue->enqueue($node);
 
         return $this;
     }
 
     public function compile(Node $rootNode)
     {
-        $this->source = '';
-        $rootNode->compile($this);
+        $source    = '';
+        $this->taskQueue = new \SplQueue();
+        $this->taskQueue->setIteratorMode(\SplQueue::IT_MODE_FIFO | \SplQueue::IT_MODE_DELETE);
 
-        return $this->source;
+        $this->compileNode($rootNode);
+
+        //task queue based compilation ensures that the compilation
+        //will never abort due to the nesting limit given by PHP
+        while (!$this->taskQueue->isEmpty()) {
+            $task = $this->taskQueue->dequeue();
+            if ($task instanceof Node) {
+
+                //replace queue with a new one
+                $savedQueue      = $this->taskQueue;
+                $this->taskQueue = new \SplQueue();
+
+                $task->compile($this);
+
+                //restore old queue
+                $newQueue        = $this->taskQueue;
+                $this->taskQueue = $savedQueue;
+
+                //prepend to old queue
+                while (!$newQueue->isEmpty()) {
+                    $this->taskQueue->unshift($newQueue->pop());
+                }
+
+            } else {
+                $source .= $task;
+            }
+        }
+
+        return $source;
     }
 }
