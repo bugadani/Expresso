@@ -17,7 +17,7 @@ class AndOperator extends BinaryOperator
         return '&&';
     }
 
-    public function createNode(CompilerConfiguration $config, $left, $right)
+    public function createNode(CompilerConfiguration $config, Node $left, Node $right)
     {
         $right->addData('noEvaluate');
 
@@ -29,11 +29,12 @@ class AndOperator extends BinaryOperator
         //This implements short-circuit evaluation
         if ($childResults[0]) {
             $childNode = $node->getChildAt(1);
-            $childNode->removeData('noEvaluate');
             $evaluator = new NodeTreeEvaluator();
 
+            $childNode->removeData('noEvaluate');
             $result = $evaluator->evaluate($childNode, $context);
             $childNode->addData('noEvaluate');
+
             return $result;
         } else {
             return false;

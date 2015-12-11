@@ -18,13 +18,16 @@ class NodeTreeEvaluator
 
     public function evaluate(Node $node, EvaluationContext $context)
     {
+        if ($node->hasData('noEvaluate')) {
+            return null;
+        }
         $this->resultStack = new \SplStack();
         $this->results     = [];
 
         TreeHelper::traverse(
             $node,
             function (Node $node) {
-                if($node->hasData('noEvaluate')) {
+                if ($node->hasData('noEvaluate')) {
                     return false;
                 } else {
                     $this->resultStack->push($this->results);
@@ -40,6 +43,6 @@ class NodeTreeEvaluator
             }
         );
 
-        return array_pop($this->results);
+        return $this->results[0];
     }
 }

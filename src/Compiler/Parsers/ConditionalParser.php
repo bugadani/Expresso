@@ -32,9 +32,9 @@ class ConditionalParser extends Parser
             $stream->next();
             yield $parser->parse('expression');
 
-            $right = $parser->popOperand();
+            $right  = $parser->popOperand();
             $middle = $parser->popOperand();
-            $left = $parser->popOperand();
+            $left   = $parser->popOperand();
 
             $parser->pushOperand(
                 $this->conditionalOperator->createNode($this->config, $left, $middle, $right)

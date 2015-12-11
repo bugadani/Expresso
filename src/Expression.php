@@ -13,7 +13,7 @@ class Expression
     public function __construct(callable $callback, $source)
     {
         $this->callback = $callback;
-        $this->source = $source;
+        $this->source   = $source;
     }
 
     public function __toString()

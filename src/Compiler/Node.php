@@ -2,7 +2,6 @@
 
 namespace Expresso\Compiler;
 
-use Expresso\Compiler\Utils\TreeHelper;
 use Expresso\EvaluationContext;
 
 abstract class Node
@@ -25,26 +24,6 @@ abstract class Node
     public function removeData($key)
     {
         unset($this->data[ $key ]);
-    }
-
-    public function addDataRecursive($key, $value = false)
-    {
-        TreeHelper::traverse(
-            $this,
-            function (Node $node) use ($key, $value) {
-                $node->addData($key, $value);
-            }
-        );
-    }
-
-    public function removeDataRecursive($key)
-    {
-        TreeHelper::traverse(
-            $this,
-            function (Node $node) use ($key) {
-                $node->removeData($key);
-            }
-        );
     }
 
     public function hasData($key)

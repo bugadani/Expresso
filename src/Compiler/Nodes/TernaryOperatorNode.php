@@ -5,7 +5,6 @@ namespace Expresso\Compiler\Nodes;
 use Expresso\Compiler\Compiler;
 use Expresso\Compiler\Node;
 use Expresso\Compiler\Operators\TernaryOperator;
-use Expresso\EvaluationContext;
 
 class TernaryOperatorNode extends OperatorNode
 {

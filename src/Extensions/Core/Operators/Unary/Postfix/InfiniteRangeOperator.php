@@ -5,7 +5,6 @@ namespace Expresso\Extensions\Core\Operators\Unary\Postfix;
 use Expresso\Compiler\Compiler;
 use Expresso\Compiler\Node;
 use Expresso\Compiler\Operators\UnaryOperator;
-use Expresso\EvaluationContext;
 use Expresso\Extensions\Core\InfiniteRangeIterator;
 
 class InfiniteRangeOperator extends UnaryOperator

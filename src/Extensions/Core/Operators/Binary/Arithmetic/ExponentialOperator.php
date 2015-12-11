@@ -22,9 +22,9 @@ class ExponentialOperator extends BinaryOperator
     public function compile(Compiler $compiler, Node $left, Node $right)
     {
         $compiler->add('pow(')
-            ->compileNode($left)
-            ->add(', ')
-            ->compileNode($right)
-            ->add(')');
+                 ->compileNode($left)
+                 ->add(', ')
+                 ->compileNode($right)
+                 ->add(')');
     }
 }

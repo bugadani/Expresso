@@ -3,6 +3,7 @@
 namespace Expresso\Extensions\Core\Operators\Binary\Logical;
 
 use Expresso\Compiler\CompilerConfiguration;
+use Expresso\Compiler\Node;
 use Expresso\Compiler\Operators\BinaryOperator;
 use Expresso\Extensions\Core\Operators\Unary\Prefix\NotOperator;
 
@@ -13,7 +14,7 @@ class XorOperator extends BinaryOperator
         return 'xor';
     }
 
-    public function createNode(CompilerConfiguration $config, $left, $right)
+    public function createNode(CompilerConfiguration $config, Node $left, Node $right)
     {
         $orOperator  = $config->getOperatorByClass(OrOperator::class);
         $andOperator = $config->getOperatorByClass(AndOperator::class);

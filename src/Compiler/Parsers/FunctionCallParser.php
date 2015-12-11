@@ -30,8 +30,7 @@ class FunctionCallParser extends Parser
             $parser->popOperand() //function name or filter/access node
         );
 
-        $stream->next();
-        $currentToken = $stream->current();
+        $currentToken = $stream->next();
         if (!$currentToken->test(Token::PUNCTUATION, ')')) {
             do {
                 yield $parser->parse('expression');
@@ -42,6 +41,7 @@ class FunctionCallParser extends Parser
         } else {
             $stream->next();
         }
+
         $parser->pushOperand($functionNode);
     }
 }

@@ -16,7 +16,7 @@ class NotDivisibleOperator extends BinaryOperator
         return 'is not divisible by';
     }
 
-    public function createNode(CompilerConfiguration $config, $left, $right)
+    public function createNode(CompilerConfiguration $config, Node $left, Node $right)
     {
         $notOperator   = $config->getOperatorByClass(NotOperator::class);
         $isSetOperator = $config->getOperatorByClass(DivisibleOperator::class);

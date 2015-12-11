@@ -7,11 +7,10 @@ use Expresso\Compiler\CompilerConfiguration;
 use Expresso\Compiler\Node;
 use Expresso\Compiler\Nodes\DataNode;
 use Expresso\Compiler\Nodes\IdentifierNode;
-use Expresso\EvaluationContext;
 
 class SimpleAccessOperator extends ArrayAccessOperator
 {
-    public function createNode(CompilerConfiguration $config, $left, $right)
+    public function createNode(CompilerConfiguration $config, Node $left, Node $right)
     {
         if ($right instanceof IdentifierNode) {
             $right = new DataNode($right->getName());

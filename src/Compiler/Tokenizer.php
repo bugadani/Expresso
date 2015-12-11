@@ -16,7 +16,7 @@ class Tokenizer
         '}'  => '}',
         ':'  => ':',
         '?'  => '?',
-        '\\'  => '\\',
+        '\\' => '\\',
         '=>' => '=>'
     ];
 
@@ -34,10 +34,10 @@ class Tokenizer
     {
         $signs    = ' ';
         $patterns = [
-            ':[a-zA-Z_\-0-9]+'          => 16, //:short-string
-            '"(?:\\\\.|[^"\\\\])*"'     => 21, //double quoted string
-            "'(?:\\\\.|[^'\\\\])*'"     => 21, //single quoted string
-            '(?<!\w)\d+(?:\.\d+)?'      => 20 //number
+            ':[a-zA-Z_\-0-9]+'      => 16, //:short-string
+            '"(?:\\\\.|[^"\\\\])*"' => 21, //double quoted string
+            "'(?:\\\\.|[^'\\\\])*'" => 21, //single quoted string
+            '(?<!\w)\d+(?:\.\d+)?'  => 20 //number
         ];
 
         $iterator = new \AppendIterator();

@@ -3,6 +3,7 @@
 namespace Expresso\Extensions\Core\Operators\Binary;
 
 use Expresso\Compiler\CompilerConfiguration;
+use Expresso\Compiler\Node;
 use Expresso\Compiler\Operators\BinaryOperator;
 use Expresso\Extensions\Core\Operators\Ternary\ConditionalOperator as TernaryConditionalOperator;
 
@@ -14,7 +15,7 @@ class ConditionalOperator extends BinaryOperator
         return '?:';
     }
 
-    public function createNode(CompilerConfiguration $config, $left, $right)
+    public function createNode(CompilerConfiguration $config, Node $left, Node $right)
     {
         $ternaryConditionalOperator = $config->getOperatorByClass(TernaryConditionalOperator::class);
 

@@ -25,15 +25,13 @@ class ArrayDefinitionParser extends Parser
         $listType = self::TYPE_INDETERMINATE;
 
         //Step to the first data token or closing bracket
-        $stream->next();
-        while (!$stream->current()->test(Token::PUNCTUATION, ']')) {
+        while (!$stream->next()->test(Token::PUNCTUATION, ']')) {
             //expressions are allowed as both array keys and values.
             yield $parser->parse('expression');
             $value = $parser->popOperand();
 
             if ($listType === self::TYPE_INDETERMINATE) {
                 if ($this->isRangeOperator($value)) {
-                    $stream->expectCurrent(Token::PUNCTUATION, ']');
                     $array = $value;
                     break;
                 } else if ($stream->current()->test(Token::PUNCTUATION, [':', '=>'])) {
@@ -55,12 +53,11 @@ class ArrayDefinitionParser extends Parser
             $array->add($value, $key);
 
             //Elements are comma separated
-            if ($stream->current()->test(Token::PUNCTUATION, ',')) {
-                $stream->next();
-            } else {
-                $stream->expectCurrent(Token::PUNCTUATION, ']');
+            if (!$stream->current()->test(Token::PUNCTUATION, ',')) {
+                break;
             }
         }
+        $stream->expectCurrent(Token::PUNCTUATION, ']');
         //push array node to operand stack
         $stream->next();
         $parser->pushOperand($array);

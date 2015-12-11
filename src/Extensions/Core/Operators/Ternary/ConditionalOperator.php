@@ -55,6 +55,7 @@ class ConditionalOperator extends TernaryOperator
 
         $result = $evaluator->evaluate($childNode, $context);
         $childNode->addData('noEvaluate');
+
         return $result;
     }
 

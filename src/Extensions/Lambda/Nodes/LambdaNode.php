@@ -4,16 +4,13 @@ namespace Expresso\Extensions\Lambda\Nodes;
 
 use Expresso\Compiler\Compiler;
 use Expresso\Compiler\Node;
-use Expresso\Compiler\Nodes\IdentifierNode;
 use Expresso\Compiler\NodeTreeEvaluator;
 use Expresso\EvaluationContext;
 
 class LambdaNode extends Node
 {
     /**
-     * Arguments are not children because they are not strictly nodes, but a list of names
-     *
-     * @var IdentifierNode[]
+     * @var string[]
      */
     private $arguments;
 
@@ -21,7 +18,7 @@ class LambdaNode extends Node
     {
         $this->addChild($functionBody);
         $functionBody->addData('noEvaluate');
-        $this->arguments    = $arguments;
+        $this->arguments = $arguments;
     }
 
     public function compile(Compiler $compiler)
@@ -35,7 +32,7 @@ class LambdaNode extends Node
             } else {
                 $first = false;
             }
-            $compiler->add('$' . $argName->getName());
+            $compiler->add('$' . $argName);
         }
 
         $compiler->add(') use ($context) {')
@@ -48,8 +45,8 @@ class LambdaNode extends Node
             } else {
                 $first = false;
             }
-            $compiler->compileString($argName->getName());
-            $compiler->add('=> $' . $argName->getName());
+            $compiler->compileString($argName);
+            $compiler->add('=> $' . $argName);
         }
         $compiler->add('], $context);')
                  ->add('return ')
@@ -60,20 +57,16 @@ class LambdaNode extends Node
     public function evaluate(EvaluationContext $context, array $childResults)
     {
         return function () use ($context) {
-            $evaluator = new NodeTreeEvaluator();
+            $evaluator    = new NodeTreeEvaluator();
             $arguments    = array_slice(func_get_args(), 0, count($this->arguments));
-            $argNames     = array_map(
-                function (IdentifierNode $node) {
-                    return $node->getName();
-                },
-                $this->arguments
-            );
-            $innerContext = $context->createInnerScope(array_combine($argNames, $arguments));
+            $innerContext = $context->createInnerScope(array_combine($this->arguments, $arguments));
 
-            $this->getChildAt(0)->removeData('noEvaluate');
-            $result = $evaluator->evaluate($this->getChildAt(0), $innerContext);
+            $functionBody = $this->getChildAt(0);
 
-            $this->getChildAt(0)->addData('noEvaluate');
+            $functionBody->removeData('noEvaluate');
+            $result = $evaluator->evaluate($functionBody, $innerContext);
+            $functionBody->addData('noEvaluate');
+
             return $result;
         };
     }

@@ -16,8 +16,6 @@ class ExpressionParser extends Parser
         yield $parser->parse('binary');
         $parser->popOperatorSentinel();
 
-        if ($parser->hasParser('conditional')) {
-            yield $parser->parse('conditional');
-        }
+        yield $parser->parse('conditional');
     }
 }

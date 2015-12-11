@@ -17,7 +17,7 @@ class ArgumentListNode extends Node
     {
         $first = true;
         foreach ($this->getChildren() as $child) {
-            if($first) {
+            if ($first) {
                 $first = false;
             } else {
                 $compiler->add(', ');

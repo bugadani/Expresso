@@ -20,14 +20,19 @@ class ArrayAccessParser extends Parser
 
     public function parse(TokenStream $stream, TokenStreamParser $parser)
     {
-        $node = $parser->popOperand();
-
         $stream->next();
         yield $parser->parse('expression');
-
         $stream->expectCurrent(Token::PUNCTUATION, ']');
-        $node = new BinaryOperatorNode($this->accessOperator, $node, $parser->popOperand());
-        $parser->pushOperand($node);
+
+        $index = $parser->popOperand();
+        $node  = $parser->popOperand();
+        $parser->pushOperand(
+            new BinaryOperatorNode(
+                $this->accessOperator,
+                $node,
+                $index
+            )
+        );
 
         $stream->next();
         yield $parser->parse('postfix no function call');

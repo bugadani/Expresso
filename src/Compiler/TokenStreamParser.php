@@ -59,37 +59,29 @@ class TokenStreamParser
         $this->tokens        = $tokens;
 
         $tokens->next();
-        $generator = $this->parse($this->defaultParser);
+        $generator = $this->defaultParser->parse($tokens, $this);
 
-        $stack                 = new \SplStack();
-        $beforeFirstYieldStack = new \SplStack();
-        $stack->push($generator);
-        $beforeFirstYieldStack->push(true);
+        $stack = new \SplStack();
+        $stack->push([$generator, true]);
+
         while (!$stack->isEmpty()) {
             /** @var \Generator $current */
-            $current = $stack->top();
-            if (!$beforeFirstYieldStack->top()) {
+            list($current, $isFirst) = $stack->pop();
+            if (!$isFirst) {
                 $current->next();
-            } else {
-                $beforeFirstYieldStack->pop();
-                $beforeFirstYieldStack->push(false);
             }
 
             if ($current->valid()) {
+                $stack->push([$current, false]);
                 $child = $current->current();
                 if ($child !== null) {
-                    $stack->push($child);
-                    $beforeFirstYieldStack->push(true);
+                    $stack->push([$child, true]);
                 }
-            } else {
-                $stack->pop();
-                $beforeFirstYieldStack->pop();
             }
         }
 
         return $this->operandStack->pop();
     }
-
 
     public function pushOperatorSentinel()
     {
@@ -178,11 +170,7 @@ class TokenStreamParser
 
     public function parse($parser)
     {
-        if (!$parser instanceof Parser) {
-            $parser = $this->getParser($parser);
-        }
-
-        return $parser->parse($this->tokens, $this);
+        return $this->getParser($parser)->parse($this->tokens, $this);
     }
 
     /**

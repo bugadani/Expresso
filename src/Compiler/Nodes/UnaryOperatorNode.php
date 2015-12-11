@@ -3,10 +3,8 @@
 namespace Expresso\Compiler\Nodes;
 
 use Expresso\Compiler\Compiler;
-
 use Expresso\Compiler\Node;
 use Expresso\Compiler\Operators\UnaryOperator;
-use Expresso\EvaluationContext;
 
 class UnaryOperatorNode extends OperatorNode
 {

@@ -2,6 +2,8 @@
 
 namespace Expresso\Compiler;
 
+use Expresso\Compiler\Parsers\NullParser;
+
 class ParserAlternativeCollection extends Parser
 {
     public static function wrap(Parser $parser)
@@ -24,7 +26,7 @@ class ParserAlternativeCollection extends Parser
     {
         $this->alternatives  = [];
         $this->tests         = [];
-        $this->defaultParser = $defaultParser;
+        $this->defaultParser = $defaultParser ?: new NullParser();
     }
 
     public function addAlternative(Parser $parser, $test)
@@ -40,17 +42,13 @@ class ParserAlternativeCollection extends Parser
 
     public function parse(TokenStream $stream, TokenStreamParser $parser)
     {
-        $currentToken      = $stream->current();
-        $alternativeParser = $this->defaultParser;
+        $currentToken = $stream->current();
         foreach ($this->tests as $index => $test) {
             if ($currentToken->test($test[0], $test[1])) {
-                $alternativeParser = $this->alternatives[ $index ];
-                break;
+                return $this->alternatives[ $index ]->parse($stream, $parser);
             }
         }
 
-        if ($alternativeParser !== null) {
-            return $alternativeParser->parse($stream, $parser);
-        }
+        return $this->defaultParser->parse($stream, $parser);
     }
 }

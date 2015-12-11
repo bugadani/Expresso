@@ -132,6 +132,7 @@ class Expresso
         $nodes = $this->parse($expression);
 
         $evaluator = new NodeTreeEvaluator();
+
         return $evaluator->evaluate($nodes, new EvaluationContext($parameters, $this->configuration));
     }
 }

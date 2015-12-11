@@ -107,7 +107,7 @@ class Compiler
 
     public function compile(Node $rootNode)
     {
-        $source    = '';
+        $source          = '';
         $this->taskQueue = new \SplQueue();
         $this->taskQueue->setIteratorMode(\SplQueue::IT_MODE_FIFO | \SplQueue::IT_MODE_DELETE);
 

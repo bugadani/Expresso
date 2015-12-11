@@ -17,6 +17,11 @@ abstract class UnaryOperator extends Operator
         return $this->evaluateSimple($childResults[0]);
     }
 
+    /**
+     * @param $operand
+     *
+     * @return mixed
+     */
     public function evaluateSimple($operand)
     {
         throw new \BadMethodCallException('Either evaluate or evaluateSimple must be overridden');
