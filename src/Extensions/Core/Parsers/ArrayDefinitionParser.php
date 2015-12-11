@@ -2,13 +2,13 @@
 
 namespace Expresso\Extensions\Core\Parsers;
 
-use Expresso\Compiler\Nodes\ArrayDataNode;
-use Expresso\Compiler\Nodes\DataNode;
 use Expresso\Compiler\Nodes\OperatorNode;
 use Expresso\Compiler\Parser;
 use Expresso\Compiler\Token;
 use Expresso\Compiler\TokenStream;
 use Expresso\Compiler\TokenStreamParser;
+use Expresso\Extensions\Core\Nodes\ListDataNode;
+use Expresso\Extensions\Core\Nodes\MapDataNode;
 use Expresso\Extensions\Core\Operators\Binary\RangeOperator;
 use Expresso\Extensions\Core\Operators\Unary\Postfix\InfiniteRangeOperator;
 
@@ -21,7 +21,6 @@ class ArrayDefinitionParser extends Parser
 
     public function parse(TokenStream $stream, TokenStreamParser $parser)
     {
-        $array    = new ArrayDataNode();
         $listType = self::TYPE_INDETERMINATE;
 
         //Step to the first data token or closing bracket
@@ -36,9 +35,10 @@ class ArrayDefinitionParser extends Parser
                     break;
                 } else if ($stream->current()->test(Token::PUNCTUATION, [':', '=>'])) {
                     $listType = self::TYPE_MAP;
+                    $array    = new MapDataNode();
                 } else {
-                    $key      = new DataNode(null);
                     $listType = self::TYPE_LIST;
+                    $array    = new ListDataNode();
                 }
             }
 
@@ -49,8 +49,10 @@ class ArrayDefinitionParser extends Parser
                 yield $parser->parse('expression');
                 $key   = $value;
                 $value = $parser->popOperand();
+                $array->add($key, $value);
+            } else {
+                $array->add($value);
             }
-            $array->add($value, $key);
 
             //Elements are comma separated
             if (!$stream->current()->test(Token::PUNCTUATION, ',')) {
@@ -58,6 +60,12 @@ class ArrayDefinitionParser extends Parser
             }
         }
         $stream->expectCurrent(Token::PUNCTUATION, ']');
+
+        //Empty array definition
+        if (!isset($array)) {
+            $array = new ListDataNode();
+        }
+
         //push array node to operand stack
         $stream->next();
         $parser->pushOperand($array);

@@ -1,14 +1,14 @@
 <?php
 
-namespace Expresso\Compiler\Nodes;
+namespace Expresso\Extensions\Core\Nodes;
 
 use Expresso\Compiler\Compiler;
 use Expresso\Compiler\Node;
 use Expresso\EvaluationContext;
 
-class ArrayDataNode extends Node
+class MapDataNode extends Node
 {
-    public function add(Node $value, Node $key)
+    public function add(Node $key, Node $value)
     {
         $this->addChild($key);
         $this->addChild($value);
@@ -29,11 +29,9 @@ class ArrayDataNode extends Node
             $key   = $this->getChildAt($i);
             $value = $this->getChildAt($i + 1);
 
-            if (!$key instanceof DataNode || $key->getValue() !== null) {
-                $compiler->compileNode($key);
-                $compiler->add(' => ');
-            }
-            $compiler->compileNode($value);
+            $compiler->compileNode($key)
+                     ->add(' => ')
+                     ->compileNode($value);
         }
 
         $compiler->add(']');
@@ -48,11 +46,7 @@ class ArrayDataNode extends Node
             $key   = $childResults[ $i ];
             $value = $childResults[ $i + 1 ];
 
-            if ($key !== null) {
-                $array[ $key ] = $value;
-            } else {
-                $array[] = $value;
-            }
+            $array[ $key ] = $value;
         }
 
         return $array;

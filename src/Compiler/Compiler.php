@@ -48,26 +48,11 @@ class Compiler
         return $this->add("'{$string}'");
     }
 
-    private function compileArray($array)
-    {
-        $this->add('[');
-        $separator = '';
-        foreach ($array as $key => $value) {
-            $this->add($separator);
-            $separator = ', ';
-            $this->addData($key);
-            $this->add(' => ');
-            $this->addData($value);
-        }
-
-        return $this->add(']');
-    }
-
     public function addData($data)
     {
         if (is_int($data)) {
             $this->add($data);
-        } elseif (is_float($data)) {
+        } else if (is_float($data)) {
             $old = setlocale(LC_NUMERIC, 0);
             if ($old) {
                 setlocale(LC_NUMERIC, 'C');
@@ -76,13 +61,11 @@ class Compiler
             } else {
                 $this->add($data);
             }
-        } elseif (is_bool($data)) {
+        } else if (is_bool($data)) {
             $this->add($data ? 'true' : 'false');
-        } elseif ($data === null) {
+        } else if ($data === null) {
             $this->add('null');
-        } elseif (is_array($data)) {
-            $this->compileArray($data);
-        } elseif ($data instanceof Node) {
+        } else if ($data instanceof Node) {
             $this->compileNode($data);
         } else {
             $this->compileString($data);

@@ -1,20 +1,22 @@
 <?php
 
-namespace Expresso\Compiler\Nodes;
+namespace Expresso\Extensions\Core\Nodes;
 
 use Expresso\Compiler\Compiler;
 use Expresso\Compiler\Node;
 use Expresso\EvaluationContext;
 
-class ArgumentListNode extends Node
+class ListDataNode extends Node
 {
-    public function __construct(array $children)
+    public function add(Node $value)
     {
-        array_map([$this, 'addChild'], $children);
+        $this->addChild($value);
     }
 
     public function compile(Compiler $compiler)
     {
+        $compiler->add('[');
+
         if ($this->getChildCount() > 0) {
             $children  = $this->getChildren();
             $lastChild = array_pop($children);
@@ -25,6 +27,8 @@ class ArgumentListNode extends Node
             }
             $compiler->compileNode($lastChild);
         }
+
+        $compiler->add(']');
     }
 
     public function evaluate(EvaluationContext $context, array $childResults)

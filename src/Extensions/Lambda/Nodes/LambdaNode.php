@@ -25,29 +25,25 @@ class LambdaNode extends Node
     {
         $compiler->add('function(');
 
-        $first = true;
-        foreach ($this->arguments as $argName) {
-            if (!$first) {
-                $compiler->add(',');
-            } else {
-                $first = false;
-            }
-            $compiler->add('$' . $argName);
+        $argumentCount = count($this->arguments);
+        if ($argumentCount > 0) {
+            $compiler->add('$' . implode(', $', $this->arguments));
         }
 
         $compiler->add(') use ($context) {')
                  ->add('$context = new Expresso\\ExecutionContext([');
 
-        $first = true;
-        foreach ($this->arguments as $argName) {
-            if (!$first) {
-                $compiler->add(',');
-            } else {
-                $first = false;
+        if ($argumentCount > 0) {
+            $argumentNames    = $this->arguments;
+            $lastArgumentName = array_pop($argumentNames);
+            foreach ($argumentNames as $argName) {
+                $compiler->compileString($argName)
+                         ->add(" => \${$argName}, ");
             }
-            $compiler->compileString($argName);
-            $compiler->add('=> $' . $argName);
+            $compiler->compileString($lastArgumentName)
+                     ->add(" => \${$lastArgumentName}, ");
         }
+
         $compiler->add('], $context);')
                  ->add('return ')
                  ->compileNode($this->getChildAt(0))
