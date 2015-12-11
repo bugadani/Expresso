@@ -1,0 +1,6 @@
+--TEST--
+Test the integer division operator
+--EXPRESSION--
+6 div 4
+--EXPECT--
+1

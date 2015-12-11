@@ -22,9 +22,11 @@ use Expresso\Extension;
 use Expresso\Extensions\Core\Operators\Binary\Arithmetic\AdditionOperator;
 use Expresso\Extensions\Core\Operators\Binary\Arithmetic\DivisionOperator;
 use Expresso\Extensions\Core\Operators\Binary\Arithmetic\ExponentialOperator;
+use Expresso\Extensions\Core\Operators\Binary\Arithmetic\IntegerDivisionOperator;
 use Expresso\Extensions\Core\Operators\Binary\Arithmetic\ModuloOperator;
 use Expresso\Extensions\Core\Operators\Binary\Arithmetic\MultiplicationOperator;
 use Expresso\Extensions\Core\Operators\Binary\Arithmetic\RemainderOperator;
+use Expresso\Extensions\Core\Operators\Binary\Arithmetic\SubtractionOperator;
 use Expresso\Extensions\Core\Operators\Binary\Bitwise\BitwiseAndOperator;
 use Expresso\Extensions\Core\Operators\Binary\Bitwise\BitwiseOrOperator;
 use Expresso\Extensions\Core\Operators\Binary\Bitwise\BitwiseXorOperator;
@@ -47,7 +49,6 @@ use Expresso\Extensions\Core\Operators\Binary\NullSafeAccessOperator;
 use Expresso\Extensions\Core\Operators\Binary\RangeOperator;
 use Expresso\Extensions\Core\Operators\Binary\SimpleAccessOperator;
 use Expresso\Extensions\Core\Operators\Binary\Strings\ConcatenationOperator;
-use Expresso\Extensions\Core\Operators\Binary\SubtractionOperator;
 use Expresso\Extensions\Core\Operators\Binary\Test\DivisibleOperator;
 use Expresso\Extensions\Core\Operators\Binary\Test\NotDivisibleOperator;
 use Expresso\Extensions\Core\Operators\Ternary\ConditionalOperator;
@@ -87,6 +88,7 @@ class Core extends Extension
             new SubtractionOperator(10),
             new MultiplicationOperator(11),
             new DivisionOperator(11),
+            new IntegerDivisionOperator(11),
             new RemainderOperator(11),
             new ModuloOperator(11),
             new ExponentialOperator(14, Operator::RIGHT),

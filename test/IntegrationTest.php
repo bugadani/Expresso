@@ -19,7 +19,6 @@ class IntegrationTest extends \PHPUnit_Framework_TestCase
         $this->expresso = new Expresso();
         $this->expresso->addExtension(new Core());
         $this->expresso->addExtension(new Lambda());
-        $this->expresso->addExtension(new Generator());
     }
 
     public function getTests()
