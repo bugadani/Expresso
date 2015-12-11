@@ -4,6 +4,7 @@ namespace Expresso\Compiler\Nodes;
 
 use Expresso\Compiler\Compiler;
 use Expresso\Compiler\Node;
+use Expresso\Compiler\NodeTreeEvaluator;
 use Expresso\EvaluationContext;
 
 class MethodNameNode extends Node
@@ -25,7 +26,7 @@ class MethodNameNode extends Node
                  ->add($method->getValue());
     }
 
-    public function evaluate(EvaluationContext $context, array $childResults)
+    public function evaluate(EvaluationContext $context, array $childResults, NodeTreeEvaluator $evaluator)
     {
         return $childResults;
     }

@@ -46,13 +46,11 @@ class ConditionalOperator extends TernaryOperator
     }
 
 
-    public function evaluate(EvaluationContext $context, Node $node, array $childResults)
+    public function evaluate(EvaluationContext $context, Node $node, array $childResults, NodeTreeEvaluator $evaluator)
     {
-        $evaluator = new NodeTreeEvaluator();
-
         $childNode = $node->getChildAt($childResults[0] ? 1 : 2);
-        $childNode->removeData('noEvaluate');
 
+        $childNode->removeData('noEvaluate');
         $result = $evaluator->evaluate($childNode, $context);
         $childNode->addData('noEvaluate');
 

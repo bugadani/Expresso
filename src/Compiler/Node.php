@@ -38,7 +38,7 @@ abstract class Node
 
     abstract public function compile(Compiler $compiler);
 
-    abstract public function evaluate(EvaluationContext $context, array $childResults);
+    abstract public function evaluate(EvaluationContext $context, array $childResults, NodeTreeEvaluator $evaluator);
 
     /**
      * @param Node $child

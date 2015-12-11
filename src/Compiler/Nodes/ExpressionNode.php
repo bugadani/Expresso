@@ -4,6 +4,7 @@ namespace Expresso\Compiler\Nodes;
 
 use Expresso\Compiler\Compiler;
 use Expresso\Compiler\Node;
+use Expresso\Compiler\NodeTreeEvaluator;
 use Expresso\EvaluationContext;
 
 class ExpressionNode extends Node
@@ -29,7 +30,7 @@ class ExpressionNode extends Node
                  ->add(';};');
     }
 
-    public function evaluate(EvaluationContext $context, array $childResults)
+    public function evaluate(EvaluationContext $context, array $childResults, NodeTreeEvaluator $evaluator)
     {
         return $childResults[0];
     }

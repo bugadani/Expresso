@@ -6,6 +6,7 @@ use Expresso\Compiler\ExpressionFunction;
 use Expresso\Compiler\Node;
 use Expresso\Compiler\Nodes\FunctionCallNode;
 use Expresso\Compiler\Nodes\TernaryOperatorNode;
+use Expresso\Compiler\NodeTreeEvaluator;
 use Expresso\Compiler\Operator;
 use Expresso\EvaluationContext;
 
@@ -50,7 +51,7 @@ class FunctionCallOperator extends Operator
 
     }
 
-    public function evaluate(EvaluationContext $context, Node $node, array $childResults)
+    public function evaluate(EvaluationContext $context, Node $node, array $childResults, NodeTreeEvaluator $evaluator)
     {
 
     }

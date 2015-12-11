@@ -13,7 +13,7 @@ Usage
     $expresso->addExtension(new Core());
     $expresso->addExtension(new Lambda());
 
-    $expresso->evaluate('a ^ 5', ['a' => 2]);    // returns 32
+    $expresso->execute('a ^ 5', ['a' => 2]);     // returns 32
 
     $compiled = $expresso->compile('a ^ 5');
     $compiled(6);                                // 64

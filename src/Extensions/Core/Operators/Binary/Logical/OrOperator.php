@@ -23,12 +23,11 @@ class OrOperator extends BinaryOperator
         return parent::createNode($config, $left, $right);
     }
 
-    public function evaluate(EvaluationContext $context, Node $node, array $childResults)
+    public function evaluate(EvaluationContext $context, Node $node, array $childResults, NodeTreeEvaluator $evaluator)
     {
         //This implements short-circuit evaluation
         if (!$childResults[0]) {
             $childNode = $node->getChildAt(1);
-            $evaluator = new NodeTreeEvaluator();
 
             $childNode->removeData('noEvaluate');
             $result = $evaluator->evaluate($childNode, $context);

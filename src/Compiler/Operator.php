@@ -34,5 +34,5 @@ abstract class Operator
 
     abstract public function operators();
 
-    public abstract function evaluate(EvaluationContext $context, Node $node, array $childResults);
+    public abstract function evaluate(EvaluationContext $context, Node $node, array $childResults, NodeTreeEvaluator $evaluator);
 }

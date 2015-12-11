@@ -5,6 +5,7 @@ namespace Expresso\Compiler\Nodes;
 use Expresso\Compiler\Compiler;
 use Expresso\Compiler\Exceptions\ParseException;
 use Expresso\Compiler\Node;
+use Expresso\Compiler\NodeTreeEvaluator;
 use Expresso\EvaluationContext;
 use Expresso\Extensions\Core\Operators\Binary\SimpleAccessOperator;
 
@@ -38,7 +39,7 @@ class FunctionCallNode extends Node
             ->add(')');
     }
 
-    public function evaluate(EvaluationContext $context, array $childResults)
+    public function evaluate(EvaluationContext $context, array $childResults, NodeTreeEvaluator $evaluator)
     {
         list($callback, $arguments) = $childResults;
 

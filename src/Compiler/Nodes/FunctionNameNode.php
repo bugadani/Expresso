@@ -4,6 +4,7 @@ namespace Expresso\Compiler\Nodes;
 
 use Expresso\Compiler\Compiler;
 use Expresso\Compiler\Node;
+use Expresso\Compiler\NodeTreeEvaluator;
 use Expresso\EvaluationContext;
 
 class FunctionNameNode extends Node
@@ -22,7 +23,7 @@ class FunctionNameNode extends Node
         $compiler->add($functions[ $this->functionName ]->getFunctionName());
     }
 
-    public function evaluate(EvaluationContext $context, array $childResults)
+    public function evaluate(EvaluationContext $context, array $childResults, NodeTreeEvaluator $evaluator)
     {
         return $context->getFunction($this->functionName)->getFunctionName();
     }

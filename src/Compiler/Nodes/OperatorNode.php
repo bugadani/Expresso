@@ -3,6 +3,7 @@
 namespace Expresso\Compiler\Nodes;
 
 use Expresso\Compiler\Node;
+use Expresso\Compiler\NodeTreeEvaluator;
 use Expresso\Compiler\Operator;
 use Expresso\EvaluationContext;
 
@@ -28,8 +29,8 @@ abstract class OperatorNode extends Node
         return $this->operator;
     }
 
-    public function evaluate(EvaluationContext $context, array $childResults)
+    public function evaluate(EvaluationContext $context, array $childResults, NodeTreeEvaluator $evaluator)
     {
-        return $this->getOperator()->evaluate($context, $this, $childResults);
+        return $this->getOperator()->evaluate($context, $this, $childResults, $evaluator);
     }
 }

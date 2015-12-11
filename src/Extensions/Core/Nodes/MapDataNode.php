@@ -4,6 +4,7 @@ namespace Expresso\Extensions\Core\Nodes;
 
 use Expresso\Compiler\Compiler;
 use Expresso\Compiler\Node;
+use Expresso\Compiler\NodeTreeEvaluator;
 use Expresso\EvaluationContext;
 
 class MapDataNode extends Node
@@ -37,7 +38,7 @@ class MapDataNode extends Node
         $compiler->add(']');
     }
 
-    public function evaluate(EvaluationContext $context, array $childResults)
+    public function evaluate(EvaluationContext $context, array $childResults, NodeTreeEvaluator $evaluator)
     {
         $array = [];
 

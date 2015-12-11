@@ -4,6 +4,7 @@ namespace Expresso\Compiler\Nodes;
 
 use Expresso\Compiler\Compiler;
 use Expresso\Compiler\Node;
+use Expresso\Compiler\NodeTreeEvaluator;
 use Expresso\EvaluationContext;
 
 class IdentifierNode extends Node
@@ -20,7 +21,7 @@ class IdentifierNode extends Node
         $compiler->addVariableAccess($this->value);
     }
 
-    public function evaluate(EvaluationContext $context, array $childResults)
+    public function evaluate(EvaluationContext $context, array $childResults, NodeTreeEvaluator $evaluator)
     {
         return $context[ $this->value ];
     }

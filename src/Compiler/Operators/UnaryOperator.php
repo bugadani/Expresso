@@ -6,13 +6,14 @@ use Expresso\Compiler\Compiler;
 use Expresso\Compiler\CompilerConfiguration;
 use Expresso\Compiler\Node;
 use Expresso\Compiler\Nodes\UnaryOperatorNode;
+use Expresso\Compiler\NodeTreeEvaluator;
 use Expresso\Compiler\Operator;
 use Expresso\EvaluationContext;
 
 abstract class UnaryOperator extends Operator
 {
 
-    public function evaluate(EvaluationContext $context, Node $node, array $childResults)
+    public function evaluate(EvaluationContext $context, Node $node, array $childResults, NodeTreeEvaluator $evaluator)
     {
         return $this->evaluateSimple($childResults[0]);
     }

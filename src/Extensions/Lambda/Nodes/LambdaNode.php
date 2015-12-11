@@ -50,10 +50,9 @@ class LambdaNode extends Node
                  ->add(';}');
     }
 
-    public function evaluate(EvaluationContext $context, array $childResults)
+    public function evaluate(EvaluationContext $context, array $childResults, NodeTreeEvaluator $evaluator)
     {
-        return function () use ($context) {
-            $evaluator    = new NodeTreeEvaluator();
+        return function () use ($context, $evaluator) {
             $arguments    = array_slice(func_get_args(), 0, count($this->arguments));
             $innerContext = $context->createInnerScope(array_combine($this->arguments, $arguments));
 
