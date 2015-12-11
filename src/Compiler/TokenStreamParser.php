@@ -35,7 +35,7 @@ class TokenStreamParser
     /**
      * @var Parser
      */
-    private $defaultParser;
+    private $defaultParserName;
 
     /**
      * @var CompilerConfiguration
@@ -47,9 +47,9 @@ class TokenStreamParser
         $this->configuration = $configuration;
     }
 
-    public function setDefaultParser(Parser $parser)
+    public function setDefaultParserName($parserName)
     {
-        $this->defaultParser = $parser;
+        $this->defaultParserName = $parserName;
     }
 
     public function parseTokenStream(TokenStream $tokens)
@@ -59,7 +59,7 @@ class TokenStreamParser
         $this->tokens        = $tokens;
 
         $tokens->next();
-        $generator = $this->defaultParser->parse($tokens, $this);
+        $generator = $this->parse($this->defaultParserName);
 
         $stack = new \SplStack();
         $stack->push([$generator, true]);

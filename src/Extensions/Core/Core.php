@@ -182,7 +182,7 @@ class Core extends Extension
         $parser->addParser('expression', $expressionParser);
         $parser->addParser('conditional', $ternaryOperatorParser);
 
-        $parser->setDefaultParser($expressionParser);
+        $parser->setDefaultParserName('expression');
     }
 
     public function getFunctions()
