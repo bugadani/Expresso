@@ -76,9 +76,11 @@ class TokenStream
         $message = "Unexpected {$this->current->getTypeString()}";
         if ($value === true) {
             $message .= ' (true)';
-        } elseif ($value === false) {
+        } else if ($value === false) {
             $message .= ' (false)';
-        } elseif ($value !== '') {
+        } else if ($value === null) {
+            $message .= ' (null)';
+        } else if ($value !== '') {
             $message .= " ({$value})";
         }
         throw new SyntaxException($message);

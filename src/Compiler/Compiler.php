@@ -105,11 +105,19 @@ class Compiler
         return $this;
     }
 
+    private function setTaskQueue(\SplQueue $queue)
+    {
+        $oldQueue        = $this->taskQueue;
+        $this->taskQueue = $queue;
+
+        return $oldQueue;
+    }
+
     public function compile(Node $rootNode)
     {
         $source          = '';
         $this->taskQueue = new \SplQueue();
-        $this->taskQueue->setIteratorMode(\SplQueue::IT_MODE_FIFO | \SplQueue::IT_MODE_DELETE);
+        $this->taskQueue->setIteratorMode(\SplQueue::IT_MODE_DELETE);
 
         $this->compileNode($rootNode);
 
@@ -120,14 +128,12 @@ class Compiler
             if ($task instanceof Node) {
 
                 //replace queue with a new one
-                $savedQueue      = $this->taskQueue;
-                $this->taskQueue = new \SplQueue();
+                $savedQueue = $this->setTaskQueue(new \SplQueue());
 
                 $task->compile($this);
 
                 //restore old queue
-                $newQueue        = $this->taskQueue;
-                $this->taskQueue = $savedQueue;
+                $newQueue = $this->setTaskQueue($savedQueue);
 
                 //prepend to old queue
                 while (!$newQueue->isEmpty()) {

@@ -50,7 +50,7 @@ class Expresso
         }
     }
 
-    public function internalAddExtension($extensionClassName, Extension $extension)
+    private function internalAddExtension($extensionClassName, Extension $extension)
     {
         $this->extensions[ $extensionClassName ] = $extension;
 

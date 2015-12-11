@@ -26,11 +26,11 @@ class LambdaParser extends Parser
         }
 
         $stream->expect(Token::OPERATOR, '->');
+
         $stream->next();
-
         yield $parser->parse('expression');
-        $body = $parser->popOperand();
 
+        $body = $parser->popOperand();
         $parser->pushOperand(new LambdaNode($body, $arguments));
     }
 }

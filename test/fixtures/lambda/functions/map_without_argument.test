@@ -1,0 +1,6 @@
+--TEST--
+Test map function with callback without argument
+--EXPRESSION--
+[1, 2, 3]|map(\() -> 2)|join
+--EXPECT--
+222

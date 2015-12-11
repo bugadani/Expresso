@@ -49,11 +49,22 @@ abstract class Extension
         return [];
     }
 
+    /**
+     * Returns with an array of extension class names that will be included with the extension
+     *
+     * @return string[]
+     */
     public function getDependencies()
     {
         return [];
     }
 
+    /**
+     * Set up language extensions
+     *
+     * @param TokenStreamParser $parser
+     * @param CompilerConfiguration $configuration
+     */
     public function addParsers(TokenStreamParser $parser, CompilerConfiguration $configuration)
     {
 

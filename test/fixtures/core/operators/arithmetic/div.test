@@ -1,0 +1,6 @@
+--TEST--
+Test the division operator
+--EXPRESSION--
+6/4
+--EXPECT--
+1.5

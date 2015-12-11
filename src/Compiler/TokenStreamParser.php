@@ -101,11 +101,6 @@ class TokenStreamParser
         $this->parsers[ $name ] = $parser;
     }
 
-    public function hasParser($parser)
-    {
-        return isset($this->parsers[ $parser ]);
-    }
-
     public function getParser($parser)
     {
         if (!isset($this->parsers[ $parser ])) {
