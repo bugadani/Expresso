@@ -29,18 +29,18 @@ definitions and defines some functions that can be used in expressions.
    - `x - y`
    - `x * y`
    - `x / y`
-   - `x div y`
-   - `x ^ y`
-   - `x % y`
-   - `x mod y`
    - `-x`
+   - `x div y`: integer divison, divides `x` by `y` and rounds towards 0.
+   - `x ^ y`: exponential operator, computes `x` to the `y`-th power
+   - `x % y`: returns the remainder of `x` / `y`, where the result has the sign of `x` (i.e. `-2 % 5 = -2`)
+   - `x mod y`: returns the  remainder of `x` / `y`, where the result is always positive (i.e. `-2 mod 5 = 3`)
  - Bitwise operators
    - `x b-and y`
    - `x b-or y`
    - `x b-xor y`
-   - `x << y`
-   - `x >> y`
-   - `~x`
+   - `x << y`: shifts `x` to the left by `y` bits
+   - `x >> y`: shifts `x` to the right by `y` bits, while keeping the sign of `x`
+   - `~x`: inverts `x`
  - Comparison operators
    - `x == y`
    - `x != y`
