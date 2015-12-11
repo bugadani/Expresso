@@ -188,7 +188,7 @@ class Core extends Extension
     public function getFunctions()
     {
         return [
-            new ExpressionFunction('count', 'count'),
+            new ExpressionFunction('count', __NAMESPACE__ . '\expression_function_count'),
             new ExpressionFunction('join', __NAMESPACE__ . '\expression_function_join'),
             new ExpressionFunction('skip', __NAMESPACE__ . '\expression_function_skip'),
             new ExpressionFunction('popcount', __NAMESPACE__ . '\\expression_function_population_count'),
@@ -196,6 +196,30 @@ class Core extends Extension
             new ExpressionFunction('reverse', 'strrev'),
             new ExpressionFunction('take', __NAMESPACE__ . '\expression_function_take'),
         ];
+    }
+}
+
+function range($start, $end = null)
+{
+    if ($end === null) {
+        while (true) {
+            yield $start++;
+        }
+    } else {
+        for ($num = $start; $num <= $end; $num++) {
+            yield $num;
+        }
+    }
+}
+
+function expression_function_count($data)
+{
+    if (is_array($data)) {
+        return count($data);
+    } else if ($data instanceof \Iterator) {
+        return iterator_count($data);
+    } else {
+        throw new \InvalidArgumentException('Collection must be an array or an Iterator');
     }
 }
 

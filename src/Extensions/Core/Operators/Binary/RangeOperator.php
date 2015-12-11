@@ -16,12 +16,12 @@ class RangeOperator extends BinaryOperator
 
     public function evaluateSimple($left, $right)
     {
-        return range($left, $right);
+        return \Expresso\Extensions\Core\range($left, $right);
     }
 
     public function compile(Compiler $compiler, Node $left, Node $right)
     {
-        $compiler->add('range(')
+        $compiler->add('\Expresso\Extensions\Core\range(')
                  ->compileNode($left)
                  ->add(',')
                  ->compileNode($right)

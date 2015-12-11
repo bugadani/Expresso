@@ -17,12 +17,12 @@ class InfiniteRangeOperator extends UnaryOperator
 
     public function evaluateSimple($operand)
     {
-        return new InfiniteRangeIterator($operand);
+        return \Expresso\Extensions\Core\range($operand);
     }
 
     public function compile(Compiler $compiler, Node $operand)
     {
-        $compiler->add('new \Expresso\Extensions\Core\InfiniteRangeIterator(')
+        $compiler->add('\Expresso\Extensions\Core\range(')
                  ->compileNode($operand)
                  ->add(')');
     }
