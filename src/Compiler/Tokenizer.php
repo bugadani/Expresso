@@ -2,8 +2,6 @@
 
 namespace Expresso\Compiler;
 
-use Expresso\Utils\TransformIterator;
-
 class Tokenizer
 {
     private static $punctuation = [
@@ -79,19 +77,25 @@ class Tokenizer
      */
     public function tokenize($expression)
     {
+        return new TokenStream($this->tokenizeExpression($expression));
+    }
+
+    /**
+     * @param $expression
+     * @return \Generator
+     */
+    private function tokenizeExpression($expression)
+    {
         $flags = PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY;
 
-        $tokens   = preg_split($this->expressionPartsPattern, $expression, 0, $flags);
-        $iterator = new TransformIterator(
-            new \CallbackFilterIterator(
-                new \ArrayIterator($tokens),
-                function ($value) {
-                    return !ctype_space($value);
-                }
-            ), [$this, 'createToken']
-        );
+        $tokens = preg_split($this->expressionPartsPattern, $expression, 0, $flags);
 
-        return new TokenStream($iterator);
+        foreach ($tokens as $token) {
+            if (!ctype_space($token)) {
+                yield $this->createToken($token);
+            }
+        }
+        yield new Token(Token::EOF);
     }
 
     public function createToken($part)

@@ -157,7 +157,7 @@ class Core extends Extension
         $dataTokenParser         = new DataTokenParser();
         $groupedExpressionParser = new ParenthesisGroupedExpressionParser();
         $arrayDefinitionParser   = new ArrayDefinitionParser();
-        $functionCallParser      = new FunctionCallParser(new FunctionCallOperator(11, $configuration->getFunctions()));
+        $functionCallParser      = new FunctionCallParser(new FunctionCallOperator(11));
         $expressionParser        = new ExpressionParser();
 
         $tokenParsers = new ParserAlternativeCollection($prefixOperatorParser);

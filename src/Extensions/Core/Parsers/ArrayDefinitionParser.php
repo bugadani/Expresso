@@ -21,49 +21,48 @@ class ArrayDefinitionParser extends Parser
 
     public function parse(TokenStream $stream, TokenStreamParser $parser)
     {
-        $listType = self::TYPE_INDETERMINATE;
-
         //Step to the first data token or closing bracket
-        while (!$stream->next()->test(Token::PUNCTUATION, ']')) {
-            //expressions are allowed as both array keys and values.
-            yield $parser->parse('expression');
-            $value = $parser->popOperand();
-
-            if ($listType === self::TYPE_INDETERMINATE) {
-                if ($this->isRangeOperator($value)) {
-                    $array = $value;
-                    break;
-                } else if ($stream->current()->test(Token::PUNCTUATION, [':', '=>'])) {
-                    $listType = self::TYPE_MAP;
-                    $array    = new MapDataNode();
-                } else {
-                    $listType = self::TYPE_LIST;
-                    $array    = new ListDataNode();
-                }
-            }
-
-            if ($listType === self::TYPE_MAP) {
-                $stream->expectCurrent(Token::PUNCTUATION, [':', '=>']);
-                //the previous value was a key
+        if ($stream->nextTokenIf(Token::PUNCTUATION, ']')) {
+            //Empty array definition
+            $array = new ListDataNode();
+        } else {
+            $listType = self::TYPE_INDETERMINATE;
+            do {
+                //expressions are allowed as both array keys and values.
                 $stream->next();
                 yield $parser->parse('expression');
-                $key   = $value;
-                $value = $parser->popOperand();
-                $array->add($key, $value);
-            } else {
-                $array->add($value);
-            }
+                $data = $parser->popOperand();
 
-            //Elements are comma separated
-            if (!$stream->current()->test(Token::PUNCTUATION, ',')) {
-                break;
-            }
-        }
-        $stream->expectCurrent(Token::PUNCTUATION, ']');
+                if ($listType === self::TYPE_INDETERMINATE) {
+                    if ($this->isRangeOperator($data)) {
+                        $array = $data;
+                        $stream->expectCurrent(Token::PUNCTUATION, ']');
+                        break;
+                    } else if ($stream->current()->test(Token::PUNCTUATION, [':', '=>'])) {
+                        $listType = self::TYPE_MAP;
+                        $array    = new MapDataNode();
+                    } else {
+                        $listType = self::TYPE_LIST;
+                        $array    = new ListDataNode();
+                    }
+                }
 
-        //Empty array definition
-        if (!isset($array)) {
-            $array = new ListDataNode();
+                if ($listType === self::TYPE_MAP) {
+                    $stream->expectCurrent(Token::PUNCTUATION, [':', '=>']);
+                    //the previous value was a key
+
+                    $stream->next();
+                    yield $parser->parse('expression');
+                    $value = $parser->popOperand();
+
+                    $array->add($data, $value);
+                } else {
+                    $array->add($data);
+                }
+
+                //Elements are comma separated
+                $token = $stream->expectCurrent(Token::PUNCTUATION, [',', ']']);
+            } while ($token->test(Token::PUNCTUATION, ','));
         }
 
         //push array node to operand stack

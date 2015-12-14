@@ -62,22 +62,32 @@ class TokenStreamParser
         $generator = $this->parse($this->defaultParserName);
 
         $stack = new \SplStack();
-        $stack->push([$generator, true]);
+        $stack->push($generator);
 
         while (!$stack->isEmpty()) {
-            /** @var \Generator $current */
-            list($current, $isFirst) = $stack->pop();
-            if (!$isFirst) {
-                $current->next();
-            }
+            //peek at the last generator
+            $generator = $stack->top();
 
-            if ($current->valid()) {
-                $stack->push([$current, false]);
-                $child = $current->current();
-                if ($child !== null) {
-                    $stack->push([$child, true]);
+            //while it's not done
+            while ($generator->valid()) {
+
+                //get the next sub-generator ...
+                $generator = $generator->current();
+                while ($generator instanceof \Generator) {
+                    //... and push it to the stack
+                    $stack->push($generator);
+                    //get the next sub-generator ...
+                    $generator = $generator->current();
                 }
+
+                //at this point the last generator has no sub-generators, so remove it
+                $stack->pop();
+
+                //step the last generator that is not done
+                $generator = $stack->top();
+                $generator->next();
             }
+            $stack->pop();
         }
 
         return $this->operandStack->pop();

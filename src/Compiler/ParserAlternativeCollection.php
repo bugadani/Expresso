@@ -16,16 +16,14 @@ class ParserAlternativeCollection extends Parser
     }
 
     /**
-     * @var \SplObjectStorage
+     * @var Parser[]
      */
-    private $alternatives;
+    private $alternatives = [];
+    private $tests = [];
     private $defaultParser;
-    private $tests;
 
     public function __construct(Parser $defaultParser = null)
     {
-        $this->alternatives  = [];
-        $this->tests         = [];
         $this->defaultParser = $defaultParser ?: new NullParser();
     }
 

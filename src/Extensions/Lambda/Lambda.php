@@ -11,7 +11,6 @@ use Expresso\Extension;
 use Expresso\Extensions\Core\Core;
 use Expresso\Extensions\Lambda\Operators\Binary\LambdaOperator;
 use Expresso\Extensions\Lambda\Parsers\LambdaParser;
-use Expresso\Utils\TransformIterator;
 
 class Lambda extends Extension
 {
@@ -83,11 +82,15 @@ function expression_function_all($collection, callable $callback)
 
 function expression_function_filter($collection, callable $callback)
 {
-    if (is_array($collection)) {
-        $collection = new \ArrayIterator($collection);
+    if (!is_array($collection) && !$collection instanceof \Traversable) {
+        throw new \InvalidArgumentException('$collection must be an array or Traversable object');
     }
 
-    return new \CallbackFilterIterator($collection, $callback);
+    foreach ($collection as $key => $value) {
+        if ($callback($value)) {
+            yield $key => $value;
+        }
+    }
 }
 
 function expression_function_first($collection, callable $callback)
@@ -107,11 +110,13 @@ function expression_function_first($collection, callable $callback)
 
 function expression_function_map($collection, callable $callback)
 {
-    if (is_array($collection)) {
-        $collection = new \ArrayIterator($collection);
+    if (!is_array($collection) && !$collection instanceof \Traversable) {
+        throw new \InvalidArgumentException('$collection must be an array or Traversable object');
     }
 
-    return new TransformIterator($collection, $callback);
+    foreach ($collection as $key => $value) {
+        yield $key => $callback($value);
+    }
 }
 
 function expression_function_fold($collection, callable $callback, $acc)
