@@ -27,7 +27,7 @@ class ConditionalOperator extends TernaryOperator
         $isSetOperator = $config->getOperatorByClass(IsSetOperator::class);
         $andOperator   = $config->getOperatorByClass(AndOperator::class);
 
-        $node = parent::createNode(
+        return parent::createNode(
             $config,
             $this->shouldCheckExistence($left) ?
                 $andOperator->createNode(
@@ -38,11 +38,6 @@ class ConditionalOperator extends TernaryOperator
             $middle,
             $right
         );
-
-        $middle->addData('noEvaluate');
-        $right->addData('noEvaluate');
-
-        return $node;
     }
 
 

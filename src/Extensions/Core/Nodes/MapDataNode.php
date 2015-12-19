@@ -19,20 +19,19 @@ class MapDataNode extends Node
     {
         $compiler->add('[');
 
-        $childCount = $this->getChildCount();
-        $first      = true;
-        for ($i = 0; $i < $childCount; $i += 2) {
+        $first = true;
+        $isKey = true;
+        foreach ($this->getChildren() as $child) {
             if ($first) {
                 $first = false;
+            } else if ($isKey) {
+                $compiler->add('=>');
+                $isKey = false;
             } else {
                 $compiler->add(', ');
+                $isKey = true;
             }
-            $key   = $this->getChildAt($i);
-            $value = $this->getChildAt($i + 1);
-
-            $compiler->compileNode($key)
-                     ->add(' => ')
-                     ->compileNode($value);
+            $compiler->compileNode($child);
         }
 
         $compiler->add(']');

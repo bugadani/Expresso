@@ -53,10 +53,9 @@ class NodeTreeEvaluator
                 $generator = $stack->top();
                 $generator->send($context->getReturnValue());
             }
-            if ($stack->isEmpty()) {
-                break;
+            if (!$stack->isEmpty()) {
+                $stack->pop();
             }
-            $stack->pop();
         }
 
         return $context->getReturnValue();

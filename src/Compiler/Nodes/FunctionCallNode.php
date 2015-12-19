@@ -5,7 +5,6 @@ namespace Expresso\Compiler\Nodes;
 use Expresso\Compiler\Compiler;
 use Expresso\Compiler\Exceptions\ParseException;
 use Expresso\Compiler\Node;
-use Expresso\Compiler\NodeTreeEvaluator;
 use Expresso\EvaluationContext;
 use Expresso\Extensions\Core\Operators\Binary\SimpleAccessOperator;
 

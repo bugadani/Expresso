@@ -17,22 +17,12 @@ class AndOperator extends BinaryOperator
         return '&&';
     }
 
-    public function createNode(CompilerConfiguration $config, Node $left, Node $right)
-    {
-        $right->addData('noEvaluate');
-
-        return parent::createNode($config, $left, $right);
-    }
-
     public function evaluate(EvaluationContext $context, Node $node)
     {
         //This implements short-circuit evaluation
-        $first = (yield $node->getChildAt(0)->evaluate($context));
-        if ($first) {
-            yield $node->getChildAt(1)->evaluate($context);
-        } else {
-            $context->setReturnValue(false);
-        }
+        $first  = (yield $node->getChildAt(0)->evaluate($context));
+        $second = $first && (yield $node->getChildAt(1)->evaluate($context));
+        $context->setReturnValue($second);
     }
 
     public function compile(Compiler $compiler, Node $left, Node $right)

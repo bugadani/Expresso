@@ -5,7 +5,6 @@ namespace Expresso\Compiler\Operators;
 use Expresso\Compiler\Node;
 use Expresso\Compiler\Nodes\FunctionCallNode;
 use Expresso\Compiler\Nodes\TernaryOperatorNode;
-use Expresso\Compiler\NodeTreeEvaluator;
 use Expresso\Compiler\Operator;
 use Expresso\EvaluationContext;
 
@@ -17,9 +16,6 @@ class FunctionCallOperator extends Operator
             if ($left instanceof TernaryOperatorNode) {
                 $node  = $left->getRight();
                 $right = new FunctionCallNode($node);
-                if ($node->hasData('noEvaluate')) {
-                    $right->addData('noEvaluate');
-                }
                 $left = new TernaryOperatorNode(
                     $left->getOperator(),
                     $left->getLeft(),

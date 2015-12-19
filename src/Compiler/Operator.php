@@ -34,5 +34,11 @@ abstract class Operator
 
     abstract public function operators();
 
+    /**
+     * @param EvaluationContext $context
+     * @param Node              $node
+     *
+     * @return \Generator
+     */
     public abstract function evaluate(EvaluationContext $context, Node $node);
 }

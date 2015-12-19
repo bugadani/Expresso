@@ -3,7 +3,6 @@
 namespace Expresso\Compiler\Nodes;
 
 use Expresso\Compiler\Node;
-use Expresso\Compiler\NodeTreeEvaluator;
 use Expresso\Compiler\Operator;
 use Expresso\EvaluationContext;
 

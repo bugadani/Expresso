@@ -23,6 +23,7 @@ class IsSetOperator extends UnaryOperator
 
     public function createNode(CompilerConfiguration $config, $operand)
     {
+        /** @var IdentifierNode $operand */
         return new UnaryOperatorNode($this, new DataNode($operand->getName()));
     }
 
@@ -34,9 +35,8 @@ class IsSetOperator extends UnaryOperator
 
     public function compile(Compiler $compiler, Node $operand)
     {
-        /** @var IdentifierNode $operand */
         $compiler->add('$context->offsetExists(')
-                 ->compileString($operand->getValue())
+                 ->compileNode($operand)
                  ->add(')');
     }
 }

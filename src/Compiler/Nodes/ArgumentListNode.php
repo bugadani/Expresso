@@ -4,7 +4,6 @@ namespace Expresso\Compiler\Nodes;
 
 use Expresso\Compiler\Compiler;
 use Expresso\Compiler\Node;
-use Expresso\Compiler\NodeTreeEvaluator;
 use Expresso\EvaluationContext;
 
 class ArgumentListNode extends Node
