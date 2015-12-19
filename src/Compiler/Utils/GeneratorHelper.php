@@ -1,31 +1,13 @@
 <?php
-namespace Expresso\Compiler;
 
+namespace Expresso\Compiler\Utils;
 
-use Expresso\EvaluationContext;
-
-class NodeTreeEvaluator
+class GeneratorHelper
 {
-    /**
-     * @var \SplStack
-     */
-    private $resultStack;
-
-    /**
-     * @var array
-     */
-    private $results;
-
-    public function __construct()
-    {
-        $this->resultStack = new \SplStack();
-        $this->results     = [];
-    }
-
-    public function evaluate(Node $node, EvaluationContext $context)
+    public static function executeGeneratorsRecursive(\Generator $generator, callable $sendFunction = null)
     {
         $stack = new \SplStack();
-        $stack->push($node->evaluate($context));
+        $stack->push($generator);
 
         while (!$stack->isEmpty()) {
             //peek at the last generator
@@ -51,14 +33,15 @@ class NodeTreeEvaluator
                 }
                 //step the last generator that is not done
                 $generator = $stack->top();
-                $generator->send($context->getReturnValue());
+                if ($sendFunction !== null) {
+                    $generator->send($sendFunction($generator));
+                } else {
+                    $generator->next();
+                }
             }
             if (!$stack->isEmpty()) {
                 $stack->pop();
             }
         }
-
-        return $context->getReturnValue();
-
     }
 }

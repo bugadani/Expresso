@@ -3,6 +3,7 @@
 namespace Expresso\Extensions\Lambda\Nodes;
 
 use Expresso\Compiler\Compiler;
+use Expresso\Compiler\Utils\GeneratorHelper;
 use Expresso\Compiler\Node;
 use Expresso\Compiler\NodeTreeEvaluator;
 use Expresso\EvaluationContext;
@@ -40,7 +41,7 @@ class LambdaNode extends Node
                          ->add(" => \${$argName}, ");
             }
             $compiler->compileString($lastArgumentName)
-                     ->add(" => \${$lastArgumentName}, ");
+                     ->add(" => \${$lastArgumentName}");
         }
 
         $compiler->add('], $context);')
@@ -57,10 +58,12 @@ class LambdaNode extends Node
                 $innerContext = $context->createInnerScope(array_combine($this->arguments, $arguments));
 
                 $functionBody = $this->getChildAt(0);
+                GeneratorHelper::executeGeneratorsRecursive(
+                    $functionBody->evaluate($innerContext),
+                    [$innerContext, 'getReturnValue']
+                );
 
-                $evaluator = new NodeTreeEvaluator();
-
-                return $evaluator->evaluate($functionBody, $innerContext);
+                return $innerContext->getReturnValue();
             }
         );
         yield;

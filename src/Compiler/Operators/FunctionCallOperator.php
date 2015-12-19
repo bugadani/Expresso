@@ -15,12 +15,12 @@ class FunctionCallOperator extends Operator
     {
         if (!$left instanceof FunctionCallNode) {
             if ($left instanceof TernaryOperatorNode) {
-                $node  = $left->getRight();
+                $node  = $left->getChildAt(2);
                 $right = new FunctionCallNode($node);
                 $left = new TernaryOperatorNode(
                     $left->getOperator(),
-                    $left->getLeft(),
-                    $left->getMiddle(),
+                    $left->getChildAt(0),
+                    $left->getChildAt(1),
                     $right
                 );
             } else {

@@ -4,6 +4,7 @@ namespace Expresso;
 
 use Expresso\Compiler\Compiler;
 use Expresso\Compiler\CompilerConfiguration;
+use Expresso\Compiler\Utils\GeneratorHelper;
 use Expresso\Compiler\Node;
 use Expresso\Compiler\Nodes\ExpressionNode;
 use Expresso\Compiler\NodeTreeEvaluator;
@@ -132,8 +133,12 @@ class Expresso
     {
         $nodes = $this->parse($expression);
 
-        $evaluator = new NodeTreeEvaluator();
+        $context = new EvaluationContext($parameters, $this->configuration);
+        GeneratorHelper::executeGeneratorsRecursive(
+            $nodes->evaluate($context),
+            [$context, 'getReturnValue']
+        );
 
-        return $evaluator->evaluate($nodes, new EvaluationContext($parameters, $this->configuration));
+        return $context->getReturnValue();
     }
 }

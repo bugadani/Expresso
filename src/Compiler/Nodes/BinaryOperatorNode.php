@@ -13,20 +13,4 @@ class BinaryOperatorNode extends OperatorNode
         $this->addChild($left);
         $this->addChild($right);
     }
-
-    /**
-     * @return Node
-     */
-    public function getLeft()
-    {
-        return $this->getChildAt(0);
-    }
-
-    /**
-     * @return Node
-     */
-    public function getRight()
-    {
-        return $this->getChildAt(1);
-    }
 }

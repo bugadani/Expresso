@@ -4,6 +4,7 @@ namespace Expresso\Compiler;
 
 use Expresso\Compiler\Exceptions\ParseException;
 use Expresso\Compiler\Operators\BinaryOperator;
+use Expresso\Compiler\Utils\GeneratorHelper;
 
 /**
  * Expression parser is based on the Shunting Yard algorithm by Edsger W. Dijkstra
@@ -61,34 +62,7 @@ class TokenStreamParser
         $tokens->next();
         $generator = $this->parse($this->defaultParserName);
 
-        $stack = new \SplStack();
-        $stack->push($generator);
-
-        while (!$stack->isEmpty()) {
-            //peek at the last generator
-            $generator = $stack->top();
-
-            //while it's not done
-            while ($generator->valid()) {
-
-                //get the next sub-generator ...
-                $generator = $generator->current();
-                while ($generator instanceof \Generator) {
-                    //... and push it to the stack
-                    $stack->push($generator);
-                    //get the next sub-generator ...
-                    $generator = $generator->current();
-                }
-
-                //at this point the last generator has no sub-generators, so remove it
-                $stack->pop();
-
-                //step the last generator that is not done
-                $generator = $stack->top();
-                $generator->next();
-            }
-            $stack->pop();
-        }
+        GeneratorHelper::executeGeneratorsRecursive($generator);
 
         return $this->operandStack->pop();
     }

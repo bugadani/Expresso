@@ -11,6 +11,12 @@ use Expresso\Extensions\Core\Operators\Binary\SimpleAccessOperator;
 class FunctionCallNode extends Node
 {
 
+    private function isSimpleAccessOperator(Node $node)
+    {
+        return $node instanceof OperatorNode &&
+               $node->isOperator(SimpleAccessOperator::class);
+    }
+
     public function __construct($functionName, array $arguments = [])
     {
         if ($functionName instanceof IdentifierNode) {
@@ -44,11 +50,5 @@ class FunctionCallNode extends Node
         $arguments = (yield $this->getChildAt(1)->evaluate($context));
 
         $context->setReturnValue(call_user_func_array($callback, $arguments));
-    }
-
-    private function isSimpleAccessOperator(Node $node)
-    {
-        return $node instanceof BinaryOperatorNode
-               && $node->isOperator(SimpleAccessOperator::class);
     }
 }
