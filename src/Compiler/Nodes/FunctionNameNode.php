@@ -23,8 +23,9 @@ class FunctionNameNode extends Node
         $compiler->add($functions[ $this->functionName ]->getFunctionName());
     }
 
-    public function evaluate(EvaluationContext $context, array $childResults, NodeTreeEvaluator $evaluator)
+    public function evaluate(EvaluationContext $context)
     {
-        return $context->getFunction($this->functionName)->getFunctionName();
+        $context->setReturnValue($context->getFunction($this->functionName)->getFunctionName());
+        yield;
     }
 }

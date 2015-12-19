@@ -24,19 +24,15 @@ class AndOperator extends BinaryOperator
         return parent::createNode($config, $left, $right);
     }
 
-    public function evaluate(EvaluationContext $context, Node $node, array $childResults, NodeTreeEvaluator $evaluator)
+    public function evaluate(EvaluationContext $context, Node $node)
     {
         //This implements short-circuit evaluation
-        if ($childResults[0]) {
+        yield $node->getChildAt(0)->evaluate($context);
+        if ($context->getReturnValue()) {
             $childNode = $node->getChildAt(1);
-
-            $childNode->removeData('noEvaluate');
-            $result = $evaluator->evaluate($childNode, $context);
-            $childNode->addData('noEvaluate');
-
-            return $result;
+            yield $childNode->evaluate($context);
         } else {
-            return false;
+            $context->setReturnValue(false);
         }
     }
 

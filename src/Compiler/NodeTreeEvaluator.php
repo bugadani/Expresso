@@ -24,29 +24,43 @@ class NodeTreeEvaluator
 
     public function evaluate(Node $node, EvaluationContext $context)
     {
-        if ($node->hasData('noEvaluate')) {
-            return null;
+        $generator = $node->evaluate($context);
+        $stack     = new \SplStack();
+        $stack->push($generator);
+
+        while (!$stack->isEmpty()) {
+            //peek at the last generator
+            $generator = $stack->top();
+
+            //while it's not done
+            while ($generator->valid()) {
+
+                //get the next sub-generator ...
+                $generator = $generator->current();
+                while ($generator instanceof \Generator) {
+                    //... and push it to the stack
+                    $stack->push($generator);
+                    //get the next sub-generator ...
+                    $generator = $generator->current();
+                }
+
+                //at this point the last generator has no sub-generators, so remove it
+                $stack->pop();
+
+                if ($stack->isEmpty()) {
+                    break;
+                }
+                //step the last generator that is not done
+                $generator = $stack->top();
+                $generator->next();
+            }
+            if ($stack->isEmpty()) {
+                break;
+            }
+            $stack->pop();
         }
 
-        TreeHelper::traverse(
-            $node,
-            function (Node $node) {
-                if ($node->hasData('noEvaluate')) {
-                    return false;
-                } else {
-                    $this->resultStack->push($this->results);
-                    $this->results = [];
+        return $context->getReturnValue();
 
-                    return true;
-                }
-            },
-            function (Node $node) use ($context) {
-                $results         = $this->results;
-                $this->results   = $this->resultStack->pop();
-                $this->results[] = $node->evaluate($context, $results, $this);
-            }
-        );
-
-        return array_pop($this->results);
     }
 }

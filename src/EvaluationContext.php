@@ -12,6 +12,8 @@ class EvaluationContext extends ExecutionContext
      */
     private $configuration;
 
+    private $returnValue;
+
     public function __construct($input, CompilerConfiguration $configuration, EvaluationContext $parentScope = null)
     {
         parent::__construct($input, $parentScope);
@@ -35,5 +37,21 @@ class EvaluationContext extends ExecutionContext
     public function createInnerScope($input)
     {
         return new EvaluationContext($input, $this->configuration, $this);
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getReturnValue()
+    {
+        return $this->returnValue;
+    }
+
+    /**
+     * @param mixed $returnValue
+     */
+    public function setReturnValue($returnValue)
+    {
+        $this->returnValue = $returnValue;
     }
 }

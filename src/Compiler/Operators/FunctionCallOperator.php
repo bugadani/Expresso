@@ -39,7 +39,7 @@ class FunctionCallOperator extends Operator
 
     }
 
-    public function evaluate(EvaluationContext $context, Node $node, array $childResults, NodeTreeEvaluator $evaluator)
+    public function evaluate(EvaluationContext $context, Node $node)
     {
 
     }

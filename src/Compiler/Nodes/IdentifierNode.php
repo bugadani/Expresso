@@ -21,9 +21,10 @@ class IdentifierNode extends Node
         $compiler->addVariableAccess($this->value);
     }
 
-    public function evaluate(EvaluationContext $context, array $childResults, NodeTreeEvaluator $evaluator)
+    public function evaluate(EvaluationContext $context)
     {
-        return $context[ $this->value ];
+        $context->setReturnValue($context[ $this->value ]);
+        yield;
     }
 
     public function getName()

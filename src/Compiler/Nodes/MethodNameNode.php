@@ -26,8 +26,13 @@ class MethodNameNode extends Node
                  ->add($method->getValue());
     }
 
-    public function evaluate(EvaluationContext $context, array $childResults, NodeTreeEvaluator $evaluator)
+    public function evaluate(EvaluationContext $context)
     {
-        return $childResults;
+        yield $this->getChildAt(0)->evaluate($context);
+        $object = $context->getReturnValue();
+        yield $this->getChildAt(1)->evaluate($context);
+        $method = $context->getReturnValue();
+
+        $context->setReturnValue([$object, $method]);
     }
 }

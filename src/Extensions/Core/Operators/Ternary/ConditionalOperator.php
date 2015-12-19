@@ -46,15 +46,12 @@ class ConditionalOperator extends TernaryOperator
     }
 
 
-    public function evaluate(EvaluationContext $context, Node $node, array $childResults, NodeTreeEvaluator $evaluator)
+    public function evaluate(EvaluationContext $context, Node $node)
     {
-        $childNode = $node->getChildAt($childResults[0] ? 1 : 2);
+        yield $node->getChildAt(0)->evaluate($context);
+        $childNode = $node->getChildAt($context->getReturnValue() ? 1 : 2);
 
-        $childNode->removeData('noEvaluate');
-        $result = $evaluator->evaluate($childNode, $context);
-        $childNode->addData('noEvaluate');
-
-        return $result;
+        yield $childNode->evaluate($context);
     }
 
     public function compile(Compiler $compiler, Node $left, Node $middle, Node $right)
@@ -70,6 +67,7 @@ class ConditionalOperator extends TernaryOperator
 
     /**
      * @param $left
+     *
      * @return bool
      */
     private function shouldCheckExistence($left)

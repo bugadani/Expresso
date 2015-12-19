@@ -28,8 +28,13 @@ class ArgumentListNode extends Node
         }
     }
 
-    public function evaluate(EvaluationContext $context, array $childResults, NodeTreeEvaluator $evaluator)
+    public function evaluate(EvaluationContext $context)
     {
-        return $childResults;
+        $list = [];
+        foreach($this->getChildren() as $child) {
+            yield $child->evaluate($context);
+            $list[] = $context->getReturnValue();
+        }
+        $context->setReturnValue($list);
     }
 }

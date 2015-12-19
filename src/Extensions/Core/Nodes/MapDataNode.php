@@ -38,18 +38,23 @@ class MapDataNode extends Node
         $compiler->add(']');
     }
 
-    public function evaluate(EvaluationContext $context, array $childResults, NodeTreeEvaluator $evaluator)
+    public function evaluate(EvaluationContext $context)
     {
         $array = [];
 
-        $childCount = count($childResults);
-        for ($i = 0; $i < $childCount; $i += 2) {
-            $key   = $childResults[ $i ];
-            $value = $childResults[ $i + 1 ];
-
-            $array[ $key ] = $value;
+        $isKey = true;
+        foreach ($this->getChildren() as $child) {
+            yield $child->evaluate($context);
+            if ($isKey) {
+                $key = $context->getReturnValue();
+                $isKey = false;
+            } else {
+                $value          = $context->getReturnValue();
+                $array [ $key ] = $value;
+                $isKey = true;
+            }
         }
 
-        return $array;
+        $context->setReturnValue($array);
     }
 }

@@ -26,9 +26,11 @@ class IsSetOperator extends UnaryOperator
         return new UnaryOperatorNode($this, new DataNode($operand->getName()));
     }
 
-    public function evaluate(EvaluationContext $context, Node $node, array $childResults, NodeTreeEvaluator $evaluator)
+    public function evaluate(EvaluationContext $context, Node $node)
     {
-        return $context->offsetExists($childResults[0]);
+        yield $node->getChildAt(0)->evaluate($context);
+        $identifier = $context->getReturnValue();
+        $context->setReturnValue($context->offsetExists($identifier));
     }
 
     public function compile(Compiler $compiler, Node $operand)

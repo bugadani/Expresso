@@ -29,8 +29,11 @@ abstract class OperatorNode extends Node
         return $this->operator;
     }
 
-    public function evaluate(EvaluationContext $context, array $childResults, NodeTreeEvaluator $evaluator)
+    public function evaluate(EvaluationContext $context)
     {
-        return $this->getOperator()->evaluate($context, $this, $childResults, $evaluator);
+        $generator = $this->getOperator()->evaluate($context, $this);
+        foreach ($generator as $child) {
+            yield $child;
+        }
     }
 }

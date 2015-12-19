@@ -39,16 +39,19 @@ class FunctionCallNode extends Node
             ->add(')');
     }
 
-    public function evaluate(EvaluationContext $context, array $childResults, NodeTreeEvaluator $evaluator)
+    public function evaluate(EvaluationContext $context)
     {
-        list($callback, $arguments) = $childResults;
+        yield $this->getChildAt(0)->evaluate($context);
+        $callback = $context->getReturnValue();
+        yield $this->getChildAt(1)->evaluate($context);
+        $arguments = $context->getReturnValue();
 
-        return call_user_func_array($callback, $arguments);
+        $context->setReturnValue(call_user_func_array($callback, $arguments));
     }
 
     private function isSimpleAccessOperator(Node $node)
     {
-        return $node instanceof BinaryOperatorNode &&
-               $node->isOperator(SimpleAccessOperator::class);
+        return $node instanceof BinaryOperatorNode
+               && $node->isOperator(SimpleAccessOperator::class);
     }
 }

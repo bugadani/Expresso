@@ -30,8 +30,8 @@ class ExpressionNode extends Node
                  ->add(';};');
     }
 
-    public function evaluate(EvaluationContext $context, array $childResults, NodeTreeEvaluator $evaluator)
+    public function evaluate(EvaluationContext $context)
     {
-        return $childResults[0];
+        yield $this->getChildAt(0)->evaluate($context);
     }
 }

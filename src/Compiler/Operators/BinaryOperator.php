@@ -12,9 +12,14 @@ use Expresso\EvaluationContext;
 
 abstract class BinaryOperator extends Operator
 {
-    public function evaluate(EvaluationContext $context, Node $node, array $childResults, NodeTreeEvaluator $evaluator)
+    public function evaluate(EvaluationContext $context, Node $node)
     {
-        return $this->evaluateSimple($childResults[0], $childResults[1]);
+        yield $node->getChildAt(0)->evaluate($context);
+        $leftOperand = $context->getReturnValue();
+        yield $node->getChildAt(1)->evaluate($context);
+        $rightOperand = $context->getReturnValue();
+
+        $context->setReturnValue($this->evaluateSimple($leftOperand, $rightOperand));
     }
 
     /**
