@@ -41,4 +41,6 @@ abstract class Operator
      * @return \Generator
      */
     public abstract function evaluate(EvaluationContext $context, Node $node);
+
+    public abstract function compile(Compiler $compiler, Node $node);
 }

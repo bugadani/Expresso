@@ -23,19 +23,4 @@ class SimpleAccessOperator extends ArrayAccessOperator
     {
         return '.';
     }
-
-    public function compile(Compiler $compiler, Node $left, Node $right)
-    {
-        $compiler->add('$context->access(')
-                 ->compileNode($left)
-                 ->add(', ');
-
-        if ($right instanceof IdentifierNode) {
-            $compiler->compileString($right->getName());
-        } else {
-            $compiler->compileNode($right);
-        }
-
-        $compiler->add(')');
-    }
 }

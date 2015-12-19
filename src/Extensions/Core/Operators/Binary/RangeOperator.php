@@ -19,12 +19,12 @@ class RangeOperator extends BinaryOperator
         return \Expresso\Extensions\Core\range($left, $right);
     }
 
-    public function compile(Compiler $compiler, Node $left, Node $right)
+    public function compile(Compiler $compiler, Node $node)
     {
         $compiler->add('\Expresso\Extensions\Core\range(')
-                 ->compileNode($left)
+                 ->compileNode($node->getChildAt(0))
                  ->add(',')
-                 ->compileNode($right)
+                 ->compileNode($node->getChildAt(1))
                  ->add(')');
     }
 }

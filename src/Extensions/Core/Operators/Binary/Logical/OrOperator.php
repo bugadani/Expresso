@@ -3,9 +3,9 @@
 namespace Expresso\Extensions\Core\Operators\Binary\Logical;
 
 use Expresso\Compiler\Compiler;
-use Expresso\Compiler\CompilerConfiguration;
+
 use Expresso\Compiler\Node;
-use Expresso\Compiler\NodeTreeEvaluator;
+
 use Expresso\Compiler\Operators\BinaryOperator;
 use Expresso\EvaluationContext;
 
@@ -24,12 +24,12 @@ class OrOperator extends BinaryOperator
         $context->setReturnValue($second);
     }
 
-    public function compile(Compiler $compiler, Node $left, Node $right)
+    public function compile(Compiler $compiler, Node $node)
     {
         $compiler->add('(')
-                 ->compileNode($left)
+                 ->compileNode($node->getChildAt(0))
                  ->add('||')
-                 ->compileNode($right)
+                 ->compileNode($node->getChildAt(1))
                  ->add(')');
     }
 }

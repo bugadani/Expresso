@@ -19,10 +19,10 @@ class OddOperator extends UnaryOperator
         return ($operand & 0x01) == 1;
     }
 
-    public function compile(Compiler $compiler, Node $operand)
+    public function compile(Compiler $compiler, Node $node)
     {
         $compiler->add('(')
-                 ->compileNode($operand)
+                 ->compileNode($node->getChildAt(0))
                  ->add(' & 0x01) == 1');
     }
 }

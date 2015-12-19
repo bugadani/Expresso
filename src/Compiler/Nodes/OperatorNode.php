@@ -2,6 +2,7 @@
 
 namespace Expresso\Compiler\Nodes;
 
+use Expresso\Compiler\Compiler;
 use Expresso\Compiler\Node;
 use Expresso\Compiler\Operator;
 use Expresso\EvaluationContext;
@@ -40,5 +41,10 @@ abstract class OperatorNode extends Node
                 $retVal = (yield $generator->send($retVal));
             }
         }
+    }
+
+    public function compile(Compiler $compiler)
+    {
+        $this->getOperator()->compile($compiler, $this);
     }
 }

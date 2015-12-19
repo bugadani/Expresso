@@ -2,7 +2,6 @@
 
 namespace Expresso\Compiler\Nodes;
 
-use Expresso\Compiler\Compiler;
 use Expresso\Compiler\Node;
 use Expresso\Compiler\Operators\BinaryOperator;
 
@@ -13,12 +12,6 @@ class BinaryOperatorNode extends OperatorNode
         parent::__construct($operator);
         $this->addChild($left);
         $this->addChild($right);
-    }
-
-    public function compile(Compiler $compiler)
-    {
-        $this->expectChildCount(2);
-        $this->getOperator()->compile($compiler, $this->getLeft(), $this->getRight());
     }
 
     /**

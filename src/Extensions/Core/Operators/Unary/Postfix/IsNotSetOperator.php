@@ -28,7 +28,7 @@ class IsNotSetOperator extends UnaryOperator
         );
     }
 
-    public function compile(Compiler $compiler, Node $operand)
+    public function compile(Compiler $compiler, Node $node)
     {
     }
 }

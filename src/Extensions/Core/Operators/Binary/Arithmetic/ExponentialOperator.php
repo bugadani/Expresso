@@ -19,12 +19,12 @@ class ExponentialOperator extends BinaryOperator
         return pow($left, $right);
     }
 
-    public function compile(Compiler $compiler, Node $left, Node $right)
+    public function compile(Compiler $compiler, Node $node)
     {
         $compiler->add('pow(')
-                 ->compileNode($left)
+                 ->compileNode($node->getChildAt(0))
                  ->add(', ')
-                 ->compileNode($right)
+                 ->compileNode($node->getChildAt(1))
                  ->add(')');
     }
 }

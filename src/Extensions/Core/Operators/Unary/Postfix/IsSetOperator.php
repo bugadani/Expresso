@@ -8,7 +8,7 @@ use Expresso\Compiler\Node;
 use Expresso\Compiler\Nodes\DataNode;
 use Expresso\Compiler\Nodes\IdentifierNode;
 use Expresso\Compiler\Nodes\UnaryOperatorNode;
-use Expresso\Compiler\NodeTreeEvaluator;
+
 use Expresso\Compiler\Operators\UnaryOperator;
 use Expresso\EvaluationContext;
 
@@ -33,10 +33,10 @@ class IsSetOperator extends UnaryOperator
         $context->setReturnValue($context->offsetExists($identifier));
     }
 
-    public function compile(Compiler $compiler, Node $operand)
+    public function compile(Compiler $compiler, Node $node)
     {
         $compiler->add('$context->offsetExists(')
-                 ->compileNode($operand)
+                 ->compileNode($node->getChildAt(0))
                  ->add(')');
     }
 }

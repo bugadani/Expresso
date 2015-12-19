@@ -23,36 +23,36 @@ class ModuloOperator extends BinaryOperator
         }
     }
 
-    public function compile(Compiler $compiler, Node $left, Node $right)
+    public function compile(Compiler $compiler, Node $node)
     {
         //if(sign($left) != sign($right))
         $compiler
             ->add('((')
-            ->compileNode($left)
+            ->compileNode($node->getChildAt(0))
             ->add(' < 0 && ')
-            ->compileNode($right)
+            ->compileNode($node->getChildAt(1))
             ->add(' > 0) || (')
-            ->compileNode($right)
+            ->compileNode($node->getChildAt(1))
             ->add(' < 0 && ')
-            ->compileNode($left)
+            ->compileNode($node->getChildAt(0))
             ->add(' > 0)');
 
         //then $right + $left % right
         $compiler
             ->add(' ? (')
-            ->compileNode($right)
+            ->compileNode($node->getChildAt(1))
             ->add(' + ')
-            ->compileNode($left)
+            ->compileNode($node->getChildAt(0))
             ->add(' % ')
-            ->compileNode($right)
+            ->compileNode($node->getChildAt(1))
             ->add(')');
 
         //else $left % $right
         $compiler
             ->add(': (')
-            ->compileNode($left)
+            ->compileNode($node->getChildAt(0))
             ->add(' % ')
-            ->compileNode($right)
+            ->compileNode($node->getChildAt(1))
             ->add('))');
     }
 }

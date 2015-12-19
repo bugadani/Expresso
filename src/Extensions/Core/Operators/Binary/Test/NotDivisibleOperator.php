@@ -27,7 +27,7 @@ class NotDivisibleOperator extends BinaryOperator
         );
     }
 
-    public function compile(Compiler $compiler, Node $left, Node $right)
+    public function compile(Compiler $compiler, Node $node)
     {
     }
 }

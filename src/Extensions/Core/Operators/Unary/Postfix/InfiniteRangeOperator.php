@@ -19,10 +19,10 @@ class InfiniteRangeOperator extends UnaryOperator
         return \Expresso\Extensions\Core\range($operand);
     }
 
-    public function compile(Compiler $compiler, Node $operand)
+    public function compile(Compiler $compiler, Node $node)
     {
         $compiler->add('\Expresso\Extensions\Core\range(')
-                 ->compileNode($operand)
+                 ->compileNode($node->getChildAt(0))
                  ->add(')');
     }
 }

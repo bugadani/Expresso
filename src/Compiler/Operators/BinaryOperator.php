@@ -30,12 +30,12 @@ abstract class BinaryOperator extends Operator
         throw new \BadMethodCallException('Either evaluate or evaluateSimple must be overridden');
     }
 
-    public function compile(Compiler $compiler, Node $left, Node $right)
+    public function compile(Compiler $compiler, Node $node)
     {
         $compiler->add('(')
-                 ->compileNode($left)
+                 ->compileNode($node->getChildAt(0))
                  ->add($this->compiledOperator())
-                 ->compileNode($right)
+                 ->compileNode($node->getChildAt(1))
                  ->add(')');
     }
 

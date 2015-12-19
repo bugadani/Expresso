@@ -2,7 +2,6 @@
 
 namespace Expresso\Compiler\Operators;
 
-use Expresso\Compiler\Compiler;
 use Expresso\Compiler\CompilerConfiguration;
 use Expresso\Compiler\Node;
 use Expresso\Compiler\Nodes\UnaryOperatorNode;
@@ -28,8 +27,6 @@ abstract class UnaryOperator extends Operator
     {
         throw new \BadMethodCallException('Either evaluate or evaluateSimple must be overridden');
     }
-
-    abstract public function compile(Compiler $compiler, Node $operand);
 
     public function createNode(CompilerConfiguration $config, $operand)
     {

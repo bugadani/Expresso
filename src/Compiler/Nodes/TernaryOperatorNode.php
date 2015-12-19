@@ -2,7 +2,6 @@
 
 namespace Expresso\Compiler\Nodes;
 
-use Expresso\Compiler\Compiler;
 use Expresso\Compiler\Node;
 use Expresso\Compiler\Operators\TernaryOperator;
 
@@ -14,17 +13,6 @@ class TernaryOperatorNode extends OperatorNode
         $this->addChild($left);
         $this->addChild($middle);
         $this->addChild($right);
-    }
-
-    public function compile(Compiler $compiler)
-    {
-        $this->expectChildCount(3);
-        $this->getOperator()->compile(
-            $compiler,
-            $this->getLeft(),
-            $this->getMiddle(),
-            $this->getRight()
-        );
     }
 
     /**

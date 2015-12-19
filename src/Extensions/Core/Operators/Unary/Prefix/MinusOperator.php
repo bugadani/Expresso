@@ -14,10 +14,10 @@ class MinusOperator extends UnaryOperator
         return '-';
     }
 
-    public function compile(Compiler $compiler, Node $operand)
+    public function compile(Compiler $compiler, Node $node)
     {
         $compiler->add('-')
-                 ->compileNode($operand);
+                 ->compileNode($node->getChildAt(0));
     }
 
     public function evaluateSimple($left)

@@ -2,6 +2,7 @@
 
 namespace Expresso\Compiler\Operators;
 
+use Expresso\Compiler\Compiler;
 use Expresso\Compiler\Node;
 use Expresso\Compiler\Nodes\FunctionCallNode;
 use Expresso\Compiler\Nodes\TernaryOperatorNode;
@@ -36,6 +37,11 @@ class FunctionCallOperator extends Operator
     }
 
     public function evaluate(EvaluationContext $context, Node $node)
+    {
+
+    }
+
+    public function compile(Compiler $compiler, Node $node)
     {
 
     }

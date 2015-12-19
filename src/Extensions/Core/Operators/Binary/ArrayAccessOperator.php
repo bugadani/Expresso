@@ -19,14 +19,12 @@ class ArrayAccessOperator extends BinaryOperator
         return $left[ $right ];
     }
 
-    public function compile(Compiler $compiler, Node $left, Node $right)
+    public function compile(Compiler $compiler, Node $node)
     {
         $compiler->add('$context->access(')
-                 ->compileNode($left)
-                 ->add(', ');
-
-        $compiler->compileNode($right);
-
-        $compiler->add(')');
+                 ->compileNode($node->getChildAt(0))
+                 ->add(', ')
+                 ->compileNode($node->getChildAt(1))
+                 ->add(')');
     }
 }

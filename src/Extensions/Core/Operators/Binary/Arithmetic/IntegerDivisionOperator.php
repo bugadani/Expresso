@@ -19,16 +19,16 @@ class IntegerDivisionOperator extends BinaryOperator
         return ($left - $left % $right) / $right;
     }
 
-    public function compile(Compiler $compiler, Node $left, Node $right)
+    public function compile(Compiler $compiler, Node $node)
     {
         $compiler->add('((')
-                 ->compileNode($left)
+                 ->compileNode($node->getChildAt(0))
                  ->add(' - ')
-                 ->compileNode($left)
+                 ->compileNode($node->getChildAt(0))
                  ->add(' % ')
-                 ->compileNode($right)
+                 ->compileNode($node->getChildAt(1))
                  ->add(') / ')
-                 ->compileNode($right)
+                 ->compileNode($node->getChildAt(1))
                  ->add(')');
     }
 }

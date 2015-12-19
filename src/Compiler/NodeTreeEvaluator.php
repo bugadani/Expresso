@@ -1,7 +1,7 @@
 <?php
 namespace Expresso\Compiler;
 
-use Expresso\Compiler\Utils\TreeHelper;
+
 use Expresso\EvaluationContext;
 
 class NodeTreeEvaluator
