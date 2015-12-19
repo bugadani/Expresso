@@ -9,8 +9,9 @@ use Expresso\Compiler\TokenStreamParser;
 class NullParser extends Parser
 {
     /**
-     * @param TokenStream $stream
+     * @param TokenStream       $stream
      * @param TokenStreamParser $parser
+     *
      * @return \Generator
      */
     public function parse(TokenStream $stream, TokenStreamParser $parser)

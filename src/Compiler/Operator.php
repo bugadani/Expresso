@@ -6,9 +6,9 @@ use Expresso\EvaluationContext;
 
 abstract class Operator
 {
-    const LEFT = 0;
+    const LEFT  = 0;
     const RIGHT = 1;
-    const NONE = 2;
+    const NONE  = 2;
 
     private $precedence;
     private $associativity;

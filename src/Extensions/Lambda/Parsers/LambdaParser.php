@@ -23,7 +23,7 @@ class LambdaParser extends Parser
                 //parse comma separated list
                 do {
                     $arguments[] = $stream->next()->getValue();
-                    $token = $stream->expect(Token::PUNCTUATION, [',', ')']);
+                    $token       = $stream->expect(Token::PUNCTUATION, [',', ')']);
                 } while (!$token->test(Token::PUNCTUATION, ')'));
             }
         } else {

@@ -62,8 +62,9 @@ class TokenStream
     }
 
     /**
-     * @param $type
+     * @param      $type
      * @param null $value
+     *
      * @return Token
      * @throws SyntaxException
      */

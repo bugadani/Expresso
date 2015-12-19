@@ -82,6 +82,7 @@ class Tokenizer
 
     /**
      * @param $expression
+     *
      * @return \Generator
      */
     private function tokenizeExpression($expression)

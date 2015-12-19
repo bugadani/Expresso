@@ -28,10 +28,8 @@ class MethodNameNode extends Node
 
     public function evaluate(EvaluationContext $context)
     {
-        yield $this->getChildAt(0)->evaluate($context);
-        $object = $context->getReturnValue();
-        yield $this->getChildAt(1)->evaluate($context);
-        $method = $context->getReturnValue();
+        $object = (yield $this->getChildAt(0)->evaluate($context));
+        $method = (yield $this->getChildAt(1)->evaluate($context));
 
         $context->setReturnValue([$object, $method]);
     }

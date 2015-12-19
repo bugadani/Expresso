@@ -62,7 +62,7 @@ abstract class Extension
     /**
      * Set up language extensions
      *
-     * @param TokenStreamParser $parser
+     * @param TokenStreamParser     $parser
      * @param CompilerConfiguration $configuration
      */
     public function addParsers(TokenStreamParser $parser, CompilerConfiguration $configuration)

@@ -51,15 +51,18 @@ class LambdaNode extends Node
 
     public function evaluate(EvaluationContext $context)
     {
-        $context->setReturnValue(function () use ($context) {
-            $arguments    = array_slice(func_get_args(), 0, count($this->arguments));
-            $innerContext = $context->createInnerScope(array_combine($this->arguments, $arguments));
+        $context->setReturnValue(
+            function () use ($context) {
+                $arguments    = array_slice(func_get_args(), 0, count($this->arguments));
+                $innerContext = $context->createInnerScope(array_combine($this->arguments, $arguments));
 
-            $functionBody = $this->getChildAt(0);
+                $functionBody = $this->getChildAt(0);
 
-            $evaluator = new NodeTreeEvaluator();
-            return $evaluator->evaluate($functionBody, $innerContext);
-        });
+                $evaluator = new NodeTreeEvaluator();
+
+                return $evaluator->evaluate($functionBody, $innerContext);
+            }
+        );
         yield;
     }
 }

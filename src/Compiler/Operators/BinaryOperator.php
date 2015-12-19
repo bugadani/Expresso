@@ -14,10 +14,8 @@ abstract class BinaryOperator extends Operator
 {
     public function evaluate(EvaluationContext $context, Node $node)
     {
-        yield $node->getChildAt(0)->evaluate($context);
-        $leftOperand = $context->getReturnValue();
-        yield $node->getChildAt(1)->evaluate($context);
-        $rightOperand = $context->getReturnValue();
+        $leftOperand  = (yield $node->getChildAt(0)->evaluate($context));
+        $rightOperand = (yield $node->getChildAt(1)->evaluate($context));
 
         $context->setReturnValue($this->evaluateSimple($leftOperand, $rightOperand));
     }

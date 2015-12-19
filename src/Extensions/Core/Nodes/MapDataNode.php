@@ -44,14 +44,13 @@ class MapDataNode extends Node
 
         $isKey = true;
         foreach ($this->getChildren() as $child) {
-            yield $child->evaluate($context);
+            $value = (yield $child->evaluate($context));
             if ($isKey) {
-                $key = $context->getReturnValue();
+                $key   = $value;
                 $isKey = false;
             } else {
-                $value          = $context->getReturnValue();
                 $array [ $key ] = $value;
-                $isKey = true;
+                $isKey          = true;
             }
         }
 

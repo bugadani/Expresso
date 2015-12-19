@@ -98,6 +98,7 @@ class Expresso
 
     /**
      * @param $expression
+     *
      * @return Node
      */
     private function parse($expression)

@@ -22,6 +22,7 @@ class EvaluationContext extends ExecutionContext
 
     /**
      * @param $functionName
+     *
      * @return ExpressionFunction
      */
     public function getFunction($functionName)

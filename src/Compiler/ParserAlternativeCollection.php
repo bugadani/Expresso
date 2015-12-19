@@ -19,7 +19,7 @@ class ParserAlternativeCollection extends Parser
      * @var Parser[]
      */
     private $alternatives = [];
-    private $tests = [];
+    private $tests        = [];
     private $defaultParser;
 
     public function __construct(Parser $defaultParser = null)

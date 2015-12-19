@@ -7,8 +7,9 @@ use Expresso\Compiler\Node;
 class TreeHelper
 {
     /**
-     * @param Node $node
-     * @param callable|null $preOrder A function that is called when a node is first visited. Return false to skip its children and skip calling $postOrder.
+     * @param Node          $node
+     * @param callable|null $preOrder A function that is called when a node is first visited. Return false to skip its
+     *                                children and skip calling $postOrder.
      * @param callable|null $postOrder
      */
     public static function traverse(Node $node, callable $preOrder = null, callable $postOrder = null)

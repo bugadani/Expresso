@@ -48,8 +48,8 @@ class ConditionalOperator extends TernaryOperator
 
     public function evaluate(EvaluationContext $context, Node $node)
     {
-        yield $node->getChildAt(0)->evaluate($context);
-        $childNode = $node->getChildAt($context->getReturnValue() ? 1 : 2);
+        $condition = (yield $node->getChildAt(0)->evaluate($context));
+        $childNode = $node->getChildAt($condition ? 1 : 2);
 
         yield $childNode->evaluate($context);
     }

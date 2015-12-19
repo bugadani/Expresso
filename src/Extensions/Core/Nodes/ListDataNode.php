@@ -35,9 +35,8 @@ class ListDataNode extends Node
     public function evaluate(EvaluationContext $context)
     {
         $list = [];
-        foreach($this->getChildren() as $child) {
-            yield $child->evaluate($context);
-            $list[] = $context->getReturnValue();
+        foreach ($this->getChildren() as $child) {
+            $list[] = (yield $child->evaluate($context));
         }
         $context->setReturnValue($list);
     }

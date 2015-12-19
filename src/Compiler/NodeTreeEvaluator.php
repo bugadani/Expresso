@@ -24,9 +24,8 @@ class NodeTreeEvaluator
 
     public function evaluate(Node $node, EvaluationContext $context)
     {
-        $generator = $node->evaluate($context);
-        $stack     = new \SplStack();
-        $stack->push($generator);
+        $stack = new \SplStack();
+        $stack->push($node->evaluate($context));
 
         while (!$stack->isEmpty()) {
             //peek at the last generator
@@ -52,7 +51,7 @@ class NodeTreeEvaluator
                 }
                 //step the last generator that is not done
                 $generator = $stack->top();
-                $generator->next();
+                $generator->send($context->getReturnValue());
             }
             if ($stack->isEmpty()) {
                 break;
