@@ -19,6 +19,6 @@ class ConditionalOperator extends BinaryOperator
     {
         $ternaryConditionalOperator = $config->getOperatorByClass(TernaryConditionalOperator::class);
 
-        return $ternaryConditionalOperator->createNode($config, $left, clone $left, $right);
+        return $ternaryConditionalOperator->createNode($config, $left, $left, $right);
     }
 }
