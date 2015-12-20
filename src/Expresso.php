@@ -7,7 +7,6 @@ use Expresso\Compiler\CompilerConfiguration;
 use Expresso\Compiler\Utils\GeneratorHelper;
 use Expresso\Compiler\Node;
 use Expresso\Compiler\Nodes\ExpressionNode;
-use Expresso\Compiler\NodeTreeEvaluator;
 use Expresso\Compiler\Tokenizer;
 use Expresso\Compiler\TokenStreamParser;
 

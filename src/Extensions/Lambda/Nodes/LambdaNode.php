@@ -25,15 +25,15 @@ class LambdaNode extends Node
     {
         $compiler->add('function(');
 
-        $argumentCount = count($this->arguments);
-        if ($argumentCount > 0) {
+        $hasArguments = count($this->arguments) > 0;
+        if ($hasArguments) {
             $compiler->add('$' . implode(', $', $this->arguments));
         }
 
         $compiler->add(') use ($context) {')
-                 ->add('$context = new Expresso\\ExecutionContext([');
+                 ->add('$context = $context->createInnerScope([');
 
-        if ($argumentCount > 0) {
+        if ($hasArguments) {
             $argumentNames    = $this->arguments;
             $lastArgumentName = array_pop($argumentNames);
             foreach ($argumentNames as $argName) {
@@ -44,7 +44,7 @@ class LambdaNode extends Node
                      ->add(" => \${$lastArgumentName}");
         }
 
-        $compiler->add('], $context);')
+        $compiler->add(']);')
                  ->add('return ')
                  ->compileNode($this->getChildAt(0))
                  ->add(';}');

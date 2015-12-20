@@ -24,6 +24,11 @@ class ExecutionContext extends \ArrayObject
         throw new \OutOfBoundsException("{$what} is not present in \$where");
     }
 
+    public function createInnerScope($input)
+    {
+        return new ExecutionContext($input, $this);
+    }
+
     public function offsetGet($index)
     {
         if (parent::offsetExists($index)) {

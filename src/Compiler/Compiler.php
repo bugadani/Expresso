@@ -76,7 +76,7 @@ class Compiler
 
     public function addVariableAccess($variableName)
     {
-        $this->add('$context["' . $variableName . '"]');
+        $this->add("\$context['{$variableName}']");
 
         return $this;
     }
