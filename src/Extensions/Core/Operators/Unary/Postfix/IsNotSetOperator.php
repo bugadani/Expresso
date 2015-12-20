@@ -2,14 +2,10 @@
 
 namespace Expresso\Extensions\Core\Operators\Unary\Postfix;
 
-use Expresso\Compiler\Compiler;
 use Expresso\Compiler\CompilerConfiguration;
-use Expresso\Compiler\Node;
-use Expresso\Compiler\Operators\UnaryOperator;
 use Expresso\Extensions\Core\Operators\Unary\Prefix\NotOperator;
 
-
-class IsNotSetOperator extends UnaryOperator
+class IsNotSetOperator extends IsSetOperator
 {
 
     public function operators()
@@ -19,16 +15,11 @@ class IsNotSetOperator extends UnaryOperator
 
     public function createNode(CompilerConfiguration $config, $operand)
     {
-        $notOperator   = $config->getOperatorByClass(NotOperator::class);
-        $isSetOperator = $config->getOperatorByClass(IsSetOperator::class);
+        $notOperator = $config->getOperatorByClass(NotOperator::class);
 
         return $notOperator->createNode(
             $config,
-            $isSetOperator->createNode($config, $operand)
+            parent::createNode($config, $operand)
         );
-    }
-
-    public function compile(Compiler $compiler, Node $node)
-    {
     }
 }
