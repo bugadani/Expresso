@@ -13,26 +13,19 @@ class ArrayAccessParser extends Parser
 {
     private $accessOperator;
 
-    public function __construct()
+    public function __construct(ArrayAccessOperator $operator)
     {
-        $this->accessOperator = new ArrayAccessOperator(0);
+        $this->accessOperator = $operator;
     }
 
     public function parse(TokenStream $stream, TokenStreamParser $parser)
     {
+        $parser->pushOperator($this->accessOperator);
+
         $stream->next();
         yield $parser->parse('expression');
-        $stream->expectCurrent(Token::PUNCTUATION, ']');
 
-        $index = $parser->popOperand();
-        $node  = $parser->popOperand();
-        $parser->pushOperand(
-            new BinaryOperatorNode(
-                $this->accessOperator,
-                $node,
-                $index
-            )
-        );
+        $stream->expectCurrent(Token::PUNCTUATION, ']');
 
         $stream->next();
         yield $parser->parse('postfix no function call');

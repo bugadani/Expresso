@@ -27,6 +27,7 @@ use Expresso\Extensions\Core\Operators\Binary\Arithmetic\ModuloOperator;
 use Expresso\Extensions\Core\Operators\Binary\Arithmetic\MultiplicationOperator;
 use Expresso\Extensions\Core\Operators\Binary\Arithmetic\RemainderOperator;
 use Expresso\Extensions\Core\Operators\Binary\Arithmetic\SubtractionOperator;
+use Expresso\Extensions\Core\Operators\Binary\ArrayAccessOperator;
 use Expresso\Extensions\Core\Operators\Binary\Bitwise\BitwiseAndOperator;
 use Expresso\Extensions\Core\Operators\Binary\Bitwise\BitwiseOrOperator;
 use Expresso\Extensions\Core\Operators\Binary\Bitwise\BitwiseXorOperator;
@@ -104,6 +105,8 @@ class Core extends Extension
             new ContainsOperator(8, Operator::NONE),
             new NotContainsOperator(8, Operator::NONE),*/
             //other
+            new ArrayAccessOperator(17),
+            new FunctionCallOperator(11),
             new BinaryConditionalOperator(1),
             new ConcatenationOperator(10),
             new SimpleAccessOperator(16),
@@ -153,11 +156,11 @@ class Core extends Extension
         $postfixOperatorParser   = new PostfixOperatorParser($configuration->getUnaryOperators());
         $ternaryOperatorParser   = new ConditionalParser($configuration);
         $identifierParser        = new IdentifierParser();
-        $arrayAccessParser       = new ArrayAccessParser();
+        $arrayAccessParser       = new ArrayAccessParser($configuration->getOperatorByClass(ArrayAccessOperator::class));
         $dataTokenParser         = new DataTokenParser();
         $groupedExpressionParser = new ParenthesisGroupedExpressionParser();
         $arrayDefinitionParser   = new ArrayDefinitionParser();
-        $functionCallParser      = new FunctionCallParser(new FunctionCallOperator(11));
+        $functionCallParser      = new FunctionCallParser($configuration->getOperatorByClass(FunctionCallOperator::class));
         $expressionParser        = new ExpressionParser();
 
         $tokenParsers = new ParserAlternativeCollection($prefixOperatorParser);

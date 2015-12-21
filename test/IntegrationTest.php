@@ -4,7 +4,6 @@ namespace Expresso\Test;
 
 use Expresso\Expresso;
 use Expresso\Extensions\Core\Core;
-use Expresso\Extensions\Generator\Generator;
 use Expresso\Extensions\Lambda\Lambda;
 
 class IntegrationTest extends \PHPUnit_Framework_TestCase
