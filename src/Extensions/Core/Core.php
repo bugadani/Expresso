@@ -154,7 +154,7 @@ class Core extends Extension
         $binaryOperatorParser    = new BinaryOperatorParser($configuration->getBinaryOperators());
         $prefixOperatorParser    = new PrefixOperatorParser($configuration->getPrefixOperators());
         $postfixOperatorParser   = new PostfixOperatorParser($configuration->getUnaryOperators());
-        $ternaryOperatorParser   = new ConditionalParser($configuration);
+        $ternaryOperatorParser   = new ConditionalParser($configuration->getOperatorByClass(ConditionalOperator::class));
         $identifierParser        = new IdentifierParser();
         $arrayAccessParser       = new ArrayAccessParser($configuration->getOperatorByClass(ArrayAccessOperator::class));
         $dataTokenParser         = new DataTokenParser();

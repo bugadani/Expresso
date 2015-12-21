@@ -2,7 +2,6 @@
 
 namespace Expresso\Compiler\Parsers;
 
-use Expresso\Compiler\CompilerConfiguration;
 use Expresso\Compiler\Parser;
 use Expresso\Compiler\Token;
 use Expresso\Compiler\TokenStream;
@@ -15,30 +14,24 @@ class ConditionalParser extends Parser
      * @var ConditionalOperator
      */
     private $conditionalOperator;
-    private $config;
 
-    public function __construct(CompilerConfiguration $config)
+    public function __construct(ConditionalOperator $operator)
     {
-        $this->config              = $config;
-        $this->conditionalOperator = $config->getOperatorByClass(ConditionalOperator::class);
+        $this->conditionalOperator = $operator;
     }
 
     public function parse(TokenStream $stream, TokenStreamParser $parser)
     {
         if ($stream->current()->test(Token::PUNCTUATION, '?')) {
+            $parser->pushOperator($this->conditionalOperator);
+
             $stream->next();
             yield $parser->parse('expression');
+
             $stream->expectCurrent(Token::PUNCTUATION, ':');
+
             $stream->next();
             yield $parser->parse('expression');
-
-            $right  = $parser->popOperand();
-            $middle = $parser->popOperand();
-            $left   = $parser->popOperand();
-
-            $parser->pushOperand(
-                $this->conditionalOperator->createNode($this->config, $left, $middle, $right)
-            );
         }
     }
 }

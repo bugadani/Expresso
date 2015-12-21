@@ -4,6 +4,7 @@ namespace Expresso\Compiler;
 
 use Expresso\Compiler\Exceptions\ParseException;
 use Expresso\Compiler\Operators\BinaryOperator;
+use Expresso\Compiler\Operators\TernaryOperator;
 use Expresso\Compiler\Utils\GeneratorHelper;
 
 /**
@@ -97,10 +98,17 @@ class TokenStreamParser
     private function popOperator()
     {
         $operator = $this->operatorStack->pop();
-        $right    = $this->operandStack->pop();
-        if ($operator instanceof BinaryOperator) {
-            $operatorNode = $operator->createNode($this->configuration, $this->operandStack->pop(), $right);
+        if ($operator instanceof TernaryOperator) {
+            $right        = $this->operandStack->pop();
+            $middle       = $this->operandStack->pop();
+            $left         = $this->operandStack->pop();
+            $operatorNode = $operator->createNode($this->configuration, $left, $middle, $right);
+        } else if ($operator instanceof BinaryOperator) {
+            $right        = $this->operandStack->pop();
+            $left         = $this->operandStack->pop();
+            $operatorNode = $operator->createNode($this->configuration, $left, $right);
         } else {
+            $right        = $this->operandStack->pop();
             $operatorNode = $operator->createNode($this->configuration, $right);
         }
         $this->operandStack->push($operatorNode);
@@ -108,11 +116,13 @@ class TokenStreamParser
 
     public function pushOperator(Operator $operator)
     {
-        $this->popOperatorsWithHigherPrecedence($operator);
+        while ($this->compareToStackTop($operator)) {
+            $this->popOperator();
+        }
         $this->operatorStack->push($operator);
     }
 
-    public function compareToStackTop(Operator $operator)
+    private function compareToStackTop(Operator $operator)
     {
         $top = $this->operatorStack->top();
         if ($top === null) {
@@ -150,15 +160,5 @@ class TokenStreamParser
     public function parse($parser)
     {
         return $this->getParser($parser)->parse($this->tokens, $this);
-    }
-
-    /**
-     * @param Operator $operator
-     */
-    public function popOperatorsWithHigherPrecedence(Operator $operator)
-    {
-        while ($this->compareToStackTop($operator)) {
-            $this->popOperator();
-        }
     }
 }
