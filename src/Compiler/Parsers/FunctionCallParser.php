@@ -30,17 +30,17 @@ class FunctionCallParser extends Parser
             $parser->popOperand() //function name or filter/access node
         );
 
-        $currentToken = $stream->next();
-        if (!$currentToken->test(Token::PUNCTUATION, ')')) {
-            do {
+        if (!$stream->next()->test(Token::PUNCTUATION, ')')) {
+            yield $parser->parse('expression');
+            $functionNode->addArgument($parser->popOperand());
+            while ($stream->current()->test(Token::PUNCTUATION, ',')) {
+                $stream->next();
                 yield $parser->parse('expression');
                 $functionNode->addArgument($parser->popOperand());
-                $currentToken = $stream->expectCurrent(Token::PUNCTUATION, [',', ')']);
-                $stream->next();
-            } while (!$currentToken->test(Token::PUNCTUATION, ')'));
-        } else {
-            $stream->next();
+            }
+            $stream->expectCurrent(Token::PUNCTUATION, [')']);
         }
+        $stream->next();
 
         $parser->pushOperand($functionNode);
     }
