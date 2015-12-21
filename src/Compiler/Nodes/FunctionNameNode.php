@@ -28,4 +28,12 @@ class FunctionNameNode extends Node
         $context->setReturnValue($context->getFunction($this->functionName)->getFunctionName());
         yield;
     }
+
+    /**
+     * @return mixed
+     */
+    public function getFunctionName()
+    {
+        return $this->functionName;
+    }
 }

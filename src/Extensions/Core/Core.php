@@ -106,7 +106,7 @@ class Core extends Extension
             new NotContainsOperator(8, Operator::NONE),*/
             //other
             new ArrayAccessOperator(17),
-            new FunctionCallOperator(11),
+            new FunctionCallOperator(12),
             new BinaryConditionalOperator(1),
             new ConcatenationOperator(10),
             new SimpleAccessOperator(16),

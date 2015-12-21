@@ -17,17 +17,19 @@ class FunctionCallNode extends Node
                && $node->isOperator(SimpleAccessOperator::class);
     }
 
-    public function __construct($functionName, array $arguments = [])
+    public function __construct($functionName, ArgumentListNode $arguments)
     {
-        if ($functionName instanceof IdentifierNode) {
-            $functionName = new FunctionNameNode($functionName->getName());
-        } else if ($this->isSimpleAccessOperator($functionName)) {
-            $functionName = new MethodNameNode($functionName);
-        } else {
-            throw new ParseException('Invalid function name');
+        if (!$functionName instanceof FunctionNameNode) {
+            if ($functionName instanceof IdentifierNode) {
+                $functionName = new FunctionNameNode($functionName->getName());
+            } else if ($this->isSimpleAccessOperator($functionName)) {
+                $functionName = new MethodNameNode($functionName);
+            } else {
+                throw new ParseException('Invalid function name');
+            }
         }
         $this->addChild($functionName);
-        $this->addChild(new ArgumentListNode($arguments));
+        $this->addChild($arguments);
     }
 
     public function addArgument(Node $node)

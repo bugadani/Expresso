@@ -8,11 +8,6 @@ use Expresso\EvaluationContext;
 
 class ArgumentListNode extends Node
 {
-    public function __construct(array $children)
-    {
-        array_map([$this, 'addChild'], $children);
-    }
-
     public function compile(Compiler $compiler)
     {
         if ($this->getChildCount() > 0) {
