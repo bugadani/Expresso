@@ -2,17 +2,19 @@
 
 namespace Expresso\Compiler;
 
+use Expresso\Compiler\Utils\GeneratorHelper;
+
 class Compiler
 {
-    /**
-     * @var \SplQueue
-     */
-    private $taskQueue;
-
     /**
      * @var CompilerConfiguration
      */
     private $configuration;
+
+    /**
+     * @var string
+     */
+    private $source;
 
     public function __construct(CompilerConfiguration $configuration)
     {
@@ -29,7 +31,7 @@ class Compiler
 
     public function add($string)
     {
-        $this->taskQueue->enqueue($string);
+        $this->source .= $string;
 
         return $this;
     }
@@ -65,8 +67,6 @@ class Compiler
             $this->add($data ? 'true' : 'false');
         } else if ($data === null) {
             $this->add('null');
-        } else if ($data instanceof Node) {
-            $this->compileNode($data);
         } else {
             $this->compileString($data);
         }
@@ -81,53 +81,14 @@ class Compiler
         return $this;
     }
 
-    public function compileNode(Node $node)
-    {
-        $this->taskQueue->enqueue($node);
-
-        return $this;
-    }
-
-    private function setTaskQueue(\SplQueue $queue)
-    {
-        $oldQueue        = $this->taskQueue;
-        $this->taskQueue = $queue;
-
-        return $oldQueue;
-    }
-
     public function compile(Node $rootNode)
     {
-        $source          = '';
-        $this->taskQueue = new \SplQueue();
-        $this->taskQueue->setIteratorMode(\SplQueue::IT_MODE_DELETE);
+        $this->source = '';
 
-        $this->compileNode($rootNode);
+        $generator = $rootNode->compile($this);
 
-        //task queue based compilation ensures that the compilation
-        //will never abort due to the nesting limit given by PHP
-        while (!$this->taskQueue->isEmpty()) {
-            $task = $this->taskQueue->dequeue();
-            if ($task instanceof Node) {
+        GeneratorHelper::executeGeneratorsRecursive($generator);
 
-                //replace queue with a new one
-                $savedQueue = $this->setTaskQueue(new \SplQueue());
-
-                $task->compile($this);
-
-                //restore old queue
-                $newQueue = $this->setTaskQueue($savedQueue);
-
-                //prepend to old queue
-                while (!$newQueue->isEmpty()) {
-                    $this->taskQueue->unshift($newQueue->pop());
-                }
-
-            } else {
-                $source .= $task;
-            }
-        }
-
-        return $source;
+        return $this->source;
     }
 }

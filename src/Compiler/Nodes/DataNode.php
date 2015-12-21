@@ -18,6 +18,7 @@ class DataNode extends Node
     public function compile(Compiler $compiler)
     {
         $compiler->addData($this->value);
+        yield;
     }
 
     public function evaluate(EvaluationContext $context)

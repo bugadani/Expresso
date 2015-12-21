@@ -20,6 +20,7 @@ class FunctionNameNode extends Node
         $functions = $compiler->getConfiguration()->getFunctions();
 
         $compiler->add($functions[ $this->functionName ]->getFunctionName());
+        yield;
     }
 
     public function evaluate(EvaluationContext $context)

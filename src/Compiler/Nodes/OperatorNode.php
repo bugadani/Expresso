@@ -45,6 +45,9 @@ abstract class OperatorNode extends Node
 
     public function compile(Compiler $compiler)
     {
-        $this->getOperator()->compile($compiler, $this);
+        $generator = $this->getOperator()->compile($compiler, $this);
+        foreach ($generator as $child) {
+            yield $child;
+        }
     }
 }

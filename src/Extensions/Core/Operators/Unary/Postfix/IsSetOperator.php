@@ -35,8 +35,8 @@ class IsSetOperator extends UnaryOperator
 
     public function compile(Compiler $compiler, Node $node)
     {
-        $compiler->add('$context->offsetExists(')
-                 ->compileNode($node->getChildAt(0))
-                 ->add(')');
+        $compiler->add('$context->offsetExists(');
+        yield $node->getChildAt(0)->compile($compiler);
+        $compiler->add(')');
     }
 }

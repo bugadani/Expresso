@@ -21,11 +21,10 @@ class DivisibleOperator extends BinaryOperator
 
     public function compile(Compiler $compiler, Node $node)
     {
-        $compiler->add('(')
-                 ->compileNode($node->getChildAt(0))
-                 ->add('%')
-                 ->compileNode($node->getChildAt(1))
-                 ->add(' === 0')
-                 ->add(')');
+        $compiler->add('(');
+        yield $node->getChildAt(0)->compile($compiler);
+        $compiler->add('%');
+        yield $node->getChildAt(1)->compile($compiler);
+        $compiler->add(' === 0)');
     }
 }

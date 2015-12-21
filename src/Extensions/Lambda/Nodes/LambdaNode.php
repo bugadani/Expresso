@@ -3,9 +3,9 @@
 namespace Expresso\Extensions\Lambda\Nodes;
 
 use Expresso\Compiler\Compiler;
-use Expresso\Compiler\Utils\GeneratorHelper;
 use Expresso\Compiler\Node;
 use Expresso\Compiler\NodeTreeEvaluator;
+use Expresso\Compiler\Utils\GeneratorHelper;
 use Expresso\EvaluationContext;
 
 class LambdaNode extends Node
@@ -45,9 +45,9 @@ class LambdaNode extends Node
         }
 
         $compiler->add(']);')
-                 ->add('return ')
-                 ->compileNode($this->getChildAt(0))
-                 ->add(';}');
+                 ->add('return ');
+        yield $this->getChildAt(0)->compile($compiler);
+        $compiler->add(';}');
     }
 
     public function evaluate(EvaluationContext $context)

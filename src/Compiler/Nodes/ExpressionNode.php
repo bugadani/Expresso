@@ -24,9 +24,11 @@ class ExpressionNode extends Node
         $this->expectChildCount(1);
         $compiler->add('function(array $context = []) {')
                  ->add('$context = new Expresso\\ExecutionContext($context);')
-                 ->add('return ')
-                 ->compileNode($this->getChildAt(0))
-                 ->add(';};');
+                 ->add('return ');
+
+        yield $this->getChildAt(0)->compile($compiler);
+
+        $compiler->add(';};');
     }
 
     public function evaluate(EvaluationContext $context)

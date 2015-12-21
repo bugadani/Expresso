@@ -18,6 +18,7 @@ class IdentifierNode extends Node
     public function compile(Compiler $compiler)
     {
         $compiler->addVariableAccess($this->value);
+        yield;
     }
 
     public function evaluate(EvaluationContext $context)

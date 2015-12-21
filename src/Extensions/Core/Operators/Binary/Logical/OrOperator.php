@@ -24,12 +24,8 @@ class OrOperator extends BinaryOperator
         $context->setReturnValue($second);
     }
 
-    public function compile(Compiler $compiler, Node $node)
+    public function compiledOperator()
     {
-        $compiler->add('(')
-                 ->compileNode($node->getChildAt(0))
-                 ->add('||')
-                 ->compileNode($node->getChildAt(1))
-                 ->add(')');
+        return ' || ';
     }
 }

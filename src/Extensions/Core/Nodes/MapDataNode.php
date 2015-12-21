@@ -31,7 +31,7 @@ class MapDataNode extends Node
                 $compiler->add(', ');
                 $isKey = true;
             }
-            $compiler->compileNode($child);
+            yield $child->compile($compiler);
         }
 
         $compiler->add(']');

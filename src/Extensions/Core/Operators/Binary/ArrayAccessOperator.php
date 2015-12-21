@@ -11,7 +11,6 @@ class ArrayAccessOperator extends BinaryOperator
 
     public function operators()
     {
-
     }
 
     public function evaluateSimple($left, $right)
@@ -21,10 +20,10 @@ class ArrayAccessOperator extends BinaryOperator
 
     public function compile(Compiler $compiler, Node $node)
     {
-        $compiler->add('$context->access(')
-                 ->compileNode($node->getChildAt(0))
-                 ->add(', ')
-                 ->compileNode($node->getChildAt(1))
-                 ->add(')');
+        $compiler->add('$context->access(');
+        yield $node->getChildAt(0)->compile($compiler);
+        $compiler->add(', ');
+        yield $node->getChildAt(1)->compile($compiler);
+        $compiler->add(')');
     }
 }

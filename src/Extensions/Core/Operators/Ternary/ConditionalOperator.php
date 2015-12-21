@@ -7,7 +7,6 @@ use Expresso\Compiler\CompilerConfiguration;
 use Expresso\Compiler\Node;
 use Expresso\Compiler\Nodes\IdentifierNode;
 use Expresso\Compiler\Nodes\OperatorNode;
-
 use Expresso\Compiler\Operators\TernaryOperator;
 use Expresso\EvaluationContext;
 use Expresso\Extensions\Core\Operators\Binary\ArrayAccessOperator;
@@ -19,7 +18,6 @@ class ConditionalOperator extends TernaryOperator
 
     public function operators()
     {
-
     }
 
     public function createNode(CompilerConfiguration $config, $left, $middle, $right)
@@ -40,7 +38,6 @@ class ConditionalOperator extends TernaryOperator
         );
     }
 
-
     public function evaluate(EvaluationContext $context, Node $node)
     {
         $condition = (yield $node->getChildAt(0)->evaluate($context));
@@ -51,13 +48,13 @@ class ConditionalOperator extends TernaryOperator
 
     public function compile(Compiler $compiler, Node $node)
     {
-        $compiler->add('((')
-                 ->compileNode($node->getChildAt(0))
-                 ->add(') ? (')
-                 ->compileNode($node->getChildAt(1))
-                 ->add(') : (')
-                 ->compileNode($node->getChildAt(2))
-                 ->add('))');
+        $compiler->add('((');
+        yield $node->getChildAt(0)->compile($compiler);
+        $compiler->add(') ? (');
+        yield $node->getChildAt(1)->compile($compiler);
+        $compiler->add(') : (');
+        yield $node->getChildAt(2)->compile($compiler);
+        $compiler->add('))');
     }
 
     /**

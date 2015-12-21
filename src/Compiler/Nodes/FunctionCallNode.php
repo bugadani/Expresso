@@ -13,8 +13,8 @@ class FunctionCallNode extends Node
 
     private function isSimpleAccessOperator(Node $node)
     {
-        return $node instanceof OperatorNode &&
-               $node->isOperator(SimpleAccessOperator::class);
+        return $node instanceof OperatorNode
+               && $node->isOperator(SimpleAccessOperator::class);
     }
 
     public function __construct($functionName, array $arguments = [])
@@ -37,11 +37,10 @@ class FunctionCallNode extends Node
 
     public function compile(Compiler $compiler)
     {
-        $compiler
-            ->compileNode($this->getChildAt(0))
-            ->add('(')
-            ->compileNode($this->getChildAt(1))
-            ->add(')');
+        yield $this->getChildAt(0)->compile($compiler);
+        $compiler->add('(');
+        yield $this->getChildAt(1)->compile($compiler);
+        $compiler->add(')');
     }
 
     public function evaluate(EvaluationContext $context)

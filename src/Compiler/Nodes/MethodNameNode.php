@@ -17,12 +17,9 @@ class MethodNameNode extends Node
 
     public function compile(Compiler $compiler)
     {
-        $object = $this->getChildAt(0);
-        $method = $this->getChildAt(1);
-
-        $compiler->compileNode($object)
-                 ->add('->')
-                 ->add($method->getValue());
+        yield $this->getChildAt(0)->compile($compiler);
+        $compiler->add('->')
+                 ->add($this->getChildAt(1)->getValue());
     }
 
     public function evaluate(EvaluationContext $context)

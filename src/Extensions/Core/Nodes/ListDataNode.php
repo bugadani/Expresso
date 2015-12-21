@@ -22,10 +22,10 @@ class ListDataNode extends Node
             $lastChild = array_pop($children);
 
             foreach ($children as $child) {
-                $compiler->compileNode($child)
-                         ->add(', ');
+                yield $child->compile($compiler);
+                $compiler->add(', ');
             }
-            $compiler->compileNode($lastChild);
+            yield $lastChild->compile($compiler);
         }
 
         $compiler->add(']');

@@ -32,11 +32,11 @@ abstract class BinaryOperator extends Operator
 
     public function compile(Compiler $compiler, Node $node)
     {
-        $compiler->add('(')
-                 ->compileNode($node->getChildAt(0))
-                 ->add($this->compiledOperator())
-                 ->compileNode($node->getChildAt(1))
-                 ->add(')');
+        $compiler->add('(');
+        yield $node->getChildAt(0)->compile($compiler);
+        $compiler->add($this->compiledOperator());
+        yield $node->getChildAt(1)->compile($compiler);
+        $compiler->add(')');
     }
 
     /**

@@ -21,8 +21,8 @@ class OddOperator extends UnaryOperator
 
     public function compile(Compiler $compiler, Node $node)
     {
-        $compiler->add('(')
-                 ->compileNode($node->getChildAt(0))
-                 ->add(' & 0x01) == 1');
+        $compiler->add('(');
+        yield $node->getChildAt(0)->compile($compiler);
+        $compiler->add(' & 0x01) == 1');
     }
 }
