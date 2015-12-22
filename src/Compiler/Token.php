@@ -22,6 +22,8 @@ class Token
 
     private $type;
     private $value;
+    private $line;
+    private $offset;
 
     public function __construct($type, $value = null)
     {
@@ -64,5 +66,37 @@ class Token
         }
 
         return "UNKNOWN {$this->type}";
+    }
+
+    /**
+     * @param mixed $line
+     */
+    public function setLine($line)
+    {
+        $this->line = $line;
+    }
+
+    /**
+     * @return int
+     */
+    public function getLine()
+    {
+        return $this->line;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getOffset()
+    {
+        return $this->offset;
+    }
+
+    /**
+     * @param mixed $offset
+     */
+    public function setOffset($offset)
+    {
+        $this->offset = $offset;
     }
 }

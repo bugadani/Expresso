@@ -21,7 +21,7 @@ class Tokenizer
     private $operators;
     private $expressionPartsPattern;
 
-    public function __construct($operatorSymbols)
+    public function __construct(array $operatorSymbols)
     {
         $this->operators = array_combine($operatorSymbols, $operatorSymbols);
 
@@ -87,16 +87,39 @@ class Tokenizer
      */
     private function tokenizeExpression($expression)
     {
-        $flags = PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY;
+        $flags  = PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY;
+        $line   = 1;
+        $offset = 0;
 
-        $tokens = preg_split($this->expressionPartsPattern, $expression, 0, $flags);
+        $expression = strtr($expression, ["\r" => '']);
+        $tokens     = preg_split($this->expressionPartsPattern, $expression, 0, $flags);
 
         foreach ($tokens as $token) {
             if (!ctype_space($token)) {
-                yield $this->createToken($token);
+                $tokenObject = $this->createToken($token);
+
+                $tokenObject->setLine($line);
+                $tokenObject->setOffset($offset);
+
+                yield $tokenObject;
+            }
+
+            $lines     = explode("\n", $token);
+            $lineCount = count($lines) - 1;
+            if ($lineCount === 0) {
+                $offset += strlen($lines[0]);
+            } else {
+                $line += $lineCount;
+                $offset = strlen($lines[ $lineCount ]);
             }
         }
-        yield new Token(Token::EOF);
+
+        $endToken = new Token(Token::EOF);
+
+        $endToken->setLine($line);
+        $endToken->setOffset($offset);
+
+        yield $endToken;
     }
 
     public function createToken($part)
