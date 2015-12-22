@@ -98,8 +98,7 @@ class Tokenizer
             if (!ctype_space($token)) {
                 $tokenObject = $this->createToken($token);
 
-                $tokenObject->setLine($line);
-                $tokenObject->setOffset($offset);
+                $tokenObject->setPosition($line, $offset);
 
                 yield $tokenObject;
             }
@@ -116,8 +115,7 @@ class Tokenizer
 
         $endToken = new Token(Token::EOF);
 
-        $endToken->setLine($line);
-        $endToken->setOffset($offset);
+        $endToken->setPosition($line, $offset);
 
         yield $endToken;
     }

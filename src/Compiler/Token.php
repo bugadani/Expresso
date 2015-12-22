@@ -69,11 +69,13 @@ class Token
     }
 
     /**
-     * @param mixed $line
+     * @param int $line
+     * @param int $offset
      */
-    public function setLine($line)
+    public function setPosition($line, $offset)
     {
-        $this->line = $line;
+        $this->line   = $line;
+        $this->offset = $offset;
     }
 
     /**
@@ -90,13 +92,5 @@ class Token
     public function getOffset()
     {
         return $this->offset;
-    }
-
-    /**
-     * @param mixed $offset
-     */
-    public function setOffset($offset)
-    {
-        $this->offset = $offset;
     }
 }
