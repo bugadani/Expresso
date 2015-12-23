@@ -14,9 +14,6 @@ use Expresso\Extensions\Core\Operators\Unary\Postfix\InfiniteRangeOperator;
 
 class ArrayDefinitionParser extends Parser
 {
-    const TYPE_INDETERMINATE = 0;
-    const TYPE_LIST          = 1;
-    const TYPE_MAP           = 2;
 
     public function parse(TokenStream $stream, TokenStreamParser $parser)
     {
