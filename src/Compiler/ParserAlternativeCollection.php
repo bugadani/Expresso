@@ -15,11 +15,7 @@ class ParserAlternativeCollection extends Parser
         return $parser;
     }
 
-    /**
-     * @var Parser[]
-     */
-    private $alternatives = [];
-    private $tests        = [];
+    private $parsers = [];
     private $defaultParser;
 
     public function __construct(Parser $defaultParser = null)
@@ -29,21 +25,32 @@ class ParserAlternativeCollection extends Parser
 
     public function addAlternative(Parser $parser, $test)
     {
-        $this->alternatives[] = $parser;
-
-        $test = (array)$test;
-        if (!isset($test[1])) {
-            $test[1] = null;
+        $tokenTest = null;
+        if (is_array($test)) {
+            $tokenType = $test[0];
+            if (isset($test[1])) {
+                $tokenTest = $test[1];
+            }
+        } else {
+            $tokenType = $test;
         }
-        $this->tests[] = $test;
+
+        if (!isset($this->parsers[ $tokenType ])) {
+            $this->parsers[ $tokenType ] = [];
+        }
+        $this->parsers[ $tokenType ][] = [$tokenTest, $parser];
     }
 
     public function parse(TokenStream $stream, TokenStreamParser $parser)
     {
-        $currentToken = $stream->current();
-        foreach ($this->tests as $index => $test) {
-            if ($currentToken->test($test[0], $test[1])) {
-                return $this->alternatives[ $index ]->parse($stream, $parser);
+        $currentToken     = $stream->current();
+        $currentTokenType = $currentToken->getType();
+        if (isset($this->parsers[ $currentTokenType ])) {
+            foreach ($this->parsers[ $currentTokenType ] as list($tokenTest, $altParser)) {
+                /** @var Parser $altParser */
+                if ($currentToken->test($currentTokenType, $tokenTest)) {
+                    return $altParser->parse($stream, $parser);
+                }
             }
         }
 
