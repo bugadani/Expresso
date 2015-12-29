@@ -4,12 +4,23 @@ namespace Expresso\Compiler\Utils;
 
 class GeneratorHelper
 {
+
+    /**
+     * This method allows recursive functions to be executed iteratively by using generators.
+     * This is especially useful in PHP because the language imposes an artificial nesting limit.
+     *
+     * In order for a function to be executed, each recursive call must be yielded.
+     *
+     * @param \Generator $generator
+     * @param callable|null $sendFunction
+     */
     public static function executeGeneratorsRecursive(\Generator $generator, callable $sendFunction = null)
     {
         $stack = new \SplStack();
         $stack->push($generator);
 
         $done = false;
+        //This is basically a simple iterative in-order tree traversal algorithm
         do {
             //get the current yielded value - this runs the generator if it is not initialized yet
             $yielded = $generator->current();
