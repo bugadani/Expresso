@@ -34,19 +34,13 @@ class IntegrationTest extends \PHPUnit_Framework_TestCase
             }
         );
 
-        $tests = [];
         /** @var \SplFileInfo $file */
         foreach ($iterator as $file) {
-            $tests[ $file->getPathname() ] = $this->parseDescriptor($file);
-        }
-
-        return array_filter(
-            $tests,
-            function ($descriptor) {
-                //return $descriptor[1] === 'Test map declaration';
-                return is_array($descriptor);
+            $parsed = $this->parseDescriptor($file);
+            if (is_array($parsed)) {
+                yield $file->getPathname() => $parsed;
             }
-        );
+        }
     }
 
     private function getBlock($string, $block)
@@ -64,13 +58,7 @@ class IntegrationTest extends \PHPUnit_Framework_TestCase
         $testDescriptor = file_get_contents($file);
         $file           = basename($file);
 
-        $testDescriptor = strtr(
-            $testDescriptor,
-            [
-                "\r\n" => "\n",
-                "\n\r" => "\n"
-            ]
-        );
+        $testDescriptor = strtr($testDescriptor, ["\r" => '']);
 
         $skip       = $this->getBlock($testDescriptor, 'SKIP');
         $test       = $this->getBlock($testDescriptor, 'TEST');
@@ -78,8 +66,6 @@ class IntegrationTest extends \PHPUnit_Framework_TestCase
         $expect     = $this->getBlock($testDescriptor, 'EXPECT');
         $exception  = $this->getBlock($testDescriptor, 'EXCEPTION');
         $data       = $this->getBlock($testDescriptor, 'DATA');
-
-        $exceptionMessage = null;
 
         if ($skip) {
             return false;
@@ -95,6 +81,7 @@ class IntegrationTest extends \PHPUnit_Framework_TestCase
             throw new \RuntimeException("{$file} does not contain a EXPECT or EXCEPTION block");
         }
 
+        $exceptionMessage = null;
         if ($exception && strpos($exception, "\n")) {
             list($exception, $exceptionMessage) = explode("\n", $exception, 2);
         }
@@ -122,8 +109,7 @@ class IntegrationTest extends \PHPUnit_Framework_TestCase
         $expectation,
         $exception,
         $exceptionMessage
-    )
-    {
+    ) {
         if ($data) {
             eval('$data = [' . $data . '];');
         } else {
