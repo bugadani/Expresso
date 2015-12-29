@@ -9,39 +9,38 @@ class GeneratorHelper
         $stack = new \SplStack();
         $stack->push($generator);
 
-        while (!$stack->isEmpty()) {
-            //peek at the last generator
-            $generator = $stack->top();
+        $done = false;
+        do {
+            //get the current yielded value - this runs the generator if it is not initialized yet
+            $yielded = $generator->current();
 
-            //while it's not done
-            while ($generator->valid()) {
+            //if it is a generator
+            if ($yielded instanceof \Generator) {
+                //... push it to the stack
+                $stack->push($yielded);
 
-                //get the next sub-generator ...
-                $generator = $generator->current();
-                while ($generator instanceof \Generator) {
-                    //... and push it to the stack
-                    $stack->push($generator);
-                    //get the next sub-generator ...
-                    $generator = $generator->current();
-                }
-
-                //at this point the last generator has no sub-generators, so remove it
+                //... and mark it as the current one
+                $generator = $yielded;
+            } else {
+                //at this point the current generator is done, remove it from the stack
                 $stack->pop();
 
+                //check if there are unfinished generators
                 if ($stack->isEmpty()) {
-                    break;
-                }
-                //step the last generator that is not done
-                $generator = $stack->top();
-                if ($sendFunction !== null) {
-                    $generator->send($sendFunction($generator));
+                    //if not (the stack is empty), we're done
+                    $done = true;
                 } else {
-                    $generator->next();
+                    //get the next generator from the stack
+                    $generator = $stack->top();
+
+                    //run the next generator
+                    if ($sendFunction === null) {
+                        $generator->next();
+                    } else {
+                        $generator->send($sendFunction($generator));
+                    }
                 }
             }
-            if (!$stack->isEmpty()) {
-                $stack->pop();
-            }
-        }
+        } while (!$done);
     }
 }
