@@ -25,6 +25,8 @@ class TokenStream
     {
         $this->tokens = $tokens;
         $tokens->rewind();
+        $this->current = $tokens->current();
+        $tokens->next();
         $this->next = $tokens->current();
     }
 

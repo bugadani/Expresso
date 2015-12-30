@@ -60,7 +60,6 @@ class Parser
         $this->operandStack  = new \SplStack();
         $this->tokens        = $tokens;
 
-        $tokens->next();
         $generator = $this->parse($this->defaultParserName);
 
         GeneratorHelper::executeGeneratorsRecursive($generator);
