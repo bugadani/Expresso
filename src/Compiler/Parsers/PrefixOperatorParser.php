@@ -3,12 +3,12 @@
 namespace Expresso\Compiler\Parsers;
 
 use Expresso\Compiler\OperatorCollection;
-use Expresso\Compiler\Parser;
+use Expresso\Compiler\SubParser;
 use Expresso\Compiler\Token;
 use Expresso\Compiler\TokenStream;
-use Expresso\Compiler\TokenStreamParser;
+use Expresso\Compiler\Parser;
 
-class PrefixOperatorParser extends Parser
+class PrefixOperatorParser extends SubParser
 {
     /**
      * @var OperatorCollection
@@ -20,7 +20,7 @@ class PrefixOperatorParser extends Parser
         $this->prefixOperators = $prefixOperators;
     }
 
-    public function parse(TokenStream $stream, TokenStreamParser $parser)
+    public function parse(TokenStream $stream, Parser $parser)
     {
         $current = $stream->expectCurrent(
             Token::OPERATOR,

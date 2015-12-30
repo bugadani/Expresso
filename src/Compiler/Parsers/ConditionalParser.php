@@ -2,13 +2,13 @@
 
 namespace Expresso\Compiler\Parsers;
 
-use Expresso\Compiler\Parser;
+use Expresso\Compiler\SubParser;
 use Expresso\Compiler\Token;
 use Expresso\Compiler\TokenStream;
-use Expresso\Compiler\TokenStreamParser;
+use Expresso\Compiler\Parser;
 use Expresso\Extensions\Core\Operators\Ternary\ConditionalOperator;
 
-class ConditionalParser extends Parser
+class ConditionalParser extends SubParser
 {
     /**
      * @var ConditionalOperator
@@ -20,7 +20,7 @@ class ConditionalParser extends Parser
         $this->conditionalOperator = $operator;
     }
 
-    public function parse(TokenStream $stream, TokenStreamParser $parser)
+    public function parse(TokenStream $stream, Parser $parser)
     {
         if ($stream->current()->test(Token::PUNCTUATION, '?')) {
             $parser->pushOperator($this->conditionalOperator);

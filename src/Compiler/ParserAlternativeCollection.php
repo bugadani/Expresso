@@ -4,9 +4,9 @@ namespace Expresso\Compiler;
 
 use Expresso\Compiler\Parsers\NullParser;
 
-class ParserAlternativeCollection extends Parser
+class ParserAlternativeCollection extends SubParser
 {
-    public static function wrap(Parser $parser)
+    public static function wrap(SubParser $parser)
     {
         if (!$parser instanceof ParserAlternativeCollection) {
             $parser = new ParserAlternativeCollection($parser);
@@ -18,12 +18,12 @@ class ParserAlternativeCollection extends Parser
     private $parsers = [];
     private $defaultParser;
 
-    public function __construct(Parser $defaultParser = null)
+    public function __construct(SubParser $defaultParser = null)
     {
         $this->defaultParser = $defaultParser ?: new NullParser();
     }
 
-    public function addAlternative(Parser $parser, $test)
+    public function addAlternative(SubParser $parser, $test)
     {
         $tokenTest = null;
         if (is_array($test)) {
@@ -41,13 +41,13 @@ class ParserAlternativeCollection extends Parser
         $this->parsers[ $tokenType ][] = [$tokenTest, $parser];
     }
 
-    public function parse(TokenStream $stream, TokenStreamParser $parser)
+    public function parse(TokenStream $stream, Parser $parser)
     {
         $currentToken     = $stream->current();
         $currentTokenType = $currentToken->getType();
         if (isset($this->parsers[ $currentTokenType ])) {
             foreach ($this->parsers[ $currentTokenType ] as list($tokenTest, $altParser)) {
-                /** @var Parser $altParser */
+                /** @var SubParser $altParser */
                 if ($currentToken->test($currentTokenType, $tokenTest)) {
                     return $altParser->parse($stream, $parser);
                 }

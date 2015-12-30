@@ -2,15 +2,15 @@
 
 namespace Expresso\Compiler\Parsers;
 
-use Expresso\Compiler\Parser;
+use Expresso\Compiler\SubParser;
 use Expresso\Compiler\Token;
 use Expresso\Compiler\TokenStream;
-use Expresso\Compiler\TokenStreamParser;
+use Expresso\Compiler\Parser;
 
-class ParenthesisGroupedExpressionParser extends Parser
+class ParenthesisGroupedExpressionParser extends SubParser
 {
 
-    public function parse(TokenStream $stream, TokenStreamParser $parser)
+    public function parse(TokenStream $stream, Parser $parser)
     {
         $stream->next();
         yield $parser->parse('expression');

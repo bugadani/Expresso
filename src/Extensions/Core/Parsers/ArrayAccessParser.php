@@ -3,13 +3,13 @@
 namespace Expresso\Extensions\Core\Parsers;
 
 use Expresso\Compiler\Nodes\BinaryOperatorNode;
-use Expresso\Compiler\Parser;
+use Expresso\Compiler\SubParser;
 use Expresso\Compiler\Token;
 use Expresso\Compiler\TokenStream;
-use Expresso\Compiler\TokenStreamParser;
+use Expresso\Compiler\Parser;
 use Expresso\Extensions\Core\Operators\Binary\ArrayAccessOperator;
 
-class ArrayAccessParser extends Parser
+class ArrayAccessParser extends SubParser
 {
     private $accessOperator;
 
@@ -18,7 +18,7 @@ class ArrayAccessParser extends Parser
         $this->accessOperator = $operator;
     }
 
-    public function parse(TokenStream $stream, TokenStreamParser $parser)
+    public function parse(TokenStream $stream, Parser $parser)
     {
         $parser->pushOperator($this->accessOperator);
 

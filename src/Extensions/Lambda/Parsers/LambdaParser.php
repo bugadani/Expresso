@@ -2,16 +2,16 @@
 
 namespace Expresso\Extensions\Lambda\Parsers;
 
-use Expresso\Compiler\Parser;
+use Expresso\Compiler\SubParser;
 use Expresso\Compiler\Token;
 use Expresso\Compiler\TokenStream;
-use Expresso\Compiler\TokenStreamParser;
+use Expresso\Compiler\Parser;
 use Expresso\Extensions\Lambda\Nodes\LambdaNode;
 
-class LambdaParser extends Parser
+class LambdaParser extends SubParser
 {
 
-    public function parse(TokenStream $stream, TokenStreamParser $parser)
+    public function parse(TokenStream $stream, Parser $parser)
     {
         $arguments = [];
 

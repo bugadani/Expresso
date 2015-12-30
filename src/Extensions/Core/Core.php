@@ -17,7 +17,7 @@ use Expresso\Compiler\Parsers\ParenthesisGroupedExpressionParser;
 use Expresso\Compiler\Parsers\PostfixOperatorParser;
 use Expresso\Compiler\Parsers\PrefixOperatorParser;
 use Expresso\Compiler\Token;
-use Expresso\Compiler\TokenStreamParser;
+use Expresso\Compiler\Parser;
 use Expresso\Extension;
 use Expresso\Extensions\Core\Operators\Binary\Arithmetic\AdditionOperator;
 use Expresso\Extensions\Core\Operators\Binary\Arithmetic\DivisionOperator;
@@ -149,7 +149,7 @@ class Core extends Extension
         ];
     }
 
-    public function addParsers(TokenStreamParser $parser, CompilerConfiguration $configuration)
+    public function addParsers(Parser $parser, CompilerConfiguration $configuration)
     {
         $binaryOperatorParser    = new BinaryOperatorParser($configuration->getBinaryOperators());
         $prefixOperatorParser    = new PrefixOperatorParser($configuration->getPrefixOperators());

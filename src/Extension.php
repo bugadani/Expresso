@@ -5,7 +5,7 @@ namespace Expresso;
 use Expresso\Compiler\CompilerConfiguration;
 use Expresso\Compiler\ExpressionFunction;
 use Expresso\Compiler\Operator;
-use Expresso\Compiler\TokenStreamParser;
+use Expresso\Compiler\Parser;
 
 abstract class Extension
 {
@@ -62,10 +62,10 @@ abstract class Extension
     /**
      * Set up language extensions
      *
-     * @param TokenStreamParser     $parser
+     * @param Parser                $parser
      * @param CompilerConfiguration $configuration
      */
-    public function addParsers(TokenStreamParser $parser, CompilerConfiguration $configuration)
+    public function addParsers(Parser $parser, CompilerConfiguration $configuration)
     {
 
     }

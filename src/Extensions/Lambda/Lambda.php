@@ -6,7 +6,7 @@ use Expresso\Compiler\CompilerConfiguration;
 use Expresso\Compiler\ExpressionFunction;
 use Expresso\Compiler\ParserAlternativeCollection;
 use Expresso\Compiler\Token;
-use Expresso\Compiler\TokenStreamParser;
+use Expresso\Compiler\Parser;
 use Expresso\Extension;
 use Expresso\Extensions\Core\Core;
 use Expresso\Extensions\Lambda\Operators\Binary\LambdaOperator;
@@ -21,7 +21,7 @@ class Lambda extends Extension
         ];
     }
 
-    public function addParsers(TokenStreamParser $parser, CompilerConfiguration $configuration)
+    public function addParsers(Parser $parser, CompilerConfiguration $configuration)
     {
         $expressionParsers = $parser->getParser('expression');
         $expressionParsers = ParserAlternativeCollection::wrap($expressionParsers);

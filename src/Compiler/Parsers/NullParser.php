@@ -2,19 +2,19 @@
 
 namespace Expresso\Compiler\Parsers;
 
-use Expresso\Compiler\Parser;
+use Expresso\Compiler\SubParser;
 use Expresso\Compiler\TokenStream;
-use Expresso\Compiler\TokenStreamParser;
+use Expresso\Compiler\Parser;
 
-class NullParser extends Parser
+class NullParser extends SubParser
 {
     /**
-     * @param TokenStream       $stream
-     * @param TokenStreamParser $parser
+     * @param TokenStream $stream
+     * @param Parser      $parser
      *
      * @return \Generator
      */
-    public function parse(TokenStream $stream, TokenStreamParser $parser)
+    public function parse(TokenStream $stream, Parser $parser)
     {
         yield;
     }

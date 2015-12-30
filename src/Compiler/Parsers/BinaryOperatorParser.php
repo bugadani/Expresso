@@ -3,11 +3,11 @@
 namespace Expresso\Compiler\Parsers;
 
 use Expresso\Compiler\OperatorCollection;
-use Expresso\Compiler\Parser;
+use Expresso\Compiler\SubParser;
 use Expresso\Compiler\TokenStream;
-use Expresso\Compiler\TokenStreamParser;
+use Expresso\Compiler\Parser;
 
-class BinaryOperatorParser extends Parser
+class BinaryOperatorParser extends SubParser
 {
     /**
      * @var OperatorCollection
@@ -19,7 +19,7 @@ class BinaryOperatorParser extends Parser
         $this->binaryOperators = $binaryOperators;
     }
 
-    public function parse(TokenStream $stream, TokenStreamParser $parser)
+    public function parse(TokenStream $stream, Parser $parser)
     {
         while ($this->binaryOperators->isOperator($stream->current()->getValue())) {
             $parser->pushOperator(

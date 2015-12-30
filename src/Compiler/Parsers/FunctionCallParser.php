@@ -4,12 +4,12 @@ namespace Expresso\Compiler\Parsers;
 
 use Expresso\Compiler\Nodes\ArgumentListNode;
 use Expresso\Compiler\Operators\FunctionCallOperator;
-use Expresso\Compiler\Parser;
+use Expresso\Compiler\SubParser;
 use Expresso\Compiler\Token;
 use Expresso\Compiler\TokenStream;
-use Expresso\Compiler\TokenStreamParser;
+use Expresso\Compiler\Parser;
 
-class FunctionCallParser extends Parser
+class FunctionCallParser extends SubParser
 {
     /**
      * @var FunctionCallOperator
@@ -21,7 +21,7 @@ class FunctionCallParser extends Parser
         $this->functionOperator = $functionOperator;
     }
 
-    public function parse(TokenStream $stream, TokenStreamParser $parser)
+    public function parse(TokenStream $stream, Parser $parser)
     {
         $argumentListNode = new ArgumentListNode();
         if (!$stream->next()->test(Token::PUNCTUATION, ')')) {

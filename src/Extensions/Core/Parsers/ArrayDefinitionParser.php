@@ -3,19 +3,19 @@
 namespace Expresso\Extensions\Core\Parsers;
 
 use Expresso\Compiler\Nodes\OperatorNode;
-use Expresso\Compiler\Parser;
+use Expresso\Compiler\SubParser;
 use Expresso\Compiler\Token;
 use Expresso\Compiler\TokenStream;
-use Expresso\Compiler\TokenStreamParser;
+use Expresso\Compiler\Parser;
 use Expresso\Extensions\Core\Nodes\ListDataNode;
 use Expresso\Extensions\Core\Nodes\MapDataNode;
 use Expresso\Extensions\Core\Operators\Binary\RangeOperator;
 use Expresso\Extensions\Core\Operators\Unary\Postfix\InfiniteRangeOperator;
 
-class ArrayDefinitionParser extends Parser
+class ArrayDefinitionParser extends SubParser
 {
 
-    public function parse(TokenStream $stream, TokenStreamParser $parser)
+    public function parse(TokenStream $stream, Parser $parser)
     {
         //Step to the first data token or closing bracket
         if ($stream->nextTokenIf(Token::PUNCTUATION, ']')) {
