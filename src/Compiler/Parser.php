@@ -64,6 +64,8 @@ class Parser
 
         GeneratorHelper::executeGeneratorsRecursive($generator);
 
+        $tokens->expectCurrent(Token::EOF);
+
         return $this->operandStack->pop();
     }
 
