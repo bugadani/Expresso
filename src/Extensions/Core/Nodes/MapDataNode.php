@@ -4,7 +4,6 @@ namespace Expresso\Extensions\Core\Nodes;
 
 use Expresso\Compiler\Compiler;
 use Expresso\Compiler\Node;
-
 use Expresso\EvaluationContext;
 
 class MapDataNode extends Node
@@ -19,19 +18,22 @@ class MapDataNode extends Node
     {
         $compiler->add('[');
 
-        $first = true;
-        $isKey = true;
-        foreach ($this->getChildren() as $child) {
-            if ($first) {
-                $first = false;
-            } else if ($isKey) {
-                $compiler->add('=>');
-                $isKey = false;
-            } else {
+        $children = $this->getChildren();
+        if ($this->getChildCount() > 0) {
+            $lastValue = array_pop($children);
+            $lastKey   = array_pop($children);
+
+            $items = array_chunk($children, 2);
+            foreach($items as list($key, $value)) {
+                yield $compiler->compileNode($key);
+                $compiler->add(' => ');
+                yield $compiler->compileNode($value);
                 $compiler->add(', ');
-                $isKey = true;
             }
-            yield $child->compile($compiler);
+
+            yield $compiler->compileNode($lastKey);
+            $compiler->add(' => ');
+            yield $compiler->compileNode($lastValue);
         }
 
         $compiler->add(']');

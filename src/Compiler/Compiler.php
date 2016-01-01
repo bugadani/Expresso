@@ -16,6 +16,11 @@ class Compiler
      */
     private $source;
 
+    /**
+     * @var \SplStack
+     */
+    private $sourceStack;
+
     public function __construct(CompilerConfiguration $configuration)
     {
         $this->configuration = $configuration;
@@ -81,13 +86,31 @@ class Compiler
         return $this;
     }
 
-    public function compile(Node $rootNode)
+    public function compileNode(Node $node)
     {
+        $this->sourceStack->push($this->source);
         $this->source = '';
 
-        $generator = $rootNode->compile($this);
+        return $node->compile($this);
+    }
 
-        GeneratorHelper::executeGeneratorsRecursive($generator);
+    public function compile(Node $rootNode)
+    {
+        $this->source      = '';
+        $this->sourceStack = new \SplStack();
+
+        $generator = $this->compileNode($rootNode);
+
+        GeneratorHelper::executeGeneratorsRecursive(
+            $generator,
+            function () {
+                $source       = $this->source;
+                $this->source = $this->sourceStack->pop();
+                $this->source .= $source;
+
+                return $source;
+            }
+        );
 
         return $this->source;
     }

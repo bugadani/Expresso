@@ -26,7 +26,7 @@ class ExpressionNode extends Node
                  ->add('$context = new Expresso\\ExecutionContext($context);')
                  ->add('return ');
 
-        yield $this->getChildAt(0)->compile($compiler);
+        yield $compiler->compileNode($this->getChildAt(0));
 
         $compiler->add(';};');
     }

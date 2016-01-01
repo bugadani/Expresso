@@ -22,7 +22,7 @@ class EvenOperator extends UnaryOperator
     public function compile(Compiler $compiler, Node $node)
     {
         $compiler->add('(');
-        yield $node->getChildAt(0)->compile($compiler);
+        yield $compiler->compileNode($node->getChildAt(0));
         $compiler->add(' & 0x01) == 0');
     }
 }

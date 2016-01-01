@@ -39,9 +39,9 @@ class FunctionCallNode extends Node
 
     public function compile(Compiler $compiler)
     {
-        yield $this->getChildAt(0)->compile($compiler);
+        yield $compiler->compileNode($this->getChildAt(0));
         $compiler->add('(');
-        yield $this->getChildAt(1)->compile($compiler);
+        yield $compiler->compileNode($this->getChildAt(1));
         $compiler->add(')');
     }
 

@@ -46,7 +46,7 @@ class LambdaNode extends Node
 
         $compiler->add(']);')
                  ->add('return ');
-        yield $this->getChildAt(0)->compile($compiler);
+        yield $compiler->compileNode($this->getChildAt(0));
         $compiler->add(';}');
     }
 

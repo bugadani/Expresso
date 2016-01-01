@@ -15,10 +15,10 @@ class ArgumentListNode extends Node
             $lastChild = array_pop($children);
 
             foreach ($children as $child) {
-                yield $child->compile($compiler);
+                yield $compiler->compileNode($child);
                 $compiler->add(', ');
             }
-            yield $lastChild->compile($compiler);
+            yield $compiler->compileNode($lastChild);
         }
     }
 
