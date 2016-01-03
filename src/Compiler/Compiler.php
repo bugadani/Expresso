@@ -12,14 +12,14 @@ class Compiler
     private $configuration;
 
     /**
-     * @var string
+     * @var CompilerContext
      */
-    private $source;
+    private $context;
 
     /**
      * @var \SplStack
      */
-    private $sourceStack;
+    private $contextStack;
 
     public function __construct(CompilerConfiguration $configuration)
     {
@@ -36,7 +36,7 @@ class Compiler
 
     public function add($string)
     {
-        $this->source .= $string;
+        $this->context->source .= $string;
 
         return $this;
     }
@@ -88,30 +88,30 @@ class Compiler
 
     public function compileNode(Node $node)
     {
-        $this->sourceStack->push($this->source);
-        $this->source = '';
+        $this->contextStack->push($this->context);
+        $this->context = new CompilerContext();
 
         return $node->compile($this);
     }
 
     public function compile(Node $rootNode)
     {
-        $this->source      = '';
-        $this->sourceStack = new \SplStack();
+        $this->context      = new CompilerContext();
+        $this->contextStack = new \SplStack();
 
         $generator = $this->compileNode($rootNode);
 
         GeneratorHelper::executeGeneratorsRecursive(
             $generator,
             function () {
-                $source       = $this->source;
-                $this->source = $this->sourceStack->pop();
-                $this->source .= $source;
+                $context       = $this->context;
+                $this->context = $this->contextStack->pop();
+                $this->context->source .= $context->source;
 
-                return $source;
+                return $context;
             }
         );
 
-        return $this->source;
+        return $this->context->source;
     }
 }
