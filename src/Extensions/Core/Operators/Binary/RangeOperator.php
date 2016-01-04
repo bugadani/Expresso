@@ -16,7 +16,7 @@ class RangeOperator extends BinaryOperator
 
     public function evaluateSimple($left, $right)
     {
-        return \Expresso\Extensions\Core\range($left, $right);
+        return new \IteratorIterator(\Expresso\Extensions\Core\range($left, $right));
     }
 
     public function compile(Compiler $compiler, Node $node)

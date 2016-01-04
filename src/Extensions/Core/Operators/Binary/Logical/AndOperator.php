@@ -19,7 +19,7 @@ class AndOperator extends BinaryOperator
         //This implements short-circuit evaluation
         $first  = (yield $node->getChildAt(0)->evaluate($context));
         $second = $first && (yield $node->getChildAt(1)->evaluate($context));
-        $context->setReturnValue($second);
+        yield $second;
     }
 
     public function compiledOperator()

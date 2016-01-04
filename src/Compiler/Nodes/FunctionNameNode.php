@@ -25,8 +25,7 @@ class FunctionNameNode extends Node
 
     public function evaluate(EvaluationContext $context)
     {
-        $context->setReturnValue($context->getFunction($this->functionName)->getFunctionName());
-        yield;
+        yield $context->getFunction($this->functionName)->getFunctionName();
     }
 
     /**

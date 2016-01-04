@@ -52,20 +52,14 @@ class LambdaNode extends Node
 
     public function evaluate(EvaluationContext $context)
     {
-        $context->setReturnValue(
-            function () use ($context) {
-                $arguments    = array_slice(func_get_args(), 0, count($this->arguments));
-                $innerContext = $context->createInnerScope(array_combine($this->arguments, $arguments));
+        yield function () use ($context) {
+            $arguments    = array_slice(func_get_args(), 0, count($this->arguments));
+            $innerContext = $context->createInnerScope(array_combine($this->arguments, $arguments));
 
-                $functionBody = $this->getChildAt(0);
-                GeneratorHelper::executeGeneratorsRecursive(
-                    $functionBody->evaluate($innerContext),
-                    [$innerContext, 'getReturnValue']
-                );
-
-                return $innerContext->getReturnValue();
-            }
-        );
-        yield;
+            $functionBody = $this->getChildAt(0);
+            return GeneratorHelper::executeGeneratorsRecursive(
+                $functionBody->evaluate($innerContext)
+            );
+        };
     }
 }

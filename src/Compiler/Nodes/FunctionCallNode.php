@@ -50,6 +50,11 @@ class FunctionCallNode extends Node
         $callback  = (yield $this->getChildAt(0)->evaluate($context));
         $arguments = (yield $this->getChildAt(1)->evaluate($context));
 
-        $context->setReturnValue(call_user_func_array($callback, $arguments));
+        $retVal = call_user_func_array($callback, $arguments);
+        if ($retVal instanceof \Generator) {
+            $retVal = new \IteratorIterator($retVal);
+        }
+
+        yield $retVal;
     }
 }

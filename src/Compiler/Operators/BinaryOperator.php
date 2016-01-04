@@ -16,7 +16,7 @@ abstract class BinaryOperator extends Operator
         $leftOperand  = (yield $node->getChildAt(0)->evaluate($context));
         $rightOperand = (yield $node->getChildAt(1)->evaluate($context));
 
-        $context->setReturnValue($this->evaluateSimple($leftOperand, $rightOperand));
+        yield $this->evaluateSimple($leftOperand, $rightOperand);
     }
 
     /**

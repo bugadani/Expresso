@@ -202,6 +202,11 @@ class Core extends Extension
     }
 }
 
+/**
+ * @param int $start
+ * @param int|null $end
+ * @return \Generator
+ */
 function range($start, $end = null)
 {
     if ($end === null) {

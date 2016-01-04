@@ -23,8 +23,7 @@ class DataNode extends Node
 
     public function evaluate(EvaluationContext $context)
     {
-        $context->setReturnValue($this->value);
-        yield;
+        yield $this->value;
     }
 
     /**

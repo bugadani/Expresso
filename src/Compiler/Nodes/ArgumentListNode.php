@@ -28,6 +28,6 @@ class ArgumentListNode extends Node
         foreach ($this->getChildren() as $child) {
             $list[] = (yield $child->evaluate($context));
         }
-        $context->setReturnValue($list);
+        yield $list;
     }
 }

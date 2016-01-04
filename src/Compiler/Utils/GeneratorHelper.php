@@ -10,9 +10,12 @@ class GeneratorHelper
      * This is especially useful in PHP because the language imposes an artificial nesting limit.
      *
      * In order for a function to be executed, each recursive call must be yielded.
+     * The last yield may be a scalar value; that value will be returned by this method.
      *
      * @param \Generator $generator
      * @param callable|null $sendFunction
+     *
+     * @return mixed
      */
     public static function executeGeneratorsRecursive(\Generator $generator, callable $sendFunction = null)
     {
@@ -46,12 +49,14 @@ class GeneratorHelper
 
                     //run the next generator
                     if ($sendFunction === null) {
-                        $generator->next();
+                        $generator->send($yielded);
                     } else {
-                        $generator->send($sendFunction($generator));
+                        $generator->send($sendFunction($generator, $yielded));
                     }
                 }
             }
         } while (!$done);
+
+        return $yielded;
     }
 }

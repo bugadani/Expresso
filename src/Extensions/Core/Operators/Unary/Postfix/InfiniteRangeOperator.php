@@ -16,7 +16,7 @@ class InfiniteRangeOperator extends UnaryOperator
 
     public function evaluateSimple($operand)
     {
-        return \Expresso\Extensions\Core\range($operand);
+        return new \IteratorIterator(\Expresso\Extensions\Core\range($operand));
     }
 
     public function compile(Compiler $compiler, Node $node)

@@ -133,11 +133,8 @@ class Expresso
         $nodes = $this->parse($expression);
 
         $context = new EvaluationContext($parameters, $this->configuration);
-        GeneratorHelper::executeGeneratorsRecursive(
-            $nodes->evaluate($context),
-            [$context, 'getReturnValue']
+        return GeneratorHelper::executeGeneratorsRecursive(
+            $nodes->evaluate($context)
         );
-
-        return $context->getReturnValue();
     }
 }

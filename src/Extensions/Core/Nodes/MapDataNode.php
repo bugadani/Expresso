@@ -55,6 +55,6 @@ class MapDataNode extends Node
             }
         }
 
-        $context->setReturnValue($array);
+        yield $array;
     }
 }

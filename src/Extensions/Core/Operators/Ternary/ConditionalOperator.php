@@ -43,7 +43,8 @@ class ConditionalOperator extends TernaryOperator
         $condition = (yield $node->getChildAt(0)->evaluate($context));
         $childNode = $node->getChildAt($condition ? 1 : 2);
 
-        yield $childNode->evaluate($context);
+        $retVal = (yield $childNode->evaluate($context));
+        yield $retVal;
     }
 
     public function compile(Compiler $compiler, Node $node)
