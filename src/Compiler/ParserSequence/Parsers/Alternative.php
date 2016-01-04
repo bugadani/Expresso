@@ -48,11 +48,12 @@ class Alternative extends Parser
 
     public function parse(TokenStream $stream)
     {
-        if ($this->activeParser === null) {
+        $activeParser = $this->activeParser;
+        if ($activeParser === null) {
             throw new \BadMethodCallException("This parser can not parse the current token");
         }
-
-        yield $this->activeParser->parse($stream);
+        $this->activeParser = null;
+        yield $activeParser->parse($stream);
     }
 
     private function addOption(Parser $parser)

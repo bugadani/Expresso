@@ -2,7 +2,6 @@
 
 namespace Expresso\Compiler\ParserSequence;
 
-use Expresso\Compiler\Node;
 use Expresso\Compiler\TokenStream;
 
 abstract class Parser

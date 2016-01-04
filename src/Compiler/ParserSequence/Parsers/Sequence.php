@@ -40,6 +40,7 @@ class Sequence extends Parser
             $children[] = (yield $parser->parse($stream));
             $stream->next();
         }
+        yield $children;
     }
 
     private function addStep(Parser $parser)

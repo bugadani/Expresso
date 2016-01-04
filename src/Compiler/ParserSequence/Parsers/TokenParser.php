@@ -30,6 +30,6 @@ class TokenParser extends Parser
 
     public function parse(TokenStream $stream)
     {
-        // TODO: Implement parse() method.
+        yield $stream->current();
     }
 }
