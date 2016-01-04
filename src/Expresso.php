@@ -122,7 +122,7 @@ class Expresso
         $function = eval('return ' . $source);
 
         if (!is_callable($function)) {
-            throw new \InvalidArgumentException("Expression is not callable: $expression");
+            throw new \InvalidArgumentException("Expression is not callable: {$expression}, compiled: {$source}");
         }
 
         return $function;
