@@ -40,6 +40,9 @@ class Sequence extends Parser
             $children[] = (yield $parser->parse($stream));
             $stream->next();
         }
+        /*
+         * Mi történik, ha egy Sequence nem emittál Node-ot?
+         */
         yield $children;
     }
 
