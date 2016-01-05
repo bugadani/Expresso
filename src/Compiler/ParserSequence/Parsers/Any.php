@@ -2,12 +2,24 @@
 
 namespace Expresso\Compiler\ParserSequence\Parsers;
 
-use Expresso\Compiler\ParserSequence\Parser;
+use Expresso\Compiler\ParserSequence\DelegateParser;
+use Expresso\Compiler\TokenStream;
 
-class Any extends Optional
+class Any extends DelegateParser
 {
-    public function __construct(Parser $parser)
+
+    /**
+     * @param TokenStream $stream
+     * @return \Generator
+     */
+    public function parse(TokenStream $stream)
     {
-        parent::__construct(new AtLeastOne($parser));
+        $children = [];
+        while (yield $this->canParse($stream)) {
+            $children[] = (yield $this->getParser()->parse($stream));
+            $stream->next();
+        }
+
+        yield $this->emit($children);
     }
 }

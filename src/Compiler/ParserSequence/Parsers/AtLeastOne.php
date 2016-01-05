@@ -17,11 +17,9 @@ class AtLeastOne extends DelegateParser
         $children = [];
         do {
             $children[] = (yield $this->getParser()->parse($stream));
-            $canParse   = (yield $this->canParse($stream));
-        } while ($canParse);
-        /*
-         * Akkor ennek a kimenete most egy 1+ méretű tömb, ha illeszkedik
-         */
-        yield $children;
+            $stream->next();
+        } while (yield $this->canParse($stream));
+
+        yield $this->emit($children);
     }
 }

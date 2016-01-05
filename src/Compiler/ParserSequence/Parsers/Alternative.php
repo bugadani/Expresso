@@ -2,23 +2,23 @@
 
 namespace Expresso\Compiler\ParserSequence\Parsers;
 
+use Expresso\Compiler\Exceptions\SyntaxException;
 use Expresso\Compiler\ParserSequence\Parser;
 use Expresso\Compiler\TokenStream;
 
 class Alternative extends Parser
 {
 
-    public static function create(array $parsers)
+    public function __construct(array $parsers, callable $callback = null)
     {
         if (empty($parsers)) {
             throw new \InvalidArgumentException('$parsers must not be empty');
         }
-        $alternative = new Alternative();
         foreach ($parsers as $parser) {
-            $alternative->addOption($parser);
+            $this->addOption($parser);
         }
 
-        return $alternative;
+        parent::__construct($callback);
     }
 
     /**
@@ -50,10 +50,16 @@ class Alternative extends Parser
     {
         $activeParser = $this->activeParser;
         if ($activeParser === null) {
-            throw new \BadMethodCallException("This parser can not parse the current token");
+            yield $this->canParse($stream);
+            $activeParser = $this->activeParser;
+            if ($activeParser === null) {
+                throw new SyntaxException("This parser can not parse the current token");
+            }
         }
         $this->activeParser = null;
-        yield $activeParser->parse($stream);
+        $child              = (yield $activeParser->parse($stream));
+
+        yield $this->emit($child);
     }
 
     private function addOption(Parser $parser)

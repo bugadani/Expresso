@@ -6,15 +6,14 @@ use Expresso\Compiler\TokenStream;
 
 abstract class Parser
 {
-    protected $callback;
+    /**
+     * @var callable
+     */
+    private $emitCallback;
 
-    public static function create()
-    {
-        return new static();
-    }
+    public function __construct(callable $callback = null) {
 
-    protected function __construct()
-    {
+        $this->emitCallback = $callback;
     }
 
     /**
@@ -29,8 +28,13 @@ abstract class Parser
      */
     abstract public function parse(TokenStream $stream);
 
-    public function onMatch(callable $callback)
+    protected function emit($data)
     {
-        $this->callback = $callback;
+        if ($this->emitCallback === null) {
+            return $data;
+        } else {
+            $callback = $this->emitCallback;
+            return $callback($data);
+        }
     }
 }

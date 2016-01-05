@@ -14,7 +14,7 @@ class Optional extends DelegateParser
      */
     public function canParse(TokenStream $stream)
     {
-        return true;
+        yield true;
     }
 
     /**
@@ -26,7 +26,11 @@ class Optional extends DelegateParser
         $inner    = $this->getParser();
         $canParse = (yield $inner->canParse($stream));
         if ($canParse) {
-            yield $inner->parse($stream);
+            $child = (yield $inner->parse($stream));
+        } else {
+            $child = null;
         }
+
+        yield $this->emit($child);
     }
 }

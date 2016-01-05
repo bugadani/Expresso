@@ -8,19 +8,13 @@ use Expresso\Compiler\TokenStream;
 
 class ParserReference extends Parser
 {
-
-    public static function create(Container $container, $parserName)
-    {
-        return new ParserReference($container, $parserName);
-    }
-
     /**
      * @var Container
      */
     private $container;
     private $parserName;
 
-    protected function __construct(Container $container, $parserName)
+    public function __construct(Container $container, $parserName)
     {
         $this->container  = $container;
         $this->parserName = $parserName;
@@ -28,16 +22,12 @@ class ParserReference extends Parser
 
     public function canParse(TokenStream $stream)
     {
-        $childCanParse = (yield $this->getParser()->canParse($stream));
-
-        yield $childCanParse;
+        return $this->getParser()->canParse($stream);
     }
 
     public function parse(TokenStream $stream)
     {
-        $retVal = (yield $this->getParser()->parse($stream));
-
-        yield $retVal;
+        return $this->getParser()->parse($stream);
     }
 
     /**

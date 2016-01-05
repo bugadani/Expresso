@@ -2,22 +2,22 @@
 
 namespace Expresso\Compiler\ParserSequence\Parsers;
 
+use Expresso\Compiler\Exceptions\SyntaxException;
 use Expresso\Compiler\ParserSequence\Parser;
 use Expresso\Compiler\TokenStream;
 
 class Sequence extends Parser
 {
-    public static function create(array $parsers)
+    public function __construct(array $parsers, callable $onMatch = null)
     {
         if (empty($parsers)) {
             throw new \InvalidArgumentException('$parsers must not be empty');
         }
-        $sequence = new Sequence();
         foreach ($parsers as $parser) {
-            $sequence->addStep($parser);
+            $this->addStep($parser);
         }
 
-        return $sequence;
+        parent::__construct($onMatch);
     }
 
     /**
@@ -28,9 +28,7 @@ class Sequence extends Parser
     public function canParse(TokenStream $stream)
     {
         //A sequence can be started if the first element can parse the stream
-        $childCanParse = (yield $this->parsers[0]->canParse($stream));
-
-        yield $childCanParse;
+        return $this->parsers[0]->canParse($stream);
     }
 
     public function parse(TokenStream $stream)
@@ -40,10 +38,8 @@ class Sequence extends Parser
             $children[] = (yield $parser->parse($stream));
             $stream->next();
         }
-        /*
-         * Mi történik, ha egy Sequence nem emittál Node-ot?
-         */
-        yield $children;
+
+        yield $this->emit($children);
     }
 
     private function addStep(Parser $parser)

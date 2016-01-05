@@ -8,7 +8,7 @@ use Expresso\Compiler\TokenStream;
 class TokenParser extends Parser
 {
     /**
-     * @var
+     * @var int
      */
     private $tokenType;
 
@@ -17,10 +17,19 @@ class TokenParser extends Parser
      */
     private $test;
 
-    public function __construct($tokenType, $test = null)
+    /**
+     * TokenParser constructor.
+     *
+     * @param int $tokenType
+     * @param mixed $test
+     * @param callable|null $onMatch
+     */
+    public function __construct($tokenType, $test = null, callable $onMatch = null)
     {
         $this->tokenType = $tokenType;
         $this->test      = $test;
+
+        parent::__construct($onMatch);
     }
 
     public function canParse(TokenStream $stream)
@@ -30,19 +39,7 @@ class TokenParser extends Parser
 
     public function parse(TokenStream $stream)
     {
-        /*
-         * ami ezzel fura: csak a TokenParsernél kap a callback token tömböt, minden másnál Node tömböt
-         *
-         * Lehetséges felosztás emiatt
-         * ->LeafParser (string, number, true, false, null)
-         * ->NodeParser (Sequence, Alternative, Optional, AtLeastOne)
-         * ->ParserReference
-         */
-        if ($this->callback === null) {
-            yield;
-        } else {
-            $callback = $this->callback;
-            yield $callback([$stream->current()]);
-        }
+        $stream->expectCurrent($this->tokenType, $this->test);
+        yield $this->emit($stream->current());
     }
 }
