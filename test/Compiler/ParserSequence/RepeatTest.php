@@ -28,10 +28,7 @@ class RepeatTest extends \PHPUnit_Framework_TestCase
 
         $stream  = new TokenStream($tokenGenerator());
         $grammar = new Repeat(
-            new TokenParser(Token::CONSTANT),
-            function (array $children) {
-                return $children;
-            }
+            new TokenParser(Token::CONSTANT)
         );
 
         $result = GeneratorHelper::executeGeneratorsRecursive($grammar->parse($stream));
@@ -60,10 +57,7 @@ class RepeatTest extends \PHPUnit_Framework_TestCase
 
         $stream  = new TokenStream($tokenGenerator());
         $grammar = new Repeat(
-            new TokenParser(Token::CONSTANT),
-            function (array $children) {
-                return $children;
-            }
+            new TokenParser(Token::CONSTANT)
         );
 
         GeneratorHelper::executeGeneratorsRecursive($grammar->parse($stream));

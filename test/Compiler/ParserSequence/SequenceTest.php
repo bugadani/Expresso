@@ -28,10 +28,7 @@ class SequenceTest extends \PHPUnit_Framework_TestCase
             [
                 new TokenParser(Token::CONSTANT),
                 new TokenParser(Token::EOF)
-            ],
-            function (array $children) {
-                return $children;
-            }
+            ]
         );
 
         $result = GeneratorHelper::executeGeneratorsRecursive($grammar->parse($stream));
@@ -60,10 +57,7 @@ class SequenceTest extends \PHPUnit_Framework_TestCase
             [
                 new TokenParser(Token::CONSTANT),
                 new TokenParser(Token::EOF)
-            ],
-            function (array $children) {
-                return $children;
-            }
+            ]
         );
 
         GeneratorHelper::executeGeneratorsRecursive($grammar->parse($stream));
