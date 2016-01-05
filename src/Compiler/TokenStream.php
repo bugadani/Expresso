@@ -103,4 +103,12 @@ class TokenStream
 
         return false;
     }
+
+    public function consume()
+    {
+        $current = $this->current;
+        $this->next();
+
+        return $current;
+    }
 }

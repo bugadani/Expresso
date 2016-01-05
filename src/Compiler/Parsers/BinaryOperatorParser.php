@@ -23,9 +23,8 @@ class BinaryOperatorParser extends SubParser
     {
         while ($this->binaryOperators->isOperator($stream->current()->getValue())) {
             $parser->pushOperator(
-                $this->binaryOperators->getOperator($stream->current()->getValue())
+                $this->binaryOperators->getOperator($stream->consume()->getValue())
             );
-            $stream->next();
             yield $parser->parse('term');
         }
     }

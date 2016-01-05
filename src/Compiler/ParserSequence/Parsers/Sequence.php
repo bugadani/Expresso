@@ -35,7 +35,6 @@ class Sequence extends Parser
         $children = [];
         foreach ($this->parsers as $parser) {
             $children[] = (yield $parser->parse($stream));
-            $stream->next();
         }
 
         yield $this->emit($children);

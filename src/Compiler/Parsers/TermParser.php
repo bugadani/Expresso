@@ -13,8 +13,7 @@ abstract class TermParser extends SubParser
 
     public function parse(TokenStream $stream, Parser $parser)
     {
-        $parser->pushOperand($this->parseToken($stream->current()));
-        $stream->next();
+        $parser->pushOperand($this->parseToken($stream->consume()));
 
         yield $parser->parse('postfix');
     }

@@ -17,7 +17,6 @@ class Any extends DelegateParser
         $children = [];
         while (yield $this->canParse($stream)) {
             $children[] = (yield $this->getParser()->parse($stream));
-            $stream->next();
         }
 
         yield $this->emit($children);

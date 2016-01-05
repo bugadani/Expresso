@@ -35,10 +35,9 @@ class ArrayDefinitionParser extends SubParser
                 $array = new MapDataNode();
 
                 //retrieve first separator to disallow mixing them
-                $separator = $stream->current()->getValue();
+                $separator = $stream->consume()->getValue();
 
                 //parse the first value expression
-                $stream->next();
                 yield $parser->parse('expression');
                 $value = $parser->popOperand();
 

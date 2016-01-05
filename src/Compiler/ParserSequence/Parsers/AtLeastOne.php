@@ -17,7 +17,6 @@ class AtLeastOne extends DelegateParser
         $children = [];
         do {
             $children[] = (yield $this->getParser()->parse($stream));
-            $stream->next();
         } while (yield $this->canParse($stream));
 
         yield $this->emit($children);

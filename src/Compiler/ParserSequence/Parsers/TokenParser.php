@@ -40,6 +40,6 @@ class TokenParser extends Parser
     public function parse(TokenStream $stream)
     {
         $stream->expectCurrent($this->tokenType, $this->test);
-        yield $this->emit($stream->current());
+        yield $this->emit($stream->consume());
     }
 }
