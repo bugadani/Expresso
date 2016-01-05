@@ -2,7 +2,6 @@
 
 namespace Expresso\Compiler\ParserSequence\Parsers;
 
-use Expresso\Compiler\Exceptions\SyntaxException;
 use Expresso\Compiler\ParserSequence\Parser;
 use Expresso\Compiler\TokenStream;
 

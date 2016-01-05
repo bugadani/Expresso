@@ -11,8 +11,8 @@ abstract class Parser
      */
     private $emitCallback;
 
-    public function __construct(callable $callback = null) {
-
+    public function __construct(callable $callback = null)
+    {
         $this->emitCallback = $callback;
     }
 
@@ -34,6 +34,7 @@ abstract class Parser
             return $data;
         } else {
             $callback = $this->emitCallback;
+
             return $callback($data);
         }
     }
