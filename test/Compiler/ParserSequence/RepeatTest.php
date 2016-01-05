@@ -2,14 +2,13 @@
 
 namespace Expresso\Test\Compiler\ParserSequence;
 
-use Expresso\Compiler\ParserSequence\Parsers\Any;
-use Expresso\Compiler\ParserSequence\Parsers\AtLeastOne;
+use Expresso\Compiler\ParserSequence\Parsers\Repeat;
 use Expresso\Compiler\ParserSequence\Parsers\TokenParser;
 use Expresso\Compiler\Token;
 use Expresso\Compiler\TokenStream;
 use Expresso\Compiler\Utils\GeneratorHelper;
 
-class AnyTest extends \PHPUnit_Framework_TestCase
+class RepeatTest extends \PHPUnit_Framework_TestCase
 {
     public function testGrammar()
     {
@@ -28,7 +27,7 @@ class AnyTest extends \PHPUnit_Framework_TestCase
         };
 
         $stream  = new TokenStream($tokenGenerator());
-        $grammar = new Any(
+        $grammar = new Repeat(
             new TokenParser(Token::CONSTANT),
             function (array $children) {
                 return $children;
@@ -40,9 +39,15 @@ class AnyTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($tokens, $result);
     }
 
-    public function testGrammarWithEmptyInput()
+    /**
+     * @expectedException \Expresso\Compiler\Exceptions\SyntaxException
+     */
+    public function testNonMatchingGrammar()
     {
         $tokens = [
+            new Token(Token::IDENTIFIER, 1),
+            new Token(Token::CONSTANT, 2),
+            new Token(Token::CONSTANT, 3)
         ];
 
         $tokenGenerator = function () use ($tokens) {
@@ -54,15 +59,13 @@ class AnyTest extends \PHPUnit_Framework_TestCase
         };
 
         $stream  = new TokenStream($tokenGenerator());
-        $grammar = new Any(
+        $grammar = new Repeat(
             new TokenParser(Token::CONSTANT),
             function (array $children) {
                 return $children;
             }
         );
 
-        $result = GeneratorHelper::executeGeneratorsRecursive($grammar->parse($stream));
-
-        $this->assertEquals($tokens, $result);
+        GeneratorHelper::executeGeneratorsRecursive($grammar->parse($stream));
     }
 }

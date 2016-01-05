@@ -5,7 +5,7 @@ namespace Expresso\Compiler\ParserSequence\Parsers;
 use Expresso\Compiler\ParserSequence\DelegateParser;
 use Expresso\Compiler\TokenStream;
 
-class Any extends DelegateParser
+class Repeat extends DelegateParser
 {
 
     /**
@@ -15,9 +15,9 @@ class Any extends DelegateParser
     public function parse(TokenStream $stream)
     {
         $children = [];
-        while (yield $this->canParse($stream)) {
+        do {
             $children[] = (yield $this->getParser()->parse($stream));
-        }
+        } while (yield $this->canParse($stream));
 
         yield $this->emit($children);
     }

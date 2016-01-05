@@ -2,13 +2,14 @@
 
 namespace Expresso\Test\Compiler\ParserSequence;
 
-use Expresso\Compiler\ParserSequence\Parsers\AtLeastOne;
+use Expresso\Compiler\ParserSequence\Parsers\RepeatAny;
+use Expresso\Compiler\ParserSequence\Parsers\Repeat;
 use Expresso\Compiler\ParserSequence\Parsers\TokenParser;
 use Expresso\Compiler\Token;
 use Expresso\Compiler\TokenStream;
 use Expresso\Compiler\Utils\GeneratorHelper;
 
-class AtLeastOneTest extends \PHPUnit_Framework_TestCase
+class RepeatAnyTest extends \PHPUnit_Framework_TestCase
 {
     public function testGrammar()
     {
@@ -27,7 +28,7 @@ class AtLeastOneTest extends \PHPUnit_Framework_TestCase
         };
 
         $stream  = new TokenStream($tokenGenerator());
-        $grammar = new AtLeastOne(
+        $grammar = new RepeatAny(
             new TokenParser(Token::CONSTANT),
             function (array $children) {
                 return $children;
@@ -39,15 +40,9 @@ class AtLeastOneTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($tokens, $result);
     }
 
-    /**
-     * @expectedException \Expresso\Compiler\Exceptions\SyntaxException
-     */
-    public function testNonMatchingGrammar()
+    public function testGrammarWithEmptyInput()
     {
         $tokens = [
-            new Token(Token::IDENTIFIER, 1),
-            new Token(Token::CONSTANT, 2),
-            new Token(Token::CONSTANT, 3)
         ];
 
         $tokenGenerator = function () use ($tokens) {
@@ -59,13 +54,15 @@ class AtLeastOneTest extends \PHPUnit_Framework_TestCase
         };
 
         $stream  = new TokenStream($tokenGenerator());
-        $grammar = new AtLeastOne(
+        $grammar = new RepeatAny(
             new TokenParser(Token::CONSTANT),
             function (array $children) {
                 return $children;
             }
         );
 
-        GeneratorHelper::executeGeneratorsRecursive($grammar->parse($stream));
+        $result = GeneratorHelper::executeGeneratorsRecursive($grammar->parse($stream));
+
+        $this->assertEquals($tokens, $result);
     }
 }
