@@ -4,12 +4,12 @@ namespace Expresso\Compiler;
 
 class Token
 {
-    const CONSTANT    = 0;
-    const STRING      = 1;
-    const IDENTIFIER  = 2;
-    const OPERATOR    = 3;
+    const CONSTANT = 0;
+    const STRING = 1;
+    const IDENTIFIER = 2;
+    const OPERATOR = 3;
     const PUNCTUATION = 4;
-    const EOF         = 5;
+    const EOF = 5;
 
     private static $strings = [
         self::CONSTANT    => 'LITERAL',
@@ -92,5 +92,21 @@ class Token
     public function getOffset()
     {
         return $this->offset;
+    }
+
+    public function __toString()
+    {
+        $value = $this->value;
+        if ($value === true) {
+            $valueString = ' (true)';
+        } else if ($value === false) {
+            $valueString = ' (false)';
+        } else if ($value === null) {
+            $valueString = ' (null)';
+        } else {
+            $valueString = " ({$value})";
+        }
+
+        return $this->getTypeString() . $valueString;
     }
 }

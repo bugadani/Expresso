@@ -75,18 +75,8 @@ class TokenStream
         if ($this->current->test($type, $value)) {
             return $this->current;
         }
-        $value   = $this->current->getValue();
-        $message = "Unexpected {$this->current->getTypeString()}";
-        if ($value === true) {
-            $message .= ' (true)';
-        } else if ($value === false) {
-            $message .= ' (false)';
-        } else if ($value === null) {
-            $message .= ' (null)';
-        } else if ($value !== '') {
-            $message .= " ({$value})";
-        }
-        throw new SyntaxException($message);
+        $expectation = new Token($type, $value);
+        throw new SyntaxException("Unexpected {$this->current}, expected {$expectation}");
     }
 
     /**
