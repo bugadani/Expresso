@@ -14,10 +14,12 @@ class ParserReference extends Parser
     private $container;
     private $parserName;
 
-    public function __construct(Container $container, $parserName)
+    public function __construct(Container $container, $parserName, callable $callback = null)
     {
         $this->container  = $container;
         $this->parserName = $parserName;
+
+        parent::__construct($callback);
     }
 
     public function canParse(TokenStream $stream)
@@ -27,7 +29,8 @@ class ParserReference extends Parser
 
     public function parse(TokenStream $stream)
     {
-        return $this->getParser()->parse($stream);
+        $child = (yield $this->getParser()->parse($stream));
+        yield $this->emit($child);
     }
 
     /**

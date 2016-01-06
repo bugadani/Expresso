@@ -53,7 +53,7 @@ class Alternative extends Parser
             yield $this->canParse($stream);
             $activeParser = $this->activeParser;
             if ($activeParser === null) {
-                throw new SyntaxException("This parser can not parse the current token");
+                throw new SyntaxException("This parser can not parse the current token {$stream->current()}");
             }
         }
         $this->activeParser = null;

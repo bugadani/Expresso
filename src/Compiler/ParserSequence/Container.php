@@ -9,9 +9,16 @@ class Container
      */
     private $parsers = [];
 
+    /**
+     * @param $parserName
+     * @param Parser $parser
+     * @return Parser
+     */
     public function set($parserName, Parser $parser)
     {
         $this->parsers[ $parserName ] = $parser;
+
+        return $parser;
     }
 
     public function get($parserName)

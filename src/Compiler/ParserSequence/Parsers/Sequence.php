@@ -26,8 +26,19 @@ class Sequence extends Parser
 
     public function canParse(TokenStream $stream)
     {
-        //A sequence can be started if the first element can parse the stream
-        return $this->parsers[0]->canParse($stream);
+        //A sequence can be started if the first element can parse the stream - optionals may be skipped
+        for ($firstNonOptional = 0; isset($this->parsers[ $firstNonOptional ]); $firstNonOptional++) {
+            if ($this->parsers[ $firstNonOptional ] instanceof Optional) {
+                $optionalCanParse = (yield $this->parsers[ $firstNonOptional ]->canParse($stream));
+                if ($optionalCanParse) {
+                    yield true;
+                }
+            } else {
+                yield (yield $this->parsers[ $firstNonOptional ]->canParse($stream));
+            }
+        }
+
+        yield false;
     }
 
     public function parse(TokenStream $stream)
