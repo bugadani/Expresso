@@ -8,17 +8,22 @@ use Expresso\EvaluationContext;
 
 class ListDataNode extends Node
 {
+    /**
+     * @var Node[]
+     */
+    private $items = [];
+
     public function add(Node $value)
     {
-        $this->addChild($value);
+        $this->items[] = $value;
     }
 
     public function compile(Compiler $compiler)
     {
         $compiler->add('[');
 
-        if ($this->getChildCount() > 0) {
-            $children  = $this->getChildren();
+        if (!empty($this->items)) {
+            $children  = $this->items;
             $lastChild = array_pop($children);
 
             foreach ($children as $child) {
@@ -34,9 +39,14 @@ class ListDataNode extends Node
     public function evaluate(EvaluationContext $context)
     {
         $list = [];
-        foreach ($this->getChildren() as $child) {
+        foreach ($this->items as $child) {
             $list[] = (yield $child->evaluate($context));
         }
         yield $list;
+    }
+
+    public function getChildren()
+    {
+        return $this->items;
     }
 }

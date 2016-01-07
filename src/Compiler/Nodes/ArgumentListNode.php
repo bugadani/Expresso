@@ -8,10 +8,20 @@ use Expresso\EvaluationContext;
 
 class ArgumentListNode extends Node
 {
+    /**
+     * @var Node[]
+     */
+    private $arguments = [];
+
+    public function getChildren()
+    {
+        return $this->arguments;
+    }
+
     public function compile(Compiler $compiler)
     {
-        if ($this->getChildCount() > 0) {
-            $children  = $this->getChildren();
+        if (!empty($this->arguments)) {
+            $children  = $this->arguments;
             $lastChild = array_pop($children);
 
             foreach ($children as $child) {
@@ -25,9 +35,14 @@ class ArgumentListNode extends Node
     public function evaluate(EvaluationContext $context)
     {
         $list = [];
-        foreach ($this->getChildren() as $child) {
+        foreach ($this->arguments as $child) {
             $list[] = (yield $child->evaluate($context));
         }
         yield $list;
+    }
+
+    public function add(Node $node)
+    {
+        $this->arguments[] = $node;
     }
 }

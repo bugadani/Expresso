@@ -22,7 +22,7 @@ class OddOperator extends UnaryOperator
     public function compile(Compiler $compiler, Node $node)
     {
         $compiler->add('(');
-        yield $compiler->compileNode($node->getChildAt(0));
+        yield $compiler->compileNode($node->getOperand());
         $compiler->add(' & 0x01) == 1');
     }
 }

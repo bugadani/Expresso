@@ -8,23 +8,29 @@ use Expresso\EvaluationContext;
 
 class MapDataNode extends Node
 {
+    /**
+     * @var Node[]
+     */
+    private $children = [];
+
     public function add(Node $key, Node $value)
     {
-        $this->addChild($key);
-        $this->addChild($value);
+        $this->children[] = $key;
+        $this->children[] = $value;
     }
 
     public function compile(Compiler $compiler)
     {
         $compiler->add('[');
 
-        $children = $this->getChildren();
-        if ($this->getChildCount() > 0) {
+        if (!empty($this->children)) {
+            $children = $this->children;
+
             $lastValue = array_pop($children);
             $lastKey   = array_pop($children);
 
             $items = array_chunk($children, 2);
-            foreach($items as list($key, $value)) {
+            foreach ($items as list($key, $value)) {
                 yield $compiler->compileNode($key);
                 $compiler->add(' => ');
                 yield $compiler->compileNode($value);
@@ -44,7 +50,7 @@ class MapDataNode extends Node
         $array = [];
 
         $isKey = true;
-        foreach ($this->getChildren() as $child) {
+        foreach ($this->children as $child) {
             $value = (yield $child->evaluate($context));
             if ($isKey) {
                 $key   = $value;
@@ -57,4 +63,11 @@ class MapDataNode extends Node
 
         yield $array;
     }
+
+    public function getChildren()
+    {
+        return $this->children;
+    }
+
+
 }

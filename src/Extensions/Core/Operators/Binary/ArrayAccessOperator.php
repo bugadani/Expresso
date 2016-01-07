@@ -20,10 +20,12 @@ class ArrayAccessOperator extends BinaryOperator
 
     public function compile(Compiler $compiler, Node $node)
     {
+        list($left, $right) = $node->getChildren();
+
         $compiler->add('$context->access(');
-        yield $compiler->compileNode($node->getChildAt(0));
+        yield $compiler->compileNode($left);
         $compiler->add(', ');
-        yield $compiler->compileNode($node->getChildAt(1));
+        yield $compiler->compileNode($right);
         $compiler->add(')');
     }
 }

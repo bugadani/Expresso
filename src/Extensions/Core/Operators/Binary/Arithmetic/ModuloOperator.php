@@ -26,31 +26,32 @@ class ModuloOperator extends BinaryOperator
     public function compile(Compiler $compiler, Node $node)
     {
         //if(sign($left) != sign($right))
+        list($left, $right) = $node->getChildren();
 
         $compiler->add('((');
-        yield $compiler->compileNode($node->getChildAt(0));
+        yield $compiler->compileNode($left);
         $compiler->add(' < 0 && ');
-        yield $compiler->compileNode($node->getChildAt(1));
+        yield $compiler->compileNode($right);
         $compiler->add(' > 0) || (');
-        yield $compiler->compileNode($node->getChildAt(1));
+        yield $compiler->compileNode($right);
         $compiler->add(' < 0 && ');
-        yield $compiler->compileNode($node->getChildAt(0));
+        yield $compiler->compileNode($left);
         $compiler->add(' > 0)');
 
         //then $right + $left % right
         $compiler->add(' ? (');
-        yield $compiler->compileNode($node->getChildAt(1));
+        yield $compiler->compileNode($right);
         $compiler->add(' + ');
-        yield $compiler->compileNode($node->getChildAt(0));
+        yield $compiler->compileNode($left);
         $compiler->add(' % ');
-        yield $compiler->compileNode($node->getChildAt(1));
+        yield $compiler->compileNode($right);
         $compiler->add(')');
 
         //else $left % $right
         $compiler->add(' : (');
-        yield $compiler->compileNode($node->getChildAt(0));
+        yield $compiler->compileNode($left);
         $compiler->add(' % ');
-        yield $compiler->compileNode($node->getChildAt(1));
+        yield $compiler->compileNode($right);
         $compiler->add('))');
     }
 }

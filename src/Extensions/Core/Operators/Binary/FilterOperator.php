@@ -22,7 +22,7 @@ class FilterOperator extends BinaryOperator
     public function createNode(CompilerConfiguration $config, Node $left, Node $right)
     {
         $arguments = new ArgumentListNode();
-        $arguments->addChild($left);
+        $arguments->add($left);
 
         if ($right instanceof FunctionCallNode) {
             //arg|funcName(args)
@@ -34,7 +34,7 @@ class FilterOperator extends BinaryOperator
 
             /** @var ArgumentListNode $args */
             foreach ($args->getChildren() as $arg) {
-                $arguments->addChild($arg);
+                $arguments->add($arg);
             }
         } else if (!$right instanceof IdentifierNode) {
             //arg|funcName

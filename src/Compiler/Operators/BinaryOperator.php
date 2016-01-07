@@ -13,8 +13,10 @@ abstract class BinaryOperator extends Operator
 {
     public function evaluate(EvaluationContext $context, Node $node)
     {
-        $leftOperand  = (yield $node->getChildAt(0)->evaluate($context));
-        $rightOperand = (yield $node->getChildAt(1)->evaluate($context));
+        list($left, $right) = $node->getChildren();
+
+        $leftOperand  = (yield $left->evaluate($context));
+        $rightOperand = (yield $right->evaluate($context));
 
         yield $this->evaluateSimple($leftOperand, $rightOperand);
     }
@@ -32,10 +34,12 @@ abstract class BinaryOperator extends Operator
 
     public function compile(Compiler $compiler, Node $node)
     {
+        list($left, $right) = $node->getChildren();
+
         $compiler->add('(');
-        yield $compiler->compileNode($node->getChildAt(0));
+        yield $compiler->compileNode($left);
         $compiler->add($this->compiledOperator());
-        yield $compiler->compileNode($node->getChildAt(1));
+        yield $compiler->compileNode($right);
         $compiler->add(')');
     }
 

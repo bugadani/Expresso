@@ -11,14 +11,19 @@ use Expresso\EvaluationContext;
 class LambdaNode extends Node
 {
     /**
+     * @var Node
+     */
+    private $functionBody;
+
+    /**
      * @var string[]
      */
     private $arguments;
 
     public function __construct(Node $functionBody, array $arguments)
     {
-        $this->addChild($functionBody);
         $this->arguments = $arguments;
+        $this->functionBody = $functionBody;
     }
 
     public function compile(Compiler $compiler)
@@ -46,7 +51,7 @@ class LambdaNode extends Node
 
         $compiler->add(']);')
                  ->add('return ');
-        yield $compiler->compileNode($this->getChildAt(0));
+        yield $compiler->compileNode($this->functionBody);
         $compiler->add(';}');
     }
 
@@ -56,10 +61,14 @@ class LambdaNode extends Node
             $arguments    = array_slice(func_get_args(), 0, count($this->arguments));
             $innerContext = $context->createInnerScope(array_combine($this->arguments, $arguments));
 
-            $functionBody = $this->getChildAt(0);
             return GeneratorHelper::executeGeneratorsRecursive(
-                $functionBody->evaluate($innerContext)
+                $this->functionBody->evaluate($innerContext)
             );
         };
+    }
+
+    public function getChildren()
+    {
+        return [$this->functionBody];
     }
 }

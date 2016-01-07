@@ -14,12 +14,14 @@ class FunctionCallOperator extends BinaryOperator
     public function createNode(CompilerConfiguration $config, Node $left, Node $right)
     {
         if ($left instanceof TernaryOperatorNode) {
-            $node  = $left->getChildAt(2);
-            $right = new FunctionCallNode($node, $right);
+
+            list($opL, $opM, $opR) = $left->getChildren();
+
+            $right = new FunctionCallNode($opR, $right);
             return new TernaryOperatorNode(
                 $left->getOperator(),
-                $left->getChildAt(0),
-                $left->getChildAt(1),
+                $opL,
+                $opM,
                 $right
             );
         } else {

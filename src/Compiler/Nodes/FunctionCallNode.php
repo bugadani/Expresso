@@ -10,6 +10,15 @@ use Expresso\Extensions\Core\Operators\Binary\SimpleAccessOperator;
 
 class FunctionCallNode extends Node
 {
+    /**
+     * @var FunctionNameNode|MethodNameNode
+     */
+    private $functionName;
+
+    /**
+     * @var ArgumentListNode
+     */
+    private $arguments;
 
     private function isSimpleAccessOperator(Node $node)
     {
@@ -28,27 +37,23 @@ class FunctionCallNode extends Node
                 throw new ParseException('Invalid function name');
             }
         }
-        $this->addChild($functionName);
-        $this->addChild($arguments);
-    }
 
-    public function addArgument(Node $node)
-    {
-        $this->getChildAt(1)->addChild($node);
+        $this->functionName = $functionName;
+        $this->arguments = $arguments;
     }
 
     public function compile(Compiler $compiler)
     {
-        yield $compiler->compileNode($this->getChildAt(0));
+        yield $compiler->compileNode($this->functionName);
         $compiler->add('(');
-        yield $compiler->compileNode($this->getChildAt(1));
+        yield $compiler->compileNode($this->arguments);
         $compiler->add(')');
     }
 
     public function evaluate(EvaluationContext $context)
     {
-        $callback  = (yield $this->getChildAt(0)->evaluate($context));
-        $arguments = (yield $this->getChildAt(1)->evaluate($context));
+        $callback  = (yield $this->functionName->evaluate($context));
+        $arguments = (yield $this->arguments->evaluate($context));
 
         $retVal = call_user_func_array($callback, $arguments);
         if ($retVal instanceof \Generator) {
@@ -56,5 +61,10 @@ class FunctionCallNode extends Node
         }
 
         yield $retVal;
+    }
+
+    public function getChildren()
+    {
+        return [$this->functionName, $this->arguments];
     }
 }

@@ -31,11 +31,11 @@ abstract class OperatorNode extends Node
 
     public function evaluate(EvaluationContext $context)
     {
-        return $this->getOperator()->evaluate($context, $this);
+        return $this->operator->evaluate($context, $this);
     }
 
     public function compile(Compiler $compiler)
     {
-        return $this->getOperator()->compile($compiler, $this);
+        return $this->operator->compile($compiler, $this);
     }
 }

@@ -13,27 +13,32 @@ class ExpressionNode extends Node
      */
     private $expression;
 
+    /**
+     * @var Node
+     */
+    private $rootNode;
+
     public function __construct($expression, Node $rootNode)
     {
         $this->expression = $expression;
-        $this->addChild($rootNode);
+        $this->rootNode = $rootNode;
     }
 
     public function compile(Compiler $compiler)
     {
-        $this->expectChildCount(1);
         $compiler->add('function(array $context = []) {')
                  ->add('$context = new Expresso\\ExecutionContext($context);')
                  ->add('return ');
 
-        yield $compiler->compileNode($this->getChildAt(0));
+        yield $compiler->compileNode($this->rootNode);
 
         $compiler->add(';};');
     }
 
     public function evaluate(EvaluationContext $context)
     {
-        $retVal = (yield $this->getChildAt(0)->evaluate($context));
+        //return $this->rootNode->evaluate($context);
+        $retVal = (yield $this->rootNode->evaluate($context));
 
         yield $retVal;
     }

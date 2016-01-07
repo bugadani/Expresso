@@ -318,7 +318,7 @@ class Core extends Extension
 
                 $arguments = new ArgumentListNode();
                 foreach ($children[1] as $argument) {
-                    $arguments->addChild($argument);
+                    $arguments->add($argument);
                 }
                 $parser->pushOperand($arguments);
             }
