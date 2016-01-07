@@ -5,6 +5,7 @@ namespace Expresso\Compiler;
 use Expresso\Compiler\Exceptions\ParseException;
 use Expresso\Compiler\Operators\BinaryOperator;
 use Expresso\Compiler\Operators\TernaryOperator;
+use Expresso\Compiler\ParserSequence\Container;
 use Expresso\Compiler\Utils\GeneratorHelper;
 
 /**
@@ -30,12 +31,12 @@ class Parser
     private $tokens;
 
     /**
-     * @var SubParser[]
+     * @var Container
      */
-    private $parsers = [];
+    private $parsers;
 
     /**
-     * @var SubParser
+     * @var string
      */
     private $defaultParserName;
 
@@ -47,6 +48,7 @@ class Parser
     public function __construct(CompilerConfiguration $configuration)
     {
         $this->configuration = $configuration;
+        $this->parsers       = new Container();
     }
 
     public function setDefaultParserName($parserName)
@@ -60,13 +62,9 @@ class Parser
         $this->operandStack  = new \SplStack();
         $this->tokens        = $tokens;
 
-        $generator = $this->parse($this->defaultParserName);
+        $generator = $this->parsers->get($this->defaultParserName)->parse($tokens);
 
-        GeneratorHelper::executeGeneratorsRecursive($generator);
-
-        $tokens->expectCurrent(Token::EOF);
-
-        return $this->operandStack->pop();
+        return GeneratorHelper::executeGeneratorsRecursive($generator);
     }
 
     public function pushOperatorSentinel()
@@ -80,20 +78,6 @@ class Parser
             $this->popOperator();
         }
         $this->operatorStack->pop();
-    }
-
-    public function addParser($name, SubParser $parser)
-    {
-        $this->parsers[ $name ] = $parser;
-    }
-
-    public function getParser($parser)
-    {
-        if (!isset($this->parsers[ $parser ])) {
-            throw new \OutOfBoundsException("Parser not found: {$parser}");
-        }
-
-        return $this->parsers[ $parser ];
     }
 
     private function popOperator()
@@ -158,8 +142,11 @@ class Parser
         return $this->operandStack->pop();
     }
 
-    public function parse($parser)
+    /**
+     * @return Container
+     */
+    public function getParserContainer()
     {
-        return $this->getParser($parser)->parse($this->tokens, $this);
+        return $this->parsers;
     }
 }

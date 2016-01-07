@@ -7,11 +7,6 @@ use Expresso\Compiler\TokenStream;
 
 class Optional extends DelegateParser
 {
-
-    /**
-     * @param TokenStream $stream
-     * @return \Generator
-     */
     public function canParse(TokenStream $stream)
     {
         yield true;
@@ -35,7 +30,6 @@ class Optional extends DelegateParser
         } else {
             $child = $this->emptyValue();
         }
-
         yield $this->emit($child);
     }
 }

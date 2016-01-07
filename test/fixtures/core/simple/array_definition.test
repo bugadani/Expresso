@@ -1,6 +1,6 @@
 --TEST--
 Test list declaration
 --EXPRESSION--
-[1, 5]|join('')
+[1, 5]|join('') ~ [2]|count()
 --EXPECT--
-15
+151

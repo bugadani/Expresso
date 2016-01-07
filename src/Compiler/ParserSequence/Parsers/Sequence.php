@@ -7,6 +7,8 @@ use Expresso\Compiler\TokenStream;
 
 class Sequence extends Parser
 {
+    private $runBefore;
+
     public function __construct(array $parsers, callable $onMatch = null)
     {
         if (empty($parsers)) {
@@ -24,17 +26,24 @@ class Sequence extends Parser
      */
     private $parsers = [];
 
+    public function runBefore(callable $callback)
+    {
+        $this->runBefore = $callback;
+
+        return $this;
+    }
+
     public function canParse(TokenStream $stream)
     {
         //A sequence can be started if the first element can parse the stream - optionals may be skipped
-        for ($firstNonOptional = 0; isset($this->parsers[ $firstNonOptional ]); $firstNonOptional++) {
-            if ($this->parsers[ $firstNonOptional ] instanceof Optional) {
-                $optionalCanParse = (yield $this->parsers[ $firstNonOptional ]->canParse($stream));
+        foreach ($this->parsers as $parser) {
+            if ($parser instanceof Optional) {
+                $optionalCanParse = (yield $parser->getParser()->canParse($stream));
                 if ($optionalCanParse) {
                     yield true;
                 }
             } else {
-                yield (yield $this->parsers[ $firstNonOptional ]->canParse($stream));
+                yield (yield $parser->canParse($stream));
             }
         }
 
@@ -43,6 +52,10 @@ class Sequence extends Parser
 
     public function parse(TokenStream $stream)
     {
+        if ($this->runBefore !== null) {
+            $callback = $this->runBefore;
+            $callback();
+        }
         $children = [];
         foreach ($this->parsers as $parser) {
             $children[] = (yield $parser->parse($stream));

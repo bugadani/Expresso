@@ -15,4 +15,11 @@ class RepeatAny extends Optional
     {
         return [];
     }
+
+    public function separatedBy(Parser $parser)
+    {
+        $this->getParser()->separatedBy($parser);
+
+        return $this;
+    }
 }

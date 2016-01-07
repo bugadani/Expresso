@@ -4,13 +4,17 @@ namespace Expresso\Extensions\Lambda;
 
 use Expresso\Compiler\CompilerConfiguration;
 use Expresso\Compiler\ExpressionFunction;
-use Expresso\Compiler\ParserAlternativeCollection;
-use Expresso\Compiler\Token;
 use Expresso\Compiler\Parser;
+use Expresso\Compiler\ParserSequence\Parsers\Alternative;
+use Expresso\Compiler\ParserSequence\Parsers\ParserReference;
+use Expresso\Compiler\ParserSequence\Parsers\RepeatAny;
+use Expresso\Compiler\ParserSequence\Parsers\Sequence;
+use Expresso\Compiler\ParserSequence\Parsers\TokenParser;
+use Expresso\Compiler\Token;
 use Expresso\Extension;
 use Expresso\Extensions\Core\Core;
+use Expresso\Extensions\Lambda\Nodes\LambdaNode;
 use Expresso\Extensions\Lambda\Operators\Binary\LambdaOperator;
-use Expresso\Extensions\Lambda\Parsers\LambdaParser;
 
 class Lambda extends Extension
 {
@@ -23,11 +27,66 @@ class Lambda extends Extension
 
     public function addParsers(Parser $parser, CompilerConfiguration $configuration)
     {
-        $expressionParsers = $parser->getParser('expression');
-        $expressionParsers = ParserAlternativeCollection::wrap($expressionParsers);
-        $expressionParsers->addAlternative(new LambdaParser(), [Token::PUNCTUATION, '\\']);
+        $parserContainer = $parser->getParserContainer();
 
-        $parser->addParser('expression', $expressionParsers);
+        $expression = $parserContainer->get('expression');
+
+        $expect = function ($type, $test = null) {
+            return new TokenParser($type, $test);
+        };
+
+        $reference = function ($name) use ($parserContainer) {
+            return new ParserReference($parserContainer, $name);
+        };
+
+        $argumentName = new TokenParser(
+            Token::IDENTIFIER, null,
+            function (Token $token) {
+                return $token->getValue();
+            }
+        );
+
+        $argList = new Alternative(
+            [
+                new Sequence(
+                    [
+                        $expect(Token::PUNCTUATION, '('),
+                        (new RepeatAny($argumentName))
+                            ->separatedBy($expect(Token::PUNCTUATION, ',')),
+                        $expect(Token::PUNCTUATION, ')')
+                    ],
+                    function (array $children) {
+                        return $children[1];
+                    }
+                ),
+                new TokenParser(
+                    Token::IDENTIFIER, null,
+                    function (Token $token) {
+                        return [$token->getValue()];
+                    }
+                )
+            ]
+        );
+
+        $parserContainer->set(
+            'expression',
+            new Alternative(
+                [
+                    $expression,
+                    new Sequence(
+                        [
+                            $expect(Token::PUNCTUATION, '\\'),
+                            $argList,
+                            $expect(Token::OPERATOR, '->'),
+                            $reference('expression')
+                        ],
+                        function (array $children) {
+                            return new LambdaNode($children[3], $children[1]);
+                        }
+                    )
+                ]
+            )
+        );
     }
 
     public function getFunctions()

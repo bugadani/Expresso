@@ -31,19 +31,11 @@ abstract class OperatorNode extends Node
 
     public function evaluate(EvaluationContext $context)
     {
-        $generator = $this->getOperator()->evaluate($context, $this);
-
-        $retVal = (yield $generator->current());
-        while ($generator->valid()) {
-            $retVal = (yield $generator->send($retVal));
-        }
+        return $this->getOperator()->evaluate($context, $this);
     }
 
     public function compile(Compiler $compiler)
     {
-        $generator = $this->getOperator()->compile($compiler, $this);
-        foreach ($generator as $child) {
-            yield $child;
-        }
+        return $this->getOperator()->compile($compiler, $this);
     }
 }

@@ -4,21 +4,26 @@ namespace Expresso\Extensions\Core;
 
 use Expresso\Compiler\CompilerConfiguration;
 use Expresso\Compiler\ExpressionFunction;
+use Expresso\Compiler\Node;
+use Expresso\Compiler\Nodes\ArgumentListNode;
+use Expresso\Compiler\Nodes\DataNode;
+use Expresso\Compiler\Nodes\IdentifierNode;
+use Expresso\Compiler\Nodes\OperatorNode;
 use Expresso\Compiler\Operator;
+use Expresso\Compiler\OperatorCollection;
 use Expresso\Compiler\Operators\FunctionCallOperator;
-use Expresso\Compiler\ParserAlternativeCollection;
-use Expresso\Compiler\Parsers\BinaryOperatorParser;
-use Expresso\Compiler\Parsers\ConditionalParser;
-use Expresso\Compiler\Parsers\DataTokenParser;
-use Expresso\Compiler\Parsers\ExpressionParser;
-use Expresso\Compiler\Parsers\FunctionCallParser;
-use Expresso\Compiler\Parsers\IdentifierParser;
-use Expresso\Compiler\Parsers\ParenthesisGroupedExpressionParser;
-use Expresso\Compiler\Parsers\PostfixOperatorParser;
-use Expresso\Compiler\Parsers\PrefixOperatorParser;
-use Expresso\Compiler\Token;
 use Expresso\Compiler\Parser;
+use Expresso\Compiler\ParserSequence\Parsers\Alternative;
+use Expresso\Compiler\ParserSequence\Parsers\Optional;
+use Expresso\Compiler\ParserSequence\Parsers\ParserReference;
+use Expresso\Compiler\ParserSequence\Parsers\Repeat;
+use Expresso\Compiler\ParserSequence\Parsers\RepeatAny;
+use Expresso\Compiler\ParserSequence\Parsers\Sequence;
+use Expresso\Compiler\ParserSequence\Parsers\TokenParser;
+use Expresso\Compiler\Token;
 use Expresso\Extension;
+use Expresso\Extensions\Core\Nodes\ListDataNode;
+use Expresso\Extensions\Core\Nodes\MapDataNode;
 use Expresso\Extensions\Core\Operators\Binary\Arithmetic\AdditionOperator;
 use Expresso\Extensions\Core\Operators\Binary\Arithmetic\DivisionOperator;
 use Expresso\Extensions\Core\Operators\Binary\Arithmetic\ExponentialOperator;
@@ -61,8 +66,6 @@ use Expresso\Extensions\Core\Operators\Unary\Postfix\OddOperator;
 use Expresso\Extensions\Core\Operators\Unary\Prefix\BitwiseNotOperator;
 use Expresso\Extensions\Core\Operators\Unary\Prefix\MinusOperator;
 use Expresso\Extensions\Core\Operators\Unary\Prefix\NotOperator;
-use Expresso\Extensions\Core\Parsers\ArrayAccessParser;
-use Expresso\Extensions\Core\Parsers\ArrayDefinitionParser;
 
 class Core extends Extension
 {
@@ -151,41 +154,269 @@ class Core extends Extension
 
     public function addParsers(Parser $parser, CompilerConfiguration $configuration)
     {
-        $binaryOperatorParser    = new BinaryOperatorParser($configuration->getBinaryOperators());
-        $prefixOperatorParser    = new PrefixOperatorParser($configuration->getPrefixOperators());
-        $postfixOperatorParser   = new PostfixOperatorParser($configuration->getUnaryOperators());
-        $ternaryOperatorParser   = new ConditionalParser($configuration->getOperatorByClass(ConditionalOperator::class));
-        $identifierParser        = new IdentifierParser();
-        $arrayAccessParser       = new ArrayAccessParser($configuration->getOperatorByClass(ArrayAccessOperator::class));
-        $dataTokenParser         = new DataTokenParser();
-        $groupedExpressionParser = new ParenthesisGroupedExpressionParser();
-        $arrayDefinitionParser   = new ArrayDefinitionParser();
-        $functionCallParser      = new FunctionCallParser($configuration->getOperatorByClass(FunctionCallOperator::class));
-        $expressionParser        = new ExpressionParser();
+        $parserContainer = $parser->getParserContainer();
 
-        $tokenParsers = new ParserAlternativeCollection($prefixOperatorParser);
-        $tokenParsers->addAlternative($identifierParser, Token::IDENTIFIER);
-        $tokenParsers->addAlternative($dataTokenParser, Token::CONSTANT);
-        $tokenParsers->addAlternative($dataTokenParser, Token::STRING);
-        $tokenParsers->addAlternative($groupedExpressionParser, [Token::PUNCTUATION, '(']);
-        $tokenParsers->addAlternative($arrayDefinitionParser, [Token::PUNCTUATION, '[']);
+        $pushOperatorClass = function ($operator) use ($configuration, $parser) {
+            $parser->pushOperator($configuration->getOperatorByClass($operator));
+        };
 
-        $postfixParsers = new ParserAlternativeCollection($postfixOperatorParser);
-        $postfixParsers->addAlternative($functionCallParser, [Token::PUNCTUATION, '(']);
-        $postfixParsers->addAlternative($arrayAccessParser, [Token::PUNCTUATION, '[']);
+        $returnNode = function ($className) {
+            return function (Token $token) use ($className) {
+                return new $className($token->getValue());
+            };
+        };
 
-        $postfixNoFcParsers = new ParserAlternativeCollection($postfixOperatorParser);
-        $postfixNoFcParsers->addAlternative($arrayAccessParser, [Token::PUNCTUATION, '[']);
+        $returnArgument = function ($argument) {
+            return function (array $children) use ($argument) {
+                return $children[ $argument ];
+            };
+        };
 
-        $parser->addParser('term', $tokenParsers);
-        $parser->addParser('identifier', $identifierParser);
-        $parser->addParser('binary', $binaryOperatorParser);
-        $parser->addParser('postfix', $postfixParsers);
-        $parser->addParser('postfix no function call', $postfixNoFcParsers);
-        $parser->addParser('expression', $expressionParser);
-        $parser->addParser('conditional', $ternaryOperatorParser);
+        $expect = function ($type, $test = null) {
+            return new TokenParser($type, $test);
+        };
 
-        $parser->setDefaultParserName('expression');
+        $expression = new ParserReference($parserContainer, 'expression');
+
+        $prefixOperators  = $configuration->getPrefixOperators();
+        $binaryOperators  = $configuration->getBinaryOperators();
+        $postfixOperators = $configuration->getUnaryOperators();
+
+        $pushOperator = function (OperatorCollection $operators) use ($parser) {
+            return function (Token $token) use ($parser, $operators) {
+                $tokenValue = $token->getValue();
+                $operator   = $operators->getOperator($tokenValue);
+                $parser->pushOperator($operator);
+            };
+        };
+
+        $prefixParser = new TokenParser(
+            Token::OPERATOR,
+            [$prefixOperators, 'isOperator'],
+            $pushOperator($prefixOperators)
+        );
+
+        $binaryParser = new TokenParser(
+            Token::OPERATOR,
+            [$binaryOperators, 'isOperator'],
+            $pushOperator($binaryOperators)
+        );
+
+        $postfixParser = new TokenParser(
+            Token::OPERATOR,
+            [$postfixOperators, 'isOperator'],
+            $pushOperator($postfixOperators)
+        );
+
+        $isRangeOperator = function ($firstElement) {
+            if ($firstElement instanceof OperatorNode) {
+                return $firstElement->isOperator(RangeOperator::class)
+                       || $firstElement->isOperator(InfiniteRangeOperator::class);
+            }
+
+            return false;
+        };
+
+        $mapParser = function ($kvSeparator) use ($expression, $expect) {
+            return new Sequence(
+                [
+                    $expect(Token::PUNCTUATION, $kvSeparator),
+                    $expression,
+                    new RepeatAny(
+                        new Sequence(
+                            [
+                                $expect(Token::PUNCTUATION, ','),
+                                $expression,
+                                $expect(Token::PUNCTUATION, $kvSeparator),
+                                $expression
+                            ],
+                            function (array $children) {
+                                return [$children[1], $children[3]];
+                            }
+                        )
+                    )
+                ]
+            );
+        };
+
+        $arrayDefinition = new Sequence(
+            [
+                $expect(Token::PUNCTUATION, '['),
+
+                new Optional(
+                    new Sequence(
+                        [
+                            $expression,
+                            new Alternative(
+                                [
+                                    $mapParser('=>'),
+                                    $mapParser(':'),
+                                    new RepeatAny(
+                                        new Sequence(
+                                            [
+                                                $expect(Token::PUNCTUATION, ','),
+                                                $expression
+                                            ],
+                                            $returnArgument(1)
+                                        )
+                                    )
+                                ]
+                            )
+                        ]
+                    )
+                ),
+
+                $expect(Token::PUNCTUATION, ']')
+            ],
+            function (array $children) use ($isRangeOperator) {
+                $items = $children[1];
+
+                if ($items === null) {
+                    return new ListDataNode();
+                }
+
+                list($first, $array) = $items;
+                if (empty($array)) {
+                    if ($isRangeOperator($first)) {
+                        return $first;
+                    }
+                    $isMap = false;
+                } else {
+                    $isMap = ($array[0] instanceof Token && $array[0]->test(Token::PUNCTUATION, [':', '=>']));
+                }
+
+                if ($isMap) {
+                    $node = new MapDataNode();
+                    $node->add($first, $array[1]);
+
+                    /** @var Node $key */
+                    /** @var Node $value */
+                    foreach ($array[2] as list($key, $value)) {
+                        $node->add($key, $value);
+                    }
+                } else {
+                    $node = new ListDataNode();
+                    $node->add($first);
+                    foreach ($array as $item) {
+                        $node->add($item);
+                    }
+                }
+
+                return $node;
+            }
+        );
+
+        $functionCall = new Sequence(
+            [
+                $expect(Token::PUNCTUATION, '('),
+                (new RepeatAny($expression))
+                    ->separatedBy($expect(Token::PUNCTUATION, ',')),
+                $expect(Token::PUNCTUATION, ')')
+            ],
+            function (array $children) use ($configuration, $parser) {
+                $parser->pushOperator($configuration->getOperatorByClass(FunctionCallOperator::class));
+
+                $arguments = new ArgumentListNode();
+                foreach ($children[1] as $argument) {
+                    $arguments->addChild($argument);
+                }
+                $parser->pushOperand($arguments);
+            }
+        );
+
+        $arrayAccess = new Sequence(
+            [
+                $expect(Token::PUNCTUATION, '['),
+                $expression,
+                $expect(Token::PUNCTUATION, ']')
+            ],
+            function (array $children) use ($parser, $configuration) {
+                $parser->pushOperator($configuration->getOperatorByClass(ArrayAccessOperator::class));
+                $parser->pushOperand($children[1]);
+            }
+        );
+
+        $term = new Sequence(
+            [
+                new RepeatAny($prefixParser),
+                new Alternative(
+                    [
+                        new TokenParser(Token::IDENTIFIER, null, $returnNode(IdentifierNode::class)),
+                        new TokenParser(Token::CONSTANT, null, $returnNode(DataNode::class)),
+                        new TokenParser(Token::STRING, null, $returnNode(DataNode::class)),
+                        $arrayDefinition,
+                        new Sequence(
+                            [
+                                $expect(Token::PUNCTUATION, '('),
+                                $expression,
+                                $expect(Token::PUNCTUATION, ')')
+                            ],
+                            $returnArgument(1)
+                        )
+                    ],
+                    [$parser, 'pushOperand']
+                ),
+
+                new RepeatAny(
+                    new Alternative([$functionCall, $arrayAccess])
+                ),
+                new RepeatAny($postfixParser)
+            ]
+        );
+
+        $binaryExpression = (new Repeat($term))
+            ->separatedBy($binaryParser);
+
+        $parserContainer->set(
+            'expression',
+            (
+            new Sequence(
+                [
+                    $binaryExpression,
+                    new Optional(
+                        new Sequence(
+                            [
+                                $expect(Token::PUNCTUATION, '?'),
+                                $expression,
+                                $expect(Token::PUNCTUATION, ':'),
+                                $expression
+                            ],
+                            function (array $children) {
+                                return [$children[1], $children[3]];
+                            }
+                        )
+                    )
+                ],
+                function (array $children) use ($parser, $pushOperatorClass) {
+
+                    if ($children[1] !== null) {
+                        list($middle, $right) = $children[1];
+
+                        $pushOperatorClass(ConditionalOperator::class);
+
+                        $parser->pushOperand($middle);
+                        $parser->pushOperand($right);
+                    }
+                    $parser->popOperatorSentinel();
+
+                    return $parser->popOperand();
+                }
+            )
+            )->runBefore([$parser, 'pushOperatorSentinel'])
+        );
+
+        $parserContainer->set(
+            'program',
+            new Sequence(
+                [
+                    $expression,
+                    $expect(Token::EOF)
+                ],
+                $returnArgument(0)
+            )
+        );
+
+        $parser->setDefaultParserName('program');
     }
 
     public function getFunctions()

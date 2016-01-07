@@ -29,8 +29,7 @@ class ParserReference extends Parser
 
     public function parse(TokenStream $stream)
     {
-        $child = (yield $this->getParser()->parse($stream));
-        yield $this->emit($child);
+        return $this->getParser()->parse($stream);
     }
 
     /**

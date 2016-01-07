@@ -39,11 +39,11 @@ class Alternative extends Parser
             if ($canParse) {
                 $this->activeParser = $parser;
 
-                break;
+                yield true;
             }
         }
 
-        yield ($this->activeParser !== null);
+        yield false;
     }
 
     public function parse(TokenStream $stream)
