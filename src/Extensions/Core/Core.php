@@ -313,8 +313,8 @@ class Core extends Extension
                     ->separatedBy($expect(Token::PUNCTUATION, ',')),
                 $expect(Token::PUNCTUATION, ')')
             ],
-            function (array $children) use ($configuration, $parser) {
-                $parser->pushOperator($configuration->getOperatorByClass(FunctionCallOperator::class));
+            function (array $children) use ($parser, $pushOperatorClass) {
+                $pushOperatorClass(FunctionCallOperator::class);
 
                 $arguments = new ArgumentListNode();
                 foreach ($children[1] as $argument) {
@@ -330,8 +330,8 @@ class Core extends Extension
                 $expression,
                 $expect(Token::PUNCTUATION, ']')
             ],
-            function (array $children) use ($parser, $configuration) {
-                $parser->pushOperator($configuration->getOperatorByClass(ArrayAccessOperator::class));
+            function (array $children) use ($parser, $pushOperatorClass) {
+                $pushOperatorClass(ArrayAccessOperator::class);
                 $parser->pushOperand($children[1]);
             }
         );
