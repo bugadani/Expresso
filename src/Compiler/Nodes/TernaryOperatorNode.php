@@ -39,6 +39,4 @@ class TernaryOperatorNode extends OperatorNode
             $this->right
         ];
     }
-
-
 }
