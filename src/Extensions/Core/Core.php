@@ -173,15 +173,8 @@ class Core extends Extension
             };
         };
 
-        $expect   = function ($type, $test = null) {
-            return new TokenParser($type, $test);
-        };
-        $sequence = function () {
-            return new Sequence(func_get_args());
-        };
-
         $expression = new ParserReference($parserContainer, 'expression');
-        $comma      = $expect(Token::PUNCTUATION, ',');
+        $comma      = TokenParser::create(Token::PUNCTUATION, ',');
 
         $prefixOperators  = $configuration->getPrefixOperators();
         $binaryOperators  = $configuration->getBinaryOperators();
@@ -195,190 +188,199 @@ class Core extends Extension
             };
         };
 
-        $prefixParser  = $expect(Token::OPERATOR, [$prefixOperators, 'isOperator'])
-            ->process($pushOperator($prefixOperators));
-        $binaryParser  = $expect(Token::OPERATOR, [$binaryOperators, 'isOperator'])
-            ->process($pushOperator($binaryOperators));
-        $postfixParser = $expect(Token::OPERATOR, [$postfixOperators, 'isOperator'])
-            ->process($pushOperator($postfixOperators));
+        $prefixParser  = TokenParser::create(Token::OPERATOR, [$prefixOperators, 'isOperator'])
+                                    ->process($pushOperator($prefixOperators));
+        $binaryParser  = TokenParser::create(Token::OPERATOR, [$binaryOperators, 'isOperator'])
+                                    ->process($pushOperator($binaryOperators));
+        $postfixParser = TokenParser::create(Token::OPERATOR, [$postfixOperators, 'isOperator'])
+                                    ->process($pushOperator($postfixOperators));
 
-        $mapParser = function ($kvSeparator) use ($expression, $expect, $comma, $sequence) {
-            $separator = $expect(Token::PUNCTUATION, $kvSeparator);
+        $mapParser = function ($kvSeparator) use ($expression, $comma) {
+            $separator = TokenParser::create(Token::PUNCTUATION, $kvSeparator);
 
-            return $sequence(
-                $separator,
-                $expression,
-                new RepeatAny(
-                    $sequence($comma, $expression, $separator, $expression)
-                        ->process(
-                            function (array $children) {
-                                return [$children[1], $children[3]];
-                            }
-                        )
-                )
-            );
+            return Sequence::create($separator)
+                           ->then($expression)
+                           ->then(
+                               new RepeatAny(
+                                   Sequence::create($comma)
+                                           ->then($expression)
+                                           ->then($separator)
+                                           ->then($expression)
+                                           ->process(
+                                               function (array $children) {
+                                                   return [$children[1], $children[3]];
+                                               }
+                                           )
+                               )
+                           );
         };
 
-        $arrayDefinition = $sequence(
-            $expect(Token::PUNCTUATION, '['),
-
-            new Optional(
-                $sequence(
-                    $expression,
-                    new Alternative(
-                        [
-                            $mapParser('=>'),
-                            $mapParser(':'),
-                            new RepeatAny(
-                                $sequence($comma, $expression)
-                                    ->process($returnArgument(1))
-                            )
-                        ]
+        $arrayDefinition =
+            Sequence::create(TokenParser::create(Token::PUNCTUATION, '['))
+                    ->then(
+                        new Optional(
+                            Sequence::create($expression)
+                                    ->then(
+                                        Alternative::create($mapParser('=>'))
+                                                   ->alternative($mapParser(':'))
+                                                   ->alternative(
+                                                       new RepeatAny(
+                                                           Sequence::create($comma)
+                                                                   ->then($expression)
+                                                                   ->process($returnArgument(1))
+                                                       )
+                                                   )
+                                    )
+                        )
                     )
-                )
-            ),
+                    ->then(TokenParser::create(Token::PUNCTUATION, ']'))
+                    ->process(
+                        function (array $children) {
+                            $items = $children[1];
 
-            $expect(Token::PUNCTUATION, ']')
-        )->process(
-            function (array $children) {
-                $items = $children[1];
+                            if ($items === null) {
+                                return new ListDataNode();
+                            }
 
-                if ($items === null) {
-                    return new ListDataNode();
-                }
+                            list($first, $array) = $items;
+                            if (empty($array)) {
 
-                list($first, $array) = $items;
-                if (empty($array)) {
+                                if ($first instanceof OperatorNode) {
+                                    $isRangeOperator = $first->isOperator(RangeOperator::class)
+                                                       || $first->isOperator(InfiniteRangeOperator::class);
 
-                    if ($first instanceof OperatorNode) {
-                        $isRangeOperator = $first->isOperator(RangeOperator::class)
-                                           || $first->isOperator(InfiniteRangeOperator::class);
+                                    if ($isRangeOperator) {
+                                        return $first;
+                                    }
+                                }
+                                $isMap = false;
+                            } else {
+                                $isMap = ($array[0] instanceof Token
+                                          && $array[0]->test(Token::PUNCTUATION, [':', '=>']));
+                            }
 
-                        if ($isRangeOperator) {
-                            return $first;
+                            if ($isMap) {
+                                $node = new MapDataNode();
+                                $node->add($first, $array[1]);
+
+                                /** @var Node $key */
+                                /** @var Node $value */
+                                foreach ($array[2] as list($key, $value)) {
+                                    $node->add($key, $value);
+                                }
+                            } else {
+                                $node = new ListDataNode();
+                                $node->add($first);
+                                foreach ($array as $item) {
+                                    $node->add($item);
+                                }
+                            }
+
+                            return $node;
                         }
-                    }
-                    $isMap = false;
-                } else {
-                    $isMap = ($array[0] instanceof Token && $array[0]->test(Token::PUNCTUATION, [':', '=>']));
-                }
+                    );
 
-                if ($isMap) {
-                    $node = new MapDataNode();
-                    $node->add($first, $array[1]);
+        $functionCall = Sequence::create(TokenParser::create(Token::PUNCTUATION, '('))
+                                ->then(
+                                    (new RepeatAny($expression))
+                                        ->separatedBy($comma)
+                                )
+                                ->then(TokenParser::create(Token::PUNCTUATION, ')'))
+                                ->process(
+                                    function (array $children) use ($parser, $functionCallOperator) {
+                                        $parser->pushOperator($functionCallOperator);
 
-                    /** @var Node $key */
-                    /** @var Node $value */
-                    foreach ($array[2] as list($key, $value)) {
-                        $node->add($key, $value);
-                    }
-                } else {
-                    $node = new ListDataNode();
-                    $node->add($first);
-                    foreach ($array as $item) {
-                        $node->add($item);
-                    }
-                }
+                                        $arguments = new ArgumentListNode();
+                                        foreach ($children[1] as $argument) {
+                                            $arguments->add($argument);
+                                        }
+                                        $parser->pushOperand($arguments);
+                                    }
+                                );
 
-                return $node;
-            }
-        );
+        $arrayAccess = Sequence::create(TokenParser::create(Token::PUNCTUATION, '['))
+                               ->then($expression)
+                               ->then(TokenParser::create(Token::PUNCTUATION, ']'))
+                               ->process(
+                                   function (array $children) use ($parser, $arrayAccessOperator) {
+                                       $parser->pushOperator($arrayAccessOperator);
+                                       $parser->pushOperand($children[1]);
+                                   }
+                               );
 
-        $functionCall = $sequence(
-            $expect(Token::PUNCTUATION, '('),
-            (new RepeatAny($expression))
-                ->separatedBy($comma),
-            $expect(Token::PUNCTUATION, ')')
-        )->process(
-            function (array $children) use ($parser, $functionCallOperator) {
-                $parser->pushOperator($functionCallOperator);
+        $term = Sequence::create(new RepeatAny($prefixParser))
+                        ->then(
+                            Alternative::create(
+                                TokenParser::create(Token::IDENTIFIER)
+                                           ->process($returnNode(IdentifierNode::class))
+                            )
+                                       ->alternative(
+                                           TokenParser::create(Token::CONSTANT)
+                                                      ->process($returnNode(DataNode::class))
+                                       )
+                                       ->alternative(
+                                           TokenParser::create(Token::STRING)
+                                                      ->process($returnNode(StringNode::class))
+                                       )
+                                       ->alternative($arrayDefinition)
+                                       ->alternative(
+                                           Sequence::create(TokenParser::create(Token::PUNCTUATION, '('))
+                                                   ->then($expression)
+                                                   ->then(TokenParser::create(Token::PUNCTUATION, ')'))
+                                                   ->process($returnArgument(1))
+                                       )
+                                       ->process([$parser, 'pushOperand'])
+                        )
+                        ->then(
+                            new RepeatAny(
+                                Alternative::create($functionCall)
+                                           ->alternative($arrayAccess)
+                            )
+                        )
+                        ->then(new RepeatAny($postfixParser));
 
-                $arguments = new ArgumentListNode();
-                foreach ($children[1] as $argument) {
-                    $arguments->add($argument);
-                }
-                $parser->pushOperand($arguments);
-            }
-        );
-
-        $arrayAccess = $sequence(
-            $expect(Token::PUNCTUATION, '['),
-            $expression,
-            $expect(Token::PUNCTUATION, ']')
-        )->process(
-            function (array $children) use ($parser, $arrayAccessOperator) {
-                $parser->pushOperator($arrayAccessOperator);
-                $parser->pushOperand($children[1]);
-            }
-        );
-
-        $term = $sequence(
-            new RepeatAny($prefixParser),
-            (
-            new Alternative(
-                [
-                    $expect(Token::IDENTIFIER)->process($returnNode(IdentifierNode::class)),
-                    $expect(Token::CONSTANT)->process($returnNode(DataNode::class)),
-                    $expect(Token::STRING)->process($returnNode(StringNode::class)),
-                    $arrayDefinition,
-                    $sequence(
-                        $expect(Token::PUNCTUATION, '('),
-                        $expression,
-                        $expect(Token::PUNCTUATION, ')')
-                    )->process($returnArgument(1))
-                ]
-            )
-            )->process([$parser, 'pushOperand']),
-
-            new RepeatAny(
-                new Alternative([$functionCall, $arrayAccess])
-            ),
-            new RepeatAny($postfixParser)
-        );
-
-        $binaryExpression = (new Repeat($term))
-            ->separatedBy($binaryParser);
+        $binaryExpression = Repeat::create($term)
+                                  ->separatedBy($binaryParser);
 
         $parserContainer->set(
             'expression',
-            $sequence(
-                $binaryExpression,
-                new Optional(
-                    $sequence(
-                        $expect(Token::PUNCTUATION, '?'),
-                        $expression,
-                        $expect(Token::PUNCTUATION, ':'),
-                        $expression
-                    )->process(
-                        function (array $children) {
-                            return [$children[1], $children[3]];
+            Sequence::create($binaryExpression)
+                    ->then(
+                        Optional::create(
+                            Sequence::create(TokenParser::create(Token::PUNCTUATION, '?'))
+                                    ->then($expression)
+                                    ->then(TokenParser::create(Token::PUNCTUATION, ':'))
+                                    ->then($expression)
+                                    ->process(
+                                        function (array $children) {
+                                            return [$children[1], $children[3]];
+                                        }
+                                    )
+                        )
+                    )
+                    ->runBefore([$parser, 'pushOperatorSentinel'])
+                    ->process(
+                        function (array $children) use ($parser, $conditionalOperator) {
+
+                            if ($children[1] !== null) {
+                                list($middle, $right) = $children[1];
+
+                                $parser->pushOperator($conditionalOperator);
+
+                                $parser->pushOperand($middle);
+                                $parser->pushOperand($right);
+                            }
+
+                            return $parser->popOperatorSentinel();
                         }
                     )
-                )
-            )->runBefore([$parser, 'pushOperatorSentinel'])
-             ->process(
-                 function (array $children) use ($parser, $conditionalOperator) {
-
-                     if ($children[1] !== null) {
-                         list($middle, $right) = $children[1];
-
-                         $parser->pushOperator($conditionalOperator);
-
-                         $parser->pushOperand($middle);
-                         $parser->pushOperand($right);
-                     }
-
-                     return $parser->popOperatorSentinel();
-                 }
-             )
         );
 
         $parserContainer->set(
             'program',
-            $sequence(
-                $expression,
-                $expect(Token::EOF)
-            )->process($returnArgument(0))
+            Sequence::create($expression)
+                    ->then(TokenParser::create(Token::EOF))
+                    ->process($returnArgument(0))
         );
 
         $parser->setDefaultParserName('program');

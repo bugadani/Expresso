@@ -19,12 +19,8 @@ class AlternativeTest extends \PHPUnit_Framework_TestCase
 
         $stream = new TokenStream($tokenGenerator());
 
-        $grammar = new Alternative(
-            [
-                new TokenParser(Token::IDENTIFIER, 'a'),
-                new TokenParser(Token::IDENTIFIER, 'b')
-            ]
-        );
+        $grammar = Alternative::create(TokenParser::create(Token::IDENTIFIER, 'a'))
+            ->alternative(TokenParser::create(Token::IDENTIFIER, 'b'));
 
         $result = GeneratorHelper::executeGeneratorsRecursive($grammar->parse($stream));
         $this->assertEquals($token, $result);
@@ -42,12 +38,8 @@ class AlternativeTest extends \PHPUnit_Framework_TestCase
 
         $stream = new TokenStream($tokenGenerator());
 
-        $grammar = new Alternative(
-            [
-                new TokenParser(Token::IDENTIFIER, 'a'),
-                new TokenParser(Token::IDENTIFIER, 'b')
-            ]
-        );
+        $grammar = Alternative::create(TokenParser::create(Token::IDENTIFIER, 'a'))
+                              ->alternative(TokenParser::create(Token::IDENTIFIER, 'b'));
 
         GeneratorHelper::executeGeneratorsRecursive($grammar->parse($stream));
     }

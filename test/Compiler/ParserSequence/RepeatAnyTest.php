@@ -28,9 +28,7 @@ class RepeatAnyTest extends \PHPUnit_Framework_TestCase
         };
 
         $stream  = new TokenStream($tokenGenerator());
-        $grammar = new RepeatAny(
-            new TokenParser(Token::CONSTANT)
-        );
+        $grammar = new RepeatAny(TokenParser::create(Token::CONSTANT));
 
         $result = GeneratorHelper::executeGeneratorsRecursive($grammar->parse($stream));
 
@@ -51,9 +49,7 @@ class RepeatAnyTest extends \PHPUnit_Framework_TestCase
         };
 
         $stream  = new TokenStream($tokenGenerator());
-        $grammar = new RepeatAny(
-            new TokenParser(Token::CONSTANT)
-        );
+        $grammar = new RepeatAny(TokenParser::create(Token::CONSTANT));
 
         $result = GeneratorHelper::executeGeneratorsRecursive($grammar->parse($stream));
 

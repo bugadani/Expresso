@@ -31,63 +31,50 @@ class Lambda extends Extension
 
         $expression = $parserContainer->get('expression');
 
-        $expect = function ($type, $test = null) {
-            return new TokenParser($type, $test);
-        };
-
         $reference = function ($name) use ($parserContainer) {
             return new ParserReference($parserContainer, $name);
         };
 
-        $argumentName = $expect(Token::IDENTIFIER)->process(
+        $argumentName = TokenParser::create(Token::IDENTIFIER)->process(
             function (Token $token) {
                 return $token->getValue();
             }
         );
 
-        $sequence = function () {
-            return new Sequence(func_get_args());
-        };
-
-        $argList = new Alternative(
-            [
-                $sequence(
-                    $expect(Token::PUNCTUATION, '('),
-                    (new RepeatAny($argumentName))
-                        ->separatedBy($expect(Token::PUNCTUATION, ',')),
-                    $expect(Token::PUNCTUATION, ')')
-                )->process(
-                    function (array $children) {
-                        return $children[1];
-                    }
-                ),
-
-                $expect(Token::IDENTIFIER)->process(
-                    function (Token $token) {
-                        return [$token->getValue()];
-                    }
-                )
-            ]
+        $argList = Alternative::create(
+            Sequence::create(TokenParser::create(Token::PUNCTUATION, '('))
+                    ->then(
+                        (new RepeatAny($argumentName))
+                            ->separatedBy(TokenParser::create(Token::PUNCTUATION, ','))
+                    )
+                    ->then(TokenParser::create(Token::PUNCTUATION, ')'))
+                    ->process(
+                        function (array $children) {
+                            return $children[1];
+                        }
+                    )
+        )->alternative(
+            TokenParser::create(Token::IDENTIFIER)->process(
+                function (Token $token) {
+                    return [$token->getValue()];
+                }
+            )
         );
 
         $parserContainer->set(
             'expression',
-            new Alternative(
-                [
-                    $expression,
-                    $sequence(
-                        $expect(Token::PUNCTUATION, '\\'),
-                        $argList,
-                        $expect(Token::OPERATOR, '->'),
-                        $reference('expression')
-                    )
-                        ->process(
-                            function (array $children) {
-                                return new LambdaNode($children[3], $children[1]);
-                            }
-                        )
-                ]
-            )
+            Alternative::create($expression)
+                       ->alternative(
+                           Sequence::create(TokenParser::create(Token::PUNCTUATION, '\\'))
+                                   ->then($argList)
+                                   ->then(TokenParser::create(Token::OPERATOR, '->'))
+                                   ->then($reference('expression'))
+                                   ->process(
+                                       function (array $children) {
+                                           return new LambdaNode($children[3], $children[1]);
+                                       }
+                                   )
+                       )
         );
     }
 

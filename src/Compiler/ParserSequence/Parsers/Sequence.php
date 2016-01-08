@@ -7,17 +7,15 @@ use Expresso\Compiler\TokenStream;
 
 class Sequence extends Parser
 {
-    private $runBefore;
-
-    public function __construct(array $parsers)
+    public static function create(Parser $first)
     {
-        if (empty($parsers)) {
-            throw new \InvalidArgumentException('$parsers must not be empty');
-        }
-        foreach ($parsers as $parser) {
-            $this->addStep($parser);
-        }
+        $sequence = new Sequence();
+        $sequence->then($first);
+
+        return $sequence;
     }
+
+    private $runBefore;
 
     /**
      * @var Parser[]
@@ -62,8 +60,10 @@ class Sequence extends Parser
         yield $this->emit($children);
     }
 
-    private function addStep(Parser $parser)
+    public function then(Parser $parser)
     {
         $this->parsers[] = $parser;
+
+        return $this;
     }
 }

@@ -7,6 +7,16 @@ use Expresso\Compiler\TokenStream;
 
 class TokenParser extends Parser
 {
+    public static function create($tokenType, $test = null)
+    {
+        $tokenParser = new TokenParser($tokenType, $test);
+
+        $tokenParser->tokenType = $tokenType;
+        $tokenParser->test      = $test;
+
+        return $tokenParser;
+    }
+
     /**
      * @var int
      */
@@ -16,18 +26,6 @@ class TokenParser extends Parser
      * @var
      */
     private $test;
-
-    /**
-     * TokenParser constructor.
-     *
-     * @param int $tokenType
-     * @param mixed $test
-     */
-    public function __construct($tokenType, $test = null)
-    {
-        $this->tokenType = $tokenType;
-        $this->test      = $test;
-    }
 
     public function canParse(TokenStream $stream)
     {
