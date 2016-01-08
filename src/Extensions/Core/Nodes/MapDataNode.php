@@ -68,6 +68,4 @@ class MapDataNode extends Node
     {
         return $this->children;
     }
-
-
 }

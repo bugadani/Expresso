@@ -26,11 +26,6 @@ class Parser
     private $operandStack;
 
     /**
-     * @var TokenStream
-     */
-    private $tokens;
-
-    /**
      * @var Container
      */
     private $parsers;
@@ -60,7 +55,6 @@ class Parser
     {
         $this->operatorStack = new \SplStack();
         $this->operandStack  = new \SplStack();
-        $this->tokens        = $tokens;
 
         $generator = $this->parsers->get($this->defaultParserName)->parse($tokens);
 
@@ -78,6 +72,8 @@ class Parser
             $this->popOperator();
         }
         $this->operatorStack->pop();
+
+        return $this->operandStack->pop();
     }
 
     private function popOperator()
@@ -135,11 +131,6 @@ class Parser
     public function pushOperand(Node $node)
     {
         $this->operandStack->push($node);
-    }
-
-    public function popOperand()
-    {
-        return $this->operandStack->pop();
     }
 
     /**

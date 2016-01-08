@@ -40,6 +40,9 @@ class ConditionalOperator extends TernaryOperator
 
     public function evaluate(EvaluationContext $context, Node $node)
     {
+        /** @var Node $left */
+        /** @var Node $middle */
+        /** @var Node $right */
         list($left, $middle, $right) = $node->getChildren();
         $condition = (yield $left->evaluate($context));
         $childNode = $condition ? $middle : $right;

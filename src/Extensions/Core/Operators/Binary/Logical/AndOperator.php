@@ -16,6 +16,8 @@ class AndOperator extends BinaryOperator
 
     public function evaluate(EvaluationContext $context, Node $node)
     {
+        /** @var Node $left */
+        /** @var Node $right */
         list($left, $right) = $node->getChildren();
 
         //This implements short-circuit evaluation

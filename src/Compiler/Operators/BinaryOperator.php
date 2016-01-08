@@ -13,6 +13,8 @@ abstract class BinaryOperator extends Operator
 {
     public function evaluate(EvaluationContext $context, Node $node)
     {
+        /** @var Node $left */
+        /** @var Node $right */
         list($left, $right) = $node->getChildren();
 
         $leftOperand  = (yield $left->evaluate($context));

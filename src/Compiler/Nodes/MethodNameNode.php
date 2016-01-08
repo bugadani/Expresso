@@ -14,7 +14,7 @@ class MethodNameNode extends Node
     private $object;
 
     /**
-     * @var Node
+     * @var DataNode
      */
     private $method;
 

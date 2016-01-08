@@ -397,9 +397,7 @@ class Core extends Extension
                         $parser->pushOperand($middle);
                         $parser->pushOperand($right);
                     }
-                    $parser->popOperatorSentinel();
-
-                    return $parser->popOperand();
+                    return $parser->popOperatorSentinel();
                 }
             )
             )->runBefore([$parser, 'pushOperatorSentinel'])

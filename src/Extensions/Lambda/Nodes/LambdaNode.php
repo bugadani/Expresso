@@ -4,7 +4,6 @@ namespace Expresso\Extensions\Lambda\Nodes;
 
 use Expresso\Compiler\Compiler;
 use Expresso\Compiler\Node;
-use Expresso\Compiler\NodeTreeEvaluator;
 use Expresso\Compiler\Utils\GeneratorHelper;
 use Expresso\EvaluationContext;
 

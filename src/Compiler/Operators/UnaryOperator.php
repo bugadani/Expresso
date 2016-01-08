@@ -13,6 +13,7 @@ abstract class UnaryOperator extends Operator
 
     public function evaluate(EvaluationContext $context, Node $node)
     {
+        /** @var UnaryOperatorNode $node */
         $operand = (yield $node->getOperand()->evaluate($context));
 
         yield $this->evaluateSimple($operand);
