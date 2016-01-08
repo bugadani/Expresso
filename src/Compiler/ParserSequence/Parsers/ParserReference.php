@@ -13,6 +13,7 @@ class ParserReference extends Parser
      */
     private $container;
     private $parserName;
+    private $resolvedParser;
 
     public function __construct(Container $container, $parserName)
     {
@@ -35,6 +36,10 @@ class ParserReference extends Parser
      */
     private function getParser()
     {
-        return $this->container->get($this->parserName);
+        if ($this->resolvedParser === null) {
+            $this->resolvedParser = $this->container->get($this->parserName);
+        }
+
+        return $this->resolvedParser;
     }
 }

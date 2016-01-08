@@ -37,9 +37,6 @@ class ExpressionNode extends Node
 
     public function evaluate(EvaluationContext $context)
     {
-        //return $this->rootNode->evaluate($context);
-        $retVal = (yield $this->rootNode->evaluate($context));
-
-        yield $retVal;
+        return $this->rootNode->evaluate($context);
     }
 }

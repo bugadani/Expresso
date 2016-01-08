@@ -9,6 +9,7 @@ use Expresso\Compiler\Nodes\ArgumentListNode;
 use Expresso\Compiler\Nodes\DataNode;
 use Expresso\Compiler\Nodes\IdentifierNode;
 use Expresso\Compiler\Nodes\OperatorNode;
+use Expresso\Compiler\Nodes\StringNode;
 use Expresso\Compiler\Operator;
 use Expresso\Compiler\OperatorCollection;
 use Expresso\Compiler\Operators\FunctionCallOperator;
@@ -156,9 +157,9 @@ class Core extends Extension
     {
         $parserContainer = $parser->getParserContainer();
 
-        $pushOperatorClass = function ($operator) use ($configuration, $parser) {
-            $parser->pushOperator($configuration->getOperatorByClass($operator));
-        };
+        $conditionalOperator  = $configuration->getOperatorByClass(ConditionalOperator::class);
+        $functionCallOperator = $configuration->getOperatorByClass(FunctionCallOperator::class);
+        $arrayAccessOperator  = $configuration->getOperatorByClass(ArrayAccessOperator::class);
 
         $returnNode = function ($className) {
             return function (Token $token) use ($className) {
@@ -201,15 +202,6 @@ class Core extends Extension
         $postfixParser = $expect(Token::OPERATOR, [$postfixOperators, 'isOperator'])
             ->process($pushOperator($postfixOperators));
 
-        $isRangeOperator = function ($firstElement) {
-            if ($firstElement instanceof OperatorNode) {
-                return $firstElement->isOperator(RangeOperator::class)
-                       || $firstElement->isOperator(InfiniteRangeOperator::class);
-            }
-
-            return false;
-        };
-
         $mapParser = function ($kvSeparator) use ($expression, $expect, $comma, $sequence) {
             $separator = $expect(Token::PUNCTUATION, $kvSeparator);
 
@@ -248,7 +240,7 @@ class Core extends Extension
 
             $expect(Token::PUNCTUATION, ']')
         )->process(
-            function (array $children) use ($isRangeOperator) {
+            function (array $children) {
                 $items = $children[1];
 
                 if ($items === null) {
@@ -257,8 +249,14 @@ class Core extends Extension
 
                 list($first, $array) = $items;
                 if (empty($array)) {
-                    if ($isRangeOperator($first)) {
-                        return $first;
+
+                    if ($first instanceof OperatorNode) {
+                        $isRangeOperator = $first->isOperator(RangeOperator::class)
+                                           || $first->isOperator(InfiniteRangeOperator::class);
+
+                        if ($isRangeOperator) {
+                            return $first;
+                        }
                     }
                     $isMap = false;
                 } else {
@@ -292,8 +290,8 @@ class Core extends Extension
                 ->separatedBy($comma),
             $expect(Token::PUNCTUATION, ')')
         )->process(
-            function (array $children) use ($parser, $pushOperatorClass) {
-                $pushOperatorClass(FunctionCallOperator::class);
+            function (array $children) use ($parser, $functionCallOperator) {
+                $parser->pushOperator($functionCallOperator);
 
                 $arguments = new ArgumentListNode();
                 foreach ($children[1] as $argument) {
@@ -308,8 +306,8 @@ class Core extends Extension
             $expression,
             $expect(Token::PUNCTUATION, ']')
         )->process(
-            function (array $children) use ($parser, $pushOperatorClass) {
-                $pushOperatorClass(ArrayAccessOperator::class);
+            function (array $children) use ($parser, $arrayAccessOperator) {
+                $parser->pushOperator($arrayAccessOperator);
                 $parser->pushOperand($children[1]);
             }
         );
@@ -321,7 +319,7 @@ class Core extends Extension
                 [
                     $expect(Token::IDENTIFIER)->process($returnNode(IdentifierNode::class)),
                     $expect(Token::CONSTANT)->process($returnNode(DataNode::class)),
-                    $expect(Token::STRING)->process($returnNode(DataNode::class)),
+                    $expect(Token::STRING)->process($returnNode(StringNode::class)),
                     $arrayDefinition,
                     $sequence(
                         $expect(Token::PUNCTUATION, '('),
@@ -359,12 +357,12 @@ class Core extends Extension
                 )
             )->runBefore([$parser, 'pushOperatorSentinel'])
              ->process(
-                 function (array $children) use ($parser, $pushOperatorClass) {
+                 function (array $children) use ($parser, $conditionalOperator) {
 
                      if ($children[1] !== null) {
                          list($middle, $right) = $children[1];
 
-                         $pushOperatorClass(ConditionalOperator::class);
+                         $parser->pushOperator($conditionalOperator);
 
                          $parser->pushOperand($middle);
                          $parser->pushOperand($right);

@@ -28,11 +28,6 @@ class EvaluationContext extends ExecutionContext
         return $this->configuration->getFunctions()[ $functionName ];
     }
 
-    public function getConfiguration()
-    {
-        return $this->configuration;
-    }
-
     public function createInnerScope($input)
     {
         return new EvaluationContext($input, $this->configuration, $this);

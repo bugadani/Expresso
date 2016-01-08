@@ -45,16 +45,22 @@ class Alternative extends Parser
 
     public function parse(TokenStream $stream)
     {
-        $activeParser = $this->activeParser;
+        $activeParser       = $this->activeParser;
+        $this->activeParser = null;
+
         if ($activeParser === null) {
-            yield $this->canParse($stream);
-            $activeParser = $this->activeParser;
+            foreach ($this->parsers as $parser) {
+                if (yield $parser->canParse($stream)) {
+                    $activeParser = $parser;
+                    break;
+                }
+            }
+
             if ($activeParser === null) {
                 throw new SyntaxException("This parser can not parse the current token {$stream->current()}");
             }
         }
-        $this->activeParser = null;
-        $child              = (yield $activeParser->parse($stream));
+        $child = (yield $activeParser->parse($stream));
 
         yield $this->emit($child);
     }

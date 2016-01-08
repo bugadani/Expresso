@@ -21,7 +21,7 @@ class LambdaNode extends Node
 
     public function __construct(Node $functionBody, array $arguments)
     {
-        $this->arguments = $arguments;
+        $this->arguments    = $arguments;
         $this->functionBody = $functionBody;
     }
 

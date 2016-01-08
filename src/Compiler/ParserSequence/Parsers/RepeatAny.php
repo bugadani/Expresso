@@ -18,9 +18,7 @@ class RepeatAny extends Optional
 
     public function separatedBy(Parser $separator)
     {
-        /** @var Repeat $parser */
-        $parser = $this->getParser();
-        $parser->separatedBy($separator);
+        $this->parser->separatedBy($separator);
 
         return $this;
     }

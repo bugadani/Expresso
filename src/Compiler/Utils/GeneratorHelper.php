@@ -29,30 +29,30 @@ class GeneratorHelper
             $yielded = $generator->current();
 
             //if it is a generator
-            if ($yielded instanceof \Generator) {
+            while ($yielded instanceof \Generator) {
                 //... push it to the stack
                 $stack->push($yielded);
 
                 //... and mark it as the current one
-                $generator = $yielded;
+                $yielded = $yielded->current();
+            }
+
+            //at this point the current generator is done, remove it from the stack
+            $stack->pop();
+
+            //check if there are unfinished generators
+            if ($stack->isEmpty()) {
+                //if not (the stack is empty), we're done
+                $done = true;
             } else {
-                //at this point the current generator is done, remove it from the stack
-                $stack->pop();
+                //get the next generator from the stack
+                $generator = $stack->top();
 
-                //check if there are unfinished generators
-                if ($stack->isEmpty()) {
-                    //if not (the stack is empty), we're done
-                    $done = true;
+                //run the next generator
+                if ($sendFunction === null) {
+                    $generator->send($yielded);
                 } else {
-                    //get the next generator from the stack
-                    $generator = $stack->top();
-
-                    //run the next generator
-                    if ($sendFunction === null) {
-                        $generator->send($yielded);
-                    } else {
-                        $generator->send($sendFunction($generator, $yielded));
-                    }
+                    $generator->send($sendFunction($generator, $yielded));
                 }
             }
         } while (!$done);

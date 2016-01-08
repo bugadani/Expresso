@@ -9,7 +9,7 @@ abstract class DelegateParser extends Parser
     /**
      * @var Parser
      */
-    private $parser;
+    protected $parser;
 
     public function __construct(Parser $parser)
     {
@@ -18,7 +18,7 @@ abstract class DelegateParser extends Parser
 
     public function canParse(TokenStream $stream)
     {
-        return $this->getParser()->canParse($stream);
+        return $this->parser->canParse($stream);
     }
 
     /**
