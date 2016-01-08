@@ -10,7 +10,7 @@ class Sequence extends Parser
     public static function create(Parser $first)
     {
         $sequence = new Sequence();
-        $sequence->then($first);
+        $sequence->followedBy($first);
 
         return $sequence;
     }
@@ -60,7 +60,7 @@ class Sequence extends Parser
         yield $this->emit($children);
     }
 
-    public function then(Parser $parser)
+    public function followedBy(Parser $parser)
     {
         $this->parsers[] = $parser;
 

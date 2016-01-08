@@ -28,8 +28,8 @@ class OptionalTest extends \PHPUnit_Framework_TestCase
         $stream = new TokenStream($tokenGenerator());
 
         $grammar = Sequence::create(TokenParser::create(Token::CONSTANT, 'a'))
-                           ->then(new Optional(TokenParser::create(Token::CONSTANT, 'b')))
-                           ->then(TokenParser::create(Token::EOF));
+                           ->followedBy(new Optional(TokenParser::create(Token::CONSTANT, 'b')))
+                           ->followedBy(TokenParser::create(Token::EOF));
 
         $result = GeneratorHelper::executeGeneratorsRecursive($grammar->parse($stream));
 
@@ -52,8 +52,8 @@ class OptionalTest extends \PHPUnit_Framework_TestCase
         $stream = new TokenStream($tokenGenerator());
 
         $grammar = Sequence::create(TokenParser::create(Token::CONSTANT, 'a'))
-                           ->then(new Optional(TokenParser::create(Token::CONSTANT, 'b')))
-                           ->then(TokenParser::create(Token::EOF));
+                           ->followedBy(new Optional(TokenParser::create(Token::CONSTANT, 'b')))
+                           ->followedBy(TokenParser::create(Token::EOF));
 
         $result = GeneratorHelper::executeGeneratorsRecursive($grammar->parse($stream));
 

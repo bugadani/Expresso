@@ -2,6 +2,10 @@
 
 namespace Expresso\Compiler\ParserSequence;
 
+use Expresso\Compiler\ParserSequence\Parsers\Alternative;
+use Expresso\Compiler\ParserSequence\Parsers\Optional;
+use Expresso\Compiler\ParserSequence\Parsers\Repeat;
+use Expresso\Compiler\ParserSequence\Parsers\Sequence;
 use Expresso\Compiler\TokenStream;
 
 abstract class Parser
@@ -43,5 +47,41 @@ abstract class Parser
         $this->emitCallback = $callback;
 
         return $this;
+    }
+
+    /**
+     * @param Parser $parser
+     * @return Sequence
+     */
+    public function followedBy(Parser $parser)
+    {
+        return Sequence::create($this)
+                       ->followedBy($parser);
+    }
+
+    /**
+     * @param Parser $parser
+     * @return Alternative
+     */
+    public function alternative(Parser $parser)
+    {
+        return Alternative::create($this)
+                          ->alternative($parser);
+    }
+
+    /**
+     * @return Repeat
+     */
+    public function repeated()
+    {
+        return Repeat::create($this);
+    }
+
+    /**
+     * @return Optional
+     */
+    public function optional()
+    {
+        return Optional::create($this);
     }
 }

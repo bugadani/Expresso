@@ -5,10 +5,7 @@ namespace Expresso\Extensions\Lambda;
 use Expresso\Compiler\CompilerConfiguration;
 use Expresso\Compiler\ExpressionFunction;
 use Expresso\Compiler\Parser;
-use Expresso\Compiler\ParserSequence\Parsers\Alternative;
 use Expresso\Compiler\ParserSequence\Parsers\ParserReference;
-use Expresso\Compiler\ParserSequence\Parsers\RepeatAny;
-use Expresso\Compiler\ParserSequence\Parsers\Sequence;
 use Expresso\Compiler\ParserSequence\Parsers\TokenParser;
 use Expresso\Compiler\Token;
 use Expresso\Extension;
@@ -35,46 +32,49 @@ class Lambda extends Extension
             return new ParserReference($parserContainer, $name);
         };
 
-        $argumentName = TokenParser::create(Token::IDENTIFIER)->process(
-            function (Token $token) {
-                return $token->getValue();
-            }
-        );
+        $argumentName = TokenParser::create(Token::IDENTIFIER)
+                                   ->process(
+                                       function (Token $token) {
+                                           return $token->getValue();
+                                       }
+                                   );
 
-        $argList = Alternative::create(
-            Sequence::create(TokenParser::create(Token::PUNCTUATION, '('))
-                    ->then(
-                        (new RepeatAny($argumentName))
-                            ->separatedBy(TokenParser::create(Token::PUNCTUATION, ','))
-                    )
-                    ->then(TokenParser::create(Token::PUNCTUATION, ')'))
-                    ->process(
-                        function (array $children) {
-                            return $children[1];
-                        }
-                    )
-        )->alternative(
-            TokenParser::create(Token::IDENTIFIER)->process(
-                function (Token $token) {
-                    return [$token->getValue()];
-                }
-            )
-        );
+        $singleArgument = TokenParser::create(Token::IDENTIFIER)
+                                     ->process(
+                                         function (Token $token) {
+                                             return [$token->getValue()];
+                                         }
+                                     );
+
+        $argList = TokenParser::create(Token::PUNCTUATION, '(')
+                              ->followedBy(
+                                  $argumentName->repeated()
+                                               ->separatedBy(TokenParser::create(Token::PUNCTUATION, ','))
+                                               ->optional()
+                              )
+                              ->followedBy(TokenParser::create(Token::PUNCTUATION, ')'))
+                              ->process(
+                                  function (array $children) {
+                                      return $children[1] !== null ? $children[1] : [];
+                                  }
+                              );
 
         $parserContainer->set(
             'expression',
-            Alternative::create($expression)
-                       ->alternative(
-                           Sequence::create(TokenParser::create(Token::PUNCTUATION, '\\'))
-                                   ->then($argList)
-                                   ->then(TokenParser::create(Token::OPERATOR, '->'))
-                                   ->then($reference('expression'))
-                                   ->process(
-                                       function (array $children) {
-                                           return new LambdaNode($children[3], $children[1]);
-                                       }
-                                   )
-                       )
+            $expression->alternative(
+                TokenParser::create(Token::PUNCTUATION, '\\')
+                           ->followedBy(
+                               $argList
+                                   ->alternative($singleArgument)
+                           )
+                           ->followedBy(TokenParser::create(Token::OPERATOR, '->'))
+                           ->followedBy($reference('expression'))
+                           ->process(
+                               function (array $children) {
+                                   return new LambdaNode($children[3], $children[1]);
+                               }
+                           )
+            )
         );
     }
 

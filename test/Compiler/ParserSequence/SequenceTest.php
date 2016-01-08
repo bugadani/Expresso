@@ -25,7 +25,7 @@ class SequenceTest extends \PHPUnit_Framework_TestCase
 
         $stream  = new TokenStream($tokenGenerator());
         $grammar = Sequence::create(TokenParser::create(Token::CONSTANT))
-                           ->then(TokenParser::create(Token::EOF));
+                           ->followedBy(TokenParser::create(Token::EOF));
 
         $result = GeneratorHelper::executeGeneratorsRecursive($grammar->parse($stream));
 
@@ -50,7 +50,7 @@ class SequenceTest extends \PHPUnit_Framework_TestCase
 
         $stream  = new TokenStream($tokenGenerator());
         $grammar = Sequence::create(TokenParser::create(Token::CONSTANT))
-                           ->then(TokenParser::create(Token::EOF));
+                           ->followedBy(TokenParser::create(Token::EOF));
 
         GeneratorHelper::executeGeneratorsRecursive($grammar->parse($stream));
     }
