@@ -39,28 +39,30 @@ class Lambda extends Extension
             return new ParserReference($parserContainer, $name);
         };
 
-        $argumentName = new TokenParser(
-            Token::IDENTIFIER, null,
+        $argumentName = $expect(Token::IDENTIFIER)->process(
             function (Token $token) {
                 return $token->getValue();
             }
         );
 
+        $sequence = function () {
+            return new Sequence(func_get_args());
+        };
+
         $argList = new Alternative(
             [
-                new Sequence(
-                    [
-                        $expect(Token::PUNCTUATION, '('),
-                        (new RepeatAny($argumentName))
-                            ->separatedBy($expect(Token::PUNCTUATION, ',')),
-                        $expect(Token::PUNCTUATION, ')')
-                    ],
+                $sequence(
+                    $expect(Token::PUNCTUATION, '('),
+                    (new RepeatAny($argumentName))
+                        ->separatedBy($expect(Token::PUNCTUATION, ',')),
+                    $expect(Token::PUNCTUATION, ')')
+                )->process(
                     function (array $children) {
                         return $children[1];
                     }
                 ),
-                new TokenParser(
-                    Token::IDENTIFIER, null,
+
+                $expect(Token::IDENTIFIER)->process(
                     function (Token $token) {
                         return [$token->getValue()];
                     }
@@ -73,17 +75,17 @@ class Lambda extends Extension
             new Alternative(
                 [
                     $expression,
-                    new Sequence(
-                        [
-                            $expect(Token::PUNCTUATION, '\\'),
-                            $argList,
-                            $expect(Token::OPERATOR, '->'),
-                            $reference('expression')
-                        ],
-                        function (array $children) {
-                            return new LambdaNode($children[3], $children[1]);
-                        }
+                    $sequence(
+                        $expect(Token::PUNCTUATION, '\\'),
+                        $argList,
+                        $expect(Token::OPERATOR, '->'),
+                        $reference('expression')
                     )
+                        ->process(
+                            function (array $children) {
+                                return new LambdaNode($children[3], $children[1]);
+                            }
+                        )
                 ]
             )
         );

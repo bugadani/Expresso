@@ -8,19 +8,6 @@ use Expresso\Compiler\TokenStream;
 
 class Alternative extends Parser
 {
-
-    public function __construct(array $parsers, callable $callback = null)
-    {
-        if (empty($parsers)) {
-            throw new \InvalidArgumentException('$parsers must not be empty');
-        }
-        foreach ($parsers as $parser) {
-            $this->addOption($parser);
-        }
-
-        parent::__construct($callback);
-    }
-
     /**
      * @var Parser[]
      */
@@ -30,6 +17,16 @@ class Alternative extends Parser
      * @var Parser
      */
     private $activeParser;
+
+    public function __construct(array $parsers)
+    {
+        if (empty($parsers)) {
+            throw new \InvalidArgumentException('$parsers must not be empty');
+        }
+        foreach ($parsers as $parser) {
+            $this->addOption($parser);
+        }
+    }
 
     public function canParse(TokenStream $stream)
     {

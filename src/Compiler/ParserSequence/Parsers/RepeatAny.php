@@ -6,9 +6,9 @@ use Expresso\Compiler\ParserSequence\Parser;
 
 class RepeatAny extends Optional
 {
-    public function __construct(Parser $parser, callable $callback = null)
+    public function __construct(Parser $parser)
     {
-        parent::__construct(new Repeat($parser), $callback);
+        parent::__construct(new Repeat($parser));
     }
 
     public function emptyValue()

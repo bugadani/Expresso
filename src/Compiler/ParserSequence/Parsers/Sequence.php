@@ -9,7 +9,7 @@ class Sequence extends Parser
 {
     private $runBefore;
 
-    public function __construct(array $parsers, callable $onMatch = null)
+    public function __construct(array $parsers)
     {
         if (empty($parsers)) {
             throw new \InvalidArgumentException('$parsers must not be empty');
@@ -17,8 +17,6 @@ class Sequence extends Parser
         foreach ($parsers as $parser) {
             $this->addStep($parser);
         }
-
-        parent::__construct($onMatch);
     }
 
     /**

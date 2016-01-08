@@ -18,15 +18,14 @@ class TokenParserTest extends \PHPUnit_Framework_TestCase
 
         $stream = new TokenStream($tokenGenerator());
 
-        $grammar = new TokenParser(
-            Token::IDENTIFIER,
-            null,
-            function (Token $child) use ($token) {
-                $this->assertSame($token, $child);
+        $grammar = (new TokenParser(Token::IDENTIFIER))
+            ->process(
+                function (Token $child) use ($token) {
+                    $this->assertSame($token, $child);
 
-                return 5;
-            }
-        );
+                    return 5;
+                }
+            );
 
         $result = GeneratorHelper::executeGeneratorsRecursive($grammar->parse($stream));
         $this->assertEquals(5, $result);
@@ -44,15 +43,14 @@ class TokenParserTest extends \PHPUnit_Framework_TestCase
 
         $stream = new TokenStream($tokenGenerator());
 
-        $grammar = new TokenParser(
-            Token::IDENTIFIER,
-            'b',
-            function (Token $child) use ($token) {
-                $this->assertSame($token, $child);
+        $grammar = (new TokenParser(Token::IDENTIFIER, 'b'))
+            ->process(
+                function (Token $child) use ($token) {
+                    $this->assertSame($token, $child);
 
-                return 5;
-            }
-        );
+                    return 5;
+                }
+            );
 
         GeneratorHelper::executeGeneratorsRecursive($grammar->parse($stream));
     }

@@ -11,10 +11,9 @@ abstract class DelegateParser extends Parser
      */
     private $parser;
 
-    public function __construct(Parser $parser, callable $callback = null)
+    public function __construct(Parser $parser)
     {
         $this->parser = $parser;
-        parent::__construct($callback);
     }
 
     public function canParse(TokenStream $stream)

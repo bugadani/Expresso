@@ -22,14 +22,11 @@ class TokenParser extends Parser
      *
      * @param int $tokenType
      * @param mixed $test
-     * @param callable|null $onMatch
      */
-    public function __construct($tokenType, $test = null, callable $onMatch = null)
+    public function __construct($tokenType, $test = null)
     {
         $this->tokenType = $tokenType;
         $this->test      = $test;
-
-        parent::__construct($onMatch);
     }
 
     public function canParse(TokenStream $stream)

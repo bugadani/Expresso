@@ -11,11 +11,6 @@ abstract class Parser
      */
     private $emitCallback;
 
-    public function __construct(callable $callback = null)
-    {
-        $this->emitCallback = $callback;
-    }
-
     /**
      * @param TokenStream $stream
      * @return \Generator
@@ -37,5 +32,16 @@ abstract class Parser
 
             return $callback($data);
         }
+    }
+
+    /**
+     * @param callable $callback
+     * @return $this
+     */
+    public function process(callable $callback)
+    {
+        $this->emitCallback = $callback;
+
+        return $this;
     }
 }
