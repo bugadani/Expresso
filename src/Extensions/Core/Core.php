@@ -156,10 +156,6 @@ class Core extends Extension
         $functionCallOperator = $configuration->getOperatorByClass(FunctionCallOperator::class);
         $arrayAccessOperator  = $configuration->getOperatorByClass(ArrayAccessOperator::class);
 
-        $punctuation = function ($symbol) {
-            return TokenParser::create(Token::PUNCTUATION, $symbol);
-        };
-
         $returnNode = function ($className) {
             return function (Token $token) use ($className) {
                 return new $className($token->getValue());
@@ -185,13 +181,15 @@ class Core extends Extension
         };
 
         //Primitive parsers
-        $comma = $punctuation(',');
+        $comma        = TokenParser::create(Token::PUNCTUATION, ',');
+        $semicolon    = TokenParser::create(Token::PUNCTUATION, ':');
+        $questionMark = TokenParser::create(Token::PUNCTUATION, '?');
 
-        $openingSquareBracket  = $punctuation('[');
-        $closingSquareBrackets = $punctuation(']');
+        $openingSquareBracket  = TokenParser::create(Token::PUNCTUATION, '[');
+        $closingSquareBrackets = TokenParser::create(Token::PUNCTUATION, ']');
 
-        $openingParenthesis = $punctuation('(');
-        $closingParenthesis = $punctuation(')');
+        $openingParenthesis = TokenParser::create(Token::PUNCTUATION, '(');
+        $closingParenthesis = TokenParser::create(Token::PUNCTUATION, ')');
 
         $prefixParser  = TokenParser::create(Token::OPERATOR, [$prefixOperators, 'isOperator'])
                                     ->process($pushOperator($prefixOperators));
@@ -278,9 +276,9 @@ class Core extends Extension
         $binaryExpression = $term->repeated()
                                  ->separatedBy($binaryParser);
 
-        $conditionalExpressionSuffix = $punctuation('?')
+        $conditionalExpressionSuffix = $questionMark
             ->followedBy($expression)
-            ->followedBy($punctuation(':'))
+            ->followedBy($semicolon)
             ->followedBy($expression);
 
         $expressionParser = $binaryExpression
@@ -412,8 +410,9 @@ class Core extends Extension
 }
 
 /**
- * @param int $start
+ * @param int      $start
  * @param int|null $end
+ *
  * @return \Generator
  */
 function range($start, $end = null)
