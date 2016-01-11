@@ -21,6 +21,8 @@ class Compiler
      */
     private $contextStack;
 
+    private $tempVariableCount;
+
     public function __construct(CompilerConfiguration $configuration)
     {
         $this->configuration = $configuration;
@@ -39,6 +41,23 @@ class Compiler
         $this->context->source .= $string;
 
         return $this;
+    }
+
+    public function addTempVariable(CompilerContext $context)
+    {
+        $tempVarName = $this->getNextTempVarName();
+
+        $this->context->tempVariables[ $tempVarName ] = $context->source;
+
+        return $tempVarName;
+    }
+
+    public function compileTempVariables()
+    {
+        foreach ($this->context->tempVariables as $tempVariable => $expression) {
+            $this->add("{$tempVariable} = {$expression};\n");
+        }
+        $this->context->tempVariables = [];
     }
 
     public function compileString($string)
@@ -96,7 +115,8 @@ class Compiler
 
     public function compile(Node $rootNode)
     {
-        $this->contextStack = new \SplStack();
+        $this->contextStack      = new \SplStack();
+        $this->tempVariableCount = 0;
 
         $generator = $this->compileNode($rootNode);
 
@@ -105,12 +125,35 @@ class Compiler
             function () {
                 $context       = $this->context;
                 $this->context = $this->contextStack->pop();
-                $this->context->source .= $context->source;
+
+                foreach ($context->tempVariables as $varName => $varExpression) {
+                    $this->context->tempVariables[ $varName ] = $varExpression;
+                }
 
                 return $context;
             }
         );
 
         return $this->context->source;
+    }
+
+    /**
+     * @return CompilerContext
+     */
+    public function getContext()
+    {
+        return $this->context;
+    }
+
+    /**
+     * @return string
+     */
+    public function getNextTempVarName()
+    {
+        $num = $this->tempVariableCount++;
+
+        $tempVarName = "\$tempVar_{$num}";
+
+        return $tempVarName;
     }
 }

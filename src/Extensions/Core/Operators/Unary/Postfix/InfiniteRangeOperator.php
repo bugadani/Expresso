@@ -22,9 +22,17 @@ class InfiniteRangeOperator extends UnaryOperator
 
     public function compile(Compiler $compiler, Node $node)
     {
-        $compiler->add('\Expresso\Extensions\Core\range(');
         /** @var UnaryOperatorNode $node */
-        yield $compiler->compileNode($node->getOperand());
+        $compiledOperand = (yield $compiler->compileNode($node->getOperand()));
+
+        if ($node->isInline()) {
+            $compiledSource  = $compiledOperand->source;
+        } else {
+            $compiledSource  = $compiler->addTempVariable($compiledOperand);
+        }
+
+        $compiler->add('\Expresso\Extensions\Core\range(');
+        $compiler->add($compiledSource);
         $compiler->add(')');
     }
 }

@@ -27,10 +27,12 @@ class ListDataNode extends Node
             $lastChild = array_pop($children);
 
             foreach ($children as $child) {
-                yield $compiler->compileNode($child);
+                $compiledChild = (yield $compiler->compileNode($child));
+                $compiler->add($compiledChild->source);
                 $compiler->add(', ');
             }
-            yield $compiler->compileNode($lastChild);
+            $compiledChild = (yield $compiler->compileNode($lastChild));
+            $compiler->add($compiledChild->source);
         }
 
         $compiler->add(']');

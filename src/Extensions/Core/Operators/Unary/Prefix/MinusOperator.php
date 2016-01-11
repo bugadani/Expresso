@@ -17,9 +17,13 @@ class MinusOperator extends UnaryOperator
 
     public function compile(Compiler $compiler, Node $node)
     {
-        $compiler->add('-');
         /** @var UnaryOperatorNode $node */
-        yield $compiler->compileNode($node->getOperand());
+        $compiledOperand = (yield $compiler->compileNode($node->getOperand()));
+
+        $tempVariable = $compiler->addTempVariable($compiledOperand);
+
+        $compiler->add('-');
+        $compiler->add($tempVariable);
     }
 
     public function evaluateSimple($left)

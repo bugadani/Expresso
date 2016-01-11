@@ -18,15 +18,17 @@ class FunctionCallOperator extends BinaryOperator
             list($opL, $opM, $opR) = $left->getChildren();
 
             $right = new FunctionCallNode($opR, $right);
-            return new TernaryOperatorNode(
+            $newNode = new TernaryOperatorNode(
                 $left->getOperator(),
                 $opL,
                 $opM,
                 $right
             );
         } else {
-            return new FunctionCallNode($left, $right);
+            $newNode = new FunctionCallNode($left, $right);
         }
+
+        return $newNode->setInline($left->isInline());
     }
 
     public function operators()

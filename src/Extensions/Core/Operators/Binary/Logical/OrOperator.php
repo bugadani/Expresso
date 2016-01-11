@@ -2,6 +2,7 @@
 
 namespace Expresso\Extensions\Core\Operators\Binary\Logical;
 
+use Expresso\Compiler\Compiler;
 use Expresso\Compiler\Node;
 
 use Expresso\Compiler\Operators\BinaryOperator;
@@ -26,8 +27,17 @@ class OrOperator extends BinaryOperator
         yield $second;
     }
 
-    public function compiledOperator()
+    public function compile(Compiler $compiler, Node $node)
     {
-        return ' || ';
+        list($left, $right) = $node->getChildren();
+
+        $leftOperand = (yield $compiler->compileNode($left));
+        $rightOperand = (yield $compiler->compileNode($right));
+
+        $compiler->add('(');
+        $compiler->add($leftOperand->source);
+        $compiler->add(' || ');
+        $compiler->add($rightOperand->source);
+        $compiler->add(')');
     }
 }

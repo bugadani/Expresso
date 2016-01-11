@@ -38,11 +38,22 @@ abstract class BinaryOperator extends Operator
     {
         list($left, $right) = $node->getChildren();
 
-        $compiler->add('(');
-        yield $compiler->compileNode($left);
-        $compiler->add($this->compiledOperator());
-        yield $compiler->compileNode($right);
-        $compiler->add(')');
+        $leftOperand  = (yield $compiler->compileNode($left));
+        $rightOperand = (yield $compiler->compileNode($right));
+
+        if ($node->isInline()) {
+            $leftSource  = $leftOperand->source;
+            $rightSource = $rightOperand->source;
+        } else {
+            $leftSource  = $compiler->addTempVariable($leftOperand);
+            $rightSource = $compiler->addTempVariable($rightOperand);
+        }
+
+        $compiler->add('(')
+                 ->add($leftSource)
+                 ->add($this->compiledOperator())
+                 ->add($rightSource)
+                 ->add(')');
     }
 
     /**

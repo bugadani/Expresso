@@ -39,14 +39,17 @@ class FunctionCallNode extends Node
         }
 
         $this->functionName = $functionName;
-        $this->arguments = $arguments;
+        $this->arguments    = $arguments;
     }
 
     public function compile(Compiler $compiler)
     {
-        yield $compiler->compileNode($this->functionName);
+        $functionName = (yield $compiler->compileNode($this->functionName));
+        $arguments    = (yield $compiler->compileNode($this->arguments));
+
+        $compiler->add($functionName->source);
         $compiler->add('(');
-        yield $compiler->compileNode($this->arguments);
+        $compiler->add($arguments->source);
         $compiler->add(')');
     }
 

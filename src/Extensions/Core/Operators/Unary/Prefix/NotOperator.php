@@ -17,9 +17,11 @@ class NotOperator extends UnaryOperator
 
     public function compile(Compiler $compiler, Node $node)
     {
-        $compiler->add('!');
         /** @var UnaryOperatorNode $node */
-        yield $compiler->compileNode($node->getOperand());
+        $compiledOperand = (yield $compiler->compileNode($node->getOperand()));
+
+        $compiler->add('!');
+        $compiler->add($compiledOperand->source);
     }
 
     public function evaluateSimple($left)

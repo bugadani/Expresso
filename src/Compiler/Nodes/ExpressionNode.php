@@ -21,18 +21,21 @@ class ExpressionNode extends Node
     public function __construct($expression, Node $rootNode)
     {
         $this->expression = $expression;
-        $this->rootNode = $rootNode;
+        $this->rootNode   = $rootNode;
     }
 
     public function compile(Compiler $compiler)
     {
+        $bodyContext = (yield $compiler->compileNode($this->rootNode));
+
         $compiler->add('function(array $context = []) {')
-                 ->add('$context = new Expresso\\ExecutionContext($context);')
-                 ->add('return ');
+                 ->add('$context = new Expresso\\ExecutionContext($context);');
 
-        yield $compiler->compileNode($this->rootNode);
+        $compiler->compileTempVariables();
 
-        $compiler->add(';};');
+        $compiler->add('return ')
+                 ->add($bodyContext->source)
+                 ->add(';};');
     }
 
     public function evaluate(EvaluationContext $context)

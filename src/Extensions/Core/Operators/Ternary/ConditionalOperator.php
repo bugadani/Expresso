@@ -35,7 +35,7 @@ class ConditionalOperator extends TernaryOperator
                 ) : $left,
             $middle,
             $right
-        );
+        )->setInline(true);
     }
 
     public function evaluate(EvaluationContext $context, Node $node)
@@ -47,20 +47,23 @@ class ConditionalOperator extends TernaryOperator
         $condition = (yield $left->evaluate($context));
         $childNode = $condition ? $middle : $right;
 
-        $retVal = (yield $childNode->evaluate($context));
-        yield $retVal;
+        yield (yield $childNode->evaluate($context));
     }
 
     public function compile(Compiler $compiler, Node $node)
     {
         list($left, $middle, $right) = $node->getChildren();
 
+        $leftOperand  = (yield $compiler->compileNode($left));
+        $middleOperand  = (yield $compiler->compileNode($middle));
+        $rightOperand  = (yield $compiler->compileNode($right));
+
         $compiler->add('((');
-        yield $compiler->compileNode($left);
+        $compiler->add($leftOperand->source);
         $compiler->add(') ? (');
-        yield $compiler->compileNode($middle);
+        $compiler->add($middleOperand->source);
         $compiler->add(') : (');
-        yield $compiler->compileNode($right);
+        $compiler->add($rightOperand->source);
         $compiler->add('))');
     }
 

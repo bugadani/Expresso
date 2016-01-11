@@ -48,9 +48,12 @@ class LambdaNode extends Node
                      ->add(" => \${$lastArgumentName}");
         }
 
-        $compiler->add(']);')
-                 ->add('return ');
-        yield $compiler->compileNode($this->functionBody);
+        $compiledFunctionBody = (yield $compiler->compileNode($this->functionBody));
+
+        $compiler->add(']);');
+        $compiler->compileTempVariables();
+        $compiler->add('return ');
+        $compiler->add($compiledFunctionBody->source);
         $compiler->add(';}');
     }
 

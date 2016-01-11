@@ -28,30 +28,41 @@ class ModuloOperator extends BinaryOperator
         //if(sign($left) != sign($right))
         list($left, $right) = $node->getChildren();
 
+        $leftOperand = (yield $compiler->compileNode($left));
+        $rightOperand = (yield $compiler->compileNode($right));
+
+        if ($node->isInline()) {
+            $leftSource  = $leftOperand->source;
+            $rightSource = $rightOperand->source;
+        } else {
+            $leftSource  = $compiler->addTempVariable($leftOperand);
+            $rightSource = $compiler->addTempVariable($rightOperand);
+        }
+
         $compiler->add('((');
-        yield $compiler->compileNode($left);
+        $compiler->add($leftSource);
         $compiler->add(' < 0 && ');
-        yield $compiler->compileNode($right);
+        $compiler->add($rightSource);
         $compiler->add(' > 0) || (');
-        yield $compiler->compileNode($right);
+        $compiler->add($rightSource);
         $compiler->add(' < 0 && ');
-        yield $compiler->compileNode($left);
+        $compiler->add($leftSource);
         $compiler->add(' > 0)');
 
         //then $right + $left % right
         $compiler->add(' ? (');
-        yield $compiler->compileNode($right);
+        $compiler->add($rightSource);
         $compiler->add(' + ');
-        yield $compiler->compileNode($left);
+        $compiler->add($leftSource);
         $compiler->add(' % ');
-        yield $compiler->compileNode($right);
+        $compiler->add($rightSource);
         $compiler->add(')');
 
         //else $left % $right
         $compiler->add(' : (');
-        yield $compiler->compileNode($left);
+        $compiler->add($leftSource);
         $compiler->add(' % ');
-        yield $compiler->compileNode($right);
+        $compiler->add($rightSource);
         $compiler->add('))');
     }
 }

@@ -23,10 +23,21 @@ class RangeOperator extends BinaryOperator
     {
         list($left, $right) = $node->getChildren();
 
+        $leftOperand = (yield $compiler->compileNode($left));
+        $rightOperand = (yield $compiler->compileNode($right));
+
+        if ($node->isInline()) {
+            $leftSource  = $leftOperand->source;
+            $rightSource = $rightOperand->source;
+        } else {
+            $leftSource  = $compiler->addTempVariable($leftOperand);
+            $rightSource = $compiler->addTempVariable($rightOperand);
+        }
+
         $compiler->add('\Expresso\Extensions\Core\range(');
-        yield $compiler->compileNode($left);
+        $compiler->add($leftSource);
         $compiler->add(', ');
-        yield $compiler->compileNode($right);
+        $compiler->add($rightSource);
         $compiler->add(')');
     }
 }
