@@ -1,0 +1,6 @@
+--TEST--
+Test indirect calling lambdas
+--EXPRESSION--
+(\x -> x * 3)(2)
+--EXPECT--
+6

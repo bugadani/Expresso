@@ -3,12 +3,11 @@
 namespace Expresso\Compiler\Nodes;
 
 use Expresso\Compiler\Compiler;
-use Expresso\Compiler\Exceptions\ParseException;
 use Expresso\Compiler\Node;
 use Expresso\EvaluationContext;
 use Expresso\Extensions\Core\Operators\Binary\SimpleAccessOperator;
 
-class FunctionCallNode extends Node
+class FunctionCallNode extends BinaryOperatorNode
 {
     /**
      * @var FunctionNameNode|MethodNameNode
@@ -19,6 +18,8 @@ class FunctionCallNode extends Node
      * @var ArgumentListNode
      */
     private $arguments;
+
+    private $isIndirectCall = false;
 
     private function isSimpleAccessOperator(Node $node)
     {
@@ -34,7 +35,7 @@ class FunctionCallNode extends Node
             } else if ($this->isSimpleAccessOperator($functionName)) {
                 $functionName = new MethodNameNode($functionName);
             } else {
-                throw new ParseException('Invalid function name');
+                $this->isIndirectCall = true;
             }
         }
 
@@ -47,7 +48,13 @@ class FunctionCallNode extends Node
         $functionName = (yield $compiler->compileNode($this->functionName));
         $arguments    = (yield $compiler->compileNode($this->arguments));
 
-        $compiler->add($functionName->source);
+        if ($this->isIndirectCall) {
+            $functionNameSource = $compiler->addTempVariable($functionName);
+        } else {
+            $functionNameSource = $functionName->source;
+        }
+
+        $compiler->add($functionNameSource);
         $compiler->add('(');
         $compiler->add($arguments->source);
         $compiler->add(')');
@@ -69,5 +76,13 @@ class FunctionCallNode extends Node
     public function getChildren()
     {
         return [$this->functionName, $this->arguments];
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isIndirectCall()
+    {
+        return $this->isIndirectCall;
     }
 }
