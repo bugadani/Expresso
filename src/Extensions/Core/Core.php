@@ -445,22 +445,6 @@ function expression_function_count($data)
     }
 }
 
-function expression_function_population_count($data)
-{
-    if ($data & 0x00000000 > 0) {
-        //64 bits, not yet supported
-        return 0;
-    } else {
-        $data -= (($data >> 1) & 0x55555555);
-        $data = ((($data >> 2) & 0x33333333) + ($data & 0x33333333));
-        $data = ((($data >> 4) + $data) & 0x0f0f0f0f);
-        $data += ($data >> 8);
-        $data += ($data >> 16);
-
-        return ($data & 0x0000003f);
-    }
-}
-
 function expression_function_replace($string, $search, $replacement = null)
 {
     if ($replacement === null) {

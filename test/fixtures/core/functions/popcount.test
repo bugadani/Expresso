@@ -1,6 +1,0 @@
---TEST--
-Test the population count function
---EXPRESSION--
-5|popcount ~ ' ' ~ 11|popcount
---EXPECT--
-2 3
