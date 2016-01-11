@@ -24,20 +24,21 @@ class GeneratorHelper
 
         $done = false;
         //This is basically a simple iterative in-order tree traversal algorithm
-        do {
-            //get the current yielded value - this runs the generator if it is not initialized yet
-            $yielded = $generator->current();
 
-            //if it is a generator
+        //Get the first yielded value
+        $yielded = $generator->current();
+
+        do {
+            //If it is a generator
             while ($yielded instanceof \Generator) {
                 //... push it to the stack
                 $stack->push($yielded);
 
-                //... and mark it as the current one
+                //... run it, and mark it as the current active generator
                 $yielded = $yielded->current();
             }
 
-            //at this point the current generator is done, remove it from the stack
+            //at this point the current generator is done (i.e. a non-generator was yielded), so remove it from the stack
             $stack->pop();
 
             //check if there are unfinished generators
@@ -50,9 +51,9 @@ class GeneratorHelper
 
                 //run the next generator
                 if ($sendFunction === null) {
-                    $generator->send($yielded);
+                    $yielded = $generator->send($yielded);
                 } else {
-                    $generator->send($sendFunction($generator, $yielded));
+                    $yielded = $generator->send($sendFunction($generator, $yielded));
                 }
             }
         } while (!$done);
