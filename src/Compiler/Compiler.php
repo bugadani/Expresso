@@ -96,7 +96,6 @@ class Compiler
 
     public function compile(Node $rootNode)
     {
-        $this->context      = new CompilerContext();
         $this->contextStack = new \SplStack();
 
         $generator = $this->compileNode($rootNode);
