@@ -209,39 +209,44 @@ class Core extends Extension
         $mapParser = function ($separatorSymbol) use ($expression, $comma) {
             $separator = TokenParser::create(Token::PUNCTUATION, $separatorSymbol);
 
-            return $separator->followedBy($expression)
-                             ->followedBy(
-                                 $comma->followedBy($expression)
-                                       ->followedBy($separator)
-                                       ->followedBy($expression)
-                                       ->process(
-                                           function (array $children) {
-                                               return [$children[1], $children[3]];
-                                           }
-                                       )
-                                       ->repeated()
-                                       ->optional()
-                             );
+            return $separator
+                ->followedBy($expression)
+                ->followedBy(
+                    $comma
+                        ->followedBy($expression)
+                        ->followedBy($separator)
+                        ->followedBy($expression)
+                        ->process(
+                            function (array $children) {
+                                return [$children[1], $children[3]];
+                            }
+                        )
+                        ->repeated()
+                        ->optional()
+                );
         };
 
-        $arrayElementList = $expression->followedBy(
-            $mapParser('=>')
-                ->alternative($mapParser(':'))
-                ->alternative(
-                    $comma->followedBy($expression)
-                          ->process($returnArgument(1))
-                          ->repeated()
-                          ->optional()
-                )
-        );
+        $expressionListSeparatedByComma = $expression
+            ->repeatSeparatedBy($comma);
+
+        $listParser = $comma
+            ->followedBy($expressionListSeparatedByComma)
+            ->process($returnArgument(1));
+
+        $arrayElementList = $expression
+            ->followedBy(
+                $listParser
+                    ->orA($mapParser(':'))
+                    ->orA($mapParser('=>'))
+                    ->optional()
+            );
 
         $arrayDefinition = $openingSquareBracket
             ->followedBy($arrayElementList->optional())
             ->followedBy($closingSquareBrackets);
 
-        $argumentList = $expression->repeated()->separatedBy($comma);
         $functionCall = $openingParenthesis
-            ->followedBy($argumentList->optional())
+            ->followedBy($expressionListSeparatedByComma->optional())
             ->followedBy($closingParenthesis);
 
         $arrayAccess = $openingSquareBracket
@@ -250,8 +255,9 @@ class Core extends Extension
 
         $prefixOperatorSequence = $prefixParser->repeated();
 
-        $dereferenceSequence = $functionCall->alternative($arrayAccess)
-                                            ->repeated();
+        $dereferenceSequence = $functionCall
+            ->orA($arrayAccess)
+            ->repeated();
 
         $postfixOperatorSequence = $postfixParser
             ->repeated()
@@ -263,18 +269,18 @@ class Core extends Extension
             ->process($returnArgument(1));
 
         $operand = $identifier
-            ->alternative($constantData)
-            ->alternative($constantString)
-            ->alternative($arrayDefinition)
-            ->alternative($groupedExpression);
+            ->orA($constantData)
+            ->orA($constantString)
+            ->orA($arrayDefinition)
+            ->orA($groupedExpression);
 
-        $term = $prefixOperatorSequence->optional()
-                                       ->followedBy($operand)
-                                       ->followedBy($dereferenceSequence->optional())
-                                       ->followedBy($postfixOperatorSequence->optional());
+        $term = $prefixOperatorSequence
+            ->optional()
+            ->followedBy($operand)
+            ->followedBy($dereferenceSequence->optional())
+            ->followedBy($postfixOperatorSequence->optional());
 
-        $binaryExpression = $term->repeated()
-                                 ->separatedBy($binaryParser);
+        $binaryExpression = $term->repeatSeparatedBy($binaryParser);
 
         $conditionalExpressionSuffix = $questionMark
             ->followedBy($expression)
@@ -410,7 +416,7 @@ class Core extends Extension
 }
 
 /**
- * @param int      $start
+ * @param int $start
  * @param int|null $end
  *
  * @return \Generator

@@ -34,7 +34,7 @@ class ParserReference extends Parser
     /**
      * @return Parser
      */
-    private function getParser()
+    public function getParser()
     {
         if ($this->resolvedParser === null) {
             $this->resolvedParser = $this->container->get($this->parserName);

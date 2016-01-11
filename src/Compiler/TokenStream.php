@@ -79,21 +79,6 @@ class TokenStream
         throw new SyntaxException("Unexpected {$this->current}, expected {$expectation}");
     }
 
-    /**
-     * @param $type
-     * @param $value
-     *
-     * @return bool|Token
-     */
-    public function nextTokenIf($type, $value = null)
-    {
-        if ($this->next->test($type, $value)) {
-            return $this->next();
-        }
-
-        return false;
-    }
-
     public function consume()
     {
         $current = $this->current;

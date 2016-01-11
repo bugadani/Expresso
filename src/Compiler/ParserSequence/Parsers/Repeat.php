@@ -8,10 +8,10 @@ use Expresso\Compiler\TokenStream;
 
 class Repeat extends DelegateParser
 {
-    /**
-     * @var Parser
-     */
-    private $separator;
+    public static function create(Parser $parser)
+    {
+        return new Repeat($parser);
+    }
 
     /**
      * @param TokenStream $stream
@@ -21,26 +21,15 @@ class Repeat extends DelegateParser
     {
         $children = [];
 
-        if ($this->separator === null) {
-            do {
-                $children[] = (yield $this->parser->parse($stream));
-            } while (yield $this->parser->canParse($stream));
-        } else {
+        do {
             $children[] = (yield $this->parser->parse($stream));
-
-            while (yield $this->separator->canParse($stream)) {
-                yield $this->separator->parse($stream);
-                $children[] = (yield $this->parser->parse($stream));
-            }
-        }
+        } while (yield $this->parser->canParse($stream));
 
         yield $this->emit($children);
     }
 
     public function separatedBy(Parser $parser)
     {
-        $this->separator = $parser;
-
-        return $this;
+        return RepeatSeparated::create($this->parser, $parser);
     }
 }

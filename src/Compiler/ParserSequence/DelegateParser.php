@@ -6,11 +6,6 @@ use Expresso\Compiler\TokenStream;
 
 abstract class DelegateParser extends Parser
 {
-    public static function create(Parser $parser)
-    {
-        return new static($parser);
-    }
-
     /**
      * @var Parser
      */
@@ -26,9 +21,6 @@ abstract class DelegateParser extends Parser
         return $this->parser->canParse($stream);
     }
 
-    /**
-     * @return Parser
-     */
     public function getParser()
     {
         return $this->parser;

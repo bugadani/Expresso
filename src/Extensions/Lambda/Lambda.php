@@ -32,50 +32,59 @@ class Lambda extends Extension
             return new ParserReference($parserContainer, $name);
         };
 
-        $argumentName = TokenParser::create(Token::IDENTIFIER)
-                                   ->process(
-                                       function (Token $token) {
-                                           return $token->getValue();
-                                       }
-                                   );
+        $argumentName       = TokenParser::create(Token::IDENTIFIER);
+        $comma              = TokenParser::create(Token::PUNCTUATION, ',');
+        $openingParenthesis = TokenParser::create(Token::PUNCTUATION, '(');
+        $closingParenthesis = TokenParser::create(Token::PUNCTUATION, ')');
+        $arrowOperator      = TokenParser::create(Token::OPERATOR, '->');
+        $lambdaPrefix       = TokenParser::create(Token::PUNCTUATION, '\\');
+        $singleArgument     = TokenParser::create(Token::IDENTIFIER);
 
-        $singleArgument = TokenParser::create(Token::IDENTIFIER)
-                                     ->process(
-                                         function (Token $token) {
-                                             return [$token->getValue()];
-                                         }
-                                     );
-
-        $argList = TokenParser::create(Token::PUNCTUATION, '(')
-                              ->followedBy(
-                                  $argumentName->repeated()
-                                               ->separatedBy(TokenParser::create(Token::PUNCTUATION, ','))
-                                               ->optional()
-                              )
-                              ->followedBy(TokenParser::create(Token::PUNCTUATION, ')'))
-                              ->process(
-                                  function (array $children) {
-                                      return $children[1] !== null ? $children[1] : [];
-                                  }
-                              );
-
-        $parserContainer->set(
-            'expression',
-            $expression->alternative(
-                TokenParser::create(Token::PUNCTUATION, '\\')
-                           ->followedBy(
-                               $argList
-                                   ->alternative($singleArgument)
-                           )
-                           ->followedBy(TokenParser::create(Token::OPERATOR, '->'))
-                           ->followedBy($reference('expression'))
-                           ->process(
-                               function (array $children) {
-                                   return new LambdaNode($children[3], $children[1]);
-                               }
-                           )
+        $argList = $openingParenthesis
+            ->followedBy(
+                $argumentName
+                    ->repeatSeparatedBy($comma)
+                    ->optional()
             )
+            ->followedBy($closingParenthesis);
+
+        $lambdaDefinition = $lambdaPrefix
+            ->followedBy(
+                $argList
+                    ->orA($singleArgument)
+            )
+            ->followedBy($arrowOperator)
+            ->followedBy($reference('expression'));
+
+        $argumentName->process(
+            function (Token $token) {
+                return $token->getValue();
+            }
         );
+        $singleArgument->process(
+            function (Token $token) {
+                return [$token->getValue()];
+            }
+        );
+        $lambdaDefinition->process(
+            function (array $children) {
+                return new LambdaNode($children[3], $children[1]);
+            }
+        );
+
+        $argList->process(
+            function (array $children) {
+                if ($children[1] === null) {
+                    return [];
+                }
+
+                return $children[1];
+            }
+        );
+
+        $extendedExpression = $expression->orA($lambdaDefinition);
+
+        $parserContainer->set('expression', $extendedExpression);
     }
 
     public function getFunctions()

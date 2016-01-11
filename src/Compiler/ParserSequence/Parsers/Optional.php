@@ -3,13 +3,14 @@
 namespace Expresso\Compiler\ParserSequence\Parsers;
 
 use Expresso\Compiler\ParserSequence\DelegateParser;
+use Expresso\Compiler\ParserSequence\Parser;
 use Expresso\Compiler\TokenStream;
 
 class Optional extends DelegateParser
 {
-    public function canParse(TokenStream $stream)
+    public static function create(Parser $parser)
     {
-        yield true;
+        return new Optional($parser);
     }
 
     protected function emptyValue()

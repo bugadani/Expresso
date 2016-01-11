@@ -5,6 +5,7 @@ namespace Expresso\Compiler\ParserSequence;
 use Expresso\Compiler\ParserSequence\Parsers\Alternative;
 use Expresso\Compiler\ParserSequence\Parsers\Optional;
 use Expresso\Compiler\ParserSequence\Parsers\Repeat;
+use Expresso\Compiler\ParserSequence\Parsers\RepeatSeparated;
 use Expresso\Compiler\ParserSequence\Parsers\Sequence;
 use Expresso\Compiler\TokenStream;
 
@@ -63,10 +64,10 @@ abstract class Parser
      * @param Parser $parser
      * @return Alternative
      */
-    public function alternative(Parser $parser)
+    public function orA(Parser $parser)
     {
         return Alternative::create($this)
-                          ->alternative($parser);
+                          ->orA($parser);
     }
 
     /**
@@ -75,6 +76,15 @@ abstract class Parser
     public function repeated()
     {
         return Repeat::create($this);
+    }
+
+    /**
+     * @param Parser $parser
+     * @return RepeatSeparated
+     */
+    public function repeatSeparatedBy(Parser $parser)
+    {
+        return RepeatSeparated::create($this, $parser);
     }
 
     /**

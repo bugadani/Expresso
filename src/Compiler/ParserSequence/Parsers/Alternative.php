@@ -11,7 +11,7 @@ class Alternative extends Parser
     public static function create(Parser $first)
     {
         $alt = new Alternative();
-        $alt->alternative($first);
+        $alt->orA($first);
 
         return $alt;
     }
@@ -63,7 +63,7 @@ class Alternative extends Parser
         yield $this->emit($child);
     }
 
-    public function alternative(Parser $parser)
+    public function orA(Parser $parser)
     {
         $this->parsers[] = $parser;
 

@@ -33,13 +33,11 @@ class Sequence extends Parser
     {
         //A sequence can be started if the first element can parse the stream - optionals may be skipped
         foreach ($this->parsers as $parser) {
-            if ($parser instanceof Optional) {
-                $optionalCanParse = (yield $parser->getParser()->canParse($stream));
-                if ($optionalCanParse) {
-                    yield true;
-                }
-            } else {
-                yield (yield $parser->canParse($stream));
+            $childCanParse = (yield $parser->canParse($stream));
+            if ($childCanParse) {
+                yield true;
+            } else if (!$parser instanceof Optional) {
+                yield false;
             }
         }
 
