@@ -20,22 +20,18 @@ class IsSetOperator extends UnaryOperator
         return 'is set';
     }
 
-    public function createNode(CompilerConfiguration $config, $operand)
-    {
-        /** @var IdentifierNode $operand */
-        return parent::createNode($config, new DataNode($operand->getName()));
-    }
-
     public function evaluate(EvaluationContext $context, Node $node)
     {
         /** @var UnaryOperatorNode $node */
-        yield $context->offsetExists($node->getOperand()->getValue());
+        yield $context->offsetExists($node->getOperand()->getName());
     }
 
-    protected function compileSimple(Compiler $compiler, $compiledSource)
+    public function compile(Compiler $compiler, Node $node)
     {
+        /** @var UnaryOperatorNode $node */
         $compiler->add('$context->offsetExists(')
-                 ->add($compiledSource)
+                 ->compileString($node->getOperand()->getName())
                  ->add(')');
+        yield;
     }
 }
