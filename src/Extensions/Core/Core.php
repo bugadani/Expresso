@@ -274,8 +274,7 @@ class Core extends Extension
             ->orA($arrayDefinition)
             ->orA($groupedExpression);
 
-        $term = $prefixOperatorSequence
-            ->optional()
+        $term = $prefixOperatorSequence->optional()
             ->followedBy($operand)
             ->followedBy($dereferenceSequence->optional())
             ->followedBy($postfixOperatorSequence->optional());

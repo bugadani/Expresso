@@ -10,7 +10,7 @@ class TokenParser extends Parser
 {
     public static function create($tokenType, $test = null)
     {
-        $tokenParser = new TokenParser($tokenType, $test);
+        $tokenParser = new TokenParser();
 
         $tokenParser->tokenType = $tokenType;
         $tokenParser->test      = $test;

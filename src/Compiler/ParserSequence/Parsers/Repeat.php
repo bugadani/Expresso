@@ -20,11 +20,20 @@ class Repeat extends DelegateParser
     public function parse(TokenStream $stream)
     {
         $children = [];
+        if ($this->canSkipYield) {
 
-        do {
-            $children[] = (yield $this->parser->parse($stream));
-        } while (yield $this->parser->canParse($stream->current()));
+            do {
+                $children[] = $this->parser->parse($stream)->current();
+            } while ($this->parser->canParse($stream->current())->current());
 
+        } else {
+
+            do {
+                $children[] = (yield $this->parser->parse($stream));
+            } while (yield $this->parser->canParse($stream->current()));
+
+        }
         yield $this->emit($children);
+
     }
 }
