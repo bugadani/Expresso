@@ -29,16 +29,17 @@ class MapDataNode extends Node
             $lastValue = array_pop($children);
             $lastKey   = array_pop($children);
 
-            $items = array_chunk($children, 2);
-            foreach ($items as list($key, $value)) {
-                $compiledKey   = (yield $compiler->compileNode($key));
-                $compiledValue = (yield $compiler->compileNode($value));
+            $childCount = count($children);
+            for ($keyIndex = 0; $keyIndex < $childCount; $keyIndex += 2) {
+                $compiledKey   = (yield $compiler->compileNode($children[ $keyIndex ]));
+                $compiledValue = (yield $compiler->compileNode($children[ $keyIndex + 1 ]));
 
                 $compiler->add($compiledKey->source);
                 $compiler->add(' => ');
                 $compiler->add($compiledValue->source);
                 $compiler->add(', ');
             }
+
             $compiledKey   = (yield $compiler->compileNode($lastKey));
             $compiledValue = (yield $compiler->compileNode($lastValue));
 
@@ -54,16 +55,12 @@ class MapDataNode extends Node
     {
         $array = [];
 
-        $isKey = true;
-        foreach ($this->children as $child) {
-            $value = (yield $child->evaluate($context));
-            if ($isKey) {
-                $key   = $value;
-                $isKey = false;
-            } else {
-                $array [ $key ] = $value;
-                $isKey          = true;
-            }
+        $childCount = count($this->children);
+        for ($keyIndex = 0; $keyIndex < $childCount; $keyIndex += 2) {
+            $key   = (yield $this->children[ $keyIndex ]->evaluate($context));
+            $value = (yield $this->children[ $keyIndex + 1 ]->evaluate($context));
+
+            $array [ $key ] = $value;
         }
 
         yield $array;
