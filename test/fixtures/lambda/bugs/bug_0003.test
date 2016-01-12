@@ -1,5 +1,5 @@
 --TEST--
-Test conditionally calling lambdas
+Conditionally defined lambdas are not called correctly
 --EXPRESSION--
 (true ? (\x -> x + 2) : (\x -> x * 3))(2)
 --EXPECT--

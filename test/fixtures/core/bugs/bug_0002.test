@@ -1,5 +1,5 @@
 --TEST--
-Test that a stack overflow does not occur during parse
+Parsing a deeply recursive expression causes a PHP nest limit error
 --EXPRESSION--
 ((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((
 1+2
