@@ -126,9 +126,7 @@ class Compiler
                 $context       = $this->context;
                 $this->context = $this->contextStack->pop();
 
-                foreach ($context->tempVariables as $varName => $varExpression) {
-                    $this->context->tempVariables[ $varName ] = $varExpression;
-                }
+                $this->context->tempVariables += $context->tempVariables;
 
                 return $context;
             }
