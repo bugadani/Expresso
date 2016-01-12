@@ -17,6 +17,7 @@ class Sequence extends Parser
     }
 
     private $runBefore;
+    private $startingParserIndex = 0;
 
     /**
      * @var Parser[]
@@ -33,9 +34,10 @@ class Sequence extends Parser
     public function canParse(Token $token)
     {
         //A sequence can be started if the first element can parse the stream - optionals may be skipped
-        foreach ($this->parsers as $parser) {
+        foreach ($this->parsers as $i => $parser) {
             $childCanParse = (yield $parser->canParse($token));
             if ($childCanParse) {
+                $this->startingParserIndex = $i;
                 yield true;
             } else if (!$parser instanceof Optional) {
                 yield false;
@@ -52,10 +54,12 @@ class Sequence extends Parser
             $callback();
         }
         $children = [];
-        foreach ($this->parsers as $parser) {
-            $children[] = (yield $parser->parse($stream));
+        foreach ($this->parsers as $i => $parser) {
+            if ($i >= $this->startingParserIndex) {
+                $children[] = (yield $parser->parse($stream));
+            }
         }
-
+        $this->startingParserIndex = 0;
         yield $this->emit($children);
     }
 

@@ -21,6 +21,9 @@ class Compiler
      */
     private $contextStack;
 
+    /**
+     * @var int
+     */
     private $tempVariableCount;
 
     public function __construct(CompilerConfiguration $configuration)
@@ -45,7 +48,9 @@ class Compiler
 
     public function addTempVariable(CompilerContext $context)
     {
-        $tempVarName = $this->getNextTempVarName();
+        $num = $this->tempVariableCount++;
+
+        $tempVarName = "\$tempVar_{$num}";
 
         $this->context->tempVariables[ $tempVarName ] = $context->source;
 
@@ -141,17 +146,5 @@ class Compiler
     public function getContext()
     {
         return $this->context;
-    }
-
-    /**
-     * @return string
-     */
-    public function getNextTempVarName()
-    {
-        $num = $this->tempVariableCount++;
-
-        $tempVarName = "\$tempVar_{$num}";
-
-        return $tempVarName;
     }
 }

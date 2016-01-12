@@ -27,9 +27,4 @@ class Repeat extends DelegateParser
 
         yield $this->emit($children);
     }
-
-    public function separatedBy(Parser $parser)
-    {
-        return RepeatSeparated::create($this->parser, $parser);
-    }
 }

@@ -13,11 +13,6 @@ class Optional extends DelegateParser
         return new Optional($parser);
     }
 
-    protected function emptyValue()
-    {
-        return null;
-    }
-
     /**
      * @param TokenStream $stream
      * @return \Generator
@@ -28,7 +23,7 @@ class Optional extends DelegateParser
         if ($canParse) {
             $child = (yield $this->parser->parse($stream));
         } else {
-            $child = $this->emptyValue();
+            $child = null;
         }
         yield $this->emit($child);
     }
