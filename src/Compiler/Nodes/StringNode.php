@@ -2,7 +2,7 @@
 
 namespace Expresso\Compiler\Nodes;
 
-use Expresso\Compiler\Compiler;
+use Expresso\Compiler\Compiler\Compiler;
 
 class StringNode extends DataNode
 {

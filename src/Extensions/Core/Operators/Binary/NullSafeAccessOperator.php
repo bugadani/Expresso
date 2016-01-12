@@ -2,7 +2,7 @@
 
 namespace Expresso\Extensions\Core\Operators\Binary;
 
-use Expresso\Compiler\CompilerConfiguration;
+use Expresso\Compiler\Compiler\CompilerConfiguration;
 use Expresso\Compiler\Node;
 use Expresso\Compiler\Nodes\DataNode;
 use Expresso\Compiler\Nodes\IdentifierNode;

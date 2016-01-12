@@ -2,10 +2,10 @@
 
 namespace Expresso\Test\Compiler\ParserSequence;
 
-use Expresso\Compiler\ParserSequence\Parsers\Repeat;
-use Expresso\Compiler\ParserSequence\Parsers\TokenParser;
-use Expresso\Compiler\Token;
-use Expresso\Compiler\TokenStream;
+use Expresso\Compiler\Parser\Parsers\Repeat;
+use Expresso\Compiler\Parser\Parsers\TokenParser;
+use Expresso\Compiler\Tokenizer\Token;
+use Expresso\Compiler\Tokenizer\TokenStream;
 use Expresso\Compiler\Utils\GeneratorHelper;
 
 class RepeatTest extends \PHPUnit_Framework_TestCase

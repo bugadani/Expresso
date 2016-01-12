@@ -1,13 +1,13 @@
 <?php
 
-namespace Expresso\Compiler\ParserSequence\Parsers;
+namespace Expresso\Compiler\Parser\Parsers;
 
-use Expresso\Compiler\ParserSequence\Container;
-use Expresso\Compiler\ParserSequence\Parser;
-use Expresso\Compiler\Token;
-use Expresso\Compiler\TokenStream;
+use Expresso\Compiler\Parser\Container;
+use Expresso\Compiler\Parser\AbstractParser;
+use Expresso\Compiler\Tokenizer\Token;
+use Expresso\Compiler\Tokenizer\TokenStream;
 
-class ParserReference extends Parser
+class ParserReference extends AbstractParser
 {
     /**
      * @var Container
@@ -33,7 +33,7 @@ class ParserReference extends Parser
     }
 
     /**
-     * @return Parser
+     * @return AbstractParser
      */
     public function getParser()
     {

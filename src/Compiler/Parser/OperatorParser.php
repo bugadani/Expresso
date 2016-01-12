@@ -1,11 +1,14 @@
 <?php
 
-namespace Expresso\Compiler;
+namespace Expresso\Compiler\Parser;
 
+use Expresso\Compiler\Compiler\CompilerConfiguration;
 use Expresso\Compiler\Exceptions\ParseException;
+use Expresso\Compiler\Node;
+use Expresso\Compiler\Operator;
 use Expresso\Compiler\Operators\BinaryOperator;
 use Expresso\Compiler\Operators\TernaryOperator;
-use Expresso\Compiler\ParserSequence\Container;
+use Expresso\Compiler\Tokenizer\TokenStream;
 use Expresso\Compiler\Utils\GeneratorHelper;
 
 /**
@@ -13,7 +16,7 @@ use Expresso\Compiler\Utils\GeneratorHelper;
  *
  * @link http://www.engr.mun.ca/~theo/Misc/exp_parsing.htm
  */
-class Parser
+class OperatorParser
 {
     /**
      * @var \SplStack

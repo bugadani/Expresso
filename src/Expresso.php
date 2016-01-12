@@ -2,13 +2,13 @@
 
 namespace Expresso;
 
-use Expresso\Compiler\Compiler;
-use Expresso\Compiler\CompilerConfiguration;
+use Expresso\Compiler\Compiler\Compiler;
+use Expresso\Compiler\Compiler\CompilerConfiguration;
+use Expresso\Compiler\Parser\OperatorParser;
 use Expresso\Compiler\Utils\GeneratorHelper;
 use Expresso\Compiler\Node;
 use Expresso\Compiler\Nodes\ExpressionNode;
-use Expresso\Compiler\Tokenizer;
-use Expresso\Compiler\Parser;
+use Expresso\Compiler\Tokenizer\Tokenizer;
 
 class Expresso
 {
@@ -23,7 +23,7 @@ class Expresso
     private $tokenizer;
 
     /**
-     * @var Parser
+     * @var OperatorParser
      */
     private $parser;
 
@@ -77,7 +77,7 @@ class Expresso
     private function getParser()
     {
         if (!isset($this->parser)) {
-            $parser = new Parser($this->configuration);
+            $parser = new OperatorParser($this->configuration);
             foreach ($this->extensions as $extension) {
                 $extension->addParsers($parser, $this->configuration);
             }
@@ -133,6 +133,7 @@ class Expresso
         $nodes = $this->parse($expression);
 
         $context = new EvaluationContext($parameters, $this->configuration);
+
         return GeneratorHelper::executeGeneratorsRecursive(
             $nodes->evaluate($context)
         );

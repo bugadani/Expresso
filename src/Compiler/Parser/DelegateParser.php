@@ -1,19 +1,19 @@
 <?php
 
-namespace Expresso\Compiler\ParserSequence;
+namespace Expresso\Compiler\Parser;
 
-use Expresso\Compiler\ParserSequence\Parsers\TokenParser;
-use Expresso\Compiler\Token;
+use Expresso\Compiler\Parser\Parsers\TokenParser;
+use Expresso\Compiler\Tokenizer\Token;
 
-abstract class DelegateParser extends Parser
+abstract class DelegateParser extends AbstractParser
 {
     /**
-     * @var Parser
+     * @var AbstractParser
      */
     protected $parser;
     protected $canSkipYield;
 
-    public function __construct(Parser $parser)
+    public function __construct(AbstractParser $parser)
     {
         $this->parser = $parser;
         $this->canSkipYield = $parser instanceof TokenParser;

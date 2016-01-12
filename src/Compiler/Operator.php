@@ -2,6 +2,7 @@
 
 namespace Expresso\Compiler;
 
+use Expresso\Compiler\Compiler\Compiler;
 use Expresso\EvaluationContext;
 
 abstract class Operator

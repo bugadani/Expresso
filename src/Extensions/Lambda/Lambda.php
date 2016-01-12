@@ -2,12 +2,12 @@
 
 namespace Expresso\Extensions\Lambda;
 
-use Expresso\Compiler\CompilerConfiguration;
+use Expresso\Compiler\Compiler\CompilerConfiguration;
 use Expresso\Compiler\ExpressionFunction;
-use Expresso\Compiler\Parser;
-use Expresso\Compiler\ParserSequence\Parsers\ParserReference;
-use Expresso\Compiler\ParserSequence\Parsers\TokenParser;
-use Expresso\Compiler\Token;
+use Expresso\Compiler\Parser\OperatorParser;
+use Expresso\Compiler\Parser\Parsers\ParserReference;
+use Expresso\Compiler\Parser\Parsers\TokenParser;
+use Expresso\Compiler\Tokenizer\Token;
 use Expresso\Extension;
 use Expresso\Extensions\Core\Core;
 use Expresso\Extensions\Lambda\Nodes\LambdaNode;
@@ -22,7 +22,7 @@ class Lambda extends Extension
         ];
     }
 
-    public function addParsers(Parser $parser, CompilerConfiguration $configuration)
+    public function addParsers(OperatorParser $parser, CompilerConfiguration $configuration)
     {
         $parserContainer = $parser->getParserContainer();
 

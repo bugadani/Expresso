@@ -2,8 +2,8 @@
 
 namespace Expresso\Test\Compiler;
 
-use Expresso\Compiler\Token;
-use Expresso\Compiler\TokenStream;
+use Expresso\Compiler\Tokenizer\Token;
+use Expresso\Compiler\Tokenizer\TokenStream;
 
 class TokenStreamTest extends \PHPUnit_Framework_TestCase
 {

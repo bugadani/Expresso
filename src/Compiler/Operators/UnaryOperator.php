@@ -2,8 +2,8 @@
 
 namespace Expresso\Compiler\Operators;
 
-use Expresso\Compiler\Compiler;
-use Expresso\Compiler\CompilerConfiguration;
+use Expresso\Compiler\Compiler\Compiler;
+use Expresso\Compiler\Compiler\CompilerConfiguration;
 use Expresso\Compiler\Node;
 use Expresso\Compiler\Nodes\UnaryOperatorNode;
 use Expresso\Compiler\Operator;

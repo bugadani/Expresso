@@ -2,7 +2,7 @@
 
 namespace Expresso\Extensions\Core;
 
-use Expresso\Compiler\CompilerConfiguration;
+use Expresso\Compiler\Compiler\CompilerConfiguration;
 use Expresso\Compiler\ExpressionFunction;
 use Expresso\Compiler\Node;
 use Expresso\Compiler\Nodes\ArgumentListNode;
@@ -13,10 +13,10 @@ use Expresso\Compiler\Nodes\StringNode;
 use Expresso\Compiler\Operator;
 use Expresso\Compiler\OperatorCollection;
 use Expresso\Compiler\Operators\FunctionCallOperator;
-use Expresso\Compiler\Parser;
-use Expresso\Compiler\ParserSequence\Parsers\ParserReference;
-use Expresso\Compiler\ParserSequence\Parsers\TokenParser;
-use Expresso\Compiler\Token;
+use Expresso\Compiler\Parser\OperatorParser;
+use Expresso\Compiler\Parser\Parsers\ParserReference;
+use Expresso\Compiler\Parser\Parsers\TokenParser;
+use Expresso\Compiler\Tokenizer\Token;
 use Expresso\Extension;
 use Expresso\Extensions\Core\Nodes\ListDataNode;
 use Expresso\Extensions\Core\Nodes\MapDataNode;
@@ -148,7 +148,7 @@ class Core extends Extension
         ];
     }
 
-    public function addParsers(Parser $parser, CompilerConfiguration $configuration)
+    public function addParsers(OperatorParser $parser, CompilerConfiguration $configuration)
     {
         $parserContainer = $parser->getParserContainer();
 

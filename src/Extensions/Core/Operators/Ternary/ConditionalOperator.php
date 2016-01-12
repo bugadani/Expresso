@@ -2,8 +2,8 @@
 
 namespace Expresso\Extensions\Core\Operators\Ternary;
 
-use Expresso\Compiler\Compiler;
-use Expresso\Compiler\CompilerConfiguration;
+use Expresso\Compiler\Compiler\Compiler;
+use Expresso\Compiler\Compiler\CompilerConfiguration;
 use Expresso\Compiler\Node;
 use Expresso\Compiler\Nodes\IdentifierNode;
 use Expresso\Compiler\Nodes\OperatorNode;

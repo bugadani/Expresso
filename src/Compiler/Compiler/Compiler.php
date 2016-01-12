@@ -1,7 +1,10 @@
 <?php
 
-namespace Expresso\Compiler;
+namespace Expresso\Compiler\Compiler;
 
+use Expresso\Compiler\Compiler\CompilerConfiguration;
+use Expresso\Compiler\Compiler\CompilerContext;
+use Expresso\Compiler\Node;
 use Expresso\Compiler\Utils\GeneratorHelper;
 
 class Compiler

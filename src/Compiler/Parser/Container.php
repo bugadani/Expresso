@@ -1,20 +1,21 @@
 <?php
 
-namespace Expresso\Compiler\ParserSequence;
+namespace Expresso\Compiler\Parser;
 
 class Container
 {
     /**
-     * @var Parser[]
+     * @var AbstractParser[]
      */
     private $parsers = [];
 
     /**
      * @param $parserName
-     * @param Parser $parser
-     * @return Parser
+     * @param AbstractParser $parser
+     *
+     * @return AbstractParser
      */
-    public function set($parserName, Parser $parser)
+    public function set($parserName, AbstractParser $parser)
     {
         $this->parsers[ $parserName ] = $parser;
 

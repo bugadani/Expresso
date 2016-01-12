@@ -2,11 +2,11 @@
 
 namespace Expresso\Test\Compiler\ParserSequence;
 
-use Expresso\Compiler\ParserSequence\Parsers\Optional;
-use Expresso\Compiler\ParserSequence\Parsers\Sequence;
-use Expresso\Compiler\ParserSequence\Parsers\TokenParser;
-use Expresso\Compiler\Token;
-use Expresso\Compiler\TokenStream;
+use Expresso\Compiler\Parser\Parsers\Optional;
+use Expresso\Compiler\Parser\Parsers\Sequence;
+use Expresso\Compiler\Parser\Parsers\TokenParser;
+use Expresso\Compiler\Tokenizer\Token;
+use Expresso\Compiler\Tokenizer\TokenStream;
 use Expresso\Compiler\Utils\GeneratorHelper;
 
 class OptionalTest extends \PHPUnit_Framework_TestCase

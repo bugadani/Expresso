@@ -1,7 +1,9 @@
 <?php
 
-namespace Expresso\Compiler;
+namespace Expresso\Compiler\Compiler;
 
+use Expresso\Compiler\ExpressionFunction;
+use Expresso\Compiler\OperatorCollection;
 use Expresso\Extension;
 
 class CompilerConfiguration

@@ -2,7 +2,7 @@
 
 namespace Expresso\Extensions\Core\Operators\Binary;
 
-use Expresso\Compiler\Compiler;
+use Expresso\Compiler\Compiler\Compiler;
 use Expresso\Compiler\Operators\BinaryOperator;
 
 class RangeOperator extends BinaryOperator

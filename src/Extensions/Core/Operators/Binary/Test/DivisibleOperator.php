@@ -2,7 +2,7 @@
 
 namespace Expresso\Extensions\Core\Operators\Binary\Test;
 
-use Expresso\Compiler\Compiler;
+use Expresso\Compiler\Compiler\Compiler;
 use Expresso\Compiler\Operators\BinaryOperator;
 
 class DivisibleOperator extends BinaryOperator

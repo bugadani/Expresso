@@ -2,7 +2,7 @@
 
 namespace Expresso\Extensions\Core\Operators\Unary\Postfix;
 
-use Expresso\Compiler\CompilerConfiguration;
+use Expresso\Compiler\Compiler\CompilerConfiguration;
 use Expresso\Extensions\Core\Operators\Unary\Prefix\NotOperator;
 
 class IsNotSetOperator extends IsSetOperator

@@ -1,6 +1,9 @@
 <?php
 
-namespace Expresso\Compiler;
+namespace Expresso\Compiler\Tokenizer;
+
+use Expresso\Compiler\Tokenizer\Token;
+use Expresso\Compiler\Tokenizer\TokenStream;
 
 class Tokenizer
 {

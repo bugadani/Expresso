@@ -1,14 +1,14 @@
 <?php
 
-namespace Expresso\Compiler\ParserSequence\Parsers;
+namespace Expresso\Compiler\Parser\Parsers;
 
-use Expresso\Compiler\ParserSequence\Parser;
-use Expresso\Compiler\Token;
-use Expresso\Compiler\TokenStream;
+use Expresso\Compiler\Parser\AbstractParser;
+use Expresso\Compiler\Tokenizer\Token;
+use Expresso\Compiler\Tokenizer\TokenStream;
 
-class Sequence extends Parser
+class Sequence extends AbstractParser
 {
-    public static function create(Parser $first)
+    public static function create(AbstractParser $first)
     {
         $sequence = new Sequence();
 
@@ -49,7 +49,7 @@ class Sequence extends Parser
     private $startingParserIndex = 0;
 
     /**
-     * @var Parser[]
+     * @var AbstractParser[]
      */
     private $parsers = [];
 
@@ -109,7 +109,7 @@ class Sequence extends Parser
         yield $this->emit($children);
     }
 
-    public function followedBy(Parser $parser)
+    public function followedBy(AbstractParser $parser)
     {
         $this->isTokenParser[ count($this->parsers) ] = $parser instanceof TokenParser;
         $this->parsers[] = $parser;

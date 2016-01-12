@@ -1,16 +1,16 @@
 <?php
 
-namespace Expresso\Compiler\ParserSequence;
+namespace Expresso\Compiler\Parser;
 
-use Expresso\Compiler\ParserSequence\Parsers\Alternative;
-use Expresso\Compiler\ParserSequence\Parsers\Optional;
-use Expresso\Compiler\ParserSequence\Parsers\Repeat;
-use Expresso\Compiler\ParserSequence\Parsers\RepeatSeparated;
-use Expresso\Compiler\ParserSequence\Parsers\Sequence;
-use Expresso\Compiler\Token;
-use Expresso\Compiler\TokenStream;
+use Expresso\Compiler\Parser\Parsers\Alternative;
+use Expresso\Compiler\Parser\Parsers\Optional;
+use Expresso\Compiler\Parser\Parsers\Repeat;
+use Expresso\Compiler\Parser\Parsers\RepeatSeparated;
+use Expresso\Compiler\Parser\Parsers\Sequence;
+use Expresso\Compiler\Tokenizer\Token;
+use Expresso\Compiler\Tokenizer\TokenStream;
 
-abstract class Parser
+abstract class AbstractParser
 {
     /**
      * @var callable
@@ -19,12 +19,14 @@ abstract class Parser
 
     /**
      * @param Token $token
+     *
      * @return \Generator
      */
     abstract public function canParse(Token $token);
 
     /**
      * @param TokenStream $stream
+     *
      * @return \Generator
      */
     abstract public function parse(TokenStream $stream);
@@ -42,6 +44,7 @@ abstract class Parser
 
     /**
      * @param callable $callback
+     *
      * @return $this
      */
     public function process(callable $callback)
@@ -52,20 +55,22 @@ abstract class Parser
     }
 
     /**
-     * @param Parser $parser
+     * @param AbstractParser $parser
+     *
      * @return Sequence
      */
-    public function followedBy(Parser $parser)
+    public function followedBy(AbstractParser $parser)
     {
         return Sequence::create($this)
                        ->followedBy($parser);
     }
 
     /**
-     * @param Parser $parser
+     * @param AbstractParser $parser
+     *
      * @return Alternative
      */
-    public function orA(Parser $parser)
+    public function orA(AbstractParser $parser)
     {
         return Alternative::create($this)
                           ->orA($parser);
@@ -80,10 +85,11 @@ abstract class Parser
     }
 
     /**
-     * @param Parser $parser
+     * @param AbstractParser $parser
+     *
      * @return RepeatSeparated
      */
-    public function repeatSeparatedBy(Parser $parser)
+    public function repeatSeparatedBy(AbstractParser $parser)
     {
         return RepeatSeparated::create($this, $parser);
     }

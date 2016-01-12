@@ -1,17 +1,17 @@
 <?php
 
-namespace Expresso\Compiler\ParserSequence\Parsers;
+namespace Expresso\Compiler\Parser\Parsers;
 
 use Expresso\Compiler\Exceptions\SyntaxException;
-use Expresso\Compiler\ParserSequence\Parser;
-use Expresso\Compiler\Token;
-use Expresso\Compiler\TokenStream;
+use Expresso\Compiler\Parser\AbstractParser;
+use Expresso\Compiler\Tokenizer\Token;
+use Expresso\Compiler\Tokenizer\TokenStream;
 
-class Alternative extends Parser
+class Alternative extends AbstractParser
 {
     private $canSkipYield;
 
-    public static function create(Parser $first)
+    public static function create(AbstractParser $first)
     {
         $alt = new Alternative();
         $alt->orA($first);
@@ -20,12 +20,12 @@ class Alternative extends Parser
     }
 
     /**
-     * @var Parser[]
+     * @var AbstractParser[]
      */
     private $parsers = [];
 
     /**
-     * @var Parser
+     * @var AbstractParser
      */
     private $activeParser;
 
@@ -77,7 +77,7 @@ class Alternative extends Parser
         yield $this->emit($child);
     }
 
-    public function orA(Parser $parser)
+    public function orA(AbstractParser $parser)
     {
         $this->parsers[] = $parser;
 

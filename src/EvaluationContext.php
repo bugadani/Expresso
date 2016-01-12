@@ -2,7 +2,7 @@
 
 namespace Expresso;
 
-use Expresso\Compiler\CompilerConfiguration;
+use Expresso\Compiler\Compiler\CompilerConfiguration;
 use Expresso\Compiler\ExpressionFunction;
 
 class EvaluationContext extends ExecutionContext

@@ -2,8 +2,8 @@
 
 namespace Expresso\Test\Compiler;
 
-use Expresso\Compiler\Token;
-use Expresso\Compiler\Tokenizer;
+use Expresso\Compiler\Tokenizer\Token;
+use Expresso\Compiler\Tokenizer\Tokenizer;
 
 class TokenizerTest extends \PHPUnit_Framework_TestCase
 {

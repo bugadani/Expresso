@@ -1,14 +1,14 @@
 <?php
 
-namespace Expresso\Compiler\ParserSequence\Parsers;
+namespace Expresso\Compiler\Parser\Parsers;
 
-use Expresso\Compiler\ParserSequence\DelegateParser;
-use Expresso\Compiler\ParserSequence\Parser;
-use Expresso\Compiler\TokenStream;
+use Expresso\Compiler\Parser\DelegateParser;
+use Expresso\Compiler\Parser\AbstractParser;
+use Expresso\Compiler\Tokenizer\TokenStream;
 
 class Optional extends DelegateParser
 {
-    public static function create(Parser $parser)
+    public static function create(AbstractParser $parser)
     {
         return new Optional($parser);
     }

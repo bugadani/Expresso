@@ -2,7 +2,7 @@
 
 namespace Expresso\Extensions\Core\Operators\Unary\Postfix;
 
-use Expresso\Compiler\Compiler;
+use Expresso\Compiler\Compiler\Compiler;
 use Expresso\Compiler\Operators\UnaryOperator;
 
 class EvenOperator extends UnaryOperator

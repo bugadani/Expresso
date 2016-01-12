@@ -2,9 +2,9 @@
 
 namespace Expresso\Test\Compiler\ParserSequence;
 
-use Expresso\Compiler\ParserSequence\Parsers\TokenParser;
-use Expresso\Compiler\Token;
-use Expresso\Compiler\TokenStream;
+use Expresso\Compiler\Parser\Parsers\TokenParser;
+use Expresso\Compiler\Tokenizer\Token;
+use Expresso\Compiler\Tokenizer\TokenStream;
 use Expresso\Compiler\Utils\GeneratorHelper;
 
 class TokenParserTest extends \PHPUnit_Framework_TestCase

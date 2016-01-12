@@ -2,7 +2,7 @@
 
 namespace Expresso\Compiler\Operators;
 
-use Expresso\Compiler\CompilerConfiguration;
+use Expresso\Compiler\Compiler\CompilerConfiguration;
 use Expresso\Compiler\Nodes\TernaryOperatorNode;
 use Expresso\Compiler\Operator;
 

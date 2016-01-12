@@ -2,7 +2,7 @@
 
 namespace Expresso\Compiler\Nodes;
 
-use Expresso\Compiler\Compiler;
+use Expresso\Compiler\Compiler\Compiler;
 use Expresso\Compiler\Node;
 use Expresso\EvaluationContext;
 use Expresso\Extensions\Core\Operators\Binary\SimpleAccessOperator;

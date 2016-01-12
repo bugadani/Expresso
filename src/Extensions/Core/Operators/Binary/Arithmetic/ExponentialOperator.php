@@ -2,7 +2,7 @@
 
 namespace Expresso\Extensions\Core\Operators\Binary\Arithmetic;
 
-use Expresso\Compiler\Compiler;
+use Expresso\Compiler\Compiler\Compiler;
 use Expresso\Compiler\Operators\BinaryOperator;
 
 class ExponentialOperator extends BinaryOperator
