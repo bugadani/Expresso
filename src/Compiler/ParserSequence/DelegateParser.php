@@ -2,7 +2,7 @@
 
 namespace Expresso\Compiler\ParserSequence;
 
-use Expresso\Compiler\TokenStream;
+use Expresso\Compiler\Token;
 
 abstract class DelegateParser extends Parser
 {
@@ -16,9 +16,9 @@ abstract class DelegateParser extends Parser
         $this->parser = $parser;
     }
 
-    public function canParse(TokenStream $stream)
+    public function canParse(Token $token)
     {
-        return $this->parser->canParse($stream);
+        return $this->parser->canParse($token);
     }
 
     public function getParser()

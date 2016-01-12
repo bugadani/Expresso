@@ -62,7 +62,7 @@ class TokenizerTest extends \PHPUnit_Framework_TestCase
             $this->assertEquals($expected['value'], $stream->current()->getValue());
             $this->assertEquals($expected['line'], $stream->current()->getLine());
             $this->assertEquals($expected['offset'], $stream->current()->getOffset());
-            $stream->next();
+            $stream->consume();
         }
     }
 }

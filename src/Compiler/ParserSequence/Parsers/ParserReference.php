@@ -4,6 +4,7 @@ namespace Expresso\Compiler\ParserSequence\Parsers;
 
 use Expresso\Compiler\ParserSequence\Container;
 use Expresso\Compiler\ParserSequence\Parser;
+use Expresso\Compiler\Token;
 use Expresso\Compiler\TokenStream;
 
 class ParserReference extends Parser
@@ -21,9 +22,9 @@ class ParserReference extends Parser
         $this->parserName = $parserName;
     }
 
-    public function canParse(TokenStream $stream)
+    public function canParse(Token $token)
     {
-        return $this->getParser()->canParse($stream);
+        return $this->getParser()->canParse($token);
     }
 
     public function parse(TokenStream $stream)

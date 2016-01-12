@@ -4,31 +4,41 @@ namespace Expresso\Compiler\Operators;
 
 use Expresso\Compiler\Compiler;
 use Expresso\Compiler\CompilerConfiguration;
+use Expresso\Compiler\Exceptions\ParseException;
 use Expresso\Compiler\Node;
+use Expresso\Compiler\Nodes\ArgumentListNode;
+use Expresso\Compiler\Nodes\DataNode;
 use Expresso\Compiler\Nodes\FunctionCallNode;
 use Expresso\Compiler\Nodes\TernaryOperatorNode;
 use Expresso\EvaluationContext;
 
 class FunctionCallOperator extends BinaryOperator
 {
-    public function createNode(CompilerConfiguration $config, Node $left, Node $right)
+    public function createNode(CompilerConfiguration $config, Node $functionName, Node $arguments)
     {
-        if ($left instanceof TernaryOperatorNode) {
+        if (!$arguments instanceof ArgumentListNode) {
+            throw  new ParseException('$arguments must be an instance of ArgumentListNode');
+        }
+        if ($functionName instanceof TernaryOperatorNode) {
 
-            list($opL, $opM, $opR) = $left->getChildren();
+            list($left, $middle, $right) = $functionName->getChildren();
 
-            $right = new FunctionCallNode($opR, $right);
+            if (!$middle instanceof DataNode || $middle->getValue() !== null) {
+                $middle = new FunctionCallNode($middle, $arguments);
+            }
+            $arguments = new FunctionCallNode($right, $arguments);
+
             $newNode = new TernaryOperatorNode(
-                $left->getOperator(),
-                $opL,
-                $opM,
-                $right
+                $functionName->getOperator(),
+                $left,
+                $middle,
+                $arguments
             );
         } else {
-            $newNode = new FunctionCallNode($left, $right);
+            $newNode = new FunctionCallNode($functionName, $arguments);
         }
 
-        return $newNode->setInline($left->isInline());
+        return $newNode->setInline($functionName->isInline());
     }
 
     public function operators()

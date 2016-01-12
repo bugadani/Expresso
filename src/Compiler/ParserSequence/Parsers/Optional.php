@@ -24,7 +24,7 @@ class Optional extends DelegateParser
      */
     public function parse(TokenStream $stream)
     {
-        $canParse = (yield $this->parser->canParse($stream));
+        $canParse = (yield $this->parser->canParse($stream->current()));
         if ($canParse) {
             $child = (yield $this->parser->parse($stream));
         } else {

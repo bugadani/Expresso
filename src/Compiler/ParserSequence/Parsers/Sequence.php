@@ -3,6 +3,7 @@
 namespace Expresso\Compiler\ParserSequence\Parsers;
 
 use Expresso\Compiler\ParserSequence\Parser;
+use Expresso\Compiler\Token;
 use Expresso\Compiler\TokenStream;
 
 class Sequence extends Parser
@@ -29,11 +30,11 @@ class Sequence extends Parser
         return $this;
     }
 
-    public function canParse(TokenStream $stream)
+    public function canParse(Token $token)
     {
         //A sequence can be started if the first element can parse the stream - optionals may be skipped
         foreach ($this->parsers as $parser) {
-            $childCanParse = (yield $parser->canParse($stream));
+            $childCanParse = (yield $parser->canParse($token));
             if ($childCanParse) {
                 yield true;
             } else if (!$parser instanceof Optional) {

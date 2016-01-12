@@ -11,35 +11,20 @@ class TokenStream
      */
     private $tokens;
 
-    /**
-     * @var Token
-     */
-    private $current;
-
-    /**
-     * @var Token
-     */
-    private $next;
-
     public function __construct(\Iterator $tokens)
     {
         $this->tokens = $tokens;
         $tokens->rewind();
         $this->current = $tokens->current();
-        $tokens->next();
-        $this->next = $tokens->current();
     }
 
-    /**
-     * @return Token
-     */
-    public function next()
+    public function consume()
     {
-        $this->current = $this->next;
+        $current = $this->current;
         $this->tokens->next();
-        $this->next = $this->tokens->current();
+        $this->current = $this->tokens->current();
 
-        return $this->current;
+        return $current;
     }
 
     /**
@@ -51,39 +36,18 @@ class TokenStream
     }
 
     /**
-     * @param $type
-     * @param $value
-     *
-     * @return Token
-     */
-    public function expect($type, $value = null)
-    {
-        $this->next();
-
-        return $this->expectCurrent($type, $value);
-    }
-
-    /**
      * @param      $type
      * @param null $value
      *
      * @return Token
      * @throws SyntaxException
      */
-    public function expectCurrent($type, $value = null)
+    public function expect($type, $value = null)
     {
         if ($this->current->test($type, $value)) {
             return $this->current;
         }
         $expectation = new Token($type, $value);
         throw new SyntaxException("Unexpected {$this->current}, expected {$expectation}");
-    }
-
-    public function consume()
-    {
-        $current = $this->current;
-        $this->next();
-
-        return $current;
     }
 }

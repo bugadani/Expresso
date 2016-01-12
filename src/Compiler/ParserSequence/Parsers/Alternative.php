@@ -4,6 +4,7 @@ namespace Expresso\Compiler\ParserSequence\Parsers;
 
 use Expresso\Compiler\Exceptions\SyntaxException;
 use Expresso\Compiler\ParserSequence\Parser;
+use Expresso\Compiler\Token;
 use Expresso\Compiler\TokenStream;
 
 class Alternative extends Parser
@@ -26,11 +27,11 @@ class Alternative extends Parser
      */
     private $activeParser;
 
-    public function canParse(TokenStream $stream)
+    public function canParse(Token $token)
     {
         $this->activeParser = null;
         foreach ($this->parsers as $parser) {
-            $canParse = (yield $parser->canParse($stream));
+            $canParse = (yield $parser->canParse($token));
             if ($canParse) {
                 $this->activeParser = $parser;
 
@@ -47,15 +48,16 @@ class Alternative extends Parser
         $this->activeParser = null;
 
         if ($activeParser === null) {
+            $currentToken = $stream->current();
             foreach ($this->parsers as $parser) {
-                if (yield $parser->canParse($stream)) {
+                if (yield $parser->canParse($currentToken)) {
                     $activeParser = $parser;
                     break;
                 }
             }
 
             if ($activeParser === null) {
-                throw new SyntaxException("This parser can not parse the current token {$stream->current()}");
+                throw new SyntaxException("This parser can not parse the current token {$currentToken}");
             }
         }
         $child = (yield $activeParser->parse($stream));

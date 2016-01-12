@@ -7,6 +7,7 @@ use Expresso\Compiler\ParserSequence\Parsers\Optional;
 use Expresso\Compiler\ParserSequence\Parsers\Repeat;
 use Expresso\Compiler\ParserSequence\Parsers\RepeatSeparated;
 use Expresso\Compiler\ParserSequence\Parsers\Sequence;
+use Expresso\Compiler\Token;
 use Expresso\Compiler\TokenStream;
 
 abstract class Parser
@@ -17,10 +18,10 @@ abstract class Parser
     private $emitCallback;
 
     /**
-     * @param TokenStream $stream
+     * @param Token $token
      * @return \Generator
      */
-    abstract public function canParse(TokenStream $stream);
+    abstract public function canParse(Token $token);
 
     /**
      * @param TokenStream $stream

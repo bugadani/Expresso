@@ -1,0 +1,6 @@
+--TEST--
+Test conditionally calling lambdas
+--EXPRESSION--
+(true ? (\x -> x + 2) : (\x -> x * 3))(2)
+--EXPECT--
+4

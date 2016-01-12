@@ -20,7 +20,7 @@ class TokenStreamTest extends \PHPUnit_Framework_TestCase
         );
 
         $stream = new TokenStream($tokens);
-        $stream->expectCurrent(Token::CONSTANT);
+        $stream->expect(Token::CONSTANT);
     }
 
     /**
@@ -37,7 +37,7 @@ class TokenStreamTest extends \PHPUnit_Framework_TestCase
         );
 
         $stream = new TokenStream($tokens);
-        $stream->expectCurrent(Token::IDENTIFIER, 'bar');
+        $stream->expect(Token::IDENTIFIER, 'bar');
     }
 
     public function testExpectStepsToNextToken()
@@ -54,7 +54,6 @@ class TokenStreamTest extends \PHPUnit_Framework_TestCase
         );
 
         $stream = new TokenStream($tokens);
-        $this->assertSame($token1, $stream->expectCurrent(Token::IDENTIFIER, 'foo'));
-        $this->assertSame($token2, $stream->expect(Token::IDENTIFIER, 'bar'));
+        $this->assertSame($token1, $stream->expect(Token::IDENTIFIER, 'foo'));
     }
 }

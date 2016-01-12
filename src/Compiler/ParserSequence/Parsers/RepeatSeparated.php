@@ -30,7 +30,7 @@ class RepeatSeparated extends DelegateParser
         $children   = [];
         $children[] = (yield $this->parser->parse($stream));
 
-        while (yield $this->separator->canParse($stream)) {
+        while (yield $this->separator->canParse($stream->current())) {
             yield $this->separator->parse($stream);
             $children[] = (yield $this->parser->parse($stream));
         }

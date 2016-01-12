@@ -3,6 +3,7 @@
 namespace Expresso\Compiler\ParserSequence\Parsers;
 
 use Expresso\Compiler\ParserSequence\Parser;
+use Expresso\Compiler\Token;
 use Expresso\Compiler\TokenStream;
 
 class TokenParser extends Parser
@@ -27,14 +28,14 @@ class TokenParser extends Parser
      */
     private $test;
 
-    public function canParse(TokenStream $stream)
+    public function canParse(Token $token)
     {
-        yield $stream->current()->test($this->tokenType, $this->test);
+        yield $token->test($this->tokenType, $this->test);
     }
 
     public function parse(TokenStream $stream)
     {
-        $stream->expectCurrent($this->tokenType, $this->test);
+        $stream->expect($this->tokenType, $this->test);
         yield $this->emit($stream->consume());
     }
 }
