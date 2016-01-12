@@ -103,6 +103,8 @@ class Token
             $valueString = ' (false)';
         } else if ($value === null) {
             $valueString = ' (null)';
+        } else if(is_callable($value)) {
+            $valueString = " (callback)";
         } else {
             $valueString = " ({$value})";
         }
