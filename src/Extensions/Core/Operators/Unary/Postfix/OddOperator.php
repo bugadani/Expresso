@@ -3,8 +3,6 @@
 namespace Expresso\Extensions\Core\Operators\Unary\Postfix;
 
 use Expresso\Compiler\Compiler;
-use Expresso\Compiler\Node;
-use Expresso\Compiler\Nodes\UnaryOperatorNode;
 use Expresso\Compiler\Operators\UnaryOperator;
 
 class OddOperator extends UnaryOperator
@@ -20,19 +18,10 @@ class OddOperator extends UnaryOperator
         return ($operand & 0x01) == 1;
     }
 
-    public function compile(Compiler $compiler, Node $node)
+    protected function compileSimple(Compiler $compiler, $compiledSource)
     {
-        /** @var UnaryOperatorNode $node */
-        $compiledOperand = (yield $compiler->compileNode($node->getOperand()));
-
-        if ($node->isInline()) {
-            $compiledSource  = $compiledOperand->source;
-        } else {
-            $compiledSource  = $compiler->addTempVariable($compiledOperand);
-        }
-
-        $compiler->add('(');
-        $compiler->add($compiledSource);
-        $compiler->add(' & 0x01) == 1');
+        $compiler->add('(')
+                 ->add($compiledSource)
+                 ->add(' & 0x01) == 1');
     }
 }

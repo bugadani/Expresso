@@ -12,12 +12,12 @@ class SubtractionOperator extends BinaryOperator
         return '-';
     }
 
-    public function compiledOperator()
+    protected function compiledOperator()
     {
         return '-';
     }
 
-    public function evaluateSimple($left, $right)
+    protected function evaluateSimple($left, $right)
     {
         return $left - $right;
     }

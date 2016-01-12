@@ -11,12 +11,12 @@ class BitwiseOrOperator extends BinaryOperator
         return 'b-or';
     }
 
-    public function evaluateSimple($left, $right)
+    protected function evaluateSimple($left, $right)
     {
         return $left | $right;
     }
 
-    public function compiledOperator()
+    protected function compiledOperator()
     {
         return '|';
     }

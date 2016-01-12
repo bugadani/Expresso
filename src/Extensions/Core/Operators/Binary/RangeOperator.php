@@ -3,7 +3,6 @@
 namespace Expresso\Extensions\Core\Operators\Binary;
 
 use Expresso\Compiler\Compiler;
-use Expresso\Compiler\Node;
 use Expresso\Compiler\Operators\BinaryOperator;
 
 class RangeOperator extends BinaryOperator
@@ -14,30 +13,22 @@ class RangeOperator extends BinaryOperator
         return '..';
     }
 
-    public function evaluateSimple($left, $right)
+    protected function evaluateSimple($left, $right)
     {
         return new \IteratorIterator(\Expresso\Extensions\Core\range($left, $right));
     }
 
-    public function compile(Compiler $compiler, Node $node)
+    /**
+     * @param Compiler $compiler
+     * @param $leftSource
+     * @param $rightSource
+     */
+    protected function compileSimple(Compiler $compiler, $leftSource, $rightSource)
     {
-        list($left, $right) = $node->getChildren();
-
-        $leftOperand = (yield $compiler->compileNode($left));
-        $rightOperand = (yield $compiler->compileNode($right));
-
-        if ($node->isInline()) {
-            $leftSource  = $leftOperand->source;
-            $rightSource = $rightOperand->source;
-        } else {
-            $leftSource  = $compiler->addTempVariable($leftOperand);
-            $rightSource = $compiler->addTempVariable($rightOperand);
-        }
-
-        $compiler->add('\Expresso\Extensions\Core\range(');
-        $compiler->add($leftSource);
-        $compiler->add(', ');
-        $compiler->add($rightSource);
-        $compiler->add(')');
+        $compiler->add('\Expresso\Extensions\Core\range(')
+                 ->add($leftSource)
+                 ->add(', ')
+                 ->add($rightSource)
+                 ->add(')');
     }
 }

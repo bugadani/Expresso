@@ -3,8 +3,6 @@
 namespace Expresso\Extensions\Core\Operators\Unary\Prefix;
 
 use Expresso\Compiler\Compiler;
-use Expresso\Compiler\Node;
-use Expresso\Compiler\Nodes\UnaryOperatorNode;
 use Expresso\Compiler\Operators\UnaryOperator;
 
 class BitwiseNotOperator extends UnaryOperator
@@ -20,14 +18,9 @@ class BitwiseNotOperator extends UnaryOperator
         return ~$operand;
     }
 
-    public function compile(Compiler $compiler, Node $node)
+    protected function compileSimple(Compiler $compiler, $compiledSource)
     {
-        /** @var UnaryOperatorNode $node */
-        $compiledOperand = (yield $compiler->compileNode($node->getOperand()));
-
-        $tempVariable = $compiler->addTempVariable($compiledOperand);
-
-        $compiler->add('~');
-        $compiler->add($tempVariable);
+        $compiler->add('~')
+                 ->add($compiledSource);
     }
 }

@@ -4,7 +4,6 @@ namespace Expresso\Extensions\Core\Operators\Binary\Logical;
 
 use Expresso\Compiler\Compiler;
 use Expresso\Compiler\Node;
-
 use Expresso\Compiler\Operators\BinaryOperator;
 use Expresso\EvaluationContext;
 
@@ -31,7 +30,7 @@ class OrOperator extends BinaryOperator
     {
         list($left, $right) = $node->getChildren();
 
-        $leftOperand = (yield $compiler->compileNode($left));
+        $leftOperand  = (yield $compiler->compileNode($left));
         $rightOperand = (yield $compiler->compileNode($right));
 
         $compiler->add('(');

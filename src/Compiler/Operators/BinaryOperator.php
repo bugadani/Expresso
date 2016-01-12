@@ -29,7 +29,7 @@ abstract class BinaryOperator extends Operator
      *
      * @return mixed
      */
-    public function evaluateSimple($left, $right)
+    protected function evaluateSimple($left, $right)
     {
         throw new \BadMethodCallException('Either evaluate or evaluateSimple must be overridden');
     }
@@ -49,6 +49,16 @@ abstract class BinaryOperator extends Operator
             $rightSource = $compiler->addTempVariable($rightOperand);
         }
 
+        $this->compileSimple($compiler, $leftSource, $rightSource);
+    }
+
+    /**
+     * @param Compiler $compiler
+     * @param $leftSource
+     * @param $rightSource
+     */
+    protected function compileSimple(Compiler $compiler, $leftSource, $rightSource)
+    {
         $compiler->add('(')
                  ->add($leftSource)
                  ->add($this->compiledOperator())
@@ -59,7 +69,7 @@ abstract class BinaryOperator extends Operator
     /**
      * @return string
      */
-    public function compiledOperator()
+    protected function compiledOperator()
     {
         throw new \BadMethodCallException('Either compile or compiledOperator must be overridden');
     }

@@ -31,7 +31,7 @@ class AndOperator extends BinaryOperator
     {
         list($left, $right) = $node->getChildren();
 
-        $leftOperand = (yield $compiler->compileNode($left));
+        $leftOperand  = (yield $compiler->compileNode($left));
         $rightOperand = (yield $compiler->compileNode($right));
 
         $compiler->add('(');

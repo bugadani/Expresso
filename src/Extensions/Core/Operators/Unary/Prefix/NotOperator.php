@@ -3,8 +3,6 @@
 namespace Expresso\Extensions\Core\Operators\Unary\Prefix;
 
 use Expresso\Compiler\Compiler;
-use Expresso\Compiler\Node;
-use Expresso\Compiler\Nodes\UnaryOperatorNode;
 use Expresso\Compiler\Operators\UnaryOperator;
 
 class NotOperator extends UnaryOperator
@@ -15,13 +13,10 @@ class NotOperator extends UnaryOperator
         return '!';
     }
 
-    public function compile(Compiler $compiler, Node $node)
+    protected function compileSimple(Compiler $compiler, $compiledSource)
     {
-        /** @var UnaryOperatorNode $node */
-        $compiledOperand = (yield $compiler->compileNode($node->getOperand()));
-
-        $compiler->add('!');
-        $compiler->add($compiledOperand->source);
+        $compiler->add('!')
+                 ->add($compiledSource);
     }
 
     public function evaluateSimple($left)

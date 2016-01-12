@@ -3,8 +3,6 @@
 namespace Expresso\Extensions\Core\Operators\Unary\Postfix;
 
 use Expresso\Compiler\Compiler;
-use Expresso\Compiler\Node;
-use Expresso\Compiler\Nodes\UnaryOperatorNode;
 use Expresso\Compiler\Operators\UnaryOperator;
 
 class InfiniteRangeOperator extends UnaryOperator
@@ -20,19 +18,10 @@ class InfiniteRangeOperator extends UnaryOperator
         return new \IteratorIterator(\Expresso\Extensions\Core\range($operand));
     }
 
-    public function compile(Compiler $compiler, Node $node)
+    protected function compileSimple(Compiler $compiler, $compiledSource)
     {
-        /** @var UnaryOperatorNode $node */
-        $compiledOperand = (yield $compiler->compileNode($node->getOperand()));
-
-        if ($node->isInline()) {
-            $compiledSource  = $compiledOperand->source;
-        } else {
-            $compiledSource  = $compiler->addTempVariable($compiledOperand);
-        }
-
-        $compiler->add('\Expresso\Extensions\Core\range(');
-        $compiler->add($compiledSource);
-        $compiler->add(')');
+        $compiler->add('\Expresso\Extensions\Core\range(')
+                 ->add($compiledSource)
+                 ->add(')');
     }
 }

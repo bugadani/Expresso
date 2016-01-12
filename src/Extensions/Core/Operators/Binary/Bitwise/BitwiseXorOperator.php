@@ -11,12 +11,12 @@ class BitwiseXorOperator extends BinaryOperator
         return 'b-xor';
     }
 
-    public function evaluateSimple($left, $right)
+    protected function evaluateSimple($left, $right)
     {
         return $left ^ $right;
     }
 
-    public function compiledOperator()
+    protected function compiledOperator()
     {
         return '^';
     }

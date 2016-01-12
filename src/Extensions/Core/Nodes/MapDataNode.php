@@ -31,7 +31,7 @@ class MapDataNode extends Node
 
             $items = array_chunk($children, 2);
             foreach ($items as list($key, $value)) {
-                $compiledKey = (yield $compiler->compileNode($key));
+                $compiledKey   = (yield $compiler->compileNode($key));
                 $compiledValue = (yield $compiler->compileNode($value));
 
                 $compiler->add($compiledKey->source);
@@ -39,7 +39,7 @@ class MapDataNode extends Node
                 $compiler->add($compiledValue->source);
                 $compiler->add(', ');
             }
-            $compiledKey = (yield $compiler->compileNode($lastKey));
+            $compiledKey   = (yield $compiler->compileNode($lastKey));
             $compiledValue = (yield $compiler->compileNode($lastValue));
 
             $compiler->add($compiledKey->source);
