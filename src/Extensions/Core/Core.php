@@ -209,6 +209,7 @@ class Core extends Extension
         $endOfExpression = TokenParser::create(Token::EOF);
 
         $expression = new ParserReference($parserContainer, 'expression');
+        $operand = new ParserReference($parserContainer, 'operand');
 
         //Other parsers
         $mapParser = function ($separatorSymbol) use ($expression, $comma) {
@@ -273,7 +274,7 @@ class Core extends Extension
             ->followedBy($closingParenthesis)
             ->process($returnArgument(1));
 
-        $operand = $identifier
+        $operandParser = $identifier
             ->orA($constantData)
             ->orA($constantString)
             ->orA($arrayDefinition)
@@ -302,7 +303,7 @@ class Core extends Extension
         $identifier->process($returnNode(IdentifierNode::class));
         $constantData->process($returnNode(DataNode::class));
         $constantString->process($returnNode(StringNode::class));
-        $operand->process([$parser, 'pushOperand']);
+        $operandParser->process([$parser, 'pushOperand']);
 
         $arrayDefinition->process(
             function (array $children) {
@@ -399,6 +400,7 @@ class Core extends Extension
                 }
             );
 
+        $parserContainer->set('operand', $operandParser);
         $parserContainer->set('expression', $expressionParser);
         $parserContainer->set('program', $program);
 
