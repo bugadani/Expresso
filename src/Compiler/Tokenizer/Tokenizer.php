@@ -7,27 +7,14 @@ use Expresso\Compiler\Tokenizer\TokenStream;
 
 class Tokenizer
 {
-    private static $punctuation = [
-        ','  => ',',
-        '['  => '[',
-        ']'  => ']',
-        '('  => '(',
-        ')'  => ')',
-        '{'  => '{',
-        '}'  => '}',
-        ':'  => ':',
-        '?'  => '?',
-        '\\' => '\\',
-        '=>' => '=>'
-    ];
-
     private $operators;
+    private $symbols;
     private $expressionPartsPattern;
 
-    public function __construct(array $operatorSymbols)
+    public function __construct(array $operatorSymbols, array $symbols)
     {
         $this->operators = array_combine($operatorSymbols, $operatorSymbols);
-
+        $this->symbols = array_combine($symbols, $symbols);
         $this->expressionPartsPattern = $this->getExpressionPartsPattern();
     }
 
@@ -50,7 +37,7 @@ class Tokenizer
                 }
             )
         );
-        $iterator->append(new \ArrayIterator(self::$punctuation));
+        $iterator->append(new \ArrayIterator($this->symbols));
 
         foreach ($iterator as $symbol) {
             $length = strlen($symbol);
@@ -125,8 +112,8 @@ class Tokenizer
 
     public function createToken($part)
     {
-        if (isset(self::$punctuation[ $part ])) {
-            $token = new Token(Token::PUNCTUATION, $part);
+        if (isset($this->symbols[ $part ])) {
+            $token = new Token(Token::SYMBOL, $part);
         } else if (isset($this->operators[ $part ])) {
             $token = new Token(Token::OPERATOR, $part);
         } else if (is_numeric($part)) {

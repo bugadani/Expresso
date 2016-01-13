@@ -9,7 +9,7 @@ class TokenizerTest extends \PHPUnit_Framework_TestCase
 {
     public function testLineNumbers()
     {
-        $tokenizer = new Tokenizer(['+', '-']);
+        $tokenizer = new Tokenizer(['+', '-'], []);
 
         $stream = $tokenizer->tokenize("a + b - c\n  d");
 

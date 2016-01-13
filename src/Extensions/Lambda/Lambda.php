@@ -11,15 +11,12 @@ use Expresso\Compiler\Tokenizer\Token;
 use Expresso\Extension;
 use Expresso\Extensions\Core\Core;
 use Expresso\Extensions\Lambda\Nodes\LambdaNode;
-use Expresso\Extensions\Lambda\Operators\Binary\LambdaOperator;
 
 class Lambda extends Extension
 {
-    public function getBinaryOperators()
+    public function getSymbols()
     {
-        return [
-            new LambdaOperator(0)
-        ];
+        return ['->', '(', ')', '\\'];
     }
 
     public function addParsers(OperatorParser $parser, CompilerConfiguration $configuration)
@@ -33,11 +30,11 @@ class Lambda extends Extension
         };
 
         $argumentName       = TokenParser::create(Token::IDENTIFIER);
-        $comma              = TokenParser::create(Token::PUNCTUATION, ',');
-        $openingParenthesis = TokenParser::create(Token::PUNCTUATION, '(');
-        $closingParenthesis = TokenParser::create(Token::PUNCTUATION, ')');
-        $arrowOperator      = TokenParser::create(Token::OPERATOR, '->');
-        $lambdaPrefix       = TokenParser::create(Token::PUNCTUATION, '\\');
+        $comma              = TokenParser::create(Token::SYMBOL, ',');
+        $openingParenthesis = TokenParser::create(Token::SYMBOL, '(');
+        $closingParenthesis = TokenParser::create(Token::SYMBOL, ')');
+        $arrowOperator      = TokenParser::create(Token::SYMBOL, '->');
+        $lambdaPrefix       = TokenParser::create(Token::SYMBOL, '\\');
         $singleArgument     = TokenParser::create(Token::IDENTIFIER);
 
         $argList = $openingParenthesis

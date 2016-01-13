@@ -59,6 +59,11 @@ abstract class Extension
         return [];
     }
 
+    public function getSymbols()
+    {
+        return [];
+    }
+
     /**
      * Set up language extensions
      *

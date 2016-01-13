@@ -38,6 +38,11 @@ class CompilerConfiguration
      */
     private $functions;
 
+    /**
+     * @var string[]
+     */
+    private $symbols = [];
+
     public function __construct()
     {
         $this->binaryOperators  = new OperatorCollection();
@@ -54,6 +59,8 @@ class CompilerConfiguration
         $this->addOperators($this->prefixOperators, $ext->getPrefixUnaryOperators());
         $this->addOperators($this->unaryOperators, $ext->getPostfixUnaryOperators());
         $this->addOperators($this->ternaryOperators, $ext->getTernaryOperators());
+
+        $this->symbols = array_unique(array_merge($this->symbols, $ext->getSymbols()));
 
         foreach ($ext->getFunctions() as $function) {
             $this->functions[ $function->getName() ] = $function;
@@ -117,5 +124,10 @@ class CompilerConfiguration
     public function getFunctions()
     {
         return $this->functions;
+    }
+
+    public function getSymbols()
+    {
+        return $this->symbols;
     }
 }

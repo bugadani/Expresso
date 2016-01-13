@@ -148,6 +148,11 @@ class Core extends Extension
         ];
     }
 
+    public function getSymbols()
+    {
+        return [',', '[', ']', '(', ')', '{', '}', ':', '?', '\\', '=>'];
+    }
+
     public function addParsers(OperatorParser $parser, CompilerConfiguration $configuration)
     {
         $parserContainer = $parser->getParserContainer();
@@ -181,15 +186,15 @@ class Core extends Extension
         };
 
         //Primitive parsers
-        $comma        = TokenParser::create(Token::PUNCTUATION, ',');
-        $semicolon    = TokenParser::create(Token::PUNCTUATION, ':');
-        $questionMark = TokenParser::create(Token::PUNCTUATION, '?');
+        $comma        = TokenParser::create(Token::SYMBOL, ',');
+        $semicolon    = TokenParser::create(Token::SYMBOL, ':');
+        $questionMark = TokenParser::create(Token::SYMBOL, '?');
 
-        $openingSquareBracket  = TokenParser::create(Token::PUNCTUATION, '[');
-        $closingSquareBrackets = TokenParser::create(Token::PUNCTUATION, ']');
+        $openingSquareBracket  = TokenParser::create(Token::SYMBOL, '[');
+        $closingSquareBrackets = TokenParser::create(Token::SYMBOL, ']');
 
-        $openingParenthesis = TokenParser::create(Token::PUNCTUATION, '(');
-        $closingParenthesis = TokenParser::create(Token::PUNCTUATION, ')');
+        $openingParenthesis = TokenParser::create(Token::SYMBOL, '(');
+        $closingParenthesis = TokenParser::create(Token::SYMBOL, ')');
 
         $prefixParser  = TokenParser::create(Token::OPERATOR, [$prefixOperators, 'isOperator'])
                                     ->process($pushOperator($prefixOperators));
@@ -207,7 +212,7 @@ class Core extends Extension
 
         //Other parsers
         $mapParser = function ($separatorSymbol) use ($expression, $comma) {
-            $separator = TokenParser::create(Token::PUNCTUATION, $separatorSymbol);
+            $separator = TokenParser::create(Token::SYMBOL, $separatorSymbol);
 
             return $separator
                 ->followedBy($expression)
@@ -275,9 +280,9 @@ class Core extends Extension
             ->orA($groupedExpression);
 
         $term = $prefixOperatorSequence->optional()
-            ->followedBy($operand)
-            ->followedBy($dereferenceSequence->optional())
-            ->followedBy($postfixOperatorSequence->optional());
+                                       ->followedBy($operand)
+                                       ->followedBy($dereferenceSequence->optional())
+                                       ->followedBy($postfixOperatorSequence->optional());
 
         $binaryExpression = $term->repeatSeparatedBy($binaryParser);
 
@@ -321,7 +326,7 @@ class Core extends Extension
                     $isMap = false;
                 } else {
                     $isMap = ($array[0] instanceof Token
-                              && $array[0]->test(Token::PUNCTUATION, [':', '=>']));
+                              && $array[0]->test(Token::SYMBOL, [':', '=>']));
                 }
 
                 if ($isMap) {

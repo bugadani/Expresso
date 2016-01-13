@@ -8,16 +8,16 @@ class Token
     const STRING = 1;
     const IDENTIFIER = 2;
     const OPERATOR = 3;
-    const PUNCTUATION = 4;
+    const SYMBOL = 4;
     const EOF = 5;
 
     private static $strings = [
-        self::CONSTANT    => 'LITERAL',
-        self::STRING      => 'STRING',
-        self::IDENTIFIER  => 'IDENTIFIER',
-        self::OPERATOR    => 'OPERATOR',
-        self::PUNCTUATION => 'PUNCTUATION',
-        self::EOF         => 'EOF',
+        self::CONSTANT   => 'LITERAL',
+        self::STRING     => 'STRING',
+        self::IDENTIFIER => 'IDENTIFIER',
+        self::OPERATOR   => 'OPERATOR',
+        self::SYMBOL     => 'SYMBOL',
+        self::EOF        => 'EOF',
     ];
 
     private $type;

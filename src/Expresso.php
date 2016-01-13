@@ -68,7 +68,7 @@ class Expresso
                 $this->configuration->addExtension($extension);
             }
 
-            $this->tokenizer = new Tokenizer($this->configuration->getOperatorSymbols());
+            $this->tokenizer = new Tokenizer($this->configuration->getOperatorSymbols(), $this->configuration->getSymbols());
         }
 
         return $this->tokenizer;
