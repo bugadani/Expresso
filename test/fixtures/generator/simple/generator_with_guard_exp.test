@@ -1,6 +1,6 @@
 --TEST--
 Test basic generator syntax
 --EXPRESSION--
-{ x * 2 ; x <- [1, 2, 3] }|join(', ')
+{ x * 2 ; x <- [1, 2, 3], where x is odd }|join(', ')
 --EXPECT--
 2, 6

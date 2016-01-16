@@ -43,7 +43,7 @@ class Generator extends Extension
         $filterExpression = $keyword('where')
             ->followedBy($expression);
 
-        $returnArgument  = function ($index) {
+        $returnArgument = function ($index) {
             return function (array $children) use ($index) {
                 return $children[ $index ];
             };
@@ -66,9 +66,21 @@ class Generator extends Extension
             ->followedBy($closingBraces)
             ->process(
                 function (array $children) {
-                    list($opBrace, $funcBody, $argumentOrFilterList, $closingBrace) = $children;
+                    list($opBrace, $funcBody, $generatorBranches, $closingBrace) = $children;
 
+                    foreach ($generatorBranches as $argumentOrFilterList) {
+                        foreach ($argumentOrFilterList as $argumentOrFilter) {
 
+                            $isFilter = $argumentOrFilter[0] instanceof Token
+                                        && $argumentOrFilter[0]->test(Token::IDENTIFIER, 'where');
+
+                            if ($isFilter) {
+                                //filter
+                            } else {
+                                //generator def
+                            }
+                        }
+                    }
                 }
             );
 
