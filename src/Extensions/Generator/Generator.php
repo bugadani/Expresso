@@ -8,6 +8,9 @@ use Expresso\Compiler\Parser\Parsers\TokenParser;
 use Expresso\Compiler\Tokenizer\Token;
 use Expresso\Extension;
 use Expresso\Extensions\Core\Core;
+use Expresso\Extensions\Generator\Generator\Branch;
+use Expresso\Extensions\Generator\Generator\GeneratorObject;
+use Expresso\Extensions\Generator\Nodes\GeneratorNode;
 use Expresso\Extensions\Lambda\Lambda;
 
 class Generator extends Extension
@@ -68,7 +71,10 @@ class Generator extends Extension
                 function (array $children) {
                     list($opBrace, $funcBody, $generatorBranches, $closingBrace) = $children;
 
+                    $generator = new GeneratorObject();
+
                     foreach ($generatorBranches as $argumentOrFilterList) {
+                        $branch = new Branch();
                         foreach ($argumentOrFilterList as $argumentOrFilter) {
 
                             $isFilter = $argumentOrFilter[0] instanceof Token
@@ -76,11 +82,20 @@ class Generator extends Extension
 
                             if ($isFilter) {
                                 //filter
+                                $part = new Filter($argumentOrFilter[1]);
                             } else {
                                 //generator def
+                                list($argument, , $source) = $argumentOrFilter;
+                                $part = new ArgumentDefinition($argument, $source);
                             }
+
+                            $branch->addPart($part);
                         }
+
+                        $generator->addBranch($branch);
                     }
+
+                    return new GeneratorNode($funcBody, $generator);
                 }
             );
 
