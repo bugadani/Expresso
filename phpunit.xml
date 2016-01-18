@@ -14,7 +14,7 @@
         >
     <testsuites>
         <testsuite name="Expresso Test Suite">
-            <directory>./test/</directory>
+            <directory suffix=".php">./test/</directory>
         </testsuite>
     </testsuites>
 </phpunit>

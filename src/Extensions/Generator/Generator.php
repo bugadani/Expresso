@@ -81,15 +81,17 @@ class Generator extends Extension
                                         && $argumentOrFilter[0]->test(Token::IDENTIFIER, 'where');
 
                             if ($isFilter) {
-                                //filter
-                                $part = new Filter($argumentOrFilter[1]);
+
+                                $filter = new Filter($argumentOrFilter[1]);
+                                $branch->addFilter($filter);
+
                             } else {
                                 //generator def
                                 list($argument, , $source) = $argumentOrFilter;
-                                $part = new ArgumentDefinition($argument, $source);
+                                $argumentDefinition = new ArgumentDefinition($argument, $source);
+                                $branch->addArgument($argumentDefinition);
                             }
 
-                            $branch->addPart($part);
                         }
 
                         $generator->addBranch($branch);

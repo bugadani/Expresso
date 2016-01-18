@@ -2,12 +2,12 @@
 
 namespace Expresso\Extensions\Generator\Generator;
 
-class GeneratorObject
-{
-    private $branches = [];
+use Expresso\Extensions\Generator\Generator\Iterators\ParallelIterator;
 
+class GeneratorObject extends ParallelIterator
+{
     public function addBranch(Branch $branch)
     {
-        $this->branches[] = $branch;
+        $this->addIterator($branch);
     }
 }

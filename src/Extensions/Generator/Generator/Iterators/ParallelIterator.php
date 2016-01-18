@@ -1,6 +1,6 @@
 <?php
 
-namespace Expresso\Extensions\Generator\Generator;
+namespace Expresso\Extensions\Generator\Generator\Iterators;
 
 class ParallelIterator implements \Iterator
 {
@@ -16,15 +16,20 @@ class ParallelIterator implements \Iterator
      * @var int
      */
     private $operationMode;
+    private $index;
 
     public function __construct($operationMode = self::FIRST_FINISH)
     {
         $this->operationMode = $operationMode;
     }
 
-    public function addIterator(\Iterator $iterator)
+    public function addIterator(\Iterator $iterator, $key = null)
     {
-        $this->iterators[] = $iterator;
+        if ($key === null) {
+            $this->iterators[] = $iterator;
+        } else {
+            $this->iterators[ $key ] = $iterator;
+        }
     }
 
     /**
@@ -37,11 +42,11 @@ class ParallelIterator implements \Iterator
     public function current()
     {
         $values = [];
-        foreach ($this->iterators as $iterator) {
+        foreach ($this->iterators as $key => $iterator) {
             if ($iterator->valid()) {
-                $values[] = $iterator->current();
+                $values[ $key ] = $iterator->current();
             } else {
-                $values[] = null;
+                $values[ $key ] = null;
             }
         }
 
@@ -71,16 +76,7 @@ class ParallelIterator implements \Iterator
      */
     public function key()
     {
-        $keys = [];
-        foreach ($this->iterators as $iterator) {
-            if ($iterator->valid()) {
-                $keys[] = $iterator->key();
-            } else {
-                $keys[] = null;
-            }
-        }
 
-        return $keys;
     }
 
     /**
@@ -124,5 +120,6 @@ class ParallelIterator implements \Iterator
         foreach ($this->iterators as $iterator) {
             $iterator->rewind();
         }
+        $this->index = 0;
     }
 }
