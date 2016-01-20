@@ -8,8 +8,6 @@ use Expresso\Compiler\Parser\Parsers\TokenParser;
 use Expresso\Compiler\Tokenizer\Token;
 use Expresso\Extension;
 use Expresso\Extensions\Core\Core;
-use Expresso\Extensions\Generator\Generator\Branch;
-use Expresso\Extensions\Generator\Generator\GeneratorObject;
 use Expresso\Extensions\Generator\Nodes\GeneratorArgumentNode;
 use Expresso\Extensions\Generator\Nodes\GeneratorBranchNode;
 use Expresso\Extensions\Generator\Nodes\GeneratorFilterNode;

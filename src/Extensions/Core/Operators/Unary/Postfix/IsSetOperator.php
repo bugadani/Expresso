@@ -3,10 +3,7 @@
 namespace Expresso\Extensions\Core\Operators\Unary\Postfix;
 
 use Expresso\Compiler\Compiler\Compiler;
-use Expresso\Compiler\Compiler\CompilerConfiguration;
 use Expresso\Compiler\Node;
-use Expresso\Compiler\Nodes\DataNode;
-use Expresso\Compiler\Nodes\IdentifierNode;
 use Expresso\Compiler\Nodes\UnaryOperatorNode;
 use Expresso\Compiler\Operators\UnaryOperator;
 use Expresso\EvaluationContext;

@@ -209,7 +209,7 @@ class Core extends Extension
         $endOfExpression = TokenParser::create(Token::EOF);
 
         $expression = new ParserReference($parserContainer, 'expression');
-        $operand = new ParserReference($parserContainer, 'operand');
+        $operand    = new ParserReference($parserContainer, 'operand');
 
         //Other parsers
         $mapParser = function ($separatorSymbol) use ($expression, $comma) {
@@ -422,7 +422,7 @@ class Core extends Extension
 }
 
 /**
- * @param int $start
+ * @param int      $start
  * @param int|null $end
  *
  * @return \Generator

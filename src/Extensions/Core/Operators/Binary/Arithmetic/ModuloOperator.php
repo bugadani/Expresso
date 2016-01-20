@@ -24,8 +24,8 @@ class ModuloOperator extends BinaryOperator
 
     /**
      * @param Compiler $compiler
-     * @param $leftSource
-     * @param $rightSource
+     * @param          $leftSource
+     * @param          $rightSource
      */
     protected function compileSimple(Compiler $compiler, $leftSource, $rightSource)
     {
