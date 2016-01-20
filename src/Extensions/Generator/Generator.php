@@ -10,6 +10,9 @@ use Expresso\Extension;
 use Expresso\Extensions\Core\Core;
 use Expresso\Extensions\Generator\Generator\Branch;
 use Expresso\Extensions\Generator\Generator\GeneratorObject;
+use Expresso\Extensions\Generator\Nodes\GeneratorArgumentNode;
+use Expresso\Extensions\Generator\Nodes\GeneratorBranchNode;
+use Expresso\Extensions\Generator\Nodes\GeneratorFilterNode;
 use Expresso\Extensions\Generator\Nodes\GeneratorNode;
 use Expresso\Extensions\Lambda\Lambda;
 
@@ -71,10 +74,10 @@ class Generator extends Extension
                 function (array $children) {
                     list($opBrace, $funcBody, $generatorBranches, $closingBrace) = $children;
 
-                    $generator = new GeneratorObject();
+                    $node = new GeneratorNode($funcBody);
 
                     foreach ($generatorBranches as $argumentOrFilterList) {
-                        $branch = new Branch();
+                        $branch = new GeneratorBranchNode();
                         foreach ($argumentOrFilterList as $argumentOrFilter) {
 
                             $isFilter = $argumentOrFilter[0] instanceof Token
@@ -82,22 +85,23 @@ class Generator extends Extension
 
                             if ($isFilter) {
 
-                                $filter = new Filter($argumentOrFilter[1]);
+                                $filter = new GeneratorFilterNode($argumentOrFilter[1]);
                                 $branch->addFilter($filter);
 
                             } else {
                                 //generator def
+                                //second element is the arrow symbol
                                 list($argument, , $source) = $argumentOrFilter;
-                                $argumentDefinition = new ArgumentDefinition($argument, $source);
+                                $argumentDefinition = new GeneratorArgumentNode($argument, $source);
                                 $branch->addArgument($argumentDefinition);
                             }
 
                         }
 
-                        $generator->addBranch($branch);
+                        $node->addBranch($branch);
                     }
 
-                    return new GeneratorNode($funcBody, $generator);
+                    return $node;
                 }
             );
 

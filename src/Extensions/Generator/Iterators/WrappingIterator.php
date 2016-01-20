@@ -1,10 +1,13 @@
 <?php
 
-namespace Expresso\Extensions\Generator\Generator\Iterators;
+namespace Expresso\Extensions\Generator\Iterators;
 
 /**
  * WrappingIterator implements a method for iterators to wrap around if one finishes, similarly to a
  * metering device. If the inner most iterator is done, it is reset and the next one is moved to its next element.
+ *
+ * This will function as a pair of MultipleIterator which iterates in a parallel way; this one
+ * iterates elements in a serial way.
  *
  * @package Expresso\Extensions\Generator\Generator\Iterators
  */

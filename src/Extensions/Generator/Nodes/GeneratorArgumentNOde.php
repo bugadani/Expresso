@@ -5,19 +5,9 @@ namespace Expresso\Extensions\Generator\Nodes;
 use Expresso\Compiler\Compiler\Compiler;
 use Expresso\Compiler\Node;
 use Expresso\EvaluationContext;
-use Expresso\Extensions\Generator\Generator\GeneratorObject;
 
-class GeneratorNode extends Node
+class GeneratorArgumentNode extends Node
 {
-
-    /**
-     * GeneratorNode constructor.
-     *
-     * @param Node $funcBody
-     */
-    public function __construct(Node $funcBody)
-    {
-    }
 
     public function compile(Compiler $compiler)
     {
