@@ -5,17 +5,9 @@ namespace Expresso\Extensions\Generator\Nodes;
 use Expresso\Compiler\Compiler\Compiler;
 use Expresso\Compiler\Node;
 use Expresso\EvaluationContext;
+use Expresso\Extensions\Lambda\Nodes\LambdaNode;
 
-class GeneratorFilterNode extends Node
+class GeneratorFilterNode extends LambdaNode
 {
 
-    public function compile(Compiler $compiler)
-    {
-        // TODO: Implement compile() method.
-    }
-
-    public function evaluate(EvaluationContext $context)
-    {
-        // TODO: Implement evaluate() method.
-    }
 }
