@@ -12,7 +12,11 @@ class GeneratorBranchNode extends Node
     /**
      * @var GeneratorArgumentNode[]
      */
-    private $arguments     = [];
+    private $arguments = [];
+
+    /**
+     * @var Node[]
+     */
     private $filters       = [];
     private $argumentNames = [];
 
@@ -24,48 +28,31 @@ class GeneratorBranchNode extends Node
     public function evaluate(EvaluationContext $context)
     {
         $iterator = new WrappingIterator();
-        if (count($this->arguments) > 1) {
-            foreach ($this->arguments as $argument) {
-                $iterator->addIterator(yield $argument->evaluate($context), $argument->getArgumentName());
-            }
-        } else {
-            $value = (yield $this->arguments[0]->evaluate($context));
+
+        foreach ($this->arguments as $argument) {
+            $value = (yield $argument->evaluate($context));
             if (is_array($value)) {
                 $value = new \ArrayIterator($value);
             }
-            $iterator->addIterator($value);
+            $iterator->addIterator($value, $argument->getArgumentName());
         }
 
-        //TODO: a filter should receive all arguments defined in current branch
-        //as well as the outer context
-        $filterCount = count($this->filters);
-        switch ($filterCount) {
-            case 0:
-                break;
-            case 1:
-                $iterator = new \CallbackFilterIterator(
-                    $iterator,
-                    yield $this->filters[0]
-                );
-                break;
-            default:
-                $filters = [];
-                foreach ($this->filters as $filter) {
-                    $filters[] = (yield ($filter->evaluate($context)));
+        if (count($this->filters) > 0) {
+            $filters = [];
+            foreach ($this->filters as $filter) {
+                $filters[] = (yield $filter->evaluate($context));
+            }
+
+            $callback = function ($x) use ($filters) {
+                foreach ($filters as $filter) {
+                    if (!$filter($x)) {
+                        return false;
+                    }
                 }
 
-                $iterator = new \CallbackFilterIterator(
-                    $iterator,
-                    function ($x) use ($filters) {
-                        foreach ($filters as $filter) {
-                            if (!$filter($x)) {
-                                return false;
-                            }
-                        }
-
-                        return true;
-                    }
-                );
+                return true;
+            };
+            $iterator = new \CallbackFilterIterator($iterator, $callback);
         }
         yield $iterator;
     }

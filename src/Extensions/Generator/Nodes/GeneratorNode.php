@@ -36,18 +36,28 @@ class GeneratorNode extends Node
 
     public function evaluate(EvaluationContext $context)
     {
-        $argumentNames = $this->branches[0]->getArgumentNames();
-        $iterator      = (yield $this->branches[0]->evaluate($context));
+        $iterator = new \MultipleIterator();
+
+        $argumentNames = [];
+
+        foreach ($this->branches as $branch) {
+            $argumentNames[] = $branch->getArgumentNames();
+            $iterator->attachIterator(yield $branch->evaluate($context));
+        }
 
         $generator = function () use ($context, $iterator, $argumentNames) {
             foreach ($iterator as $arguments) {
-                $args = [];
-                foreach ($arguments as $idx => $argument) {
-                    $args[ $argumentNames[ $idx ] ] = $argument;
+                $generatorArguments = [];
+                foreach ($arguments as $idx => $branchArguments) {
+                    foreach ($argumentNames[ $idx ] as $argumentName) {
+                        $generatorArguments[ $argumentName ] = $branchArguments[ $argumentName ];
+                    }
                 }
-                $innerContext = $context->createInnerScope($args);
+                $innerContext = $context->createInnerScope($generatorArguments);
 
-                yield GeneratorHelper::executeGeneratorsRecursive($this->functionBody->evaluate($innerContext));
+                yield GeneratorHelper::executeGeneratorsRecursive(
+                    $this->functionBody->evaluate($innerContext)
+                );
             }
         };
         yield new \IteratorIterator($generator());
