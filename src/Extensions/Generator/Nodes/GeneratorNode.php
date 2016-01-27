@@ -31,36 +31,48 @@ class GeneratorNode extends Node
 
     public function compile(Compiler $compiler)
     {
-        // TODO: Implement compile() method.
+        /* $branches = [];
+
+         foreach ($this->branches as $branch) {
+             $branches[] = (yield $compiler->compile($branch));
+         }
+ */
+
     }
 
     public function evaluate(EvaluationContext $context)
     {
-        $iterator = new \MultipleIterator();
+        if (count($this->branches) === 1) {
+            $branch   = reset($this->branches);
+            $iterator = (yield $branch->evaluate($context));
 
-        $argumentNames = [];
+            $createContext = [$context, 'createInnerScope'];
 
-        foreach ($this->branches as $branch) {
-            $argumentNames[] = $branch->getArgumentNames();
-            $iterator->attachIterator(yield $branch->evaluate($context));
+        } else {
+
+            $iterator = new \MultipleIterator();
+            foreach ($this->branches as $branch) {
+                $iterator->attachIterator(yield $branch->evaluate($context));
+            }
+
+            $createContext = function ($arguments) use($context) {
+                $generatorArguments = [];
+                foreach ($arguments as $branchArguments) {
+                    $generatorArguments += $branchArguments;
+                }
+
+                return $context->createInnerScope($generatorArguments);
+            };
         }
 
-        $generator = function () use ($context, $iterator, $argumentNames) {
+        $generator = function ($iterator) use ($createContext) {
             foreach ($iterator as $arguments) {
-                $generatorArguments = [];
-                foreach ($arguments as $idx => $branchArguments) {
-                    foreach ($argumentNames[ $idx ] as $argumentName) {
-                        $generatorArguments[ $argumentName ] = $branchArguments[ $argumentName ];
-                    }
-                }
-                $innerContext = $context->createInnerScope($generatorArguments);
-
                 yield GeneratorHelper::executeGeneratorsRecursive(
-                    $this->functionBody->evaluate($innerContext)
+                    $this->functionBody->evaluate($createContext($arguments))
                 );
             }
         };
-        yield new \IteratorIterator($generator());
+        yield new \IteratorIterator($generator($iterator));
     }
 
     /**
