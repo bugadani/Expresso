@@ -2,8 +2,6 @@
 
 namespace Expresso\Compiler\Compiler;
 
-use Expresso\Compiler\Compiler\CompilerConfiguration;
-use Expresso\Compiler\Compiler\CompilerContext;
 use Expresso\Compiler\Node;
 use Expresso\Compiler\Utils\GeneratorHelper;
 
@@ -49,13 +47,18 @@ class Compiler
         return $this;
     }
 
-    public function addTempVariable(CompilerContext $context)
+    public function addContextAsTempVariable(CompilerContext $context)
+    {
+        return $this->addTempVariable($context->source);
+    }
+
+    public function addTempVariable($source)
     {
         $num = $this->tempVariableCount++;
 
         $tempVarName = "\$tempVar_{$num}";
 
-        $this->context->tempVariables[ $tempVarName ] = $context->source;
+        $this->context->tempVariables[ $tempVarName ] = $source;
 
         return $tempVarName;
     }
@@ -115,8 +118,7 @@ class Compiler
 
     public function compileNode(Node $node)
     {
-        $this->contextStack->push($this->context);
-        $this->context = new CompilerContext();
+        $this->pushContext();
 
         return $node->compile($this);
     }
@@ -130,14 +132,7 @@ class Compiler
 
         GeneratorHelper::executeGeneratorsRecursive(
             $generator,
-            function () {
-                $context       = $this->context;
-                $this->context = $this->contextStack->pop();
-
-                $this->context->tempVariables += $context->tempVariables;
-
-                return $context;
-            }
+            [$this, 'popContext']
         );
 
         return $this->context->source;
@@ -149,5 +144,21 @@ class Compiler
     public function getContext()
     {
         return $this->context;
+    }
+
+    public function pushContext()
+    {
+        $this->contextStack->push($this->context);
+        $this->context = new CompilerContext();
+    }
+
+    public function popContext()
+    {
+        $context       = $this->context;
+        $this->context = $this->contextStack->pop();
+
+        $this->context->tempVariables += $context->tempVariables;
+
+        return $context;
     }
 }

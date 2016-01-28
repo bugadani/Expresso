@@ -4,7 +4,6 @@ namespace Expresso\Extensions\Generator\Nodes;
 
 use Expresso\Compiler\Compiler\Compiler;
 use Expresso\Compiler\Node;
-use Expresso\Compiler\Utils\GeneratorHelper;
 use Expresso\EvaluationContext;
 
 class GeneratorNode extends Node
@@ -15,9 +14,9 @@ class GeneratorNode extends Node
     private $branches = [];
 
     /**
-     * @var Node
+     * @var GeneratorBodyNode
      */
-    private $functionBody;
+    private $functionBodyNode;
 
     /**
      * GeneratorNode constructor.
@@ -26,27 +25,63 @@ class GeneratorNode extends Node
      */
     public function __construct(Node $functionBody)
     {
-        $this->functionBody = $functionBody;
+        $this->functionBodyNode = $functionBody;
     }
 
     public function compile(Compiler $compiler)
     {
-        /* $branches = [];
+        $compiler->pushContext();
 
-         foreach ($this->branches as $branch) {
-             $branches[] = (yield $compiler->compile($branch));
-         }
- */
+        $compiler->add('function() use($context) {');
 
+        $branchVariables = [];
+        foreach ($this->branches as $branch) {
+            $compiledBranch    = (yield $compiler->compileNode($branch));
+            $branchVariables[] = $compiler->addContextAsTempVariable($compiledBranch);
+        }
+
+        $compiledTransform = (yield $compiler->compileNode($this->functionBodyNode));
+        $transformVarName  = $compiler->addContextAsTempVariable($compiledTransform);
+
+        if (count($this->branches) !== 1) {
+            $compiler->add('$iterator = new \MultipleIterator();');
+            $transformVarName = $compiler->addTempVariable(
+                "function(\$arguments) use({$transformVarName}) {
+                    \$generatorArguments = [];
+                    foreach (\$arguments as \$branchArguments) {
+                        \$generatorArguments += \$branchArguments;
+                    }
+                    return {$transformVarName}(\$generatorArguments);
+                }"
+            );
+
+            $compiler->compileTempVariables();
+            foreach ($branchVariables as $branchVarName) {
+                $compiler->add("\$iterator->attachIterator({$branchVarName});");
+            }
+        } else {
+            $compiler->compileTempVariables();
+            $compiler->add("\$iterator = {$branchVariables[0]};");
+        }
+
+        $compiler->add("foreach (\$iterator as \$element) {yield {$transformVarName}(\$element);}");
+        $compiler->add('}');
+
+        $context = $compiler->popContext();
+
+        $varName = $compiler->addContextAsTempVariable($context);
+
+        $compiler->add("{$varName}()");
     }
 
     public function evaluate(EvaluationContext $context)
     {
+        $transformFunction = (yield $this->functionBodyNode->evaluate($context));
         if (count($this->branches) === 1) {
             $branch   = reset($this->branches);
             $iterator = (yield $branch->evaluate($context));
 
-            $createContext = [$context, 'createInnerScope'];
+            $createContext = null;
 
         } else {
 
@@ -55,21 +90,25 @@ class GeneratorNode extends Node
                 $iterator->attachIterator(yield $branch->evaluate($context));
             }
 
-            $createContext = function ($arguments) use($context) {
+            $createContext = function ($arguments) use ($context) {
                 $generatorArguments = [];
                 foreach ($arguments as $branchArguments) {
                     $generatorArguments += $branchArguments;
                 }
 
-                return $context->createInnerScope($generatorArguments);
+                return $generatorArguments;
             };
         }
 
-        $generator = function ($iterator) use ($createContext) {
-            foreach ($iterator as $arguments) {
-                yield GeneratorHelper::executeGeneratorsRecursive(
-                    $this->functionBody->evaluate($createContext($arguments))
-                );
+        $generator = function ($iterator) use ($createContext, $transformFunction) {
+            if ($createContext !== null) {
+                foreach ($iterator as $arguments) {
+                    yield $transformFunction($createContext($arguments));
+                }
+            } else {
+                foreach ($iterator as $arguments) {
+                    yield $transformFunction($arguments);
+                }
             }
         };
         yield new \IteratorIterator($generator($iterator));

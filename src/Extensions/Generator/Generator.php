@@ -9,6 +9,7 @@ use Expresso\Compiler\Tokenizer\Token;
 use Expresso\Extension;
 use Expresso\Extensions\Core\Core;
 use Expresso\Extensions\Generator\Nodes\GeneratorArgumentNode;
+use Expresso\Extensions\Generator\Nodes\GeneratorBodyNode;
 use Expresso\Extensions\Generator\Nodes\GeneratorBranchNode;
 use Expresso\Extensions\Generator\Nodes\GeneratorFilterNode;
 use Expresso\Extensions\Generator\Nodes\GeneratorNode;
@@ -72,7 +73,7 @@ class Generator extends Extension
                 function (array $children) {
                     list($opBrace, $funcBody, $generatorBranches, $closingBrace) = $children;
 
-                    $node = new GeneratorNode($funcBody);
+                    $node = new GeneratorNode(new GeneratorBodyNode($funcBody));
 
                     foreach ($generatorBranches as $argumentOrFilterList) {
                         $branch = new GeneratorBranchNode();

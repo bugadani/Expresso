@@ -4,7 +4,6 @@ namespace Expresso\Extensions\Generator\Nodes;
 
 use Expresso\Compiler\Compiler\Compiler;
 use Expresso\Compiler\Node;
-use Expresso\Compiler\Nodes\IdentifierNode;
 use Expresso\Compiler\Tokenizer\Token;
 use Expresso\EvaluationContext;
 
@@ -22,13 +21,14 @@ class GeneratorArgumentNode extends Node
 
     public function __construct(Token $argumentName, Node $sourceExpression)
     {
-        $this->argumentName = $argumentName->getValue();
+        $this->argumentName     = $argumentName->getValue();
         $this->sourceExpression = $sourceExpression;
     }
 
     public function compile(Compiler $compiler)
     {
-        // TODO: Implement compile() method.
+        $compiledArgument = (yield $compiler->compileNode($this->sourceExpression));
+        $compiler->add($compiledArgument->source);
     }
 
     public function evaluate(EvaluationContext $context)

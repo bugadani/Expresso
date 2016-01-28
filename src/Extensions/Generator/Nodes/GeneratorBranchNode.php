@@ -22,7 +22,27 @@ class GeneratorBranchNode extends Node
 
     public function compile(Compiler $compiler)
     {
-        // TODO: Implement compile() method.
+        $iteratorVariable = $compiler->addTempVariable('new ' . WrappingIterator::class);
+
+        $arguments = [];
+        foreach ($this->arguments as $argument) {
+            $compiledArgumentNode                      = (yield $compiler->compileNode($argument));
+            $argVarName                                = $compiler->addContextAsTempVariable($compiledArgumentNode);
+            $arguments[ $argument->getArgumentName() ] = $argVarName;
+        }
+
+        foreach ($arguments as $argumentName => $argVarName) {
+            $compiler->addTempVariable(
+                "{$iteratorVariable}->addIterator((is_array({$argVarName}) ? new \\ArrayIterator({$argVarName}) : {$argVarName}), '{$argumentName}')"
+            );
+        }
+
+        if(count($this->filters) > 0) {
+            //todo
+            $compiler->add($iteratorVariable);
+        } else {
+            $compiler->add($iteratorVariable);
+        }
     }
 
     public function evaluate(EvaluationContext $context)

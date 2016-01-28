@@ -45,8 +45,8 @@ abstract class BinaryOperator extends Operator
             $leftSource  = $leftOperand->source;
             $rightSource = $rightOperand->source;
         } else {
-            $leftSource  = $compiler->addTempVariable($leftOperand);
-            $rightSource = $compiler->addTempVariable($rightOperand);
+            $leftSource  = $compiler->addContextAsTempVariable($leftOperand);
+            $rightSource = $compiler->addContextAsTempVariable($rightOperand);
         }
 
         $this->compileSimple($compiler, $leftSource, $rightSource);

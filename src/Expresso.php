@@ -4,11 +4,11 @@ namespace Expresso;
 
 use Expresso\Compiler\Compiler\Compiler;
 use Expresso\Compiler\Compiler\CompilerConfiguration;
-use Expresso\Compiler\Parser\OperatorParser;
-use Expresso\Compiler\Utils\GeneratorHelper;
 use Expresso\Compiler\Node;
 use Expresso\Compiler\Nodes\ExpressionNode;
+use Expresso\Compiler\Parser\OperatorParser;
 use Expresso\Compiler\Tokenizer\Tokenizer;
+use Expresso\Compiler\Utils\GeneratorHelper;
 
 class Expresso
 {
@@ -68,7 +68,10 @@ class Expresso
                 $this->configuration->addExtension($extension);
             }
 
-            $this->tokenizer = new Tokenizer($this->configuration->getOperatorSymbols(), $this->configuration->getSymbols());
+            $this->tokenizer = new Tokenizer(
+                $this->configuration->getOperatorSymbols(),
+                $this->configuration->getSymbols()
+            );
         }
 
         return $this->tokenizer;
