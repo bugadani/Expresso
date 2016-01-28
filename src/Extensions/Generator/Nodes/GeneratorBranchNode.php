@@ -18,6 +18,10 @@ class GeneratorBranchNode extends Node
      * @var Node[]
      */
     private $filters       = [];
+
+    /**
+     * @var array
+     */
     private $argumentNames = [];
 
     public function compile(Compiler $compiler)
@@ -37,12 +41,41 @@ class GeneratorBranchNode extends Node
             );
         }
 
-        if(count($this->filters) > 0) {
-            //todo
-            $compiler->add($iteratorVariable);
-        } else {
-            $compiler->add($iteratorVariable);
+        switch (count($this->filters)) {
+            case 0:
+                break;
+            case 1:
+                $filterVar = $compiler->addContextAsTempVariable(
+                    yield $compiler->compileNode(reset($this->filters))
+                );
+
+                $iteratorVariable = $compiler->addTempVariable(
+                    "new \\CallbackFilterIterator({$iteratorVariable}, {$filterVar})"
+                );
+                break;
+            default:
+
+                $compiler->pushContext();
+                $compiler->add('function($value) use($context) {');
+                $filterVars = [];
+                foreach ($this->filters as $filter) {
+                    $filterVars[] = $compiler->addContextAsTempVariable(
+                        yield $compiler->compileNode($filter)
+                    );
+                }
+                $compiler->compileTempVariables();
+                foreach ($filterVars as $filter) {
+                    $compiler->add("if(!{$filter}(\$value)) {return false;} else \n");
+                }
+                $compiler->add('return true;}');
+                $callbackContext = $compiler->popContext();
+
+                $iteratorVariable = $compiler->addTempVariable(
+                    "new \\CallbackFilterIterator({$iteratorVariable}, {$callbackContext->source})"
+                );
+                break;
         }
+        $compiler->add($iteratorVariable);
     }
 
     public function evaluate(EvaluationContext $context)

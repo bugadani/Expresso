@@ -1,0 +1,6 @@
+--TEST--
+Test generator syntax with multiple guard expressions
+--EXPRESSION--
+{ x * 2 ; x <- [1..6], where x is even, where x < 5 }|join(', ')
+--EXPECT--
+4, 8

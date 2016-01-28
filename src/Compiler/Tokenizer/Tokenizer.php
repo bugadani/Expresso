@@ -45,7 +45,7 @@ class Tokenizer
                 $signs .= $symbol;
             } else {
                 if (strpos($symbol, ' ') !== false) {
-                    $symbol = "(?<=^|\\W){$symbol}(?=[\\s()\\[\\]]|$)";
+                    $symbol = "(?<=^|\\W){$symbol}(?=[\\s(),\\[\\]]|$)";
                 } else {
                     $symbol = preg_quote($symbol, '/');
                 }

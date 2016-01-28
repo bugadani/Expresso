@@ -12,6 +12,11 @@ class TokenStream
      */
     private $tokens;
 
+    /**
+     * @var Token
+     */
+    private $current;
+
     public function __construct(\Iterator $tokens)
     {
         $this->tokens = $tokens;
