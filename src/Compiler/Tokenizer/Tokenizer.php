@@ -2,9 +2,6 @@
 
 namespace Expresso\Compiler\Tokenizer;
 
-use Expresso\Compiler\Tokenizer\Token;
-use Expresso\Compiler\Tokenizer\TokenStream;
-
 class Tokenizer
 {
     private $operators;
@@ -13,8 +10,8 @@ class Tokenizer
 
     public function __construct(array $operatorSymbols, array $symbols)
     {
-        $this->operators = array_combine($operatorSymbols, $operatorSymbols);
-        $this->symbols = array_combine($symbols, $symbols);
+        $this->operators              = array_combine($operatorSymbols, $operatorSymbols);
+        $this->symbols                = array_combine($symbols, $symbols);
         $this->expressionPartsPattern = $this->getExpressionPartsPattern();
     }
 
@@ -44,20 +41,38 @@ class Tokenizer
             if ($length === 1) {
                 $signs .= $symbol;
             } else {
-                if (strpos($symbol, ' ') !== false) {
-                    $symbol = "(?<=^|\\W){$symbol}(?=[\\s(),\\[\\]]|$)";
-                } else {
-                    $symbol = preg_quote($symbol, '/');
-                }
+                $symbol              = preg_quote($symbol, '/');
                 $patterns[ $symbol ] = $length;
             }
         }
         arsort($patterns);
-        $patterns = implode('|', array_keys($patterns));
+
+        $lastWasMultiWord = false;
+        $joined           = '';
+        foreach ($patterns as $pattern => $length) {
+
+            if (strpos($pattern, ' ') !== false) {
+                if ($joined !== '') {
+                    $joined .= '|';
+                }
+                if (!$lastWasMultiWord) {
+                    $joined .= '(?:(?<=^|\\W)';
+                    $lastWasMultiWord = true;
+                }
+            } else {
+                if ($lastWasMultiWord) {
+                    $joined .= '(?=[\\s(),\\[\\]]|$))|';
+                    $lastWasMultiWord = false;
+                } else if ($joined !== '') {
+                    $joined .= '|';
+                }
+            }
+            $joined .= $pattern;
+        }
 
         $signs = preg_quote($signs, '/');
 
-        return "/({$patterns}|[{$signs}])/i";
+        return "/({$joined}|[{$signs}])/i";
     }
 
     /**
