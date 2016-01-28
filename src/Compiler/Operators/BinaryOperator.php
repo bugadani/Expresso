@@ -6,6 +6,7 @@ use Expresso\Compiler\Compiler\Compiler;
 use Expresso\Compiler\Compiler\CompilerConfiguration;
 use Expresso\Compiler\Node;
 use Expresso\Compiler\Nodes\BinaryOperatorNode;
+use Expresso\Compiler\Nodes\DataNode;
 use Expresso\Compiler\Operator;
 use Expresso\EvaluationContext;
 
@@ -41,11 +42,15 @@ abstract class BinaryOperator extends Operator
         $leftOperand  = (yield $compiler->compileNode($left));
         $rightOperand = (yield $compiler->compileNode($right));
 
-        if ($node->isInline()) {
+        if ($node->isInline() || $left instanceof DataNode) {
             $leftSource  = $leftOperand->source;
-            $rightSource = $rightOperand->source;
         } else {
             $leftSource  = $compiler->addContextAsTempVariable($leftOperand);
+        }
+
+        if ($node->isInline() || $right instanceof DataNode) {
+            $rightSource = $rightOperand->source;
+        } else {
             $rightSource = $compiler->addContextAsTempVariable($rightOperand);
         }
 

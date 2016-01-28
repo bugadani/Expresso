@@ -6,9 +6,8 @@ use Expresso\Compiler\Compiler\Compiler;
 use Expresso\Compiler\Node;
 use Expresso\Compiler\Utils\GeneratorHelper;
 use Expresso\EvaluationContext;
-use Expresso\Extensions\Lambda\Nodes\LambdaNode;
 
-class GeneratorFilterNode extends Node
+class FunctionDefinitionNode extends Node
 {
     /**
      * @var Node

@@ -14,7 +14,7 @@ class GeneratorNode extends Node
     private $branches = [];
 
     /**
-     * @var GeneratorBodyNode
+     * @var FunctionDefinitionNode
      */
     private $functionBodyNode;
 
@@ -43,8 +43,11 @@ class GeneratorNode extends Node
         $compiledTransform = (yield $compiler->compileNode($this->functionBodyNode));
         $transformVarName  = $compiler->addContextAsTempVariable($compiledTransform);
 
-        if (count($this->branches) !== 1) {
-            $compiler->add('$iterator = new \MultipleIterator();');
+        if (count($this->branches) === 1) {
+            $compiler->compileTempVariables();
+            $iteratorVariable = $branchVariables[0];
+        } else {
+            $iteratorVariable = $compiler->addTempVariable('new \MultipleIterator();');
             $transformVarName = $compiler->addTempVariable(
                 "function(\$arguments) use({$transformVarName}) {
                     \$generatorArguments = [];
@@ -57,14 +60,11 @@ class GeneratorNode extends Node
 
             $compiler->compileTempVariables();
             foreach ($branchVariables as $branchVarName) {
-                $compiler->add("\$iterator->attachIterator({$branchVarName});");
+                $compiler->add("{$iteratorVariable}->attachIterator({$branchVarName});");
             }
-        } else {
-            $compiler->compileTempVariables();
-            $compiler->add("\$iterator = {$branchVariables[0]};");
         }
 
-        $compiler->add("foreach (\$iterator as \$element) {yield {$transformVarName}(\$element);}");
+        $compiler->add("foreach ({$iteratorVariable} as \$element) {yield {$transformVarName}(\$element);}");
         $compiler->add('}');
 
         $context = $compiler->popContext();
@@ -77,11 +77,16 @@ class GeneratorNode extends Node
     public function evaluate(EvaluationContext $context)
     {
         $transformFunction = (yield $this->functionBodyNode->evaluate($context));
-        if (count($this->branches) === 1) {
-            $branch   = reset($this->branches);
-            $iterator = (yield $branch->evaluate($context));
 
-            $createContext = null;
+        if (count($this->branches) === 1) {
+
+            $iterator = (yield $this->branches[0]->evaluate($context));
+
+            $generator = function ($iterator) use ($transformFunction) {
+                foreach ($iterator as $arguments) {
+                    yield $transformFunction($arguments);
+                }
+            };
 
         } else {
 
@@ -90,27 +95,18 @@ class GeneratorNode extends Node
                 $iterator->attachIterator(yield $branch->evaluate($context));
             }
 
-            $createContext = function ($arguments) use ($context) {
-                $generatorArguments = [];
-                foreach ($arguments as $branchArguments) {
-                    $generatorArguments += $branchArguments;
-                }
+            $generator = function ($iterator) use ($transformFunction) {
+                foreach ($iterator as $arguments) {
+                    $mergedArguments = [];
+                    foreach ($arguments as $branchArguments) {
+                        $mergedArguments += $branchArguments;
+                    }
 
-                return $generatorArguments;
+                    yield $transformFunction($mergedArguments);
+                }
             };
         }
 
-        $generator = function ($iterator) use ($createContext, $transformFunction) {
-            if ($createContext !== null) {
-                foreach ($iterator as $arguments) {
-                    yield $transformFunction($createContext($arguments));
-                }
-            } else {
-                foreach ($iterator as $arguments) {
-                    yield $transformFunction($arguments);
-                }
-            }
-        };
         yield new \IteratorIterator($generator($iterator));
     }
 

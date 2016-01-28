@@ -3,15 +3,15 @@
 namespace Expresso\Extensions\Generator;
 
 use Expresso\Compiler\Compiler\CompilerConfiguration;
+use Expresso\Compiler\Node;
 use Expresso\Compiler\Parser\OperatorParser;
 use Expresso\Compiler\Parser\Parsers\TokenParser;
 use Expresso\Compiler\Tokenizer\Token;
 use Expresso\Extension;
 use Expresso\Extensions\Core\Core;
+use Expresso\Extensions\Generator\Nodes\FunctionDefinitionNode;
 use Expresso\Extensions\Generator\Nodes\GeneratorArgumentNode;
-use Expresso\Extensions\Generator\Nodes\GeneratorBodyNode;
 use Expresso\Extensions\Generator\Nodes\GeneratorBranchNode;
-use Expresso\Extensions\Generator\Nodes\GeneratorFilterNode;
 use Expresso\Extensions\Generator\Nodes\GeneratorNode;
 use Expresso\Extensions\Lambda\Lambda;
 
@@ -71,9 +71,9 @@ class Generator extends Extension
             ->followedBy($closingBraces)
             ->process(
                 function (array $children) {
-                    list($opBrace, $funcBody, $generatorBranches, $closingBrace) = $children;
+                    list(, $funcBody, $generatorBranches,) = $children;
 
-                    $node = new GeneratorNode(new GeneratorBodyNode($funcBody));
+                    $node = new GeneratorNode(new FunctionDefinitionNode($funcBody));
 
                     foreach ($generatorBranches as $argumentOrFilterList) {
                         $branch = new GeneratorBranchNode();
@@ -84,8 +84,7 @@ class Generator extends Extension
 
                             if ($isFilter) {
 
-                                $filter = new GeneratorFilterNode($argumentOrFilter[1]);
-                                $branch->addFilter($filter);
+                                $branch->addFilter($argumentOrFilter[1]);
 
                             } else {
                                 //generator def

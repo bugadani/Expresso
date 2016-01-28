@@ -4,6 +4,7 @@ namespace Expresso\Extensions\Generator\Nodes;
 
 use Expresso\Compiler\Compiler\Compiler;
 use Expresso\Compiler\Node;
+use Expresso\Compiler\Utils\GeneratorHelper;
 use Expresso\EvaluationContext;
 use Expresso\Extensions\Generator\Iterators\WrappingIterator;
 
@@ -17,7 +18,7 @@ class GeneratorBranchNode extends Node
     /**
      * @var Node[]
      */
-    private $filters       = [];
+    private $filters = [];
 
     /**
      * @var array
@@ -28,53 +29,34 @@ class GeneratorBranchNode extends Node
     {
         $iteratorVariable = $compiler->addTempVariable('new ' . WrappingIterator::class);
 
-        $arguments = [];
         foreach ($this->arguments as $argument) {
-            $compiledArgumentNode                      = (yield $compiler->compileNode($argument));
-            $argVarName                                = $compiler->addContextAsTempVariable($compiledArgumentNode);
-            $arguments[ $argument->getArgumentName() ] = $argVarName;
+            $compiledArgumentNode = (yield $compiler->compileNode($argument));
+            $argVarName           = $compiler->addContextAsTempVariable($compiledArgumentNode);
+
+            $argumentName = $argument->getArgumentName();
+            $iterator     = "is_array({$argVarName}) ? new \\ArrayIterator({$argVarName}) : {$argVarName}";
+            $compiler->addTempVariable("{$iteratorVariable}->addIterator(({$iterator}), '{$argumentName}')");
         }
 
-        foreach ($arguments as $argumentName => $argVarName) {
-            $compiler->addTempVariable(
-                "{$iteratorVariable}->addIterator((is_array({$argVarName}) ? new \\ArrayIterator({$argVarName}) : {$argVarName}), '{$argumentName}')"
-            );
+        if (count($this->filters) > 0) {
+            $compiler->pushContext();
+            $compiler->add('function(array $arguments) use ($context) {')
+                     ->add('$context = $context->createInnerScope($arguments);');
+            $filterVars = [];
+            foreach ($this->filters as $filter) {
+                $filterVars[] = (yield $compiler->compileNode($filter));
+            }
+
+            $compiler->compileTempVariables();
+            foreach ($filterVars as $filter) {
+                $compiler->add("if(!({$filter->source})) {return false;} else \n");
+            }
+            $compiler->add('return true;}');
+            $callbackContext = $compiler->popContext();
+
+            $iteratorVariable = "new \\CallbackFilterIterator({$iteratorVariable}, {$callbackContext->source})";
         }
 
-        switch (count($this->filters)) {
-            case 0:
-                break;
-            case 1:
-                $filterVar = $compiler->addContextAsTempVariable(
-                    yield $compiler->compileNode(reset($this->filters))
-                );
-
-                $iteratorVariable = $compiler->addTempVariable(
-                    "new \\CallbackFilterIterator({$iteratorVariable}, {$filterVar})"
-                );
-                break;
-            default:
-
-                $compiler->pushContext();
-                $compiler->add('function($value) use($context) {');
-                $filterVars = [];
-                foreach ($this->filters as $filter) {
-                    $filterVars[] = $compiler->addContextAsTempVariable(
-                        yield $compiler->compileNode($filter)
-                    );
-                }
-                $compiler->compileTempVariables();
-                foreach ($filterVars as $filter) {
-                    $compiler->add("if(!{$filter}(\$value)) {return false;} else \n");
-                }
-                $compiler->add('return true;}');
-                $callbackContext = $compiler->popContext();
-
-                $iteratorVariable = $compiler->addTempVariable(
-                    "new \\CallbackFilterIterator({$iteratorVariable}, {$callbackContext->source})"
-                );
-                break;
-        }
         $compiler->add($iteratorVariable);
     }
 
@@ -91,14 +73,10 @@ class GeneratorBranchNode extends Node
         }
 
         if (count($this->filters) > 0) {
-            $filters = [];
-            foreach ($this->filters as $filter) {
-                $filters[] = (yield $filter->evaluate($context));
-            }
-
-            $callback = function ($x) use ($filters) {
-                foreach ($filters as $filter) {
-                    if (!$filter($x)) {
+            $callback = function ($x) use ($context) {
+                $context = $context->createInnerScope($x);
+                foreach ($this->filters as $filter) {
+                    if (!GeneratorHelper::executeGeneratorsRecursive($filter->evaluate($context))) {
                         return false;
                     }
                 }
@@ -116,7 +94,7 @@ class GeneratorBranchNode extends Node
         $this->arguments[]     = $argumentNode;
     }
 
-    public function addFilter(GeneratorFilterNode $filterNode)
+    public function addFilter(Node $filterNode)
     {
         $this->filters[] = $filterNode;
     }

@@ -111,8 +111,7 @@ class IntegrationTest extends \PHPUnit_Framework_TestCase
         $expectation,
         $exception,
         $exceptionMessage
-    )
-    {
+    ) {
         if ($data) {
             eval('$data = [' . $data . '];');
         } else {
