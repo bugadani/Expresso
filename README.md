@@ -107,4 +107,3 @@ TODO
 -------------
  - documentation
  - compilation cache
- - list comprehension extension
