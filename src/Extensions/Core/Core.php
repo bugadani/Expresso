@@ -433,8 +433,12 @@ function range($start, $end = null)
         while (true) {
             yield $start++;
         }
-    } else {
+    } else if ($end >= $start) {
         for ($num = $start; $num <= $end; $num++) {
+            yield $num;
+        }
+    } else {
+        for ($num = $start; $num >= $end; $num--) {
             yield $num;
         }
     }

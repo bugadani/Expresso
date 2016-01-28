@@ -1,0 +1,6 @@
+--TEST--
+Test decreasing range declaration without array definition
+--EXPRESSION--
+5..1|join
+--EXPECT--
+54321
