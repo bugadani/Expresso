@@ -15,13 +15,32 @@ use Expresso\Extensions\Generator\Nodes\GeneratorBranchNode;
 use Expresso\Extensions\Generator\Nodes\GeneratorNode;
 use Expresso\Extensions\Lambda\Lambda;
 
+/**
+ * Class Generator defines an extension that implements list comprehension expressions.
+ *
+ * Current EBNF:
+ * lce          = '{' , expression , {';' , branch} '}'
+ * branch       = element , {',' , element},
+ * element      = filter | elementOf
+ * filter       = 'where' , expression
+ * elementOf    = pattern , '->' , expression
+ * pattern      = identifier
+ *
+ * @package Expresso\Extensions\Generator
+ */
 class Generator extends Extension
 {
+    /**
+     * @inheritdoc
+     */
     public function getSymbols()
     {
         return ['<-', '{', '}', ',', ';'];
     }
 
+    /**
+     * @inheritdoc
+     */
     public function addParsers(OperatorParser $parser, CompilerConfiguration $configuration)
     {
         $parserContainer = $parser->getParserContainer();
@@ -106,6 +125,9 @@ class Generator extends Extension
         $parserContainer->set('operand', $operandParser->orA($generatorExpression));
     }
 
+    /**
+     * @inheritdoc
+     */
     public function getDependencies()
     {
         return [

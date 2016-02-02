@@ -6,6 +6,14 @@ use Expresso\Compiler\Compiler\Compiler;
 use Expresso\Compiler\Node;
 use Expresso\EvaluationContext;
 
+/**
+ * GeneratorNode represents a list comprehension expression. It consists of an expression and a number of branches.
+ * Branches are run in parallel and may define a set of arguments as an input of the expression. The argument
+ * definitions in a single branch are run in series (i.e. iterated in a nested way) and may be filtered by guard
+ * expressions.
+ *
+ * @package Expresso\Extensions\Generator\Nodes
+ */
 class GeneratorNode extends Node
 {
     /**
@@ -28,6 +36,9 @@ class GeneratorNode extends Node
         $this->functionBodyNode = $functionBody;
     }
 
+    /**
+     * @inheritdoc
+     */
     public function compile(Compiler $compiler)
     {
         $compiler->pushContext();
@@ -74,6 +85,9 @@ class GeneratorNode extends Node
         $compiler->add("{$varName}()");
     }
 
+    /**
+     * @inheritdoc
+     */
     public function evaluate(EvaluationContext $context)
     {
         $transformFunction = (yield $this->functionBodyNode->evaluate($context));

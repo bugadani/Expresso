@@ -59,13 +59,18 @@ abstract class Extension
         return [];
     }
 
+    /**
+     * Defines a set of symbols for the lexer
+     *
+     * @return array
+     */
     public function getSymbols()
     {
         return [];
     }
 
     /**
-     * Set up language extensions
+     * Override this method to extend the parser if the extension defines new language elements.
      *
      * @param OperatorParser        $parser
      * @param CompilerConfiguration $configuration

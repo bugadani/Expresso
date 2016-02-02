@@ -7,6 +7,11 @@ use Expresso\Compiler\Node;
 use Expresso\Compiler\Tokenizer\Token;
 use Expresso\EvaluationContext;
 
+/**
+ * Class GeneratorArgumentNode
+ *
+ * @package Expresso\Extensions\Generator\Nodes
+ */
 class GeneratorArgumentNode extends Node
 {
     /**
@@ -19,18 +24,30 @@ class GeneratorArgumentNode extends Node
      */
     private $sourceExpression;
 
+    /**
+     * GeneratorArgumentNode constructor.
+     *
+     * @param Token $argumentName
+     * @param Node  $sourceExpression
+     */
     public function __construct(Token $argumentName, Node $sourceExpression)
     {
         $this->argumentName     = $argumentName->getValue();
         $this->sourceExpression = $sourceExpression;
     }
 
+    /**
+     * @inheritdoc
+     */
     public function compile(Compiler $compiler)
     {
         $compiledArgument = (yield $compiler->compileNode($this->sourceExpression));
         $compiler->add($compiledArgument->source);
     }
 
+    /**
+     * @inheritdoc
+     */
     public function evaluate(EvaluationContext $context)
     {
         return $this->sourceExpression->evaluate($context);

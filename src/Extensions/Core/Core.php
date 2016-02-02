@@ -63,8 +63,16 @@ use Expresso\Extensions\Core\Operators\Unary\Prefix\BitwiseNotOperator;
 use Expresso\Extensions\Core\Operators\Unary\Prefix\MinusOperator;
 use Expresso\Extensions\Core\Operators\Unary\Prefix\NotOperator;
 
+/**
+ * Class Core defines the core language elements, including operators and some basic functions.
+ *
+ * @package Expresso\Extensions\Core
+ */
 class Core extends Extension
 {
+    /**
+     * @inheritdoc
+     */
     public function getBinaryOperators()
     {
         return [
@@ -115,6 +123,9 @@ class Core extends Extension
         ];
     }
 
+    /**
+     * @inheritdoc
+     */
     public function getPrefixUnaryOperators()
     {
         return [
@@ -126,6 +137,9 @@ class Core extends Extension
         ];
     }
 
+    /**
+     * @inheritdoc
+     */
     public function getPostfixUnaryOperators()
     {
         return [
@@ -141,6 +155,9 @@ class Core extends Extension
         ];
     }
 
+    /**
+     * @inheritdoc
+     */
     public function getTernaryOperators()
     {
         return [
@@ -148,11 +165,17 @@ class Core extends Extension
         ];
     }
 
+    /**
+     * @inheritdoc
+     */
     public function getSymbols()
     {
         return [',', '[', ']', '(', ')', '{', '}', ':', '?', '\\', '=>'];
     }
 
+    /**
+     * @inheritdoc
+     */
     public function addParsers(OperatorParser $parser, CompilerConfiguration $configuration)
     {
         $parserContainer = $parser->getParserContainer();
@@ -407,6 +430,9 @@ class Core extends Extension
         $parser->setDefaultParserName('program');
     }
 
+    /**
+     * @inheritdoc
+     */
     public function getFunctions()
     {
         return [
@@ -444,6 +470,13 @@ function range($start, $end = null)
     }
 }
 
+/**
+ * Returns the number of elements in a collection
+ *
+ * @param array|\Traversable $data
+ *
+ * @return int
+ */
 function expression_function_count($data)
 {
     if (is_array($data)) {
@@ -455,6 +488,15 @@ function expression_function_count($data)
     }
 }
 
+/**
+ * Replaces one or more substrings in a string.
+ *
+ * @param string               $string
+ * @param string|string[]      $search
+ * @param null|string|string[] $replacement
+ *
+ * @return mixed
+ */
 function expression_function_replace($string, $search, $replacement = null)
 {
     if ($replacement === null) {
@@ -470,6 +512,14 @@ function expression_function_replace($string, $search, $replacement = null)
     }
 }
 
+/**
+ * Glues strings from a collection together with the given separator.
+ *
+ * @param array|\Traversable $collection
+ * @param string             $glue
+ *
+ * @return string
+ */
 function expression_function_join($collection, $glue = '')
 {
     if ($collection instanceof \Iterator) {
@@ -482,6 +532,14 @@ function expression_function_join($collection, $glue = '')
     }
 }
 
+/**
+ * Returns a number of the elements from the beginning of the collection.
+ *
+ * @param array|\Traversable $collection
+ * @param int                $number
+ *
+ * @return array|\LimitIterator
+ */
 function expression_function_take($collection, $number)
 {
     if (is_array($collection)) {
@@ -493,6 +551,14 @@ function expression_function_take($collection, $number)
     }
 }
 
+/**
+ * Skips a number of the elements from the collection.
+ *
+ * @param array|\Traversable $collection
+ * @param int                $number
+ *
+ * @return array|\LimitIterator
+ */
 function expression_function_skip($collection, $number)
 {
     if (is_array($collection)) {

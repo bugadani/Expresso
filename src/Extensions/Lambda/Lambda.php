@@ -12,13 +12,28 @@ use Expresso\Extension;
 use Expresso\Extensions\Core\Core;
 use Expresso\Extensions\Lambda\Nodes\LambdaNode;
 
+/**
+ * Class Lambda defines the syntax of lambda expressions.
+ *
+ * Current EBNF:
+ * lambda       = '\' , arguments , '->' , expression
+ * arguments    = '()' | argument | '(' , argument , {', ' , argument} , ')'
+ *
+ * @package Expresso\Extensions\Lambda
+ */
 class Lambda extends Extension
 {
+    /**
+     * @inheritdoc
+     */
     public function getSymbols()
     {
         return ['->', '(', ')', '\\'];
     }
 
+    /**
+     * @inheritdoc
+     */
     public function addParsers(OperatorParser $parser, CompilerConfiguration $configuration)
     {
         $parserContainer = $parser->getParserContainer();
@@ -84,6 +99,9 @@ class Lambda extends Extension
         $parserContainer->set('expression', $extendedExpression);
     }
 
+    /**
+     * @inheritdoc
+     */
     public function getFunctions()
     {
         return [
@@ -96,6 +114,9 @@ class Lambda extends Extension
         ];
     }
 
+    /**
+     * @inheritdoc
+     */
     public function getDependencies()
     {
         return [
@@ -104,6 +125,14 @@ class Lambda extends Extension
     }
 }
 
+/**
+ * This function tells if any element of the given collection satisfies a condition that is given in the callback.
+ *
+ * @param          $collection
+ * @param callable $callback
+ *
+ * @return bool
+ */
 function expression_function_any($collection, callable $callback)
 {
     if (!is_array($collection) && !$collection instanceof \Traversable) {
@@ -119,6 +148,15 @@ function expression_function_any($collection, callable $callback)
     return false;
 }
 
+
+/**
+ * This function tells if all of the elements in the given collection satisfy a condition that is given in the callback.
+ *
+ * @param          $collection
+ * @param callable $callback
+ *
+ * @return bool
+ */
 function expression_function_all($collection, callable $callback)
 {
     if (!is_array($collection) && !$collection instanceof \Traversable) {
@@ -134,6 +172,14 @@ function expression_function_all($collection, callable $callback)
     return true;
 }
 
+/**
+ * This function returns the elements of the given collection that satisfy a condition given in the callback.
+ *
+ * @param          $collection
+ * @param callable $callback
+ *
+ * @return bool
+ */
 function expression_function_filter($collection, callable $callback)
 {
     if (!is_array($collection) && !$collection instanceof \Traversable) {
@@ -147,6 +193,14 @@ function expression_function_filter($collection, callable $callback)
     }
 }
 
+/**
+ * This function returns the first element in the given collection that satisfy a condition given in the callback.
+ *
+ * @param          $collection
+ * @param callable $callback
+ *
+ * @return bool
+ */
 function expression_function_first($collection, callable $callback)
 {
     if (!is_array($collection) && !$collection instanceof \Traversable) {

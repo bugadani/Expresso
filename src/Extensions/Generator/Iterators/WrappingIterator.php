@@ -20,6 +20,9 @@ class WrappingIterator implements \Iterator
     private $iteratorList;
     private $index;
 
+    /**
+     * WrappingIterator constructor.
+     */
     public function __construct()
     {
         $this->iteratorList = new \SplDoublyLinkedList();
@@ -28,6 +31,10 @@ class WrappingIterator implements \Iterator
         $this->iteratorList->setIteratorMode(\SplDoublyLinkedList::IT_MODE_LIFO);
     }
 
+    /**
+     * @param \Traversable $iterator
+     * @param null         $key
+     */
     public function addIterator(\Traversable $iterator, $key = null)
     {
         if ($key === null) {

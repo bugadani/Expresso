@@ -7,6 +7,11 @@ use Expresso\Compiler\Node;
 use Expresso\Compiler\Utils\GeneratorHelper;
 use Expresso\EvaluationContext;
 
+/**
+ * Class LambdaNode represents a lambda expression in the Abstract Syntax Tree.
+ *
+ * @package Expresso\Extensions\Lambda\Nodes
+ */
 class LambdaNode extends Node
 {
     /**
@@ -19,12 +24,21 @@ class LambdaNode extends Node
      */
     private $arguments;
 
+    /**
+     * LambdaNode constructor.
+     *
+     * @param Node  $functionBody
+     * @param array $arguments
+     */
     public function __construct(Node $functionBody, array $arguments)
     {
         $this->arguments    = $arguments;
         $this->functionBody = $functionBody;
     }
 
+    /**
+     * @inheritdoc
+     */
     public function compile(Compiler $compiler)
     {
         $compiler->add('function(');
@@ -57,6 +71,9 @@ class LambdaNode extends Node
         $compiler->add(';}');
     }
 
+    /**
+     * @inheritdoc
+     */
     public function evaluate(EvaluationContext $context)
     {
         yield function () use ($context) {
@@ -69,6 +86,9 @@ class LambdaNode extends Node
         };
     }
 
+    /**
+     * @inheritdoc
+     */
     public function getChildren()
     {
         return [$this->functionBody];

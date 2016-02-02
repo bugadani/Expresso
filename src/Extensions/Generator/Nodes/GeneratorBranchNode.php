@@ -8,6 +8,13 @@ use Expresso\Compiler\Utils\GeneratorHelper;
 use Expresso\EvaluationContext;
 use Expresso\Extensions\Generator\Iterators\WrappingIterator;
 
+/**
+ * GeneratorBranchNode represents a list comprehension branch.
+ *
+ * @see GeneratorNode
+ *
+ * @package Expresso\Extensions\Generator\Nodes
+ */
 class GeneratorBranchNode extends Node
 {
     /**
@@ -25,6 +32,9 @@ class GeneratorBranchNode extends Node
      */
     private $argumentNames = [];
 
+    /**
+     * @param Compiler $compiler
+     */
     public function compile(Compiler $compiler)
     {
         $iteratorVariable = $compiler->addTempVariable('new ' . WrappingIterator::class);
@@ -60,6 +70,9 @@ class GeneratorBranchNode extends Node
         $compiler->add($iteratorVariable);
     }
 
+    /**
+     * @inheritdoc
+     */
     public function evaluate(EvaluationContext $context)
     {
         $iterator = new WrappingIterator();
@@ -88,12 +101,18 @@ class GeneratorBranchNode extends Node
         yield $iterator;
     }
 
+    /**
+     * @param GeneratorArgumentNode $argumentNode
+     */
     public function addArgument(GeneratorArgumentNode $argumentNode)
     {
         $this->argumentNames[] = $argumentNode->getArgumentName();
         $this->arguments[]     = $argumentNode;
     }
 
+    /**
+     * @param Node $filterNode
+     */
     public function addFilter(Node $filterNode)
     {
         $this->filters[] = $filterNode;
