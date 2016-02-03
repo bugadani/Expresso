@@ -25,7 +25,17 @@ class EvaluationContext extends ExecutionContext
      */
     public function getFunction($functionName)
     {
-        return $this->configuration->getFunctions()[ $functionName ];
+        $functions = $this->configuration->getFunctions();
+
+        if (isset($functions[ $functionName ])) {
+            return $functions[ $functionName ];
+        }
+
+        if (isset($this[ $functionName ])) {
+            return $this[ $functionName ];
+        }
+
+        throw new \OutOfBoundsException('Function not found: ' . $functionName);
     }
 
     public function createInnerScope($input)

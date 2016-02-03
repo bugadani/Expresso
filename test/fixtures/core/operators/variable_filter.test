@@ -1,0 +1,8 @@
+--TEST--
+Test simple filters
+--DATA--
+'func' => 'strrev'
+--EXPRESSION--
+:string|func
+--EXPECT--
+gnirts

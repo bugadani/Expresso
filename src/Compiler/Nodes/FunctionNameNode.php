@@ -3,6 +3,7 @@
 namespace Expresso\Compiler\Nodes;
 
 use Expresso\Compiler\Compiler\Compiler;
+use Expresso\Compiler\ExpressionFunction;
 use Expresso\Compiler\Node;
 use Expresso\EvaluationContext;
 
@@ -19,13 +20,23 @@ class FunctionNameNode extends Node
     {
         $functions = $compiler->getConfiguration()->getFunctions();
 
-        $compiler->add($functions[ $this->functionName ]->getFunctionName());
+        if (isset($functions[ $this->functionName ])) {
+            $compiler->add($functions[ $this->functionName ]->getFunctionName());
+        } else {
+            $compiler->addVariableAccess($this->functionName);
+        }
+
         yield;
     }
 
     public function evaluate(EvaluationContext $context)
     {
-        yield $context->getFunction($this->functionName)->getFunctionName();
+        $function = $context->getFunction($this->functionName);
+        if ($function instanceof ExpressionFunction) {
+            yield $function->getFunctionName();
+        } else {
+            yield $function;
+        }
     }
 
     /**

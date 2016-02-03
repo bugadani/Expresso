@@ -1,0 +1,8 @@
+--TEST--
+Test simple function calls
+--EXPRESSION--
+func('arg')
+--DATA--
+'func' => function($arg) {return 'string ' . $arg;}
+--EXPECT--
+string arg
