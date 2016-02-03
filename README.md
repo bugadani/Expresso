@@ -15,8 +15,8 @@ Usage
 
     $expresso->execute('a ^ 5', ['a' => 2]);     // returns 32
 
-    $compiled = $expresso->compile('a ^ 5');
-    $compiled(6);                                // 64
+    $compiled = $expresso->compile('2 ^ a');
+    $compiled(['a' => 6]);                       // 64
 
 The Core extension
 -------------
