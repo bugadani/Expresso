@@ -11,7 +11,7 @@ use Expresso\Extensions\Generator\Iterators\WrappingIterator;
 /**
  * GeneratorBranchNode represents a list comprehension branch.
  *
- * @see GeneratorNode
+ * @see     GeneratorNode
  *
  * @package Expresso\Extensions\Generator\Nodes
  */
@@ -39,37 +39,50 @@ class GeneratorBranchNode extends Node
      */
     public function compile(Compiler $compiler)
     {
-        $iteratorVariable = $compiler->addTempVariable('new ' . WrappingIterator::class);
+        $compiler->pushContext();
+        $compiler->add('function() use ($context) {')
+                 ->add('$context = $context->createInnerScope([]);');
 
+        $iterators = [];
         foreach ($this->arguments as $argument) {
-            $compiledArgumentNode = (yield $compiler->compileNode($argument));
-            $argVarName           = $compiler->addContextAsTempVariable($compiledArgumentNode);
-
-            $argumentName = $argument->getArgumentName();
-            $iterator     = "is_array({$argVarName}) ? new \\ArrayIterator({$argVarName}) : {$argVarName}";
-            $compiler->addTempVariable("{$iteratorVariable}->addIterator(({$iterator}), '{$argumentName}')");
+            $compiledArgumentNode                      = (yield $compiler->compileNode($argument));
+            $iterators[ $argument->getArgumentName() ] = $compiler->addContextAsTempVariable($compiledArgumentNode);
         }
+        $compiler->compileTempVariables();
+
+        foreach ($iterators as $argName => $argDef) {
+            $compiler->add("foreach({$argDef} as \$context['{$argName}']) {");
+        }
+
+        $filterVars = [];
+        foreach ($this->filters as $filter) {
+            $filterVars[] = (yield $compiler->compileNode($filter));
+        }
+        $compiler->compileTempVariables();
 
         if (count($this->filters) > 0) {
-            $compiler->pushContext();
-            $compiler->add('function(array $arguments) use ($context) {')
-                     ->add('$context = $context->createInnerScope($arguments);');
-            $filterVars = [];
-            foreach ($this->filters as $filter) {
-                $filterVars[] = (yield $compiler->compileNode($filter));
-            }
-
-            $compiler->compileTempVariables();
+            $compiler->add('$accepted = true;');
             foreach ($filterVars as $filter) {
-                $compiler->add("if(!({$filter->source})) {return false;} else \n");
+                $compiler->add("\$accepted = \$accepted && ({$filter->source});");
             }
-            $compiler->add('return true;}');
-            $callbackContext = $compiler->popContext();
 
-            $iteratorVariable = "new \\CallbackFilterIterator({$iteratorVariable}, {$callbackContext->source})";
+            $compiler->add('if($accepted) {');
         }
+        $compiler->add('yield [');
+        foreach ($iterators as $argName => $argDef) {
+            $compiler->add("'{$argName}' => \$context['{$argName}'],");
+        }
+        $compiler->add('];');
+        if (count($this->filters) > 0) {
+            $compiler->add('}');
+        }
+        for ($i = 0; $i < count($iterators); $i++) {
+            $compiler->add("}");
+        }
+        $compiler->add("}");
 
-        $compiler->add($iteratorVariable);
+        $callbackContext = $compiler->popContext();
+        $compiler->add($compiler->addContextAsTempVariable($callbackContext).'()');
     }
 
     /**
@@ -79,6 +92,7 @@ class GeneratorBranchNode extends Node
     {
         $iterator = new WrappingIterator();
 
+        //TODO
         foreach ($this->arguments as $argument) {
             $value = (yield $argument->evaluate($context));
             if (is_array($value)) {
