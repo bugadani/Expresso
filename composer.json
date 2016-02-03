@@ -18,7 +18,11 @@
   ],
   "autoload": {
     "psr-4": {
-      "Expresso\\": "src/",
+      "Expresso\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
       "Expresso\\Test\\": "test/"
     }
   }

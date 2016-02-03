@@ -106,6 +106,26 @@ A lambda expression is defined with the following syntax: `\<arguments> -> <expr
 The Generator extension
 -------------
 The extension defines list comprehension expressions or generators in short.
+Generators follow the common notation used in mathematics to define lists or sets.
+
+An example generator, that generates the list of square numbers:
+
+    { x^2 : x <- [1..]}
+
+Multiple branches can be defined which will be run in parallel (e.g. sources are iterated at the same time).
+Example to generate the list of even numbers:
+
+    { x + y : x <- [1..]; y <- [1..]}
+
+A branch may define multiple arguments that will be evaluated from left to right.
+An example that generates the list of numbers between 0 and 99:
+
+    { x * 10 + y : x <- [0..9]; y <- [1..9]}
+
+Branches may also have guard expressions which are specified using the keyword 'where'.
+The following example creates a list of even numbers using guard expressions:
+
+    { x : x <- [1..] where x is even }
 
 TODO
 -------------

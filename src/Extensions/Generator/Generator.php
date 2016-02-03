@@ -3,7 +3,7 @@
 namespace Expresso\Extensions\Generator;
 
 use Expresso\Compiler\Compiler\CompilerConfiguration;
-use Expresso\Compiler\Node;
+use Expresso\Compiler\Parser\AbstractParser;
 use Expresso\Compiler\Parser\OperatorParser;
 use Expresso\Compiler\Parser\Parsers\TokenParser;
 use Expresso\Compiler\Tokenizer\Token;
@@ -35,7 +35,7 @@ class Generator extends Extension
      */
     public function getSymbols()
     {
-        return ['<-', '{', '}', ',', ';'];
+        return ['<-', '{', '}', ',', ':', ';'];
     }
 
     /**
@@ -48,13 +48,14 @@ class Generator extends Extension
         $operandParser = $parserContainer->get('operand');
         $expression    = $parserContainer->get('expression');
 
-        $openingBraces = TokenParser::create(Token::SYMBOL, '{');
-        $closingBraces = TokenParser::create(Token::SYMBOL, '}');
-        $elementOf     = TokenParser::create(Token::SYMBOL, '<-');
-        $comma         = TokenParser::create(Token::SYMBOL, ',');
-        $separator     = TokenParser::create(Token::SYMBOL, ';');
-        $identifier    = TokenParser::create(Token::IDENTIFIER);
-        $keyword       = function ($keyword) {
+        $openingBraces   = TokenParser::create(Token::SYMBOL, '{');
+        $closingBraces   = TokenParser::create(Token::SYMBOL, '}');
+        $elementOf       = TokenParser::create(Token::SYMBOL, '<-');
+        $comma           = TokenParser::create(Token::SYMBOL, ',');
+        $separator       = TokenParser::create(Token::SYMBOL, ':');
+        $branchSeparator = TokenParser::create(Token::SYMBOL, ';');
+        $identifier      = TokenParser::create(Token::IDENTIFIER);
+        $keyword         = function ($keyword) {
             return TokenParser::create(Token::IDENTIFIER, $keyword);
         };
 
@@ -64,39 +65,30 @@ class Generator extends Extension
             ->followedBy($elementOf)
             ->followedBy($expression);
 
+        /** @var AbstractParser $filterExpression */
         $filterExpression = $keyword('where')
             ->followedBy($expression);
 
-        $returnArgument = function ($index) {
-            return function (array $children) use ($index) {
-                return $children[ $index ];
-            };
-        };
-
-        $generatorSource = $separator
-            ->followedBy(
-                $filterExpression
-                    ->orA($elementOfExpression)
-                    ->repeatSeparatedBy($comma)
-            )
-            ->process($returnArgument(1));
+        $generatorSource = $filterExpression
+            ->orA($elementOfExpression)
+            ->repeatSeparatedBy($comma);
 
         $generatorExpression = $openingBraces
             ->followedBy($expression)
+            ->followedBy($separator)
             ->followedBy(
                 $generatorSource
-                    ->repeated()
+                    ->repeatSeparatedBy($branchSeparator)
             )
             ->followedBy($closingBraces)
             ->process(
                 function (array $children) {
-                    list(, $funcBody, $generatorBranches,) = $children;
-
+                    list(, $funcBody, , $generatorBranches, ) = $children;
                     $node = new GeneratorNode(new FunctionDefinitionNode($funcBody));
 
-                    foreach ($generatorBranches as $argumentOrFilterList) {
+                    foreach ($generatorBranches as $generatorBranch) {
                         $branch = new GeneratorBranchNode();
-                        foreach ($argumentOrFilterList as $argumentOrFilter) {
+                        foreach ($generatorBranch as $argumentOrFilter) {
 
                             $isFilter = $argumentOrFilter[0] instanceof Token
                                         && $argumentOrFilter[0]->test(Token::IDENTIFIER, 'where');
