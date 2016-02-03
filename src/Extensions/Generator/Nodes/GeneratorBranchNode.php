@@ -34,6 +34,8 @@ class GeneratorBranchNode extends Node
 
     /**
      * @param Compiler $compiler
+     *
+     * @return \Generator
      */
     public function compile(Compiler $compiler)
     {

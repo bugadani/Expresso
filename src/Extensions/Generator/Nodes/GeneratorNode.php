@@ -56,26 +56,26 @@ class GeneratorNode extends Node
 
         if (count($this->branches) === 1) {
             $compiler->compileTempVariables();
-            $iteratorVariable = $branchVariables[0];
-        } else {
-            $iteratorVariable = $compiler->addTempVariable('new \MultipleIterator();');
-            $transformVarName = $compiler->addTempVariable(
-                "function(\$arguments) use({$transformVarName}) {
-                    \$generatorArguments = [];
-                    foreach (\$arguments as \$branchArguments) {
-                        \$generatorArguments += \$branchArguments;
-                    }
-                    return {$transformVarName}(\$generatorArguments);
+            $compiler->add(
+                "foreach ({$branchVariables[0]} as \$element) {
+                    yield {$transformVarName}(\$element);
                 }"
             );
+        } else {
+            $iteratorVariable = $compiler->addTempVariable('new \MultipleIterator()');
 
             $compiler->compileTempVariables();
             foreach ($branchVariables as $branchVarName) {
                 $compiler->add("{$iteratorVariable}->attachIterator({$branchVarName});");
             }
-        }
 
-        $compiler->add("foreach ({$iteratorVariable} as \$element) {yield {$transformVarName}(\$element);}");
+            $compiler->add(
+                "foreach ({$iteratorVariable} as \$element) {
+                    \$arguments = call_user_func_array('array_merge', \$element);
+                    yield {$transformVarName}(\$arguments);
+                }"
+            );
+        }
         $compiler->add('}');
 
         $context = $compiler->popContext();
@@ -111,10 +111,7 @@ class GeneratorNode extends Node
 
             $generator = function ($iterator) use ($transformFunction) {
                 foreach ($iterator as $arguments) {
-                    $mergedArguments = [];
-                    foreach ($arguments as $branchArguments) {
-                        $mergedArguments += $branchArguments;
-                    }
+                    $mergedArguments = call_user_func_array('array_merge', $arguments);
 
                     yield $transformFunction($mergedArguments);
                 }
