@@ -6,12 +6,11 @@ use Expresso\Compiler\Compiler\Compiler;
 use Expresso\Compiler\Node;
 use Expresso\Compiler\Utils\GeneratorHelper;
 use Expresso\EvaluationContext;
-use Expresso\Extensions\Generator\Iterators\WrappingIterator;
 
 /**
  * GeneratorBranchNode represents a list comprehension branch.
  *
- * @see GeneratorNode
+ * @see     GeneratorNode
  *
  * @package Expresso\Extensions\Generator\Nodes
  */
@@ -39,37 +38,50 @@ class GeneratorBranchNode extends Node
      */
     public function compile(Compiler $compiler)
     {
-        $iteratorVariable = $compiler->addTempVariable('new ' . WrappingIterator::class);
+        $compiler->pushContext();
+        $compiler->add('function() use ($context) {')
+                 ->add('$context = $context->createInnerScope([]);');
 
         foreach ($this->arguments as $argument) {
             $compiledArgumentNode = (yield $compiler->compileNode($argument));
-            $argVarName           = $compiler->addContextAsTempVariable($compiledArgumentNode);
-
-            $argumentName = $argument->getArgumentName();
-            $iterator     = "is_array({$argVarName}) ? new \\ArrayIterator({$argVarName}) : {$argVarName}";
-            $compiler->addTempVariable("{$iteratorVariable}->addIterator(({$iterator}), '{$argumentName}')");
+            $argName              = $argument->getArgumentName();
+            $argDef               = $compiler->addContextAsTempVariable($compiledArgumentNode);
+            $compiler->compileTempVariables();
+            $compiler->add("foreach({$argDef} as \$context['{$argName}']) {");
         }
+
+        $filterVars = [];
+        foreach ($this->filters as $filter) {
+            $filterVars[] = (yield $compiler->compileNode($filter));
+        }
+        $compiler->compileTempVariables();
 
         if (count($this->filters) > 0) {
-            $compiler->pushContext();
-            $compiler->add('function(array $arguments) use ($context) {')
-                     ->add('$context = $context->createInnerScope($arguments);');
-            $filterVars = [];
-            foreach ($this->filters as $filter) {
-                $filterVars[] = (yield $compiler->compileNode($filter));
-            }
-
-            $compiler->compileTempVariables();
+            $compiler->add('$accepted = true;');
             foreach ($filterVars as $filter) {
-                $compiler->add("if(!({$filter->source})) {return false;} else \n");
+                $compiler->add("\$accepted = \$accepted && ({$filter->source});");
             }
-            $compiler->add('return true;}');
-            $callbackContext = $compiler->popContext();
 
-            $iteratorVariable = "new \\CallbackFilterIterator({$iteratorVariable}, {$callbackContext->source})";
+            $compiler->add('if($accepted) {');
         }
 
-        $compiler->add($iteratorVariable);
+        $compiler->add('yield [');
+        foreach ($this->arguments as $arg) {
+            $argName = $arg->getArgumentName();
+            $compiler->add("'{$argName}' => \$context['{$argName}'],");
+        }
+        $compiler->add('];');
+
+        if (count($this->filters) > 0) {
+            $compiler->add('}');
+        }
+        for ($i = 0; $i < count($this->arguments); $i++) {
+            $compiler->add("}");
+        }
+        $compiler->add("}");
+
+        $callbackContext = $compiler->popContext();
+        $compiler->add($compiler->addContextAsTempVariable($callbackContext) . '()');
     }
 
     /**
@@ -77,15 +89,114 @@ class GeneratorBranchNode extends Node
      */
     public function evaluate(EvaluationContext $context)
     {
-        $iterator = new WrappingIterator();
-
+        //Holds functions that should initialize argument sources
+        $source = [];
         foreach ($this->arguments as $argument) {
-            $value = (yield $argument->evaluate($context));
-            if (is_array($value)) {
-                $value = new \ArrayIterator($value);
-            }
-            $iterator->addIterator($value, $argument->getArgumentName());
+            $source[ $argument->getArgumentName() ] = function ($context) use ($argument) {
+                $value = GeneratorHelper::executeGeneratorsRecursive($argument->evaluate($context));
+                if (is_array($value)) {
+                    $value = new \ArrayIterator($value);
+                }
+
+                $value->rewind();
+
+                return $value;
+            };
         }
+
+        $iterationContext = $context->createInnerScope([]);
+        $argumentSource   = function () use ($iterationContext, $source) {
+
+            //reset
+            $iteratorList     = new \SplStack();
+            $iterators        = new \SplObjectStorage();
+            $iteratorsToReset = new \SplDoublyLinkedList();
+
+            $iteratorsToReset->setIteratorMode(\SplDoublyLinkedList::IT_MODE_DELETE);
+
+            $add = function ($iterator, $argName) use ($iterators, $iteratorList, $iterationContext) {
+                $iterators[ $iterator ] = $argName;
+                $iteratorList->push($iterator);
+            };
+
+            $create = function ($iteratorSource) use ($iterationContext) {
+                $iterator = $iteratorSource($iterationContext);
+                $iterator->rewind();
+
+                return $iterator;
+            };
+
+            $createA = function ($argName) use ($source, $create, $add, $iterationContext) {
+                $iteratorSource = $source[ $argName ];
+                $iterator       = $create($iteratorSource);
+                $add($iterator, $argName);
+
+                $iterationContext[ $argName ] = $iterator->current();
+            };
+
+            foreach ($source as $argName => $iteratorSource) {
+                $createA($argName);
+            }
+
+            //Stack-like iteration mode so that rewind goes to the end of the list
+            $iteratorList->rewind();
+
+            //valid
+            while ($iteratorList->bottom()->valid()) {
+
+                //current
+                $values = [];
+                foreach ($iterators as $iterator) {
+                    $key            = $iterators[ $iterator ];
+                    $value          = $iterator->current();
+                    $values[ $key ] = $value;
+
+                    $iterationContext[ $key ] = $value;
+                }
+
+                yield $values;
+
+                //next
+
+                $currentIterator = $iteratorList->top();
+                $currentIterator->next();
+
+                if ($currentIterator->valid()) {
+                    $argName                      = $iterators[ $currentIterator ];
+                    $iterationContext[ $argName ] = $currentIterator->current();
+                }
+                //wrap-around
+                while (!$currentIterator->valid()) {
+                    $iteratorsToReset->push($iteratorList->pop());
+
+                    if ($iteratorList->isEmpty()) {
+                        break;
+                    }
+
+                    $currentIterator = $iteratorList->top();
+                    $currentIterator->next();
+
+                    if ($currentIterator->valid()) {
+                        $argName                      = $iterators[ $currentIterator ];
+                        $iterationContext[ $argName ] = $currentIterator->current();
+                    }
+                }
+
+                if ($iteratorList->isEmpty()) {
+                    break;
+                }
+
+                foreach ($iteratorsToReset as $iter) {
+                    $argName = $iterators[ $iter ];
+                    $iterators->detach($iter);
+
+                    $createA($argName);
+                }
+                $iteratorList->rewind();
+            }
+        };
+
+        $iterator = $argumentSource();
 
         if (count($this->filters) > 0) {
             $callback = function ($x) use ($context) {
@@ -99,6 +210,8 @@ class GeneratorBranchNode extends Node
                 return true;
             };
             $iterator = new \CallbackFilterIterator($iterator, $callback);
+        } else {
+            $iterator = new \IteratorIterator($iterator);
         }
         yield $iterator;
     }
