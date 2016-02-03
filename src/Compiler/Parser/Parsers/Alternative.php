@@ -61,7 +61,11 @@ class Alternative extends AbstractParser
             $currentToken = $stream->current();
             $canParse     = (yield $this->canParse($currentToken));
             if (!$canParse) {
-                throw new SyntaxException("This parser can not parse the current token {$currentToken}");
+                throw new SyntaxException(
+                    "This parser can not parse the current token {$currentToken}",
+                    $currentToken->getLine(),
+                    $currentToken->getOffset()
+                );
             }
 
             $activeParser = $this->activeParser;

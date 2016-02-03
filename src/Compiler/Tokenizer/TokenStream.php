@@ -54,6 +54,10 @@ class TokenStream
             return $this->current;
         }
         $expectation = new Token($type, $value);
-        throw new SyntaxException("Unexpected {$this->current}, expected {$expectation}");
+        throw new SyntaxException(
+            "Unexpected {$this->current}, expected {$expectation}",
+            $this->current->getLine(),
+            $this->current->getOffset()
+        );
     }
 }
