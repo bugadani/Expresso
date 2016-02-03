@@ -439,7 +439,6 @@ class Core extends Extension
             new ExpressionFunction('count', __NAMESPACE__ . '\expression_function_count'),
             new ExpressionFunction('join', __NAMESPACE__ . '\expression_function_join'),
             new ExpressionFunction('skip', __NAMESPACE__ . '\expression_function_skip'),
-            new ExpressionFunction('popcount', __NAMESPACE__ . '\expression_function_population_count'),
             new ExpressionFunction('replace', __NAMESPACE__ . '\expression_function_replace'),
             new ExpressionFunction('reverse', 'strrev'),
             new ExpressionFunction('take', __NAMESPACE__ . '\expression_function_take'),

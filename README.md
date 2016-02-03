@@ -81,7 +81,6 @@ definitions and defines some functions that can be used in expressions.
  - `count(c)`
  - `join(c, g)`
  - `skip(c, n)`
- - `popcount(n)`
  - `replace(s, x, y)`
  - `replace(s, c)`
  - `reverse(s)`
@@ -129,5 +128,6 @@ The following example creates a list of even numbers using guard expressions:
 
 TODO
 -------------
+ - currying
  - documentation
  - compilation cache
