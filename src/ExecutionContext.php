@@ -7,7 +7,7 @@ class ExecutionContext extends \ArrayObject
     /**
      * @var ExecutionContext
      */
-    private $parentContext;
+    protected $parentContext;
 
     public function __construct($input, ExecutionContext $parentContext = null)
     {

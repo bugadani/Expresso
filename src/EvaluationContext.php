@@ -35,7 +35,11 @@ class EvaluationContext extends ExecutionContext
             return $this[ $functionName ];
         }
 
-        throw new \OutOfBoundsException('Function not found: ' . $functionName);
+        if (isset($this->parentContext)) {
+            return $this->parentContext->getFunction($functionName);
+        } else {
+            throw new \OutOfBoundsException('Function not found: ' . $functionName);
+        }
     }
 
     public function createInnerScope($input)
