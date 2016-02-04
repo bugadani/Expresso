@@ -73,14 +73,7 @@ class Compiler
 
     public function compileString($string)
     {
-        $string = strtr(
-            $string,
-            [
-                "'"  => "\'",
-                '\n' => "\n",
-                '\t' => "\t"
-            ]
-        );
+        $string = strtr($string, ["'" => "\'"]);
 
         return $this->add("'{$string}'");
     }

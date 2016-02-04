@@ -143,7 +143,7 @@ class Tokenizer
                 case '"':
                 case "'":
                     //strip backslashes from double-slashes and escaped string delimiters
-                    $part  = strtr($part, ['\\' . $part[0] => $part[0], '\\\\' => '\\']);
+                    $part  = stripcslashes($part);
                     $token = new Token(Token::STRING, substr($part, 1, -1));
                     break;
 

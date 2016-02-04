@@ -1,0 +1,7 @@
+--TEST--
+Expressions could not use escape sequences
+--EXPRESSION--
+"a\nb\\nc"
+--EXPECT--
+a
+b\nc
