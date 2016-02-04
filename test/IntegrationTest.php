@@ -39,7 +39,7 @@ class IntegrationTest extends \PHPUnit_Framework_TestCase
         /** @var \SplFileInfo $file */
         foreach ($iterator as $file) {
             $parsed = $this->parseDescriptor($file);
-            if (is_array($parsed)) {
+            if (is_array($parsed) && $parsed[1] == 'Test nested generators') {
                 yield $file->getPathname() => $parsed;
             }
         }
