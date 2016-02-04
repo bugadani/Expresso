@@ -27,11 +27,6 @@ class GeneratorBranchNode extends Node
     private $filters = [];
 
     /**
-     * @var array
-     */
-    private $argumentNames = [];
-
-    /**
      * @param Compiler $compiler
      *
      * @return \Generator
@@ -42,9 +37,8 @@ class GeneratorBranchNode extends Node
         $compiler->add('function() use ($context) {')
                  ->add('$context = $context->createInnerScope([]);');
 
-        foreach ($this->arguments as $argument) {
+        foreach ($this->arguments as $argName => $argument) {
             $compiledArgumentNode = (yield $compiler->compileNode($argument));
-            $argName              = $argument->getArgumentName();
             $argDef               = $compiler->addContextAsTempVariable($compiledArgumentNode);
             $compiler->compileTempVariables();
             $compiler->add("foreach({$argDef} as \$context['{$argName}']) {");
@@ -66,8 +60,7 @@ class GeneratorBranchNode extends Node
         }
 
         $compiler->add('yield [');
-        foreach ($this->arguments as $arg) {
-            $argName = $arg->getArgumentName();
+        foreach ($this->arguments as $argName => $arg) {
             $compiler->add("'{$argName}' => \$context['{$argName}'],");
         }
         $compiler->add('];');
@@ -89,24 +82,8 @@ class GeneratorBranchNode extends Node
      */
     public function evaluate(EvaluationContext $context)
     {
-        //Holds functions that should initialize argument sources
-        $source = [];
-        foreach ($this->arguments as $argument) {
-            $source[ $argument->getArgumentName() ] = function ($context) use ($argument) {
-                $value = GeneratorHelper::executeGeneratorsRecursive($argument->evaluate($context));
-                if (is_array($value)) {
-                    $value = new \ArrayIterator($value);
-                }
-
-                $value->rewind();
-
-                return $value;
-            };
-        }
-
         $iterationContext = $context->createInnerScope([]);
-        $argumentSource   = function () use ($iterationContext, $source) {
-
+        $argumentSource   = function ($source) use ($iterationContext) {
             //reset
             $iteratorList     = new \SplStack();
             $iterators        = new \SplObjectStorage();
@@ -114,57 +91,37 @@ class GeneratorBranchNode extends Node
 
             $iteratorsToReset->setIteratorMode(\SplDoublyLinkedList::IT_MODE_DELETE);
 
-            $add = function ($iterator, $argName) use ($iterators, $iteratorList, $iterationContext) {
-                $iterators[ $iterator ] = $argName;
+            $recreateIterator = function ($argName) use ($source, $iteratorList, $iterators, $iterationContext) {
+                $iterator = $source[ $argName ]($iterationContext);
+
+                $iterators->attach($iterator, $argName);
                 $iteratorList->push($iterator);
-            };
-
-            $create = function ($iteratorSource) use ($iterationContext) {
-                $iterator = $iteratorSource($iterationContext);
-                $iterator->rewind();
-
-                return $iterator;
-            };
-
-            $createA = function ($argName) use ($source, $create, $add, $iterationContext) {
-                $iteratorSource = $source[ $argName ];
-                $iterator       = $create($iteratorSource);
-                $add($iterator, $argName);
 
                 $iterationContext[ $argName ] = $iterator->current();
             };
 
-            foreach ($source as $argName => $iteratorSource) {
-                $createA($argName);
-            }
+            $updateValues = function (\Iterator $iterator) use ($iterationContext, $iterators) {
+                if ($iterator->valid()) {
+                    $argName                      = $iterators[ $iterator ];
+                    $iterationContext[ $argName ] = $iterator->current();
+                }
+            };
 
-            //Stack-like iteration mode so that rewind goes to the end of the list
-            $iteratorList->rewind();
+            foreach ($source as $argName => $iteratorSource) {
+                $recreateIterator($argName);
+            }
 
             //valid
             while ($iteratorList->bottom()->valid()) {
 
                 //current
-                $values = [];
-                foreach ($iterators as $iterator) {
-                    $key            = $iterators[ $iterator ];
-                    $value          = $iterator->current();
-                    $values[ $key ] = $value;
-
-                    $iterationContext[ $key ] = $value;
-                }
-
-                yield $values;
+                yield $iterationContext->getArrayCopy();
 
                 //next
-
                 $currentIterator = $iteratorList->top();
                 $currentIterator->next();
 
-                if ($currentIterator->valid()) {
-                    $argName                      = $iterators[ $currentIterator ];
-                    $iterationContext[ $argName ] = $currentIterator->current();
-                }
+                $updateValues($currentIterator);
                 //wrap-around
                 while (!$currentIterator->valid()) {
                     $iteratorsToReset->push($iteratorList->pop());
@@ -176,33 +133,41 @@ class GeneratorBranchNode extends Node
                     $currentIterator = $iteratorList->top();
                     $currentIterator->next();
 
-                    if ($currentIterator->valid()) {
-                        $argName                      = $iterators[ $currentIterator ];
-                        $iterationContext[ $argName ] = $currentIterator->current();
-                    }
+                    $updateValues($currentIterator);
                 }
 
                 if ($iteratorList->isEmpty()) {
                     break;
                 }
 
-                foreach ($iteratorsToReset as $iter) {
-                    $argName = $iterators[ $iter ];
-                    $iterators->detach($iter);
-
-                    $createA($argName);
+                foreach ($iteratorsToReset as $iteratorToReset) {
+                    $recreateIterator($iterators[ $iteratorToReset ]);
+                    $iterators->detach($iteratorToReset);
                 }
-                $iteratorList->rewind();
             }
         };
 
-        $iterator = $argumentSource();
+        //Holds functions that should initialize argument sources
+        $source = [];
+        foreach ($this->arguments as $argumentName => $argument) {
+            $source[ $argumentName ] = function ($context) use ($argument) {
+                $value = GeneratorHelper::executeGeneratorsRecursive($argument->evaluate($context));
+                if (is_array($value)) {
+                    $value = new \ArrayIterator($value);
+                }
+
+                $value->rewind();
+
+                return $value;
+            };
+        }
+
+        $iterator = $argumentSource($source);
 
         if (count($this->filters) > 0) {
-            $callback = function ($x) use ($context) {
-                $context = $context->createInnerScope($x);
+            $callback = function () use ($iterationContext) {
                 foreach ($this->filters as $filter) {
-                    if (!GeneratorHelper::executeGeneratorsRecursive($filter->evaluate($context))) {
+                    if (!GeneratorHelper::executeGeneratorsRecursive($filter->evaluate($iterationContext))) {
                         return false;
                     }
                 }
@@ -221,8 +186,9 @@ class GeneratorBranchNode extends Node
      */
     public function addArgument(GeneratorArgumentNode $argumentNode)
     {
-        $this->argumentNames[] = $argumentNode->getArgumentName();
-        $this->arguments[]     = $argumentNode;
+        $argumentName = $argumentNode->getArgumentName();
+
+        $this->arguments[ $argumentName ] = $argumentNode;
     }
 
     /**
@@ -231,13 +197,5 @@ class GeneratorBranchNode extends Node
     public function addFilter(Node $filterNode)
     {
         $this->filters[] = $filterNode;
-    }
-
-    /**
-     * @return array
-     */
-    public function getArgumentNames()
-    {
-        return $this->argumentNames;
     }
 }
