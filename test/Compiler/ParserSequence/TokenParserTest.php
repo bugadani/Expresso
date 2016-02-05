@@ -27,7 +27,7 @@ class TokenParserTest extends \PHPUnit_Framework_TestCase
                                   }
                               );
 
-        $result = GeneratorHelper::executeGeneratorsRecursive($grammar->parse($stream));
+        $result = \Expresso\runQuasiRecursive($grammar->parse($stream));
         $this->assertEquals(5, $result);
     }
 
@@ -52,6 +52,6 @@ class TokenParserTest extends \PHPUnit_Framework_TestCase
                                   }
                               );
 
-        GeneratorHelper::executeGeneratorsRecursive($grammar->parse($stream));
+        \Expresso\runQuasiRecursive($grammar->parse($stream));
     }
 }

@@ -68,7 +68,7 @@ class FunctionDefinitionNode extends Node
             yield function (array $arguments) use ($context) {
                 $innerContext = $context->createInnerScope($arguments);
 
-                return GeneratorHelper::executeGeneratorsRecursive(
+                return \Expresso\runQuasiRecursive(
                     $this->functionBody->evaluate($innerContext)
                 );
             };

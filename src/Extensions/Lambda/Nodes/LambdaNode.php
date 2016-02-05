@@ -78,7 +78,7 @@ class LambdaNode extends Node
             $arguments    = array_slice(func_get_args(), 0, count($this->arguments));
             $innerContext = $context->createInnerScope(array_combine($this->arguments, $arguments));
 
-            return GeneratorHelper::executeGeneratorsRecursive(
+            return \Expresso\runQuasiRecursive(
                 $this->functionBody->evaluate($innerContext)
             );
         };

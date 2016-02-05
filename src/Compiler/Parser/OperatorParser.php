@@ -61,7 +61,7 @@ class OperatorParser
 
         $generator = $this->parsers->get($this->defaultParserName)->parse($tokens);
 
-        return GeneratorHelper::executeGeneratorsRecursive($generator);
+        return \Expresso\runQuasiRecursive($generator);
     }
 
     public function pushOperatorSentinel()

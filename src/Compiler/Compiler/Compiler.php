@@ -140,7 +140,7 @@ class Compiler
 
         $generator = $this->compileNode($rootNode);
 
-        $context = GeneratorHelper::executeGeneratorsRecursive($generator);
+        $context = \Expresso\runQuasiRecursive($generator);
 
         return $context->source;
     }

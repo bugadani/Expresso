@@ -137,7 +137,7 @@ class Expresso
 
         $context = new EvaluationContext($parameters, $this->configuration);
 
-        return GeneratorHelper::executeGeneratorsRecursive(
+        return \Expresso\runQuasiRecursive(
             $nodes->evaluate($context)
         );
     }

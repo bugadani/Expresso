@@ -31,7 +31,7 @@ class OptionalTest extends \PHPUnit_Framework_TestCase
                            ->followedBy(new Optional(TokenParser::create(Token::CONSTANT, 'b')))
                            ->followedBy(TokenParser::create(Token::EOF));
 
-        $result = GeneratorHelper::executeGeneratorsRecursive($grammar->parse($stream));
+        $result = \Expresso\runQuasiRecursive($grammar->parse($stream));
 
         $this->assertEquals($tokens, $result);
     }
@@ -55,7 +55,7 @@ class OptionalTest extends \PHPUnit_Framework_TestCase
                            ->followedBy(new Optional(TokenParser::create(Token::CONSTANT, 'b')))
                            ->followedBy(TokenParser::create(Token::EOF));
 
-        $result = GeneratorHelper::executeGeneratorsRecursive($grammar->parse($stream));
+        $result = \Expresso\runQuasiRecursive($grammar->parse($stream));
 
         $this->assertEquals([$tokens[0], null, $tokens[1]], $result);
     }

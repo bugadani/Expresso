@@ -22,7 +22,7 @@ class AlternativeTest extends \PHPUnit_Framework_TestCase
         $grammar = Alternative::create(TokenParser::create(Token::IDENTIFIER, 'a'))
             ->orA(TokenParser::create(Token::IDENTIFIER, 'b'));
 
-        $result = GeneratorHelper::executeGeneratorsRecursive($grammar->parse($stream));
+        $result = \Expresso\runQuasiRecursive($grammar->parse($stream));
         $this->assertEquals($token, $result);
     }
 
@@ -41,6 +41,6 @@ class AlternativeTest extends \PHPUnit_Framework_TestCase
         $grammar = Alternative::create(TokenParser::create(Token::IDENTIFIER, 'a'))
                               ->orA(TokenParser::create(Token::IDENTIFIER, 'b'));
 
-        GeneratorHelper::executeGeneratorsRecursive($grammar->parse($stream));
+        \Expresso\runQuasiRecursive($grammar->parse($stream));
     }
 }

@@ -27,7 +27,7 @@ class SequenceTest extends \PHPUnit_Framework_TestCase
         $grammar = Sequence::create(TokenParser::create(Token::CONSTANT))
                            ->followedBy(TokenParser::create(Token::EOF));
 
-        $result = GeneratorHelper::executeGeneratorsRecursive($grammar->parse($stream));
+        $result = \Expresso\runQuasiRecursive($grammar->parse($stream));
 
         $this->assertEquals($tokens, $result);
     }
@@ -52,6 +52,6 @@ class SequenceTest extends \PHPUnit_Framework_TestCase
         $grammar = Sequence::create(TokenParser::create(Token::CONSTANT))
                            ->followedBy(TokenParser::create(Token::EOF));
 
-        GeneratorHelper::executeGeneratorsRecursive($grammar->parse($stream));
+        \Expresso\runQuasiRecursive($grammar->parse($stream));
     }
 }

@@ -153,7 +153,7 @@ class GeneratorBranchNode extends Node
         $source = [];
         foreach ($this->arguments as $argumentName => $argument) {
             $source[ $argumentName ] = function ($context) use ($argument) {
-                $value = GeneratorHelper::executeGeneratorsRecursive($argument->evaluate($context));
+                $value = \Expresso\runQuasiRecursive($argument->evaluate($context));
                 if (is_array($value)) {
                     $value = new \ArrayIterator($value);
                 }
@@ -169,7 +169,7 @@ class GeneratorBranchNode extends Node
         if (count($this->filters) > 0) {
             $callback = function () use ($iterationContext) {
                 foreach ($this->filters as $filter) {
-                    if (!GeneratorHelper::executeGeneratorsRecursive($filter->evaluate($iterationContext))) {
+                    if (!\Expresso\runQuasiRecursive($filter->evaluate($iterationContext))) {
                         return false;
                     }
                 }
