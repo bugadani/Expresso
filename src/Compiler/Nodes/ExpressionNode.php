@@ -26,12 +26,11 @@ class ExpressionNode extends Node
 
     public function compile(Compiler $compiler)
     {
-        $bodyContext = (yield $compiler->compileNode($this->rootNode));
-
         $compiler->add('function(array $context = []) {')
                  ->add('$context = new Expresso\\ExecutionContext($context);');
 
-        $compiler->compileTempVariables();
+        $bodyContext = (yield $compiler->compileNode($this->rootNode));
+        $compiler->compileStatements();
 
         $compiler->add('return ')
                  ->add($bodyContext->source)

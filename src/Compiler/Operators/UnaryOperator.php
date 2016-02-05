@@ -41,7 +41,7 @@ abstract class UnaryOperator extends Operator
         if ($node->isInline() || $operand instanceof DataNode) {
             $compiledOperandSource = $compiledOperand->source;
         } else {
-            $compiledOperandSource = $compiler->addContextAsTempVariable($compiledOperand);
+            $compiledOperandSource = $compiler->addTempVariable($compiledOperand);
         }
 
         $this->compileSimple($compiler, $compiledOperandSource);

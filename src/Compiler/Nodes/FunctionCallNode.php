@@ -51,7 +51,7 @@ class FunctionCallNode extends BinaryOperatorNode
 
         if ($this->isIndirectCall) {
             //Never inline indirect calls
-            $functionNameSource = $compiler->addContextAsTempVariable($functionName);
+            $functionNameSource = $compiler->addTempVariable($functionName);
         } else {
             $functionNameSource = $functionName->source;
         }

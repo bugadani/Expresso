@@ -47,28 +47,20 @@ class Compiler
         return $this;
     }
 
-    public function addContextAsTempVariable(CompilerContext $context)
-    {
-        return $this->addTempVariable($context->source);
-    }
-
     public function addTempVariable($source)
     {
         $num = $this->tempVariableCount++;
 
-        $tempVarName = "\$tempVar_{$num}";
+        $tempVar = new TempVar($this, "\$tempVar_{$num}", $source);
 
-        $this->context->tempVariables[ $tempVarName ] = $source;
+        $this->context->statements[] = $tempVar;
 
-        return $tempVarName;
+        return $tempVar;
     }
 
-    public function compileTempVariables()
+    public function compileStatements()
     {
-        foreach ($this->context->tempVariables as $tempVariable => $expression) {
-            $this->add("{$tempVariable} = {$expression};\n");
-        }
-        $this->context->tempVariables = [];
+        $this->context->compileStatements($this);
     }
 
     public function compileString($string)
@@ -142,15 +134,13 @@ class Compiler
     public function pushContext()
     {
         $this->contextStack->push($this->context);
-        $this->context = new CompilerContext();
+        $this->context = new CompilerContext($this->context);
     }
 
     public function popContext()
     {
         $context       = $this->context;
         $this->context = $this->contextStack->pop();
-
-        $this->context->tempVariables += $context->tempVariables;
 
         return $context;
     }

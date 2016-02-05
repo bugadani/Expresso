@@ -3,6 +3,7 @@
 namespace Expresso\Extensions\Generator\Nodes;
 
 use Expresso\Compiler\Compiler\Compiler;
+use Expresso\Compiler\Compiler\CompilerContext;
 use Expresso\Compiler\Node;
 use Expresso\Compiler\Utils\GeneratorHelper;
 use Expresso\EvaluationContext;
@@ -38,22 +39,23 @@ class GeneratorBranchNode extends Node
                  ->add('$context = $context->createInnerScope([]);');
 
         foreach ($this->arguments as $argName => $argument) {
+            /** @var CompilerContext $compiledArgumentNode */
             $compiledArgumentNode = (yield $compiler->compileNode($argument));
-            $argDef               = $compiler->addContextAsTempVariable($compiledArgumentNode);
-            $compiler->compileTempVariables();
-            $compiler->add("foreach({$argDef} as \$context['{$argName}']) {");
+            $compiledArgumentNode->compileStatements();
+
+            $compiler->add("foreach({$compiledArgumentNode} as \$context['{$argName}']) {");
         }
 
         $filterVars = [];
         foreach ($this->filters as $filter) {
             $filterVars[] = (yield $compiler->compileNode($filter));
         }
-        $compiler->compileTempVariables();
+        $compiler->compileStatements();
 
         if (count($this->filters) > 0) {
             $compiler->add('$accepted = true;');
             foreach ($filterVars as $filter) {
-                $compiler->add("\$accepted = \$accepted && ({$filter->source});");
+                $compiler->add("\$accepted = \$accepted && ({$filter});");
             }
 
             $compiler->add('if($accepted) {');
@@ -61,7 +63,9 @@ class GeneratorBranchNode extends Node
 
         $compiler->add('yield [');
         foreach ($this->arguments as $argName => $arg) {
-            $compiler->add("'{$argName}' => \$context['{$argName}'],");
+            $compiler->add("'{$argName}' => ")
+                     ->addVariableAccess($argName)
+                     ->add(',');
         }
         $compiler->add('];');
 
@@ -74,7 +78,7 @@ class GeneratorBranchNode extends Node
         $compiler->add("}");
 
         $callbackContext = $compiler->popContext();
-        $compiler->add($compiler->addContextAsTempVariable($callbackContext) . '()');
+        $compiler->add($compiler->addTempVariable($callbackContext) . '()');
     }
 
     /**

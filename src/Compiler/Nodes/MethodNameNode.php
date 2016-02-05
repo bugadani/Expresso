@@ -30,7 +30,7 @@ class MethodNameNode extends Node
         if ($this->isInline()) {
             $objNameVar = $compiledObjectName->source;
         } else {
-            $objNameVar = $compiler->addContextAsTempVariable($compiledObjectName);
+            $objNameVar = $compiler->addTempVariable($compiledObjectName);
         }
         $compiler->add($objNameVar)
                  ->add('->')

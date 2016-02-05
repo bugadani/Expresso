@@ -45,13 +45,13 @@ abstract class BinaryOperator extends Operator
         if ($node->isInline() || $left instanceof DataNode) {
             $leftSource  = $leftOperand->source;
         } else {
-            $leftSource  = $compiler->addContextAsTempVariable($leftOperand);
+            $leftSource  = $compiler->addTempVariable($leftOperand);
         }
 
         if ($node->isInline() || $right instanceof DataNode) {
             $rightSource = $rightOperand->source;
         } else {
-            $rightSource = $compiler->addContextAsTempVariable($rightOperand);
+            $rightSource = $compiler->addTempVariable($rightOperand);
         }
 
         $this->compileSimple($compiler, $leftSource, $rightSource);
