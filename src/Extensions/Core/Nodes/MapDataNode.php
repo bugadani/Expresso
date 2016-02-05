@@ -34,18 +34,13 @@ class MapDataNode extends Node
                 $compiledKey   = (yield $compiler->compileNode($children[ $keyIndex ]));
                 $compiledValue = (yield $compiler->compileNode($children[ $keyIndex + 1 ]));
 
-                $compiler->add($compiledKey->source);
-                $compiler->add(' => ');
-                $compiler->add($compiledValue->source);
-                $compiler->add(', ');
+                $compiler->add("{$compiledKey} => {$compiledValue}, ");
             }
 
             $compiledKey   = (yield $compiler->compileNode($lastKey));
             $compiledValue = (yield $compiler->compileNode($lastValue));
 
-            $compiler->add($compiledKey->source);
-            $compiler->add(' => ');
-            $compiler->add($compiledValue->source);
+            $compiler->add("{$compiledKey} => {$compiledValue}");
         }
 
         $compiler->add(']');

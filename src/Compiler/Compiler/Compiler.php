@@ -47,15 +47,29 @@ class Compiler
         return $this;
     }
 
-    public function addTempVariable($source)
+    public function requestTempVariable()
     {
         $num = $this->tempVariableCount++;
 
-        $tempVar = new TempVar($this, "\$tempVar_{$num}", $source);
+        return "\$tempVar_{$num}";
+    }
+
+    public function addTempVariable($source)
+    {
+        $tempVar = new TempVar($this, $this->requestTempVariable(), $source);
 
         $this->context->statements[] = $tempVar;
 
         return $tempVar;
+    }
+
+    public function addStatement($source)
+    {
+        $statement = new Statement($this, $source);
+
+        $this->context->statements[] = $statement;
+
+        return $statement;
     }
 
     public function compileStatements()
@@ -101,7 +115,7 @@ class Compiler
         return $this;
     }
 
-    public function compileNode(Node $node, $compileChildStatements = true)
+    public function compileNode(Node $node, $isInlined = true)
     {
         $this->pushContext();
 
@@ -111,17 +125,12 @@ class Compiler
         //This is a return-like statement
         $context = $this->popContext();
 
-        if ($compileChildStatements) {
+        if (!$isInlined) {
             $context->compileStatements();
+            $context = $this->addTempVariable($context);
         }
 
         yield $context;
-    }
-
-    public function compileNodeIntoTempVar(Node $node)
-    {
-        $compiled = (yield $this->compileNode($node));
-        yield $this->addTempVariable($compiled);
     }
 
     public function compile(Node $rootNode)
@@ -129,7 +138,7 @@ class Compiler
         $this->contextStack      = new \SplStack();
         $this->tempVariableCount = 0;
 
-        $generator = $this->compileNode($rootNode, false);
+        $generator = $this->compileNode($rootNode);
 
         $context = GeneratorHelper::executeGeneratorsRecursive($generator);
 

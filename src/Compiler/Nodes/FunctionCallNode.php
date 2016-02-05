@@ -47,12 +47,8 @@ class FunctionCallNode extends BinaryOperatorNode
     public function compile(Compiler $compiler)
     {
         //Never inline indirect calls
-        if ($this->isIndirectCall) {
-            $functionName = (yield $compiler->compileNodeIntoTempVar($this->functionName));
-        } else {
-            $functionName = (yield $compiler->compileNode($this->functionName, false));
-        }
-        $arguments = (yield $compiler->compileNode($this->arguments, false));
+        $functionName = (yield $compiler->compileNode($this->functionName, !$this->isIndirectCall));
+        $arguments = (yield $compiler->compileNode($this->arguments));
 
         $compiler->add("{$functionName}({$arguments})");
     }

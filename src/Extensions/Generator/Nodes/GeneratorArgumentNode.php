@@ -41,7 +41,7 @@ class GeneratorArgumentNode extends Node
      */
     public function compile(Compiler $compiler)
     {
-        $compiler->add(yield $compiler->compileNode($this->sourceExpression, false));
+        $compiler->add(yield $compiler->compileNode($this->sourceExpression));
     }
 
     /**

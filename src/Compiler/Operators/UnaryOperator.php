@@ -36,15 +36,9 @@ abstract class UnaryOperator extends Operator
         /** @var UnaryOperatorNode $node */
         $operand = $node->getOperand();
 
-        $compiledOperand = (yield $compiler->compileNode($operand, false));
+        $compiledOperand = (yield $compiler->compileNode($operand));
 
-        if ($node->isInline() || $operand instanceof DataNode) {
-            $compiledOperandSource = $compiledOperand;
-        } else {
-            $compiledOperandSource = $compiler->addTempVariable($compiledOperand);
-        }
-
-        $this->compileSimple($compiler, $compiledOperandSource);
+        $this->compileSimple($compiler, $compiledOperand);
     }
 
     /**

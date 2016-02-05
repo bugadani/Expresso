@@ -34,7 +34,6 @@ class GeneratorNode extends Node
     public function __construct(Node $functionBody)
     {
         $this->functionBodyNode = $functionBody;
-        $functionBody->setInline(false);
     }
 
     /**
@@ -48,12 +47,14 @@ class GeneratorNode extends Node
 
         $branchVariables = [];
         foreach ($this->branches as $branch) {
-            $branchVariables[] = (yield $compiler->compileNodeIntoTempVar($branch));
+            $branchVariables[] = (yield $compiler->compileNode($branch));
         }
 
-        $transformVarName = (yield $compiler->compileNodeIntoTempVar($this->functionBodyNode));
+        //Function bodies can't be inlined
+        $transformVarName = (yield $compiler->compileNode($this->functionBodyNode, false));
 
         if (count($this->branches) === 1) {
+            //TODO: this should be eliminated
             $compiler->compileStatements();
             $compiler->add(
                 "foreach ({$branchVariables[0]} as \$element) {
@@ -62,6 +63,7 @@ class GeneratorNode extends Node
             );
         } else {
             $iteratorVariable = $compiler->addTempVariable('new \MultipleIterator()');
+            //TODO: this should be eliminated
             $compiler->compileStatements();
             foreach ($branchVariables as $branchVarName) {
                 $compiler->add("{$iteratorVariable}->attachIterator({$branchVarName});");

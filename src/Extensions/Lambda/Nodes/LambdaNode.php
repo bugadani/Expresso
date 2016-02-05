@@ -64,6 +64,7 @@ class LambdaNode extends Node
         $compiler->add(']);');
 
         $compiledFunctionBody = (yield $compiler->compileNode($this->functionBody));
+        $compiler->compileStatements();
 
         $compiler->add("return {$compiledFunctionBody};}");
     }
