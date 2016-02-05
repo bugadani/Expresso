@@ -39,17 +39,17 @@ abstract class BinaryOperator extends Operator
     {
         list($left, $right) = $node->getChildren();
 
-        $leftOperand  = (yield $compiler->compileNode($left));
-        $rightOperand = (yield $compiler->compileNode($right));
+        $leftOperand  = (yield $compiler->compileNode($left, false));
+        $rightOperand = (yield $compiler->compileNode($right, false));
 
         if ($node->isInline() || $left instanceof DataNode) {
-            $leftSource  = $leftOperand->source;
+            $leftSource  = $leftOperand;
         } else {
             $leftSource  = $compiler->addTempVariable($leftOperand);
         }
 
         if ($node->isInline() || $right instanceof DataNode) {
-            $rightSource = $rightOperand->source;
+            $rightSource = $rightOperand;
         } else {
             $rightSource = $compiler->addTempVariable($rightOperand);
         }

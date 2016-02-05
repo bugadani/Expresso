@@ -34,6 +34,7 @@ class GeneratorNode extends Node
     public function __construct(Node $functionBody)
     {
         $this->functionBodyNode = $functionBody;
+        $functionBody->setInline(false);
     }
 
     /**
@@ -47,12 +48,10 @@ class GeneratorNode extends Node
 
         $branchVariables = [];
         foreach ($this->branches as $branch) {
-            $compiledBranch    = (yield $compiler->compileNode($branch));
-            $branchVariables[] = $compiler->addTempVariable($compiledBranch);
+            $branchVariables[] = (yield $compiler->compileNodeIntoTempVar($branch));
         }
 
-        $compiledTransform = (yield $compiler->compileNode($this->functionBodyNode));
-        $transformVarName  = $compiler->addTempVariable($compiledTransform);
+        $transformVarName = (yield $compiler->compileNodeIntoTempVar($this->functionBodyNode));
 
         if (count($this->branches) === 1) {
             $compiler->compileStatements();
@@ -63,7 +62,6 @@ class GeneratorNode extends Node
             );
         } else {
             $iteratorVariable = $compiler->addTempVariable('new \MultipleIterator()');
-
             $compiler->compileStatements();
             foreach ($branchVariables as $branchVarName) {
                 $compiler->add("{$iteratorVariable}->attachIterator({$branchVarName});");
@@ -79,10 +77,7 @@ class GeneratorNode extends Node
         $compiler->add('}');
 
         $context = $compiler->popContext();
-
-        $varName = $compiler->addTempVariable($context);
-
-        $compiler->add("{$varName}()");
+        $compiler->add($compiler->addTempVariable($context) . '()');
     }
 
     /**

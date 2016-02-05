@@ -41,7 +41,6 @@ class GeneratorBranchNode extends Node
         foreach ($this->arguments as $argName => $argument) {
             /** @var CompilerContext $compiledArgumentNode */
             $compiledArgumentNode = (yield $compiler->compileNode($argument));
-            $compiledArgumentNode->compileStatements();
 
             $compiler->add("foreach({$compiledArgumentNode} as \$context['{$argName}']) {");
         }
@@ -50,7 +49,6 @@ class GeneratorBranchNode extends Node
         foreach ($this->filters as $filter) {
             $filterVars[] = (yield $compiler->compileNode($filter));
         }
-        $compiler->compileStatements();
 
         if (count($this->filters) > 0) {
             $compiler->add('$accepted = true;');

@@ -12,12 +12,13 @@ class GeneratorHelper
      * In order for a function to be executed, each recursive call must be yielded.
      * The last yield may be a scalar value; that value will be returned by this method.
      *
+     * If a generator is to be yielded but should not be executed, it should be wrapped in \IteratorIterator.
+     *
      * @param \Generator $generator
-     * @param callable|null $sendFunction
      *
      * @return mixed
      */
-    public static function executeGeneratorsRecursive(\Generator $generator, callable $sendFunction = null)
+    public static function executeGeneratorsRecursive(\Generator $generator)
     {
         $stack = new \SplStack();
         $stack->push($generator);
@@ -50,11 +51,7 @@ class GeneratorHelper
                 $generator = $stack->top();
 
                 //run the next generator
-                if ($sendFunction === null) {
-                    $yielded = $generator->send($yielded);
-                } else {
-                    $yielded = $generator->send($sendFunction($generator, $yielded));
-                }
+                $yielded = $generator->send($yielded);
             }
         } while (!$done);
 

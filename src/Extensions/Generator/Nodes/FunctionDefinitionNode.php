@@ -47,10 +47,7 @@ class FunctionDefinitionNode extends Node
 
         $compiledFunctionBody = (yield $compiler->compileNode($this->functionBody));
 
-        $compiler->compileStatements();
-        $compiler->add('return ');
-        $compiler->add($compiledFunctionBody->source);
-        $compiler->add(';}');
+        $compiler->add("return {$compiledFunctionBody};}");
     }
 
     /**

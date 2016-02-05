@@ -60,7 +60,7 @@ class Compiler
 
     public function compileStatements()
     {
-        $this->context->compileStatements($this);
+        $this->context->compileStatements();
     }
 
     public function compileString($string)
@@ -101,11 +101,27 @@ class Compiler
         return $this;
     }
 
-    public function compileNode(Node $node)
+    public function compileNode(Node $node, $compileChildStatements = true)
     {
         $this->pushContext();
 
-        return $node->compile($this);
+        //This is a quasi-recursive call
+        yield $node->compile($this);
+
+        //This is a return-like statement
+        $context = $this->popContext();
+
+        if ($compileChildStatements) {
+            $context->compileStatements();
+        }
+
+        yield $context;
+    }
+
+    public function compileNodeIntoTempVar(Node $node)
+    {
+        $compiled = (yield $this->compileNode($node));
+        yield $this->addTempVariable($compiled);
     }
 
     public function compile(Node $rootNode)
@@ -113,14 +129,11 @@ class Compiler
         $this->contextStack      = new \SplStack();
         $this->tempVariableCount = 0;
 
-        $generator = $this->compileNode($rootNode);
+        $generator = $this->compileNode($rootNode, false);
 
-        GeneratorHelper::executeGeneratorsRecursive(
-            $generator,
-            [$this, 'popContext']
-        );
+        $context = GeneratorHelper::executeGeneratorsRecursive($generator);
 
-        return $this->context->source;
+        return $context->source;
     }
 
     /**

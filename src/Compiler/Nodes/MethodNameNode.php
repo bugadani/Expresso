@@ -27,12 +27,7 @@ class MethodNameNode extends Node
     {
         $compiledObjectName = (yield $compiler->compileNode($this->object));
 
-        if ($this->isInline()) {
-            $objNameVar = $compiledObjectName->source;
-        } else {
-            $objNameVar = $compiler->addTempVariable($compiledObjectName);
-        }
-        $compiler->add($objNameVar)
+        $compiler->add($compiledObjectName)
                  ->add('->')
                  ->add($this->method->getValue());
     }
