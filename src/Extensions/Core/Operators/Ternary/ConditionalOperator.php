@@ -54,10 +54,10 @@ class ConditionalOperator extends TernaryOperator
     {
         list($left, $middle, $right) = $node->getChildren();
 
-        $compiler->pushContext();
         $tempVar = $compiler->requestTempVariable();
 
         $leftOperand = (yield $compiler->compileNode($left));
+        $compiler->pushContext();
         $compiler->add("if({$leftOperand}) {");
 
         $middleOperand = (yield $compiler->compileNode($middle));
