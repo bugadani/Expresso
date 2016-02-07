@@ -16,8 +16,7 @@ class Sequence extends AbstractParser
             $sequence->canParseCallback = function (Token $token) use ($sequence) {
                 //A sequence can be started if the first element can parse the stream - optionals may be skipped
                 foreach ($sequence->parsers as $i => $parser) {
-                    $childCanParse = (yield $parser->canParse($token));
-                    if ($childCanParse) {
+                    if (yield $parser->canParse($token)) {
                         $sequence->startingParserIndex = $i;
                         yield true;
                     } else if (!$parser instanceof Optional) {
@@ -54,11 +53,6 @@ class Sequence extends AbstractParser
     private $parsers = [];
 
     /**
-     * @var bool[]
-     */
-    private $isTokenParser = [];
-
-    /**
      * @var callable
      */
     private $canParseCallback;
@@ -85,33 +79,18 @@ class Sequence extends AbstractParser
         }
         $children = [];
 
-        if ($this->startingParserIndex > 0) {
-            foreach ($this->parsers as $i => $parser) {
-                if ($i >= $this->startingParserIndex) {
-                    if ($this->isTokenParser[ $i ]) {
-                        $children[] = $parser->parse($stream)->current();
-                    } else {
-                        $children[] = (yield $parser->parse($stream));
-                    }
-                }
-            }
-            $this->startingParserIndex = 0;
-        } else {
-            foreach ($this->parsers as $i => $parser) {
-                if ($this->isTokenParser[ $i ]) {
-                    $children[] = $parser->parse($stream)->current();
-                } else {
-                    $children[] = (yield $parser->parse($stream));
-                }
+        foreach ($this->parsers as $i => $parser) {
+            if ($i >= $this->startingParserIndex) {
+                $children[] = (yield $parser->parse($stream));
             }
         }
+        $this->startingParserIndex = 0;
 
         yield $this->emit($children);
     }
 
     public function followedBy(AbstractParser $parser)
     {
-        $this->isTokenParser[ count($this->parsers) ] = $parser instanceof TokenParser;
         $this->parsers[] = $parser;
 
         return $this;

@@ -9,8 +9,6 @@ use Expresso\Compiler\Tokenizer\TokenStream;
 
 class Alternative extends AbstractParser
 {
-    private $canSkipYield;
-
     public static function create(AbstractParser $first)
     {
         $alt = new Alternative();
@@ -32,24 +30,13 @@ class Alternative extends AbstractParser
     public function canParse(Token $token)
     {
         foreach ($this->parsers as $parser) {
-            $generator    = $parser->canParse($token);
-            $canSkipYield = $parser instanceof TokenParser;
-
-            if ($canSkipYield) {
-                $canParse = $generator->current();
-            } else {
-                $canParse = (yield $generator);
-            }
-
-            if ($canParse) {
-                $this->canSkipYield = $canSkipYield;
+            if (yield $parser->canParse($token)) {
                 $this->activeParser = $parser;
                 yield true;
             }
         }
 
         $this->activeParser = null;
-        $this->canSkipYield = false;
 
         yield false;
     }
@@ -73,11 +60,7 @@ class Alternative extends AbstractParser
         $this->activeParser = null;
 
         $parsingGenerator = $activeParser->parse($stream);
-        if ($this->canSkipYield) {
-            $child = $parsingGenerator->current();
-        } else {
-            $child = (yield $parsingGenerator);
-        }
+        $child            = (yield $parsingGenerator);
         yield $this->emit($child);
     }
 

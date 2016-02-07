@@ -11,12 +11,10 @@ abstract class DelegateParser extends AbstractParser
      * @var AbstractParser
      */
     protected $parser;
-    protected $canSkipYield;
 
     public function __construct(AbstractParser $parser)
     {
         $this->parser = $parser;
-        $this->canSkipYield = $parser instanceof TokenParser;
     }
 
     public function canParse(Token $token)
