@@ -33,10 +33,6 @@ class OrOperator extends BinaryOperator
         $leftOperand  = (yield $compiler->compileNode($left));
         $rightOperand = (yield $compiler->compileNode($right));
 
-        $compiler->add('(');
-        $compiler->add($leftOperand->source);
-        $compiler->add(' || ');
-        $compiler->add($rightOperand->source);
-        $compiler->add(')');
+        $compiler->add("({$leftOperand}) || ({$rightOperand})");
     }
 }
