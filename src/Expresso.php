@@ -9,6 +9,7 @@ use Expresso\Compiler\Nodes\ExpressionNode;
 use Expresso\Compiler\Parser\OperatorParser;
 use Expresso\Compiler\Tokenizer\Tokenizer;
 use Expresso\Compiler\Utils\GeneratorHelper;
+use Recursor\Recursor;
 
 class Expresso
 {
@@ -137,8 +138,8 @@ class Expresso
 
         $context = new EvaluationContext($parameters, $this->configuration);
 
-        return \Expresso\runQuasiRecursive(
-            $nodes->evaluate($context)
-        );
+        $function = new Recursor([$nodes, 'evaluate']);
+
+        return $function($context);
     }
 }

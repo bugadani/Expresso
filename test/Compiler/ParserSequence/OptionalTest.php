@@ -8,6 +8,7 @@ use Expresso\Compiler\Parser\Parsers\TokenParser;
 use Expresso\Compiler\Tokenizer\Token;
 use Expresso\Compiler\Tokenizer\TokenStream;
 use Expresso\Compiler\Utils\GeneratorHelper;
+use Recursor\Recursor;
 
 class OptionalTest extends \PHPUnit_Framework_TestCase
 {
@@ -31,9 +32,8 @@ class OptionalTest extends \PHPUnit_Framework_TestCase
                            ->followedBy(new Optional(TokenParser::create(Token::CONSTANT, 'b')))
                            ->followedBy(TokenParser::create(Token::EOF));
 
-        $result = \Expresso\runQuasiRecursive($grammar->parse($stream));
-
-        $this->assertEquals($tokens, $result);
+        $result = new Recursor([$grammar, 'parse']);
+        $this->assertEquals($tokens, $result($stream));
     }
 
     public function testOptionalIsMissing()
@@ -55,8 +55,8 @@ class OptionalTest extends \PHPUnit_Framework_TestCase
                            ->followedBy(new Optional(TokenParser::create(Token::CONSTANT, 'b')))
                            ->followedBy(TokenParser::create(Token::EOF));
 
-        $result = \Expresso\runQuasiRecursive($grammar->parse($stream));
+        $result = new Recursor([$grammar, 'parse']);
 
-        $this->assertEquals([$tokens[0], null, $tokens[1]], $result);
+        $this->assertEquals([$tokens[0], null, $tokens[1]], $result($stream));
     }
 }

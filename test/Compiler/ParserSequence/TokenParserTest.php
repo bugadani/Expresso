@@ -6,6 +6,7 @@ use Expresso\Compiler\Parser\Parsers\TokenParser;
 use Expresso\Compiler\Tokenizer\Token;
 use Expresso\Compiler\Tokenizer\TokenStream;
 use Expresso\Compiler\Utils\GeneratorHelper;
+use Recursor\Recursor;
 
 class TokenParserTest extends \PHPUnit_Framework_TestCase
 {
@@ -27,8 +28,8 @@ class TokenParserTest extends \PHPUnit_Framework_TestCase
                                   }
                               );
 
-        $result = \Expresso\runQuasiRecursive($grammar->parse($stream));
-        $this->assertEquals(5, $result);
+        $result = new Recursor([$grammar, 'parse']);
+        $this->assertEquals(5, $result($stream));
     }
 
     /**
@@ -52,6 +53,7 @@ class TokenParserTest extends \PHPUnit_Framework_TestCase
                                   }
                               );
 
-        \Expresso\runQuasiRecursive($grammar->parse($stream));
+        $result = new Recursor([$grammar, 'parse']);
+        $result($stream);
     }
 }

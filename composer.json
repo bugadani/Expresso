@@ -5,7 +5,8 @@
   "license": "MIT",
   "type": "library",
   "require": {
-    "php": ">=5.5"
+    "php": ">=5.5",
+    "bugadani/recursor": "1.*"
   },
   "require-dev": {
     "phpunit/phpunit": "4.*"
@@ -19,8 +20,7 @@
   "autoload": {
     "psr-4": {
       "Expresso\\": "src/"
-    },
-    "files": ["src/functions.php"]
+    }
   },
   "autoload-dev": {
     "psr-4": {

@@ -4,6 +4,7 @@ namespace Expresso\Compiler\Compiler;
 
 use Expresso\Compiler\Node;
 use Expresso\Compiler\Utils\GeneratorHelper;
+use Recursor\Recursor;
 
 class Compiler
 {
@@ -138,9 +139,9 @@ class Compiler
         $this->contextStack      = new \SplStack();
         $this->tempVariableCount = 0;
 
-        $generator = $this->compileNode($rootNode);
+        $generator = new Recursor([$this, 'compileNode']);
 
-        $context = \Expresso\runQuasiRecursive($generator);
+        $context = $generator($rootNode);
 
         return $context->source;
     }

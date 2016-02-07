@@ -7,6 +7,7 @@ use Expresso\Compiler\Parser\Parsers\TokenParser;
 use Expresso\Compiler\Tokenizer\Token;
 use Expresso\Compiler\Tokenizer\TokenStream;
 use Expresso\Compiler\Utils\GeneratorHelper;
+use Recursor\Recursor;
 
 class SequenceTest extends \PHPUnit_Framework_TestCase
 {
@@ -27,9 +28,8 @@ class SequenceTest extends \PHPUnit_Framework_TestCase
         $grammar = Sequence::create(TokenParser::create(Token::CONSTANT))
                            ->followedBy(TokenParser::create(Token::EOF));
 
-        $result = \Expresso\runQuasiRecursive($grammar->parse($stream));
-
-        $this->assertEquals($tokens, $result);
+        $result = new Recursor([$grammar, 'parse']);
+        $this->assertEquals($tokens, $result($stream));
     }
 
     /**
@@ -52,6 +52,7 @@ class SequenceTest extends \PHPUnit_Framework_TestCase
         $grammar = Sequence::create(TokenParser::create(Token::CONSTANT))
                            ->followedBy(TokenParser::create(Token::EOF));
 
-        \Expresso\runQuasiRecursive($grammar->parse($stream));
+        $result = new Recursor([$grammar, 'parse']);
+        $result($stream);
     }
 }

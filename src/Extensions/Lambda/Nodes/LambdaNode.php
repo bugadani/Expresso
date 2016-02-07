@@ -6,6 +6,7 @@ use Expresso\Compiler\Compiler\Compiler;
 use Expresso\Compiler\Node;
 use Expresso\Compiler\Utils\GeneratorHelper;
 use Expresso\EvaluationContext;
+use Recursor\Recursor;
 
 /**
  * Class LambdaNode represents a lambda expression in the Abstract Syntax Tree.
@@ -78,9 +79,9 @@ class LambdaNode extends Node
             $arguments    = array_slice(func_get_args(), 0, count($this->arguments));
             $innerContext = $context->createInnerScope(array_combine($this->arguments, $arguments));
 
-            return \Expresso\runQuasiRecursive(
-                $this->functionBody->evaluate($innerContext)
-            );
+            $function = new Recursor([$this->functionBody, 'evaluate']);
+
+            return $function($innerContext);
         };
     }
 

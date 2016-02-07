@@ -8,6 +8,7 @@ use Expresso\Compiler\Nodes\DataNode;
 use Expresso\Compiler\Nodes\IdentifierNode;
 use Expresso\Compiler\Utils\GeneratorHelper;
 use Expresso\EvaluationContext;
+use Recursor\Recursor;
 
 /**
  * FunctionDefinitionNode provides a function that encapsulates a given expression.
@@ -68,9 +69,9 @@ class FunctionDefinitionNode extends Node
             yield function (array $arguments) use ($context) {
                 $innerContext = $context->createInnerScope($arguments);
 
-                return \Expresso\runQuasiRecursive(
-                    $this->functionBody->evaluate($innerContext)
-                );
+                $function = new Recursor([$this->functionBody, 'evaluate']);
+
+                return $function($innerContext);
             };
         }
     }

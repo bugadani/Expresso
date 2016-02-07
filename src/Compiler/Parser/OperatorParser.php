@@ -10,6 +10,7 @@ use Expresso\Compiler\Operators\BinaryOperator;
 use Expresso\Compiler\Operators\TernaryOperator;
 use Expresso\Compiler\Tokenizer\TokenStream;
 use Expresso\Compiler\Utils\GeneratorHelper;
+use Recursor\Recursor;
 
 /**
  * Expression parser is based on the Shunting Yard algorithm by Edsger W. Dijkstra
@@ -59,9 +60,10 @@ class OperatorParser
         $this->operatorStack = new \SplStack();
         $this->operandStack  = new \SplStack();
 
-        $generator = $this->parsers->get($this->defaultParserName)->parse($tokens);
+        $parser    = $this->parsers->get($this->defaultParserName);
+        $generator = new Recursor([$parser, 'parse']);
 
-        return \Expresso\runQuasiRecursive($generator);
+        return $generator($tokens);
     }
 
     public function pushOperatorSentinel()
