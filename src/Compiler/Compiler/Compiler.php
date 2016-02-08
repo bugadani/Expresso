@@ -3,7 +3,6 @@
 namespace Expresso\Compiler\Compiler;
 
 use Expresso\Compiler\Node;
-use Expresso\Compiler\Utils\GeneratorHelper;
 use Recursor\Recursor;
 
 class Compiler

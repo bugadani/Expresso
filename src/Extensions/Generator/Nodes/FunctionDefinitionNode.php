@@ -6,7 +6,6 @@ use Expresso\Compiler\Compiler\Compiler;
 use Expresso\Compiler\Node;
 use Expresso\Compiler\Nodes\DataNode;
 use Expresso\Compiler\Nodes\IdentifierNode;
-use Expresso\Compiler\Utils\GeneratorHelper;
 use Expresso\EvaluationContext;
 use Recursor\Recursor;
 

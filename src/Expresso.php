@@ -8,7 +8,6 @@ use Expresso\Compiler\Node;
 use Expresso\Compiler\Nodes\ExpressionNode;
 use Expresso\Compiler\Parser\OperatorParser;
 use Expresso\Compiler\Tokenizer\Tokenizer;
-use Expresso\Compiler\Utils\GeneratorHelper;
 use Recursor\Recursor;
 
 class Expresso

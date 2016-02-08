@@ -9,7 +9,6 @@ use Expresso\Compiler\Operator;
 use Expresso\Compiler\Operators\BinaryOperator;
 use Expresso\Compiler\Operators\TernaryOperator;
 use Expresso\Compiler\Tokenizer\TokenStream;
-use Expresso\Compiler\Utils\GeneratorHelper;
 use Recursor\Recursor;
 
 /**

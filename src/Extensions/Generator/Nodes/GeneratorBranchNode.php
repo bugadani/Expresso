@@ -5,7 +5,6 @@ namespace Expresso\Extensions\Generator\Nodes;
 use Expresso\Compiler\Compiler\Compiler;
 use Expresso\Compiler\Compiler\CompilerContext;
 use Expresso\Compiler\Node;
-use Expresso\Compiler\Utils\GeneratorHelper;
 use Expresso\EvaluationContext;
 use Recursor\Recursor;
 
