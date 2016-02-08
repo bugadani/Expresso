@@ -8,7 +8,7 @@ use Expresso\Compiler\Tokenizer\TokenStream;
 
 class RepeatSeparated extends DelegateParser
 {
-    public static function create(AbstractParser $parser, TokenParser $separator)
+    public static function create(AbstractParser $parser, AbstractParser $separator)
     {
         $repeat            = new static($parser);
         $repeat->separator = $separator;
@@ -31,9 +31,8 @@ class RepeatSeparated extends DelegateParser
         $children = [];
 
         $children[] = (yield $this->parser->parse($stream));
-        while ($this->separator->canParse($stream->current())->current()) {
-            //$this->separator is a TokenParser, so parse() is a generator. Let's run it directly
-            $this->separator->parse($stream)->current();
+        while (yield $this->separator->canParse($stream->current())) {
+            yield $this->separator->parse($stream);
             $children[] = (yield $this->parser->parse($stream));
         }
 
