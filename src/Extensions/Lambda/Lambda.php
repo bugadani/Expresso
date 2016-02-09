@@ -2,9 +2,9 @@
 
 namespace Expresso\Extensions\Lambda;
 
+use Expresso\Compiler\Parser\GrammarParser;
 use Expresso\Compiler\Compiler\CompilerConfiguration;
 use Expresso\Compiler\ExpressionFunction;
-use Expresso\Compiler\Parser\OperatorParser;
 use Expresso\Compiler\Parser\Parsers\ParserReference;
 use Expresso\Compiler\Parser\Parsers\TokenParser;
 use Expresso\Compiler\Tokenizer\Token;
@@ -34,9 +34,9 @@ class Lambda extends Extension
     /**
      * @inheritdoc
      */
-    public function addParsers(OperatorParser $parser, CompilerConfiguration $configuration)
+    public function addParsers(GrammarParser $parser, CompilerConfiguration $configuration)
     {
-        $parserContainer = $parser->getParserContainer();
+        $parserContainer = $parser->getContainer();
 
         $expression = $parserContainer->get('expression');
 

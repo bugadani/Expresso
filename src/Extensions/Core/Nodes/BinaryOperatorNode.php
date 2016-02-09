@@ -3,7 +3,6 @@
 namespace Expresso\Extensions\Core\Nodes;
 
 use Expresso\Compiler\Node;
-use Expresso\Extensions\Core\Nodes\OperatorNode;
 use Expresso\Compiler\Operators\BinaryOperator;
 
 class BinaryOperatorNode extends OperatorNode
@@ -45,5 +44,4 @@ class BinaryOperatorNode extends OperatorNode
     {
         return $this->right;
     }
-
 }

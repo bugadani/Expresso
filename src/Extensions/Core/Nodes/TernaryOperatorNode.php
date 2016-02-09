@@ -3,7 +3,6 @@
 namespace Expresso\Extensions\Core\Nodes;
 
 use Expresso\Compiler\Node;
-use Expresso\Extensions\Core\Nodes\OperatorNode;
 use Expresso\Compiler\Operators\TernaryOperator;
 
 class TernaryOperatorNode extends OperatorNode

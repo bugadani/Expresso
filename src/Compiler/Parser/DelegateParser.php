@@ -2,7 +2,6 @@
 
 namespace Expresso\Compiler\Parser;
 
-use Expresso\Compiler\Parser\Parsers\TokenParser;
 use Expresso\Compiler\Tokenizer\Token;
 
 abstract class DelegateParser extends AbstractParser

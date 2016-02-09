@@ -2,9 +2,10 @@
 
 namespace Expresso\Extensions\Generator;
 
+use Expresso\Compiler\Parser\GrammarParser;
 use Expresso\Compiler\Compiler\CompilerConfiguration;
 use Expresso\Compiler\Parser\AbstractParser;
-use Expresso\Compiler\Parser\OperatorParser;
+
 use Expresso\Compiler\Parser\Parsers\TokenParser;
 use Expresso\Compiler\Tokenizer\Token;
 use Expresso\Extension;
@@ -41,9 +42,9 @@ class Generator extends Extension
     /**
      * @inheritdoc
      */
-    public function addParsers(OperatorParser $parser, CompilerConfiguration $configuration)
+    public function addParsers(GrammarParser $parser, CompilerConfiguration $configuration)
     {
-        $parserContainer = $parser->getParserContainer();
+        $parserContainer = $parser->getContainer();
 
         $operandParser = $parserContainer->get('operand');
         $expression    = $parserContainer->get('expression');

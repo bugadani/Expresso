@@ -3,7 +3,6 @@
 namespace Expresso\Compiler\Tokenizer;
 
 use Expresso\Compiler\Exceptions\SyntaxException;
-use Expresso\Compiler\Tokenizer\Token;
 
 class TokenStream
 {

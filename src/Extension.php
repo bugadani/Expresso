@@ -2,10 +2,10 @@
 
 namespace Expresso;
 
+use Expresso\Compiler\Parser\GrammarParser;
 use Expresso\Compiler\Compiler\CompilerConfiguration;
 use Expresso\Compiler\ExpressionFunction;
 use Expresso\Compiler\Operator;
-use Expresso\Compiler\Parser\OperatorParser;
 
 abstract class Extension
 {
@@ -72,10 +72,10 @@ abstract class Extension
     /**
      * Override this method to extend the parser if the extension defines new language elements.
      *
-     * @param OperatorParser        $parser
+     * @param GrammarParser         $parser
      * @param CompilerConfiguration $configuration
      */
-    public function addParsers(OperatorParser $parser, CompilerConfiguration $configuration)
+    public function addParsers(GrammarParser $parser, CompilerConfiguration $configuration)
     {
 
     }

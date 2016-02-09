@@ -2,6 +2,7 @@
 
 namespace Expresso\Extensions\Core;
 
+use Expresso\Compiler\Parser\GrammarParser;
 use Expresso\Compiler\Compiler\CompilerConfiguration;
 use Expresso\Compiler\ExpressionFunction;
 use Expresso\Compiler\Node;
@@ -176,9 +177,10 @@ class Core extends Extension
     /**
      * @inheritdoc
      */
-    public function addParsers(OperatorParser $parser, CompilerConfiguration $configuration)
+    public function addParsers(GrammarParser $grammarParser, CompilerConfiguration $configuration)
     {
-        $parserContainer = $parser->getParserContainer();
+        $parserContainer = $grammarParser->getContainer();
+        $parser          = new OperatorParser($configuration);
 
         $conditionalOperator  = $configuration->getOperatorByClass(ConditionalOperator::class);
         $functionCallOperator = $configuration->getOperatorByClass(FunctionCallOperator::class);
@@ -427,7 +429,7 @@ class Core extends Extension
         $parserContainer->set('expression', $expressionParser);
         $parserContainer->set('program', $program);
 
-        $parser->setDefaultParserName('program');
+        $grammarParser->setSentence('program');
     }
 
     /**

@@ -8,8 +8,6 @@ use Expresso\Compiler\Node;
 use Expresso\Compiler\Operator;
 use Expresso\Compiler\Operators\BinaryOperator;
 use Expresso\Compiler\Operators\TernaryOperator;
-use Expresso\Compiler\Tokenizer\TokenStream;
-use Recursor\Recursor;
 
 /**
  * Expression parser is based on the Shunting Yard algorithm by Edsger W. Dijkstra
@@ -29,16 +27,6 @@ class OperatorParser
     private $operandStack;
 
     /**
-     * @var Container
-     */
-    private $parsers;
-
-    /**
-     * @var string
-     */
-    private $defaultParserName;
-
-    /**
      * @var CompilerConfiguration
      */
     private $configuration;
@@ -46,23 +34,9 @@ class OperatorParser
     public function __construct(CompilerConfiguration $configuration)
     {
         $this->configuration = $configuration;
-        $this->parsers       = new Container();
-    }
 
-    public function setDefaultParserName($parserName)
-    {
-        $this->defaultParserName = $parserName;
-    }
-
-    public function parseTokenStream(TokenStream $tokens)
-    {
         $this->operatorStack = new \SplStack();
         $this->operandStack  = new \SplStack();
-
-        $parser    = $this->parsers->get($this->defaultParserName);
-        $generator = new Recursor([$parser, 'parse']);
-
-        return $generator($tokens);
     }
 
     public function pushOperatorSentinel()
@@ -135,13 +109,5 @@ class OperatorParser
     public function pushOperand(Node $node)
     {
         $this->operandStack->push($node);
-    }
-
-    /**
-     * @return Container
-     */
-    public function getParserContainer()
-    {
-        return $this->parsers;
     }
 }
