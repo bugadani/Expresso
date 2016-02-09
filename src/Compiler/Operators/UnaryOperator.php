@@ -5,8 +5,8 @@ namespace Expresso\Compiler\Operators;
 use Expresso\Compiler\Compiler\Compiler;
 use Expresso\Compiler\Compiler\CompilerConfiguration;
 use Expresso\Compiler\Node;
-use Expresso\Compiler\Nodes\DataNode;
-use Expresso\Compiler\Nodes\UnaryOperatorNode;
+use Expresso\Extensions\Core\Nodes\DataNode;
+use Expresso\Extensions\Core\Nodes\UnaryOperatorNode;
 use Expresso\Compiler\Operator;
 use Expresso\EvaluationContext;
 

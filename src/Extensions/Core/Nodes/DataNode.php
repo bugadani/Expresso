@@ -1,6 +1,6 @@
 <?php
 
-namespace Expresso\Compiler\Nodes;
+namespace Expresso\Extensions\Core\Nodes;
 
 use Expresso\Compiler\Compiler\Compiler;
 use Expresso\Compiler\Node;

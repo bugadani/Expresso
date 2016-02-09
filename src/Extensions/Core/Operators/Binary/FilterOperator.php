@@ -5,10 +5,10 @@ namespace Expresso\Extensions\Core\Operators\Binary;
 use Expresso\Compiler\Compiler\CompilerConfiguration;
 use Expresso\Compiler\Exceptions\ParseException;
 use Expresso\Compiler\Node;
-use Expresso\Compiler\Nodes\ArgumentListNode;
-use Expresso\Compiler\Nodes\FunctionCallNode;
-use Expresso\Compiler\Nodes\FunctionNameNode;
-use Expresso\Compiler\Nodes\IdentifierNode;
+use Expresso\Extensions\Core\Nodes\ArgumentListNode;
+use Expresso\Extensions\Core\Nodes\FunctionCallNode;
+use Expresso\Extensions\Core\Nodes\FunctionNameNode;
+use Expresso\Extensions\Core\Nodes\IdentifierNode;
 use Expresso\Compiler\Operators\BinaryOperator;
 
 class FilterOperator extends BinaryOperator

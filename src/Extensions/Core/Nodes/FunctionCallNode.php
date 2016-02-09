@@ -1,9 +1,15 @@
 <?php
 
-namespace Expresso\Compiler\Nodes;
+namespace Expresso\Extensions\Core\Nodes;
 
 use Expresso\Compiler\Compiler\Compiler;
 use Expresso\Compiler\Node;
+use Expresso\Extensions\Core\Nodes\ArgumentListNode;
+use Expresso\Extensions\Core\Nodes\BinaryOperatorNode;
+use Expresso\Extensions\Core\Nodes\FunctionNameNode;
+use Expresso\Extensions\Core\Nodes\IdentifierNode;
+use Expresso\Extensions\Core\Nodes\MethodNameNode;
+use Expresso\Extensions\Core\Nodes\OperatorNode;
 use Expresso\EvaluationContext;
 use Expresso\Extensions\Core\Operators\Binary\SimpleAccessOperator;
 

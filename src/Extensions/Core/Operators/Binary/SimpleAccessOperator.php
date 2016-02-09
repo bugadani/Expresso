@@ -4,8 +4,8 @@ namespace Expresso\Extensions\Core\Operators\Binary;
 
 use Expresso\Compiler\Compiler\CompilerConfiguration;
 use Expresso\Compiler\Node;
-use Expresso\Compiler\Nodes\IdentifierNode;
-use Expresso\Compiler\Nodes\StringNode;
+use Expresso\Extensions\Core\Nodes\IdentifierNode;
+use Expresso\Extensions\Core\Nodes\StringNode;
 
 class SimpleAccessOperator extends ArrayAccessOperator
 {

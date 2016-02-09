@@ -6,10 +6,10 @@ use Expresso\Compiler\Compiler\Compiler;
 use Expresso\Compiler\Compiler\CompilerConfiguration;
 use Expresso\Compiler\Exceptions\ParseException;
 use Expresso\Compiler\Node;
-use Expresso\Compiler\Nodes\ArgumentListNode;
-use Expresso\Compiler\Nodes\DataNode;
-use Expresso\Compiler\Nodes\FunctionCallNode;
-use Expresso\Compiler\Nodes\TernaryOperatorNode;
+use Expresso\Extensions\Core\Nodes\ArgumentListNode;
+use Expresso\Extensions\Core\Nodes\DataNode;
+use Expresso\Extensions\Core\Nodes\FunctionCallNode;
+use Expresso\Extensions\Core\Nodes\TernaryOperatorNode;
 use Expresso\EvaluationContext;
 
 class FunctionCallOperator extends BinaryOperator

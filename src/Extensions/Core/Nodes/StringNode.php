@@ -1,8 +1,9 @@
 <?php
 
-namespace Expresso\Compiler\Nodes;
+namespace Expresso\Extensions\Core\Nodes;
 
 use Expresso\Compiler\Compiler\Compiler;
+use Expresso\Extensions\Core\Nodes\DataNode;
 
 class StringNode extends DataNode
 {

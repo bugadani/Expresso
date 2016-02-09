@@ -4,8 +4,8 @@ namespace Expresso\Extensions\Generator\Nodes;
 
 use Expresso\Compiler\Compiler\Compiler;
 use Expresso\Compiler\Node;
-use Expresso\Compiler\Nodes\DataNode;
-use Expresso\Compiler\Nodes\IdentifierNode;
+use Expresso\Extensions\Core\Nodes\DataNode;
+use Expresso\Extensions\Core\Nodes\IdentifierNode;
 use Expresso\EvaluationContext;
 use Recursor\Recursor;
 

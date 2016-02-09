@@ -1,8 +1,9 @@
 <?php
 
-namespace Expresso\Compiler\Nodes;
+namespace Expresso\Extensions\Core\Nodes;
 
 use Expresso\Compiler\Node;
+use Expresso\Extensions\Core\Nodes\OperatorNode;
 use Expresso\Compiler\Operators\UnaryOperator;
 
 class UnaryOperatorNode extends OperatorNode
