@@ -12,32 +12,6 @@ use Expresso\EvaluationContext;
  */
 abstract class Node
 {
-    protected $inline = false;
-
-    /**
-     * Sets whether this node should be compiled inline.
-     *
-     * @param $value
-     *
-     * @return $this
-     */
-    public function setInline($value)
-    {
-        $this->inline = $value;
-
-        $children = $this->getChildren();
-
-        while (!empty($children)) {
-            $child = array_pop($children);
-            foreach ($child->getChildren() as $c) {
-                $children[] = $c;
-            }
-
-            $child->inline = $value;
-        }
-
-        return $this;
-    }
 
     /**
      * Compile the given node.
@@ -67,13 +41,5 @@ abstract class Node
     public function getChildren()
     {
         return [];
-    }
-
-    /**
-     * @return bool
-     */
-    public function isInline()
-    {
-        return $this->inline;
     }
 }

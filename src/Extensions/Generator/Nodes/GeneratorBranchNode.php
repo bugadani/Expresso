@@ -12,7 +12,6 @@ use Recursor\Recursor;
  * GeneratorBranchNode represents a list comprehension branch.
  *
  * @see     GeneratorNode
- *
  * @package Expresso\Extensions\Generator\Nodes
  */
 class GeneratorBranchNode extends Node
@@ -42,17 +41,15 @@ class GeneratorBranchNode extends Node
             /** @var CompilerContext $compiledArgumentNode */
             $compiledArgumentNode = (yield $compiler->compileNode($argument));
 
-            $compiler->add("foreach({$compiledArgumentNode} as \$context['{$argName}']) {");
-        }
-
-        $filterVars = [];
-        foreach ($this->filters as $filter) {
-            $filterVars[] = (yield $compiler->compileNode($filter));
+            $compiler->add("foreach({$compiledArgumentNode} as ")
+                     ->addVariableAccess($argName)
+                     ->add(') {');
         }
 
         if (count($this->filters) > 0) {
             $compiler->add('$accepted = true;');
-            foreach ($filterVars as $filter) {
+            foreach ($this->filters as $filter) {
+                $filter = (yield $compiler->compileNode($filter));
                 $compiler->add("\$accepted = \$accepted && ({$filter});");
             }
 
@@ -93,8 +90,8 @@ class GeneratorBranchNode extends Node
 
             $iteratorsToReset->setIteratorMode(\SplDoublyLinkedList::IT_MODE_DELETE);
 
-            $recreateIterator = function ($argName) use ($source, $iteratorList, $iterators, $iterationContext) {
-                $iterator = $source[ $argName ]($iterationContext);
+            $recreateIterator = function ($argName, $constructor) use ($iteratorList, $iterators, $iterationContext) {
+                $iterator = $constructor($iterationContext);
 
                 $iterators->attach($iterator, $argName);
                 $iteratorList->push($iterator);
@@ -102,48 +99,41 @@ class GeneratorBranchNode extends Node
                 $iterationContext[ $argName ] = $iterator->current();
             };
 
-            $updateValues = function (\Iterator $iterator) use ($iterationContext, $iterators) {
-                if ($iterator->valid()) {
-                    $argName                      = $iterators[ $iterator ];
-                    $iterationContext[ $argName ] = $iterator->current();
-                }
-            };
-
             foreach ($source as $argName => $iteratorSource) {
-                $recreateIterator($argName);
+                $recreateIterator($argName, $iteratorSource);
             }
 
             //valid
-            while ($iteratorList->bottom()->valid()) {
+            while (true) {
 
                 //current
                 yield $iterationContext->getArrayCopy();
 
-                //next
-                $currentIterator = $iteratorList->top();
-                $currentIterator->next();
-
-                $updateValues($currentIterator);
-                //wrap-around
-                while (!$currentIterator->valid()) {
-                    $iteratorsToReset->push($iteratorList->pop());
-
-                    if ($iteratorList->isEmpty()) {
-                        break;
-                    }
-
+                //next: mark finished iterators to be reset, step the first valid
+                do {
+                    //step the next iterator that is still valid
                     $currentIterator = $iteratorList->top();
                     $currentIterator->next();
 
-                    $updateValues($currentIterator);
-                }
+                    $currentIteratorValid = $currentIterator->valid();
+
+                    if (!$currentIteratorValid) {
+                        //wrap-around: push the current iterator to the "to reset" list
+                        $iteratorsToReset->push($iteratorList->pop());
+                    }
+                } while (!$currentIteratorValid && !$iteratorList->isEmpty());
 
                 if ($iteratorList->isEmpty()) {
                     break;
                 }
 
+                //update the value in context
+                $argName                      = $iterators[ $currentIterator ];
+                $iterationContext[ $argName ] = $currentIterator->current();
+
                 foreach ($iteratorsToReset as $iteratorToReset) {
-                    $recreateIterator($iterators[ $iteratorToReset ]);
+                    $argName = $iterators[ $iteratorToReset ];
+                    $recreateIterator($argName, $source[ $argName ]);
                     $iterators->detach($iteratorToReset);
                 }
             }
@@ -152,9 +142,9 @@ class GeneratorBranchNode extends Node
         //Holds functions that should initialize argument sources
         $source = [];
         foreach ($this->arguments as $argumentName => $argument) {
-            $source[ $argumentName ] = function ($context) use ($argument) {
+            $generator = new Recursor([$argument, 'evaluate']);
 
-                $generator = new Recursor([$argument, 'evaluate']);
+            $source[ $argumentName ] = function ($context) use ($generator) {
                 $value = $generator($context);
                 if (is_array($value)) {
                     $value = new \ArrayIterator($value);
@@ -169,9 +159,14 @@ class GeneratorBranchNode extends Node
         $iterator = $argumentSource($source);
 
         if (count($this->filters) > 0) {
-            $callback = function () use ($iterationContext) {
-                foreach ($this->filters as $filter) {
-                    $generator = new Recursor([$filter, 'evaluate']);
+
+            $generators = [];
+            foreach ($this->filters as $filter) {
+                $generators[] = new Recursor([$filter, 'evaluate']);
+            }
+
+            $callback = function () use ($iterationContext, $generators) {
+                foreach ($generators as $generator) {
                     if (!$generator($iterationContext)) {
                         return false;
                     }

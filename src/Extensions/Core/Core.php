@@ -14,7 +14,7 @@ use Expresso\Extensions\Core\Nodes\StringNode;
 use Expresso\Compiler\Operator;
 use Expresso\Compiler\OperatorCollection;
 use Expresso\Compiler\Operators\FunctionCallOperator;
-use Expresso\Compiler\Parser\OperatorParser;
+use Expresso\Extensions\Core\Parsers\OperatorParser;
 use Expresso\Compiler\Parser\Parsers\ParserReference;
 use Expresso\Compiler\Parser\Parsers\TokenParser;
 use Expresso\Compiler\Tokenizer\Token;

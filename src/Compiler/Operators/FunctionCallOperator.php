@@ -28,17 +28,15 @@ class FunctionCallOperator extends BinaryOperator
             }
             $arguments = new FunctionCallNode($right, $arguments);
 
-            $newNode = new TernaryOperatorNode(
+            return new TernaryOperatorNode(
                 $functionName->getOperator(),
                 $left,
                 $middle,
                 $arguments
             );
         } else {
-            $newNode = new FunctionCallNode($functionName, $arguments);
+            return new FunctionCallNode($functionName, $arguments);
         }
-
-        return $newNode->setInline($functionName->isInline());
     }
 
     public function operators()

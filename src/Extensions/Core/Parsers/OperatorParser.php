@@ -1,6 +1,6 @@
 <?php
 
-namespace Expresso\Compiler\Parser;
+namespace Expresso\Extensions\Core\Parsers;
 
 use Expresso\Compiler\Compiler\CompilerConfiguration;
 use Expresso\Compiler\Exceptions\ParseException;
