@@ -4,26 +4,27 @@ namespace Expresso\Compiler\Compiler;
 
 class CompilerContext
 {
-    public $source = '';
-    public $children;
-    public $statements;
+    public $source     = '';
+    public $children   = [];
+    public $statements = [];
 
     public function __construct(CompilerContext $parentContext = null)
     {
-        $this->children   = new \SplDoublyLinkedList();
-        $this->statements = new \SplDoublyLinkedList();
-        $this->statements->setIteratorMode(\SplDoublyLinkedList::IT_MODE_DELETE);
-
         if ($parentContext !== null) {
             $parentContext->children[] = $this;
         }
     }
 
-    public function compileStatements()
+    public function flatten()
     {
         foreach ($this->children as $child) {
-            $child->compileStatements();
+            $this->statements = array_merge($child->statements, $this->statements);
         }
+        $this->children = [];
+    }
+
+    public function compileStatements()
+    {
         foreach ($this->statements as $statement) {
             $statement->compile();
         }
