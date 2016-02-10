@@ -164,6 +164,10 @@ class Compiler
         $context       = $this->context;
         $this->context = $this->contextStack->pop();
 
+        if ($this->context) {
+            $this->context->flatten();
+        }
+
         return $context;
     }
 }
