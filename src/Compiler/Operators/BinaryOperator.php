@@ -5,7 +5,7 @@ namespace Expresso\Compiler\Operators;
 use Expresso\Compiler\Compiler\Compiler;
 use Expresso\Compiler\Compiler\CompilerConfiguration;
 use Expresso\Compiler\Node;
-use Expresso\Extensions\Core\Nodes\BinaryOperatorNode;
+use Expresso\Compiler\Nodes\BinaryOperatorNode;
 
 use Expresso\Compiler\Operator;
 use Expresso\EvaluationContext;
@@ -47,16 +47,12 @@ abstract class BinaryOperator extends Operator
 
     /**
      * @param Compiler $compiler
-     * @param $leftSource
-     * @param $rightSource
+     * @param          $leftSource
+     * @param          $rightSource
      */
     protected function compileSimple(Compiler $compiler, $leftSource, $rightSource)
     {
-        $compiler->add('(')
-                 ->add($leftSource)
-                 ->add($this->compiledOperator())
-                 ->add($rightSource)
-                 ->add(')');
+        $compiler->add("({$leftSource} {$this->compiledOperator()} {$rightSource})");
     }
 
     /**

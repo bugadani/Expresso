@@ -6,7 +6,7 @@ use Expresso\Compiler\Compiler\Compiler;
 use Expresso\Compiler\Compiler\CompilerConfiguration;
 use Expresso\Compiler\Node;
 use Expresso\Extensions\Core\Nodes\IdentifierNode;
-use Expresso\Extensions\Core\Nodes\OperatorNode;
+use Expresso\Compiler\Nodes\OperatorNode;
 use Expresso\Compiler\Operators\TernaryOperator;
 use Expresso\EvaluationContext;
 use Expresso\Extensions\Core\Operators\Binary\ArrayAccessOperator;

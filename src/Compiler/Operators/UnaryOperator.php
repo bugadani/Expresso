@@ -6,7 +6,7 @@ use Expresso\Compiler\Compiler\Compiler;
 use Expresso\Compiler\Compiler\CompilerConfiguration;
 use Expresso\Compiler\Node;
 
-use Expresso\Extensions\Core\Nodes\UnaryOperatorNode;
+use Expresso\Compiler\Nodes\UnaryOperatorNode;
 use Expresso\Compiler\Operator;
 use Expresso\EvaluationContext;
 

@@ -4,6 +4,7 @@ namespace Expresso\Extensions\Core\Nodes;
 
 use Expresso\Compiler\Compiler\Compiler;
 use Expresso\Compiler\Node;
+use Expresso\Compiler\Nodes\BinaryOperatorNode;
 use Expresso\EvaluationContext;
 
 class MethodNameNode extends Node

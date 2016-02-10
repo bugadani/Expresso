@@ -20,7 +20,6 @@ class BitwiseNotOperator extends UnaryOperator
 
     protected function compileSimple(Compiler $compiler, $compiledSource)
     {
-        $compiler->add('~')
-                 ->add($compiledSource);
+        $compiler->add("~{$compiledSource}");
     }
 }

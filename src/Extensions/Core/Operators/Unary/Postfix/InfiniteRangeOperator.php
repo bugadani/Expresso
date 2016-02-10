@@ -20,8 +20,6 @@ class InfiniteRangeOperator extends UnaryOperator
 
     protected function compileSimple(Compiler $compiler, $compiledSource)
     {
-        $compiler->add('\Expresso\Extensions\Core\range(')
-                 ->add($compiledSource)
-                 ->add(')');
+        $compiler->add("\\Expresso\\Extensions\\Core\\range({$compiledSource})");
     }
 }

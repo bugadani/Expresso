@@ -9,7 +9,7 @@ use Expresso\Compiler\Node;
 use Expresso\Extensions\Core\Nodes\ArgumentListNode;
 use Expresso\Extensions\Core\Nodes\DataNode;
 use Expresso\Extensions\Core\Nodes\IdentifierNode;
-use Expresso\Extensions\Core\Nodes\OperatorNode;
+use Expresso\Compiler\Nodes\OperatorNode;
 use Expresso\Extensions\Core\Nodes\StringNode;
 use Expresso\Compiler\Operator;
 use Expresso\Compiler\OperatorCollection;

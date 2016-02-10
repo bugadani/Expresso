@@ -9,7 +9,7 @@ use Expresso\Compiler\Node;
 use Expresso\Extensions\Core\Nodes\ArgumentListNode;
 use Expresso\Extensions\Core\Nodes\DataNode;
 use Expresso\Extensions\Core\Nodes\FunctionCallNode;
-use Expresso\Extensions\Core\Nodes\TernaryOperatorNode;
+use Expresso\Compiler\Nodes\TernaryOperatorNode;
 use Expresso\EvaluationContext;
 
 class FunctionCallOperator extends BinaryOperator

@@ -15,8 +15,7 @@ class NotOperator extends UnaryOperator
 
     protected function compileSimple(Compiler $compiler, $compiledSource)
     {
-        $compiler->add('!')
-                 ->add($compiledSource);
+        $compiler->add("!{$compiledSource}");
     }
 
     public function evaluateSimple($left)

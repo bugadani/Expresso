@@ -37,13 +37,21 @@ class GeneratorNode extends Node
     }
 
     /**
+     * @param GeneratorBranchNode $branch
+     */
+    public function addBranch(GeneratorBranchNode $branch)
+    {
+        $this->branches[] = $branch;
+    }
+
+    /**
      * @inheritdoc
      */
     public function compile(Compiler $compiler)
     {
         $compiler->pushContext();
 
-        $compiler->add('function() use($context) {');
+        $compiler->add('function() use ($context) {');
 
         $branchVariables = [];
         foreach ($this->branches as $branch) {
@@ -54,7 +62,6 @@ class GeneratorNode extends Node
         $transformVarName = (yield $compiler->compileNode($this->functionBodyNode, false));
 
         if (count($this->branches) === 1) {
-            //TODO: this should be eliminated
             $compiler->compileStatements();
             $compiler->add(
                 "foreach ({$branchVariables[0]} as \$element) {
@@ -63,7 +70,6 @@ class GeneratorNode extends Node
             );
         } else {
             $iteratorVariable = $compiler->addTempVariable('new \MultipleIterator()');
-            //TODO: this should be eliminated
             $compiler->compileStatements();
             foreach ($branchVariables as $branchVarName) {
                 $compiler->add("{$iteratorVariable}->attachIterator({$branchVarName});");
@@ -116,13 +122,5 @@ class GeneratorNode extends Node
         }
 
         yield new \IteratorIterator($generator($iterator));
-    }
-
-    /**
-     * @param GeneratorBranchNode $branch
-     */
-    public function addBranch(GeneratorBranchNode $branch)
-    {
-        $this->branches[] = $branch;
     }
 }

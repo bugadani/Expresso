@@ -20,8 +20,6 @@ class EvenOperator extends UnaryOperator
 
     protected function compileSimple(Compiler $compiler, $compiledSource)
     {
-        $compiler->add('(')
-                 ->add($compiledSource)
-                 ->add(' & 0x01) == 0');
+        $compiler->add("({$compiledSource} & 0x01) == 0");
     }
 }

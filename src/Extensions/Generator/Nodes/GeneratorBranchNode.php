@@ -17,7 +17,7 @@ use Recursor\Recursor;
 class GeneratorBranchNode extends Node
 {
     /**
-     * @var GeneratorArgumentNode[]
+     * @var Node[]
      */
     private $arguments = [];
 
@@ -25,6 +25,23 @@ class GeneratorBranchNode extends Node
      * @var Node[]
      */
     private $filters = [];
+
+    /**
+     * @param string $argumentName
+     * @param Node   $argumentNode
+     */
+    public function addArgument($argumentName, Node $argumentNode)
+    {
+        $this->arguments[ $argumentName ] = $argumentNode;
+    }
+
+    /**
+     * @param Node $filterNode
+     */
+    public function addFilter(Node $filterNode)
+    {
+        $this->filters[] = $filterNode;
+    }
 
     /**
      * @param Compiler $compiler
@@ -67,9 +84,7 @@ class GeneratorBranchNode extends Node
         if (count($this->filters) > 0) {
             $compiler->add('}');
         }
-        for ($i = 0; $i < count($this->arguments); $i++) {
-            $compiler->add("}");
-        }
+        $compiler->add(str_repeat("}", count($this->arguments)));
         $compiler->add("}");
 
         $callbackContext = $compiler->popContext();
@@ -91,6 +106,7 @@ class GeneratorBranchNode extends Node
             $iteratorsToReset->setIteratorMode(\SplDoublyLinkedList::IT_MODE_DELETE);
 
             $recreateIterator = function ($argName, $constructor) use ($iteratorList, $iterators, $iterationContext) {
+                /** @var \Iterator $iterator */
                 $iterator = $constructor($iterationContext);
 
                 $iterators->attach($iterator, $argName);
@@ -179,23 +195,5 @@ class GeneratorBranchNode extends Node
             $iterator = new \IteratorIterator($iterator);
         }
         yield $iterator;
-    }
-
-    /**
-     * @param GeneratorArgumentNode $argumentNode
-     */
-    public function addArgument(GeneratorArgumentNode $argumentNode)
-    {
-        $argumentName = $argumentNode->getArgumentName();
-
-        $this->arguments[ $argumentName ] = $argumentNode;
-    }
-
-    /**
-     * @param Node $filterNode
-     */
-    public function addFilter(Node $filterNode)
-    {
-        $this->filters[] = $filterNode;
     }
 }

@@ -102,8 +102,7 @@ class Generator extends Extension
                                 //generator def
                                 //second element is the arrow symbol
                                 list($argument, , $source) = $argumentOrFilter;
-                                $argumentDefinition = new GeneratorArgumentNode($argument, $source);
-                                $branch->addArgument($argumentDefinition);
+                                $branch->addArgument($argument->getValue(), $source);
                             }
 
                         }
@@ -124,8 +123,7 @@ class Generator extends Extension
     public function getDependencies()
     {
         return [
-            Core::class,
-            Lambda::class
+            Core::class
         ];
     }
 }
