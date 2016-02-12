@@ -7,24 +7,25 @@ use Expresso\Extensions\Core\Core;
 use Expresso\Extensions\Generator\Generator;
 use Expresso\Extensions\Lambda\Lambda;
 
-class IntegrationTest extends \PHPUnit_Framework_TestCase
+abstract class IntegrationTest extends \PHPUnit_Framework_TestCase
 {
     /**
      * @var Expresso
      */
     private $expresso;
 
+    abstract public function create();
+
+    abstract public function getDirectory();
+
     public function setUp()
     {
-        $this->expresso = new Expresso();
-        $this->expresso->addExtension(new Core());
-        $this->expresso->addExtension(new Lambda());
-        $this->expresso->addExtension(new Generator());
+        $this->expresso = $this->create();
     }
 
     public function getTests()
     {
-        $directory = realpath(__DIR__ . '/fixtures');
+        $directory = realpath($this->getDirectory());
 
         $iterator = new \CallbackFilterIterator(
             new \RecursiveIteratorIterator(

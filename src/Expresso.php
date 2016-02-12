@@ -53,13 +53,12 @@ class Expresso
 
     private function internalAddExtension($extensionClassName, Extension $extension)
     {
-        $this->extensions[ $extensionClassName ] = $extension;
-
         foreach ($extension->getDependencies() as $dependency) {
             if (!isset($this->extensions[ $dependency ])) {
                 $this->internalAddExtension($dependency, new $dependency);
             }
         }
+        $this->extensions[ $extensionClassName ] = $extension;
     }
 
     private function getTokenizer()
