@@ -10,6 +10,7 @@ use Expresso\Extensions\Core\Nodes\ArgumentListNode;
 use Expresso\Extensions\Core\Nodes\DataNode;
 use Expresso\Extensions\Core\Nodes\IdentifierNode;
 use Expresso\Compiler\Nodes\OperatorNode;
+use Expresso\Extensions\Core\Nodes\StatementNode;
 use Expresso\Extensions\Core\Nodes\StringNode;
 use Expresso\Compiler\Operator;
 use Expresso\Compiler\OperatorCollection;
@@ -171,7 +172,7 @@ class Core extends Extension
      */
     public function getSymbols()
     {
-        return [',', '[', ']', '(', ')', '{', '}', ':', '?', '\\', '=>'];
+        return [',', '[', ']', '(', ')', '{', '}', ':', '?', '\\', '=>', ';'];
     }
 
     /**
@@ -212,7 +213,8 @@ class Core extends Extension
 
         //Primitive parsers
         $comma        = TokenParser::create(Token::SYMBOL, ',');
-        $semicolon    = TokenParser::create(Token::SYMBOL, ':');
+        $colon        = TokenParser::create(Token::SYMBOL, ':');
+        $semicolon    = TokenParser::create(Token::SYMBOL, ';');
         $questionMark = TokenParser::create(Token::SYMBOL, '?');
 
         $openingSquareBracket  = TokenParser::create(Token::SYMBOL, '[');
@@ -295,7 +297,19 @@ class Core extends Extension
             ->optional();
 
         $groupedExpression = $openingParenthesis
-            ->followedBy($expression)
+            ->followedBy(
+                $expression
+                    ->repeatSeparatedBy($semicolon)
+                    ->process(
+                        function (array $children) {
+                            if (count($children) > 1) {
+                                return new StatementNode($children);
+                            } else {
+                                return $children[0];
+                            }
+                        }
+                    )
+            )
             ->followedBy($closingParenthesis)
             ->process($returnArgument(1));
 
@@ -314,7 +328,7 @@ class Core extends Extension
 
         $conditionalExpressionSuffix = $questionMark
             ->followedBy($expression)
-            ->followedBy($semicolon)
+            ->followedBy($colon)
             ->followedBy($expression);
 
         $expressionParser = $binaryExpression
