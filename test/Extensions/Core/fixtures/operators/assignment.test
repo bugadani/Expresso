@@ -1,0 +1,7 @@
+--TEST--
+Test variable assignment
+--EXPRESSION--
+a := 5;
+2 * a
+--EXPECT--
+10

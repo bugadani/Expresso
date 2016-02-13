@@ -19,10 +19,6 @@ class ArrayAccessOperator extends BinaryOperator
 
     public function compileSimple(Compiler $compiler, $leftSource, $rightSource)
     {
-        $compiler->add('$context->access(')
-                 ->add($leftSource)
-                 ->add(', ')
-                 ->add($rightSource)
-                 ->add(')');
+        $compiler->add("{$leftSource}[{$rightSource}]");
     }
 }

@@ -2,16 +2,17 @@
 
 namespace Expresso;
 
-class ExecutionContext extends \ArrayObject
+class ExecutionContext implements \ArrayAccess
 {
     /**
      * @var ExecutionContext
      */
     protected $parentContext;
+    private   $data;
 
     public function __construct($input, ExecutionContext $parentContext = null)
     {
-        parent::__construct($input);
+        $this->data          = $input;
         $this->parentContext = $parentContext;
     }
 
@@ -29,15 +30,58 @@ class ExecutionContext extends \ArrayObject
         return new ExecutionContext($input, $this);
     }
 
-    public function offsetGet($index)
+    /**
+     * @inheritdoc
+     */
+    public function &offsetGet($index)
     {
-        if (parent::offsetExists($index)) {
-            return parent::offsetGet($index);
+        if (array_key_exists($index, $this->data)) {
+            return $this->data[ $index ];
         }
 
         if ($this->parentContext !== null) {
             return $this->parentContext->offsetGet($index);
         }
         throw new \OutOfBoundsException("Array index out of bounds: {$index}");
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function offsetExists($offset)
+    {
+        return array_key_exists($offset, $this->data) || ($this->parentContext !== null && $this->parentContext->offsetExists($offset));
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function offsetSet($offset, $value)
+    {
+        if ($this->parentContext !== null && $this->parentContext->offsetExists($offset)) {
+            $this->parentContext->offsetSet($offset, $value);
+        } else {
+            $this->data[ $offset ] = $value;
+        }
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function offsetUnset($offset)
+    {
+        if ($this->parentContext !== null && $this->parentContext->offsetExists($offset)) {
+            $this->parentContext->offsetUnset($offset);
+        } else {
+            unset($this->data[ $offset ]);
+        }
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getArrayCopy()
+    {
+        return $this->data;
     }
 }

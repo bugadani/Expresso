@@ -15,6 +15,7 @@ use Expresso\Extensions\Core\Nodes\StringNode;
 use Expresso\Compiler\Operator;
 use Expresso\Compiler\OperatorCollection;
 use Expresso\Compiler\Operators\FunctionCallOperator;
+use Expresso\Extensions\Core\Operators\Binary\AssignmentOperator;
 use Expresso\Extensions\Core\Parsers\OperatorParser;
 use Expresso\Compiler\Parser\Parsers\ParserReference;
 use Expresso\Compiler\Parser\Parsers\TokenParser;
@@ -121,7 +122,8 @@ class Core extends Extension
             new SimpleAccessOperator(16),
             new NullSafeAccessOperator(16),
             new FilterOperator(11),
-            new RangeOperator(12)
+            new RangeOperator(12),
+            new AssignmentOperator(-1)
         ];
     }
 
@@ -296,20 +298,20 @@ class Core extends Extension
             ->repeated()
             ->optional();
 
+        $expressions = $expression
+            ->repeatSeparatedBy($semicolon)
+            ->process(
+                function (array $children) {
+                    if (count($children) > 1) {
+                        return new StatementNode($children);
+                    } else {
+                        return $children[0];
+                    }
+                }
+            );
+
         $groupedExpression = $openingParenthesis
-            ->followedBy(
-                $expression
-                    ->repeatSeparatedBy($semicolon)
-                    ->process(
-                        function (array $children) {
-                            if (count($children) > 1) {
-                                return new StatementNode($children);
-                            } else {
-                                return $children[0];
-                            }
-                        }
-                    )
-            )
+            ->followedBy($expressions)
             ->followedBy($closingParenthesis)
             ->process($returnArgument(1));
 
@@ -334,7 +336,7 @@ class Core extends Extension
         $expressionParser = $binaryExpression
             ->followedBy($conditionalExpressionSuffix->optional());
 
-        $program = $expression
+        $program = $expressions
             ->followedBy($endOfExpression)
             ->process($returnArgument(0));
 

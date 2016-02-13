@@ -1,0 +1,7 @@
+--TEST--
+Test indirect calling lambdas
+--EXPRESSION--
+f := \x -> 2 * x;
+f(5)
+--EXPECT--
+10

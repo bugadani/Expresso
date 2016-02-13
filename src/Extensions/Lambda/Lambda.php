@@ -94,9 +94,11 @@ class Lambda extends Extension
             }
         );
 
+        $operandParser = $parserContainer->get('operand');
         $extendedExpression = $expression->orA($lambdaDefinition);
 
         $parserContainer->set('expression', $extendedExpression);
+        $parserContainer->set('operand', $operandParser->orA($lambdaDefinition));
     }
 
     /**
