@@ -18,7 +18,7 @@ class CompilerContext
     public function flatten()
     {
         foreach ($this->children as $child) {
-            $this->statements = array_merge($child->statements, $this->statements);
+            $this->statements = array_merge($this->statements, $child->statements);
         }
         $this->children = [];
     }
@@ -28,6 +28,7 @@ class CompilerContext
         foreach ($this->statements as $statement) {
             $statement->compile();
         }
+        $this->statements = [];
     }
 
     public function __toString()

@@ -25,8 +25,7 @@ class StatementNode extends Node
     public function compile(Compiler $compiler)
     {
         foreach ($this->expressions as $expression) {
-            $compiled = (yield $compiler->compileNode($expression));
-            $last     = $compiler->addTempVariable($compiled);
+            $last = (yield $compiler->compileNode($expression, false));
         }
         $compiler->add($last);
     }

@@ -31,7 +31,7 @@ class AssignmentOperator extends BinaryOperator
         if ($variableToSet instanceof IdentifierNode) {
             $context[ $variableToSet->getName() ] = $value;
         } else if ($variableToSet instanceof BinaryOperatorNode) {
-            $keys = [];
+            $keys          = [];
             $containerNode = $variableToSet;
             do {
                 $operator = $variableToSet->getOperator();
@@ -45,13 +45,19 @@ class AssignmentOperator extends BinaryOperator
                 }
             } while ($containerNode instanceof BinaryOperatorNode);
 
-            $container =& $context[$containerNode->getName()];
-            $varName = array_shift($keys);
-            while(!empty($keys)) {
-                $key = array_pop($keys);
-                $container =& $container[$key];
+            $container =& $context[ $containerNode->getName() ];
+            $varName   = array_shift($keys);
+            while (!empty($keys)) {
+                $key       = array_pop($keys);
+                $container =& $context->access($container, $key);
             }
-            $container[$varName] = $value;
+            if (is_array($container) || $container instanceof \ArrayAccess) {
+                $container[ $varName ] = $value;
+            } else if (is_object($container)) {
+                $container->{$varName} = $value;
+            } else {
+                throw new \UnexpectedValueException();
+            }
         } else {
             throw new ParseException('');
         }
@@ -59,8 +65,22 @@ class AssignmentOperator extends BinaryOperator
         yield $value;
     }
 
-    public function compileSimple(Compiler $compiler, $leftSource, $rightSource)
+    public function compile(Compiler $compiler, Node $node)
     {
-        $compiler->add("{$leftSource} = {$rightSource}");
+        list($left, $right) = $node->getChildren();
+
+        $tempVar = $compiler->requestTempVariable();
+
+        if ($left instanceof IdentifierNode) {
+            $rightSource = (yield $compiler->compileNode($right));
+            $compiler->addVariableAccess($left->getName())
+                     ->add(" = {$rightSource}");
+        } else {
+            $leftSource  = (yield $compiler->compileNode($left));
+            $rightSource = (yield $compiler->compileNode($right));
+
+            $compiler->addStatement("{$tempVar} =& {$leftSource}");
+            $compiler->add("{$tempVar} = {$rightSource}");
+        }
     }
 }
