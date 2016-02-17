@@ -1,11 +1,12 @@
 <?php
 
-namespace Expresso\Compiler\Operators;
+namespace Expresso\Extensions\Core\Operators\Binary;
 
 use Expresso\Compiler\Compiler\Compiler;
 use Expresso\Compiler\Compiler\CompilerConfiguration;
 use Expresso\Compiler\Exceptions\ParseException;
 use Expresso\Compiler\Node;
+use Expresso\Compiler\Operators\BinaryOperator;
 use Expresso\Extensions\Core\Nodes\ArgumentListNode;
 use Expresso\Extensions\Core\Nodes\DataNode;
 use Expresso\Extensions\Core\Nodes\FunctionCallNode;

@@ -14,7 +14,7 @@ use Expresso\Extensions\Core\Nodes\StatementNode;
 use Expresso\Extensions\Core\Nodes\StringNode;
 use Expresso\Compiler\Operator;
 use Expresso\Compiler\OperatorCollection;
-use Expresso\Compiler\Operators\FunctionCallOperator;
+use Expresso\Extensions\Core\Operators\Binary\FunctionCallOperator;
 use Expresso\Extensions\Core\Operators\Binary\AssignmentOperator;
 use Expresso\Extensions\Core\Parsers\OperatorParser;
 use Expresso\Compiler\Parser\Parsers\ParserReference;
