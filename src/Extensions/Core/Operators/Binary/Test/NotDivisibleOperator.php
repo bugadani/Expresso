@@ -9,11 +9,6 @@ use Expresso\Extensions\Core\Operators\Unary\Prefix\NotOperator;
 class NotDivisibleOperator extends DivisibleOperator
 {
 
-    public function operators()
-    {
-        return 'is not divisible by';
-    }
-
     public function createNode(CompilerConfiguration $config, Node $left, Node $right)
     {
         $notOperator = $config->getOperatorByClass(NotOperator::class);

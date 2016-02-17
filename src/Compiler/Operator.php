@@ -33,8 +33,6 @@ abstract class Operator
         return $this->associativity;
     }
 
-    abstract public function operators();
-
     /**
      * @param EvaluationContext $context
      * @param Node $node

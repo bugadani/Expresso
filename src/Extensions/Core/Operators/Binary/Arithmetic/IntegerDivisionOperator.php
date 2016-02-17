@@ -8,11 +8,6 @@ use Expresso\Compiler\Operators\BinaryOperator;
 class IntegerDivisionOperator extends BinaryOperator
 {
 
-    public function operators()
-    {
-        return 'div';
-    }
-
     protected function evaluateSimple($left, $right)
     {
         return ($left - $left % $right) / $right;

@@ -14,11 +14,6 @@ use Expresso\Extensions\Core\Nodes\IdentifierNode;
 class AssignmentOperator extends BinaryOperator
 {
 
-    public function operators()
-    {
-        return ':=';
-    }
-
     /**
      * @inheritdoc
      */

@@ -80,50 +80,50 @@ class Core extends Extension
     {
         return [
             //comparison
-            new EqualsOperator(7),
-            new IdenticalOperator(7),
-            new NotIdenticalOperator(7),
-            new NotEqualsOperator(7),
+            '='                   => new EqualsOperator(7),
+            '=='                  => new IdenticalOperator(7),
+            '!=='                 => new NotIdenticalOperator(7),
+            '!='                  => new NotEqualsOperator(7),
             //logical
-            new AndOperator(3),
-            new OrOperator(2),
-            new XorOperator(1),
+            '&&'                  => new AndOperator(3),
+            '||'                  => new OrOperator(2),
+            'xor'                 => new XorOperator(1),
             //bitwise
-            new BitwiseAndOperator(6),
-            new BitwiseOrOperator(4),
-            new BitwiseXorOperator(5),
-            new LeftArithmeticShiftOperator(9),
-            new RightArithmeticShiftOperator(9),
+            'b-and'               => new BitwiseAndOperator(6),
+            'b-or'                => new BitwiseOrOperator(4),
+            'b-xor'               => new BitwiseXorOperator(5),
+            '<<'                  => new LeftArithmeticShiftOperator(9),
+            '>>'                  => new RightArithmeticShiftOperator(9),
             //arithmetic operators
-            new AdditionOperator(10),
-            new SubtractionOperator(10),
-            new MultiplicationOperator(11),
-            new DivisionOperator(11),
-            new IntegerDivisionOperator(11),
-            new RemainderOperator(11),
-            new ModuloOperator(11),
-            new ExponentialOperator(14, Operator::RIGHT),
-            new DivisibleOperator(8, Operator::NONE),
-            new NotDivisibleOperator(8, Operator::NONE),
+            '+'                   => new AdditionOperator(10),
+            '-'                   => new SubtractionOperator(10),
+            '*'                   => new MultiplicationOperator(11),
+            '/'                   => new DivisionOperator(11),
+            'div'                 => new IntegerDivisionOperator(11),
+            '%'                   => new RemainderOperator(11),
+            'mod'                 => new ModuloOperator(11),
+            '^'                   => new ExponentialOperator(14, Operator::RIGHT),
+            'is divisible by'     => new DivisibleOperator(8, Operator::NONE),
+            'is not divisible by' => new NotDivisibleOperator(8, Operator::NONE),
             //comparison
-            new LessThanOperator(8),
-            new LessThanOrEqualsOperator(8),
-            new GreaterThanOperator(8),
-            new GreaterThanOrEqualsOperator(8),
+            '<'                   => new LessThanOperator(8),
+            '<='                  => new LessThanOrEqualsOperator(8),
+            '>'                   => new GreaterThanOperator(8),
+            '>='                  => new GreaterThanOrEqualsOperator(8),
             //test
             /*
-            new ContainsOperator(8, Operator::NONE),
-            new NotContainsOperator(8, Operator::NONE),*/
+          'in' => new ContainsOperator(8, Operator::NONE),
+          'not in' => new NotContainsOperator(8, Operator::NONE),*/
             //other
             new ArrayAccessOperator(17),
             new FunctionCallOperator(12),
-            new BinaryConditionalOperator(1),
-            new ConcatenationOperator(10),
-            new SimpleAccessOperator(16),
-            new NullSafeAccessOperator(16),
-            new FilterOperator(11),
-            new RangeOperator(12),
-            new AssignmentOperator(-1)
+            '?:'                  => new BinaryConditionalOperator(1),
+            '~'                   => new ConcatenationOperator(10),
+            '.'                   => new SimpleAccessOperator(16),
+            '?.'                  => new NullSafeAccessOperator(16),
+            '|'                   => new FilterOperator(11),
+            '..'                  => new RangeOperator(12),
+            ':='                  => new AssignmentOperator(-1)
         ];
     }
 
@@ -133,11 +133,11 @@ class Core extends Extension
     public function getPrefixUnaryOperators()
     {
         return [
-            /*new PreDecrementOperator(13, Operator::RIGHT),
-            new PreIncrementOperator(13, Operator::RIGHT)*/
-            new NotOperator(12, Operator::RIGHT),
-            new BitwiseNotOperator(13, Operator::RIGHT),
-            new MinusOperator(13, Operator::RIGHT)
+            /*'--'=>new PreDecrementOperator(13, Operator::RIGHT),
+           '++' =>new PreIncrementOperator(13, Operator::RIGHT)*/
+            '!' => new NotOperator(12, Operator::RIGHT),
+            '~' => new BitwiseNotOperator(13, Operator::RIGHT),
+            '-' => new MinusOperator(13, Operator::RIGHT)
         ];
     }
 
@@ -147,15 +147,15 @@ class Core extends Extension
     public function getPostfixUnaryOperators()
     {
         return [
-            new IsSetOperator(15, Operator::RIGHT),
-            new IsNotSetOperator(15, Operator::RIGHT),
-            new EvenOperator(15, Operator::NONE),
-            new OddOperator(15, Operator::NONE),
-            /* new PostDecrementOperator(15),
-             new PostIncrementOperator(15),
-             new EmptyOperator(15),
-             new NotEmptyOperator(15)*/
-            new InfiniteRangeOperator(15, Operator::NONE)
+            'is set'     => new IsSetOperator(15, Operator::RIGHT),
+            'is not set' => new IsNotSetOperator(15, Operator::RIGHT),
+            'is even'    => new EvenOperator(15, Operator::NONE),
+            'is odd'     => new OddOperator(15, Operator::NONE),
+            /*'--' =>new PostDecrementOperator(15),
+           '++' => new PostIncrementOperator(15),
+           'is empty' => new EmptyOperator(15),
+           'is not empty' => new NotEmptyOperator(15)*/
+            '...'        => new InfiniteRangeOperator(15, Operator::NONE)
         ];
     }
 

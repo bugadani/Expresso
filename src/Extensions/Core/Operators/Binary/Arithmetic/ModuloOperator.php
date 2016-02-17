@@ -8,11 +8,6 @@ use Expresso\Compiler\Operators\BinaryOperator;
 class ModuloOperator extends BinaryOperator
 {
 
-    public function operators()
-    {
-        return 'mod';
-    }
-
     protected function evaluateSimple($left, $right)
     {
         if ($left < 0 && $right >= 0 || $left >= 0 && $right < 0) {

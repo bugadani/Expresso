@@ -8,11 +8,6 @@ use Expresso\Compiler\Operators\BinaryOperator;
 class ExponentialOperator extends BinaryOperator
 {
 
-    public function operators()
-    {
-        return '^';
-    }
-
     protected function evaluateSimple($left, $right)
     {
         return pow($left, $right);

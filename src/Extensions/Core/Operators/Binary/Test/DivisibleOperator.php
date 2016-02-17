@@ -8,11 +8,6 @@ use Expresso\Compiler\Operators\BinaryOperator;
 class DivisibleOperator extends BinaryOperator
 {
 
-    public function operators()
-    {
-        return 'is divisible by';
-    }
-
     protected function evaluateSimple($left, $right)
     {
         return $left % $right === 0;

@@ -6,10 +6,6 @@ use Expresso\Compiler\Operators\BinaryOperator;
 
 class RightArithmeticShiftOperator extends BinaryOperator
 {
-    public function operators()
-    {
-        return '>>';
-    }
 
     protected function evaluateSimple($left, $right)
     {

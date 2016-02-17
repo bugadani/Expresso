@@ -6,10 +6,6 @@ use Expresso\Compiler\Operators\BinaryOperator;
 
 class BitwiseAndOperator extends BinaryOperator
 {
-    public function operators()
-    {
-        return 'b-and';
-    }
 
     protected function evaluateSimple($left, $right)
     {

@@ -9,19 +9,21 @@ class OperatorCollection
      */
     private $operators = [];
 
-    public function exists(Operator $operator)
-    {
-        return in_array($operator, $this->operators, true);
-    }
+    /**
+     * @var string[]
+     */
+    private $symbols = [];
 
     /**
+     * @param string   $opSymbol
      * @param Operator $operator
      */
-    public function addOperator(Operator $operator)
+    public function addOperator($opSymbol, Operator $operator)
     {
-        foreach ((array)$operator->operators() as $opSymbol) {
-            $this->operators[ $opSymbol ] = $operator;
+        if (\is_string($opSymbol)) {
+            $this->symbols[] = $opSymbol;
         }
+        $this->operators[ $opSymbol ] = $operator;
     }
 
     /**
@@ -43,6 +45,6 @@ class OperatorCollection
 
     public function getSymbols()
     {
-        return array_keys($this->operators);
+        return $this->symbols;
     }
 }

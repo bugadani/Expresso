@@ -8,11 +8,6 @@ use Expresso\Compiler\Operators\UnaryOperator;
 class MinusOperator extends UnaryOperator
 {
 
-    public function operators()
-    {
-        return '-';
-    }
-
     protected function compileSimple(Compiler $compiler, $compiledSource)
     {
         $compiler->add("-{$compiledSource}");

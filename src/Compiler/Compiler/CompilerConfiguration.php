@@ -69,9 +69,9 @@ class CompilerConfiguration
 
     private function addOperators(OperatorCollection $operatorCollection, array $operators)
     {
-        foreach ($operators as $operator) {
+        foreach ($operators as $symbol => $operator) {
             $this->operators[ get_class($operator) ] = $operator;
-            $operatorCollection->addOperator($operator);
+            $operatorCollection->addOperator($symbol, $operator);
         }
     }
 

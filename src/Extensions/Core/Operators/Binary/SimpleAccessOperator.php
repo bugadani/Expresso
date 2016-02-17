@@ -17,9 +17,4 @@ class SimpleAccessOperator extends ArrayAccessOperator
 
         return parent::createNode($config, $left, $right);
     }
-
-    public function operators()
-    {
-        return '.';
-    }
 }

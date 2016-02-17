@@ -9,10 +9,6 @@ use Expresso\EvaluationContext;
 
 class OrOperator extends BinaryOperator
 {
-    public function operators()
-    {
-        return '||';
-    }
 
     public function evaluate(EvaluationContext $context, Node $node)
     {

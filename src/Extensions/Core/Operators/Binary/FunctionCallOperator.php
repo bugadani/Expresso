@@ -40,10 +40,6 @@ class FunctionCallOperator extends BinaryOperator
         }
     }
 
-    public function operators()
-    {
-    }
-
     public function evaluate(EvaluationContext $context, Node $node)
     {
     }

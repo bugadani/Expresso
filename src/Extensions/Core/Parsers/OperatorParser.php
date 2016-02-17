@@ -95,11 +95,8 @@ class OperatorParser
                     return false;
                 default:
                     //e.g. (5 is divisible by 2 is divisible by 3) is not considered valid
-                    $symbols = $operator->operators();
-                    if (is_array($symbols)) {
-                        $symbols = implode(', ', $symbols);
-                    }
-                    throw new ParseException("Binary operator '{$symbols}' is not associative");
+                    $operatorClass = get_class($operator);
+                    throw new ParseException("Binary operator '{$operatorClass}' is not associative");
             }
         }
 

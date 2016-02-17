@@ -15,11 +15,6 @@ use Expresso\Extensions\Core\Operators\Unary\Postfix\IsNotSetOperator;
 class NullSafeAccessOperator extends BinaryOperator
 {
 
-    public function operators()
-    {
-        return '?.';
-    }
-
     public function createNode(CompilerConfiguration $config, Node $left, Node $right)
     {
         $conditionalOperator  = $config->getOperatorByClass(TernaryConditionalOperator::class);

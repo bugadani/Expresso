@@ -10,11 +10,6 @@ use Expresso\EvaluationContext;
 class AndOperator extends BinaryOperator
 {
 
-    public function operators()
-    {
-        return '&&';
-    }
-
     public function evaluate(EvaluationContext $context, Node $node)
     {
         /** @var Node $left */

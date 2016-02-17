@@ -12,11 +12,6 @@ use Expresso\EvaluationContext;
 class IsSetOperator extends UnaryOperator
 {
 
-    public function operators()
-    {
-        return 'is set';
-    }
-
     public function evaluate(EvaluationContext $context, Node $node)
     {
         /** @var UnaryOperatorNode $node */

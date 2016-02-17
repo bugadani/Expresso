@@ -8,11 +8,6 @@ use Expresso\Compiler\Operators\UnaryOperator;
 class InfiniteRangeOperator extends UnaryOperator
 {
 
-    public function operators()
-    {
-        return '...';
-    }
-
     public function evaluateSimple($operand)
     {
         return new \IteratorIterator(\Expresso\Extensions\Core\range($operand));

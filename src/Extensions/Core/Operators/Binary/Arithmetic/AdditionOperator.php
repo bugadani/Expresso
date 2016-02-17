@@ -6,12 +6,6 @@ use Expresso\Compiler\Operators\BinaryOperator;
 
 class AdditionOperator extends BinaryOperator
 {
-
-    public function operators()
-    {
-        return '+';
-    }
-
     protected function evaluateSimple($left, $right)
     {
         return $left + $right;

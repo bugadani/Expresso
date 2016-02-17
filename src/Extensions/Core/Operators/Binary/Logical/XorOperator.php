@@ -9,10 +9,6 @@ use Expresso\Extensions\Core\Operators\Unary\Prefix\NotOperator;
 
 class XorOperator extends BinaryOperator
 {
-    public function operators()
-    {
-        return 'xor';
-    }
 
     public function createNode(CompilerConfiguration $config, Node $left, Node $right)
     {

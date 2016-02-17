@@ -7,11 +7,6 @@ use Expresso\Compiler\Operators\BinaryOperator;
 class ConcatenationOperator extends BinaryOperator
 {
 
-    public function operators()
-    {
-        return '~';
-    }
-
     protected function compiledOperator()
     {
         return '.';

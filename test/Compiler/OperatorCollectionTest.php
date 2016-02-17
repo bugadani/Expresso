@@ -2,6 +2,7 @@
 
 namespace Expresso\Test\Compiler;
 
+use Expresso\Compiler\Operator;
 use Expresso\Compiler\OperatorCollection;
 
 class OperatorCollectionTest extends \PHPUnit_Framework_TestCase
@@ -16,28 +17,19 @@ class OperatorCollectionTest extends \PHPUnit_Framework_TestCase
 
     public function setUp()
     {
-        $this->mockOperator = $this->getMockBuilder('\\Expresso\\Compiler\\Operator')
-            ->setMethods(['operators'])
+        $this->mockOperator = $this->getMockBuilder(Operator::class)
             ->setConstructorArgs([1])
             ->getMockForAbstractClass();
 
-        $this->mockOperator->expects($this->any())
-            ->method('operators')
-            ->will($this->returnValue(['+', '-']));
-
-        $this->otherOperator = $this->getMockBuilder('\\Expresso\\Compiler\\Operator')
-            ->setMethods(['operators'])
+        $this->otherOperator = $this->getMockBuilder(Operator::class)
             ->setConstructorArgs([1])
             ->getMockForAbstractClass();
-
-        $this->otherOperator->expects($this->any())
-            ->method('operators')
-            ->will($this->returnValue('*'));
 
         $this->collection = new OperatorCollection();
 
-        $this->collection->addOperator($this->mockOperator);
-        $this->collection->addOperator($this->otherOperator);
+        $this->collection->addOperator('+', $this->mockOperator);
+        $this->collection->addOperator('-', $this->mockOperator);
+        $this->collection->addOperator('*', $this->otherOperator);
     }
 
     public function testEmptyCollection()
@@ -59,16 +51,6 @@ class OperatorCollectionTest extends \PHPUnit_Framework_TestCase
 
     public function testOperatorsAreReturnedBySymbol()
     {
-        $this->assertTrue($this->collection->exists($this->mockOperator));
-        $this->assertTrue($this->collection->exists($this->otherOperator));
-        $this->assertFalse(
-            $this->collection->exists(
-                $this->getMockBuilder('\\Expresso\\Compiler\\Operator')
-                    ->disableOriginalConstructor()
-                    ->getMockForAbstractClass()
-            )
-        );
-
         $this->assertSame($this->mockOperator, $this->collection->getOperator('+'));
         $this->assertSame($this->mockOperator, $this->collection->getOperator('-'));
         $this->assertSame($this->otherOperator, $this->collection->getOperator('*'));

@@ -8,11 +8,6 @@ use Expresso\Compiler\Operators\BinaryOperator;
 class RangeOperator extends BinaryOperator
 {
 
-    public function operators()
-    {
-        return '..';
-    }
-
     protected function evaluateSimple($left, $right)
     {
         return new \IteratorIterator(\Expresso\Extensions\Core\range($left, $right));

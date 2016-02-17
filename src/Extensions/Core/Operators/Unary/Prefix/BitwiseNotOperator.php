@@ -8,11 +8,6 @@ use Expresso\Compiler\Operators\UnaryOperator;
 class BitwiseNotOperator extends UnaryOperator
 {
 
-    public function operators()
-    {
-        return '~';
-    }
-
     public function evaluateSimple($operand)
     {
         return ~$operand;
