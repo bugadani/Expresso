@@ -1,6 +1,9 @@
 --TEST--
 Test that multiple statement expressions return the last value
 --EXPRESSION--
-(2 + 3; 3 + 8)
+(
+2 + 3
+3 + 8
+)
 --EXPECT--
 11

@@ -1,8 +1,8 @@
 --TEST--
 Test array assignment
 --EXPRESSION--
-a := [0, [1, 2, 3], 4];
-a[1][2] := 4;
+a := [0, [1, 2, 3], 4]
+a[1][2] := 4
 a[1][2]
 --EXPECT--
 4

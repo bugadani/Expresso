@@ -2,9 +2,9 @@
 Test assigning and calling lambdas
 --EXPRESSION--
 f := \x -> (
-    y := 2 * x;
+    y := 2 * x
     2 * y
-);
+)
 f(5)
 --EXPECT--
 20

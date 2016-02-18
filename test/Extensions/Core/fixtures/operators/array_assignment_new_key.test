@@ -1,8 +1,8 @@
 --TEST--
 Test array element creation
 --EXPRESSION--
-a := [];
-a[1] := 4;
+a := []
+a[1] := 4
 a[1]
 --EXPECT--
 4

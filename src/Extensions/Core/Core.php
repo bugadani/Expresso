@@ -299,7 +299,7 @@ class Core extends Extension
             ->optional();
 
         $expressions = $expression
-            ->repeatSeparatedBy($semicolon)
+            ->repeated()
             ->process(
                 function (array $children) {
                     if (count($children) > 1) {

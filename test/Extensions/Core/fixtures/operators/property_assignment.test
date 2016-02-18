@@ -1,7 +1,7 @@
 --TEST--
 Test property assignment
 --EXPRESSION--
-a.foo := 'foobar';
+a.foo := 'foobar'
 a.foo
 --DATA--
 'a' => new \stdClass
