@@ -156,7 +156,7 @@ class Compiler
     public function pushContext()
     {
         $this->contextStack->push($this->context);
-        $this->context = new CompilerContext($this->context);
+        $this->context = new CompilerContext();
     }
 
     public function popContext()
@@ -165,7 +165,7 @@ class Compiler
         $this->context = $this->contextStack->pop();
 
         if ($this->context) {
-            $this->context->flatten();
+            $this->context->statements = array_merge($this->context->statements, $context->statements);
         }
 
         return $context;
