@@ -216,7 +216,6 @@ class Core extends Extension
         //Primitive parsers
         $comma        = TokenParser::create(Token::SYMBOL, ',');
         $colon        = TokenParser::create(Token::SYMBOL, ':');
-        $semicolon    = TokenParser::create(Token::SYMBOL, ';');
         $questionMark = TokenParser::create(Token::SYMBOL, '?');
 
         $openingSquareBracket  = TokenParser::create(Token::SYMBOL, '[');
