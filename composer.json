@@ -5,7 +5,7 @@
   "license": "MIT",
   "type": "library",
   "require": {
-    "php": ">=5.5",
+    "php": ">=7",
     "bugadani/recursor": "1.*"
   },
   "require-dev": {

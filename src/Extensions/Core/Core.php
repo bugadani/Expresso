@@ -76,7 +76,7 @@ class Core extends Extension
     /**
      * @inheritdoc
      */
-    public function getBinaryOperators()
+    public function getBinaryOperators() : array
     {
         return [
             //comparison
@@ -130,7 +130,7 @@ class Core extends Extension
     /**
      * @inheritdoc
      */
-    public function getPrefixUnaryOperators()
+    public function getPrefixUnaryOperators() : array
     {
         return [
             /*'--'=>new PreDecrementOperator(13, Operator::RIGHT),
@@ -144,7 +144,7 @@ class Core extends Extension
     /**
      * @inheritdoc
      */
-    public function getPostfixUnaryOperators()
+    public function getPostfixUnaryOperators() : array
     {
         return [
             'is set'     => new IsSetOperator(15, Operator::RIGHT),
@@ -162,7 +162,7 @@ class Core extends Extension
     /**
      * @inheritdoc
      */
-    public function getTernaryOperators()
+    public function getTernaryOperators() : array
     {
         return [
             new ConditionalOperator(0)
@@ -172,7 +172,7 @@ class Core extends Extension
     /**
      * @inheritdoc
      */
-    public function getSymbols()
+    public function getSymbols() : array
     {
         return [',', '[', ']', '(', ')', '{', '}', ':', '?', '\\', '=>', ';'];
     }
@@ -450,7 +450,7 @@ class Core extends Extension
     /**
      * @inheritdoc
      */
-    public function getFunctions()
+    public function getFunctions() : array
     {
         return [
             new ExpressionFunction('count', __NAMESPACE__ . '\expression_function_count'),

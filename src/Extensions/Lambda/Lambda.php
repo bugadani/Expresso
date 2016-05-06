@@ -26,7 +26,7 @@ class Lambda extends Extension
     /**
      * @inheritdoc
      */
-    public function getSymbols()
+    public function getSymbols() : array
     {
         return ['->', '(', ')', '\\'];
     }
@@ -104,7 +104,7 @@ class Lambda extends Extension
     /**
      * @inheritdoc
      */
-    public function getFunctions()
+    public function getFunctions() : array
     {
         return [
             new ExpressionFunction('all', __NAMESPACE__ . '\expression_function_all'),
@@ -119,7 +119,7 @@ class Lambda extends Extension
     /**
      * @inheritdoc
      */
-    public function getDependencies()
+    public function getDependencies() : array
     {
         return [
             Core::class

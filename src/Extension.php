@@ -12,7 +12,7 @@ abstract class Extension
     /**
      * @return Operator[]
      */
-    public function getBinaryOperators()
+    public function getBinaryOperators() : array
     {
         return [];
     }
@@ -20,7 +20,7 @@ abstract class Extension
     /**
      * @return Operator[]
      */
-    public function getPrefixUnaryOperators()
+    public function getPrefixUnaryOperators() : array
     {
         return [];
     }
@@ -28,7 +28,7 @@ abstract class Extension
     /**
      * @return Operator[]
      */
-    public function getPostfixUnaryOperators()
+    public function getPostfixUnaryOperators() : array
     {
         return [];
     }
@@ -36,7 +36,7 @@ abstract class Extension
     /**
      * @return Operator[]
      */
-    public function getTernaryOperators()
+    public function getTernaryOperators() : array
     {
         return [];
     }
@@ -44,7 +44,7 @@ abstract class Extension
     /**
      * @return ExpressionFunction[]
      */
-    public function getFunctions()
+    public function getFunctions() : array
     {
         return [];
     }
@@ -54,7 +54,7 @@ abstract class Extension
      *
      * @return string[]
      */
-    public function getDependencies()
+    public function getDependencies() : array
     {
         return [];
     }
@@ -64,7 +64,7 @@ abstract class Extension
      *
      * @return array
      */
-    public function getSymbols()
+    public function getSymbols() : array
     {
         return [];
     }

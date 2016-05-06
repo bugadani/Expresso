@@ -34,7 +34,7 @@ class Generator extends Extension
     /**
      * @inheritdoc
      */
-    public function getSymbols()
+    public function getSymbols() : array
     {
         return ['<-', '{', '}', ',', ':', ';'];
     }
@@ -120,7 +120,7 @@ class Generator extends Extension
     /**
      * @inheritdoc
      */
-    public function getDependencies()
+    public function getDependencies() : array
     {
         return [
             Core::class

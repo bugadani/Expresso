@@ -51,7 +51,7 @@ class Expresso
         }
     }
 
-    private function internalAddExtension($extensionClassName, Extension $extension)
+    private function internalAddExtension(string $extensionClassName, Extension $extension)
     {
         foreach ($extension->getDependencies() as $dependency) {
             if (!isset($this->extensions[ $dependency ])) {
@@ -61,7 +61,7 @@ class Expresso
         $this->extensions[ $extensionClassName ] = $extension;
     }
 
-    private function getTokenizer()
+    private function getTokenizer() : Tokenizer
     {
         if (!isset($this->tokenizer)) {
             foreach ($this->extensions as $extension) {
@@ -77,7 +77,7 @@ class Expresso
         return $this->tokenizer;
     }
 
-    private function getParser()
+    private function getParser() : GrammarParser
     {
         if (!isset($this->parser)) {
             $container = new Container();
@@ -91,7 +91,7 @@ class Expresso
         return $this->parser;
     }
 
-    private function getCompiler()
+    private function getCompiler() : Compiler
     {
         if (!isset($this->compiler)) {
             $this->compiler = new Compiler($this->configuration);
@@ -105,7 +105,7 @@ class Expresso
      *
      * @return Node
      */
-    private function parse($expression)
+    private function parse($expression) : Node
     {
         $tokens = $this->getTokenizer()->tokenize($expression);
 
@@ -117,7 +117,7 @@ class Expresso
      *
      * @return callable
      */
-    public function compile($expression)
+    public function compile($expression) : callable
     {
         $nodes = $this->parse($expression);
 
