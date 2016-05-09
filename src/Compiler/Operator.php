@@ -15,13 +15,13 @@ abstract class Operator
     private $precedence;
     private $associativity;
 
-    public function __construct($precedence, $associativity = self::LEFT)
+    public function __construct(int $precedence, int $associativity = self::LEFT)
     {
         $this->precedence    = $precedence;
         $this->associativity = $associativity;
     }
 
-    public function getPrecedence()
+    public function getPrecedence() : int
     {
         return $this->precedence;
     }
@@ -29,7 +29,7 @@ abstract class Operator
     /**
      * @return int
      */
-    public function getAssociativity()
+    public function getAssociativity() : int
     {
         return $this->associativity;
     }

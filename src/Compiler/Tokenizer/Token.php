@@ -22,8 +22,8 @@ class Token
 
     private $type;
     private $value;
-    private $line;
-    private $offset;
+    private $line = 0;
+    private $offset = 0;
 
     public function __construct($type, $value = null)
     {
@@ -31,7 +31,7 @@ class Token
         $this->value = $value;
     }
 
-    public function test($type, $value = null)
+    public function test($type, $value = null) : bool
     {
         if ($this->type !== $type) {
             return false;
@@ -81,7 +81,7 @@ class Token
     /**
      * @return int
      */
-    public function getLine()
+    public function getLine() : int
     {
         return $this->line;
     }
@@ -89,7 +89,7 @@ class Token
     /**
      * @return mixed
      */
-    public function getOffset()
+    public function getOffset() : int
     {
         return $this->offset;
     }

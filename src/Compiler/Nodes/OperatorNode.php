@@ -24,7 +24,7 @@ abstract class OperatorNode extends Node
     /**
      * @return Operator
      */
-    public function getOperator()
+    public function getOperator() : Operator
     {
         return $this->operator;
     }

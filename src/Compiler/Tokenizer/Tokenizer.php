@@ -80,7 +80,7 @@ class Tokenizer
      *
      * @return TokenStream
      */
-    public function tokenize($expression)
+    public function tokenize($expression) : TokenStream
     {
         return new TokenStream($this->tokenizeExpression($expression));
     }
