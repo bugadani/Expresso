@@ -47,7 +47,7 @@ class ListDataNode extends Node
         return $list;
     }
 
-    public function getChildren()
+    public function getChildren() : array
     {
         return $this->items;
     }

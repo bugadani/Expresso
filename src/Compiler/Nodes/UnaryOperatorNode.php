@@ -21,7 +21,7 @@ class UnaryOperatorNode extends OperatorNode
     /**
      * @return Node
      */
-    public function getChildren()
+    public function getChildren() : array
     {
         return [$this->operand];
     }

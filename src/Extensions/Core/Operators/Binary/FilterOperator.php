@@ -14,8 +14,9 @@ use Expresso\Compiler\Operators\BinaryOperator;
 class FilterOperator extends BinaryOperator
 {
 
-    public function createNode(CompilerConfiguration $config, Node $left, Node $right)
+    public function createNode(CompilerConfiguration $config, Node ...$operands): Node
     {
+        list($left, $right) = $operands;
         $arguments = new ArgumentListNode();
         $arguments->add($left);
 

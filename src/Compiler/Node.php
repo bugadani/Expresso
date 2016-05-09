@@ -38,7 +38,7 @@ abstract class Node
     /**
      * @return Node[]
      */
-    public function getChildren()
+    public function getChildren() : array
     {
         return [];
     }

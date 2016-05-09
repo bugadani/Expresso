@@ -63,8 +63,13 @@ abstract class BinaryOperator extends Operator
         throw new \BadMethodCallException('Either compile or compiledOperator must be overridden');
     }
 
-    public function createNode(CompilerConfiguration $config, Node $left, Node $right)
+    public function createNode(CompilerConfiguration $config, Node ...$operands) : Node
     {
+        list($left, $right) = $operands;
         return new BinaryOperatorNode($this, $left, $right);
+    }
+
+    public function getOperandCount() : int {
+        return 2;
     }
 }

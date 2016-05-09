@@ -24,7 +24,7 @@ class BinaryOperatorNode extends OperatorNode
         $this->right = $right;
     }
 
-    public function getChildren()
+    public function getChildren() : array
     {
         return [$this->left, $this->right];
     }

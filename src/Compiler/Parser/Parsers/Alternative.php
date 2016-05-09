@@ -60,8 +60,7 @@ class Alternative extends AbstractParser
         }
         $this->activeParser = null;
 
-        $parsingGenerator = $activeParser->parse($stream);
-        $child = (yield $parsingGenerator);
+        $child = (yield $activeParser->parse($stream));
 
         return $this->emit($child);
     }

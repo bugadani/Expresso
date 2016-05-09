@@ -13,7 +13,7 @@ class ArgumentListNode extends Node
      */
     private $arguments = [];
 
-    public function getChildren()
+    public function getChildren() : array
     {
         return $this->arguments;
     }

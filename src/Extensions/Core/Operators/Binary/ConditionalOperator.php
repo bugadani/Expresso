@@ -10,8 +10,9 @@ use Expresso\Extensions\Core\Operators\Ternary\ConditionalOperator as TernaryCon
 class ConditionalOperator extends BinaryOperator
 {
 
-    public function createNode(CompilerConfiguration $config, Node $left, Node $right)
+    public function createNode(CompilerConfiguration $config, Node ...$operands): Node
     {
+        list($left, $right) = $operands;
         $ternaryConditionalOperator = $config->getOperatorByClass(TernaryConditionalOperator::class);
 
         return $ternaryConditionalOperator->createNode($config, $left, $left, $right);

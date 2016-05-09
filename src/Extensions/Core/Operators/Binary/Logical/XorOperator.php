@@ -10,8 +10,9 @@ use Expresso\Extensions\Core\Operators\Unary\Prefix\NotOperator;
 class XorOperator extends BinaryOperator
 {
 
-    public function createNode(CompilerConfiguration $config, Node $left, Node $right)
+    public function createNode(CompilerConfiguration $config, Node ...$operands): Node
     {
+        list($left, $right) = $operands;
         $orOperator  = $config->getOperatorByClass(OrOperator::class);
         $andOperator = $config->getOperatorByClass(AndOperator::class);
         $notOperator = $config->getOperatorByClass(NotOperator::class);

@@ -56,20 +56,16 @@ class OperatorParser
 
     private function popOperator()
     {
+        /** @var Operator $operator */
         $operator = $this->operatorStack->pop();
-        if ($operator instanceof TernaryOperator) {
-            $right        = $this->operandStack->pop();
-            $middle       = $this->operandStack->pop();
-            $left         = $this->operandStack->pop();
-            $operatorNode = $operator->createNode($this->configuration, $left, $middle, $right);
-        } else if ($operator instanceof BinaryOperator) {
-            $right        = $this->operandStack->pop();
-            $left         = $this->operandStack->pop();
-            $operatorNode = $operator->createNode($this->configuration, $left, $right);
-        } else {
-            $right        = $this->operandStack->pop();
-            $operatorNode = $operator->createNode($this->configuration, $right);
+
+        $operands = [];
+        for ($i = 0; $i < $operator->getOperandCount(); $i++) {
+            $operands[] = $this->operandStack->pop();
         }
+        $operands = array_reverse($operands);
+
+        $operatorNode = $operator->createNode($this->configuration, ...$operands);
         $this->operandStack->push($operatorNode);
     }
 

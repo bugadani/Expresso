@@ -42,7 +42,7 @@ class GrammarParser
         return $generator($tokens);
     }
 
-    public function getContainer()
+    public function getContainer() : Container
     {
         return $this->container;
     }

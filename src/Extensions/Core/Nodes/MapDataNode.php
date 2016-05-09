@@ -61,7 +61,7 @@ class MapDataNode extends Node
         return $array;
     }
 
-    public function getChildren()
+    public function getChildren() : array
     {
         return $this->children;
     }

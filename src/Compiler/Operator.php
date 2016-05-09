@@ -3,6 +3,7 @@
 namespace Expresso\Compiler;
 
 use Expresso\Compiler\Compiler\Compiler;
+use Expresso\Compiler\Compiler\CompilerConfiguration;
 use Expresso\EvaluationContext;
 
 abstract class Operator
@@ -42,4 +43,8 @@ abstract class Operator
     public abstract function evaluate(EvaluationContext $context, Node $node);
 
     public abstract function compile(Compiler $compiler, Node $node);
+
+    public abstract function createNode(CompilerConfiguration $config, Node ...$operands) : Node;
+
+    public abstract function getOperandCount() : int;
 }

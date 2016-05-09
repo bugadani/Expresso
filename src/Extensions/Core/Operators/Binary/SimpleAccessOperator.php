@@ -9,8 +9,9 @@ use Expresso\Extensions\Core\Nodes\StringNode;
 
 class SimpleAccessOperator extends ArrayAccessOperator
 {
-    public function createNode(CompilerConfiguration $config, Node $left, Node $right)
+    public function createNode(CompilerConfiguration $config, Node ...$operands): Node
     {
+        list($left, $right) = $operands;
         if ($right instanceof IdentifierNode) {
             $right = new StringNode($right->getName());
         }

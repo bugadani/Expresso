@@ -41,7 +41,7 @@ class MethodNameNode extends Node
         return [$object, $method];
     }
 
-    public function getChildren()
+    public function getChildren() : array
     {
         return [$this->object, $this->method];
     }

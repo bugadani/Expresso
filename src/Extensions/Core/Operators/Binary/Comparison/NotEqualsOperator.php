@@ -9,8 +9,9 @@ use Expresso\Extensions\Core\Operators\Unary\Prefix\NotOperator;
 class NotEqualsOperator extends EqualsOperator
 {
 
-    public function createNode(CompilerConfiguration $config, Node $left, Node $right)
+    public function createNode(CompilerConfiguration $config, Node ...$operands): Node
     {
+        list($left, $right) = $operands;
         $notOperator = $config->getOperatorByClass(NotOperator::class);
 
         return $notOperator->createNode(

@@ -33,17 +33,17 @@ class OperatorCollection
      *
      * @return bool
      */
-    public function isOperator($operator)
+    public function isOperator($operator) : bool
     {
         return isset($this->operators[ $operator ]);
     }
 
-    public function getOperator($sign)
+    public function getOperator($sign) : Operator
     {
         return $this->operators[ $sign ];
     }
 
-    public function getSymbols()
+    public function getSymbols() : array
     {
         return $this->symbols;
     }

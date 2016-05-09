@@ -33,13 +33,13 @@ abstract class AbstractParser
 
     protected function emit($data)
     {
-        if ($this->emitCallback === null) {
-            return $data;
-        } else {
+        if ($this->emitCallback !== null) {
             $callback = $this->emitCallback;
 
-            return $callback($data);
+            $data = $callback($data);
         }
+
+        return $data;
     }
 
     /**

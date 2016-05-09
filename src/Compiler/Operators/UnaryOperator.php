@@ -50,8 +50,14 @@ abstract class UnaryOperator extends Operator
         throw new \BadMethodCallException('Either compile or compileSimple must be overridden');
     }
 
-    public function createNode(CompilerConfiguration $config, $operand)
+    public function createNode(CompilerConfiguration $config, Node ...$operands): Node
     {
+        list($operand) = $operands;
+
         return new UnaryOperatorNode($this, $operand);
+    }
+
+    public function getOperandCount() : int {
+        return 1;
     }
 }

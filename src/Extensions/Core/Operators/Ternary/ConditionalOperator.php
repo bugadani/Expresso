@@ -16,8 +16,9 @@ use Expresso\Extensions\Core\Operators\Unary\Postfix\IsSetOperator;
 class ConditionalOperator extends TernaryOperator
 {
 
-    public function createNode(CompilerConfiguration $config, $left, $middle, $right)
+    public function createNode(CompilerConfiguration $config, Node ...$operands) : Node
     {
+        list($left, $middle, $right) = $operands;
         $isSetOperator = $config->getOperatorByClass(IsSetOperator::class);
         $andOperator   = $config->getOperatorByClass(AndOperator::class);
 

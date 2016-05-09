@@ -38,7 +38,7 @@ class StatementNode extends Node
         return $last;
     }
 
-    public function getChildren()
+    public function getChildren() : array
     {
         return $this->expressions;
     }

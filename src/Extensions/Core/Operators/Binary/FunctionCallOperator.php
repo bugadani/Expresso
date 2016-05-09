@@ -15,8 +15,9 @@ use Expresso\EvaluationContext;
 
 class FunctionCallOperator extends BinaryOperator
 {
-    public function createNode(CompilerConfiguration $config, Node $functionName, Node $arguments)
+    public function createNode(CompilerConfiguration $config, Node ...$operands): Node
     {
+        list($functionName, $arguments) = $operands;
         if (!$arguments instanceof ArgumentListNode) {
             throw  new ParseException('$arguments must be an instance of ArgumentListNode');
         }

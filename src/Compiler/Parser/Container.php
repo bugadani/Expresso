@@ -15,14 +15,14 @@ class Container
      *
      * @return AbstractParser
      */
-    public function set($parserName, AbstractParser $parser)
+    public function set(string $parserName, AbstractParser $parser)
     {
         $this->parsers[ $parserName ] = $parser;
 
         return $parser;
     }
 
-    public function get($parserName)
+    public function get(string $parserName) : AbstractParser
     {
         if (!isset($this->parsers[ $parserName ])) {
             throw new \OutOfBoundsException("Parser '{$parserName}' is not defined");

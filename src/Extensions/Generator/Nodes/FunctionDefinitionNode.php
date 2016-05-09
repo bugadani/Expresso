@@ -78,7 +78,7 @@ class FunctionDefinitionNode extends Node
     /**
      * @inheritdoc
      */
-    public function getChildren()
+    public function getChildren() : array
     {
         return [$this->functionBody];
     }

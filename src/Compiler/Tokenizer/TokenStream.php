@@ -23,7 +23,7 @@ class TokenStream
         $this->current = $tokens->current();
     }
 
-    public function consume()
+    public function consume() : Token
     {
         $current = $this->current;
         $this->tokens->next();
@@ -35,7 +35,7 @@ class TokenStream
     /**
      * @return Token
      */
-    public function current()
+    public function current() : Token
     {
         return $this->current;
     }
@@ -47,7 +47,7 @@ class TokenStream
      * @return Token
      * @throws SyntaxException
      */
-    public function expect($type, $value = null)
+    public function expect($type, $value = null) : Token
     {
         if ($this->current->test($type, $value)) {
             return $this->current;
