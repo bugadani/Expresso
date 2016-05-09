@@ -15,7 +15,7 @@ class IsSetOperator extends UnaryOperator
     public function evaluate(EvaluationContext $context, Node $node)
     {
         /** @var UnaryOperatorNode $node */
-        yield $context->offsetExists($node->getOperand()->getName());
+        return $context->offsetExists($node->getOperand()->getName());
     }
 
     public function compile(Compiler $compiler, Node $node)
@@ -24,6 +24,5 @@ class IsSetOperator extends UnaryOperator
         $compiler->add('$context->offsetExists(')
                  ->compileString($node->getOperand()->getName())
                  ->add(')');
-        yield;
     }
 }

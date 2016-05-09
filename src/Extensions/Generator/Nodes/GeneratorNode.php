@@ -121,6 +121,6 @@ class GeneratorNode extends Node
             };
         }
 
-        yield new \IteratorIterator($generator($iterator));
+        return $generator($iterator);
     }
 }

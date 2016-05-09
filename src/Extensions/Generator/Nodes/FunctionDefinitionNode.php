@@ -59,13 +59,13 @@ class FunctionDefinitionNode extends Node
     public function evaluate(EvaluationContext $context)
     {
         if ($this->isSimpleNode) {
-            yield function ($arguments) use ($context) {
+            return function ($arguments) use ($context) {
                 $innerContext = $context->createInnerScope($arguments);
 
                 return $this->functionBody->evaluate($innerContext)->current();
             };
         } else {
-            yield function (array $arguments) use ($context) {
+            return function (array $arguments) use ($context) {
                 $innerContext = $context->createInnerScope($arguments);
 
                 $function = new Recursor([$this->functionBody, 'evaluate']);

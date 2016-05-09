@@ -33,9 +33,9 @@ class FunctionNameNode extends Node
     {
         $function = $context->getFunction($this->functionName);
         if ($function instanceof ExpressionFunction) {
-            yield $function->getFunctionName();
+            return $function->getFunctionName();
         } else {
-            yield $function;
+            return $function;
         }
     }
 

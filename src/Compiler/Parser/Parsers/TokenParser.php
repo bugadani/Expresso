@@ -30,12 +30,13 @@ class TokenParser extends AbstractParser
 
     public function canParse(Token $token)
     {
-        yield $token->test($this->tokenType, $this->test);
+        return $token->test($this->tokenType, $this->test);
     }
 
     public function parse(TokenStream $stream)
     {
         $stream->expect($this->tokenType, $this->test);
-        yield $this->emit($stream->consume());
+        //this is a hack needed to make parse a generator
+        return yield $this->emit($stream->consume());
     }
 }

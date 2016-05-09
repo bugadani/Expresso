@@ -42,12 +42,10 @@ class ConditionalOperator extends TernaryOperator
         list($left, $middle, $right) = $node->getChildren();
 
         if (yield $left->evaluate($context)) {
-            $result = (yield $middle->evaluate($context));
+            return yield $middle->evaluate($context);
         } else {
-            $result = (yield $right->evaluate($context));
+            return yield $right->evaluate($context);
         }
-
-        yield $result;
     }
 
     public function compile(Compiler $compiler, Node $node)

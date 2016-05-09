@@ -58,7 +58,7 @@ class MapDataNode extends Node
             $array [ $key ] = $value;
         }
 
-        yield $array;
+        return $array;
     }
 
     public function getChildren()

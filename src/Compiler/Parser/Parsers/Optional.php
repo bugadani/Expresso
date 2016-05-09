@@ -26,6 +26,6 @@ class Optional extends DelegateParser
             $child = null;
         }
 
-        yield $this->emit($child);
+        return $this->emit($child);
     }
 }

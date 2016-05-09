@@ -130,7 +130,7 @@ class Compiler
             $context = $this->addTempVariable($context);
         }
 
-        yield $context;
+        return $context;
     }
 
     public function compile(Node $rootNode)

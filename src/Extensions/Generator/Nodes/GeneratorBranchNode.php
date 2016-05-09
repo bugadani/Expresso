@@ -194,6 +194,6 @@ class GeneratorBranchNode extends Node
         } else {
             $iterator = new \IteratorIterator($iterator);
         }
-        yield $iterator;
+        return $iterator;
     }
 }

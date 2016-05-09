@@ -63,7 +63,7 @@ class AssignmentOperator extends BinaryOperator
             throw new ParseException('Invalid left-hand expression in assignment');
         }
 
-        yield $value;
+        return $value;
     }
 
     public function compile(Compiler $compiler, Node $node)

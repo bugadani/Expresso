@@ -35,7 +35,7 @@ class StatementNode extends Node
         foreach ($this->expressions as $expression) {
             $last = (yield $expression->evaluate($context));
         }
-        yield $last;
+        return $last;
     }
 
     public function getChildren()

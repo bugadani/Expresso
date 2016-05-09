@@ -60,12 +60,7 @@ class FunctionCallNode extends BinaryOperatorNode
         $callback  = (yield $this->functionName->evaluate($context));
         $arguments = (yield $this->arguments->evaluate($context));
 
-        $retVal = call_user_func_array($callback, $arguments);
-        if ($retVal instanceof \Generator) {
-            $retVal = new \IteratorIterator($retVal);
-        }
-
-        yield $retVal;
+        return call_user_func_array($callback, $arguments);
     }
 
     public function getChildren()

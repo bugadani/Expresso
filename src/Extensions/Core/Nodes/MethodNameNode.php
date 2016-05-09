@@ -38,7 +38,7 @@ class MethodNameNode extends Node
         $object = (yield $this->object->evaluate($context));
         $method = (yield $this->method->evaluate($context));
 
-        yield [$object, $method];
+        return [$object, $method];
     }
 
     public function getChildren()

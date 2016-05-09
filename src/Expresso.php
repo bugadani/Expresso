@@ -135,6 +135,7 @@ class Expresso
     public function execute($expression, array $parameters)
     {
         $nodes = $this->parse($expression);
+        //die(print_r($nodes, 1));
 
         $context = new EvaluationContext($parameters, $this->configuration);
 

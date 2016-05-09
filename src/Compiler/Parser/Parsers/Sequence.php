@@ -18,13 +18,13 @@ class Sequence extends AbstractParser
                 foreach ($sequence->parsers as $i => $parser) {
                     if (yield $parser->canParse($token)) {
                         $sequence->startingParserIndex = $i;
-                        yield true;
+                        return true;
                     } else if (!$parser instanceof Optional) {
-                        yield false;
+                        return false;
                     }
                 }
 
-                yield false;
+                return false;
             };
         } else {
             $sequence->canParseCallback = [$first, 'canParse'];
@@ -86,7 +86,7 @@ class Sequence extends AbstractParser
         }
         $this->startingParserIndex = 0;
 
-        yield $this->emit($children);
+        return $this->emit($children);
     }
 
     public function followedBy(AbstractParser $parser)

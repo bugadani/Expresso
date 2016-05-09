@@ -19,7 +19,7 @@ class OrOperator extends BinaryOperator
         //This implements short-circuit evaluation
         $first  = (yield $left->evaluate($context));
         $second = $first || (yield $right->evaluate($context));
-        yield $second;
+        return $second;
     }
 
     public function compile(Compiler $compiler, Node $node)

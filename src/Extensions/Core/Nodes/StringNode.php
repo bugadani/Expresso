@@ -9,6 +9,5 @@ class StringNode extends DataNode
     public function compile(Compiler $compiler)
     {
         $compiler->compileString($this->getValue());
-        yield;
     }
 }

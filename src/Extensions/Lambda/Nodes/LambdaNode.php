@@ -74,7 +74,7 @@ class LambdaNode extends Node
      */
     public function evaluate(EvaluationContext $context)
     {
-        yield function () use ($context) {
+        return function () use ($context) {
             $arguments    = array_slice(func_get_args(), 0, count($this->arguments));
             $innerContext = $context->createInnerScope(array_combine($this->arguments, $arguments));
 

@@ -6,6 +6,7 @@ use Expresso\Compiler\Exceptions\SyntaxException;
 use Expresso\Compiler\Parser\AbstractParser;
 use Expresso\Compiler\Tokenizer\Token;
 use Expresso\Compiler\Tokenizer\TokenStream;
+use Expresso\Extensions\Generator\Generator;
 
 class Alternative extends AbstractParser
 {
@@ -32,13 +33,13 @@ class Alternative extends AbstractParser
         foreach ($this->parsers as $parser) {
             if (yield $parser->canParse($token)) {
                 $this->activeParser = $parser;
-                yield true;
+                return true;
             }
         }
 
         $this->activeParser = null;
 
-        yield false;
+        return false;
     }
 
     public function parse(TokenStream $stream)
@@ -60,8 +61,9 @@ class Alternative extends AbstractParser
         $this->activeParser = null;
 
         $parsingGenerator = $activeParser->parse($stream);
-        $child            = (yield $parsingGenerator);
-        yield $this->emit($child);
+        $child = (yield $parsingGenerator);
+
+        return $this->emit($child);
     }
 
     public function orA(AbstractParser $parser)

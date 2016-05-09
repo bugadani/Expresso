@@ -44,7 +44,7 @@ class ListDataNode extends Node
         foreach ($this->items as $child) {
             $list[] = (yield $child->evaluate($context));
         }
-        yield $list;
+        return $list;
     }
 
     public function getChildren()

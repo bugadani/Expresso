@@ -40,7 +40,7 @@ class ArgumentListNode extends Node
         foreach ($this->arguments as $child) {
             $list[] = (yield $child->evaluate($context));
         }
-        yield $list;
+        return $list;
     }
 
     public function add(Node $node)

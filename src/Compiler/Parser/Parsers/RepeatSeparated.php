@@ -36,6 +36,6 @@ class RepeatSeparated extends DelegateParser
             $children[] = (yield $this->parser->parse($stream));
         }
 
-        yield $this->emit($children);
+        return $this->emit($children);
     }
 }
