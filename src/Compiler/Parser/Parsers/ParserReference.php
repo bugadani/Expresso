@@ -14,6 +14,10 @@ class ParserReference extends AbstractParser
      */
     private $container;
     private $parserName;
+
+    /**
+     * @var AbstractParser
+     */
     private $resolvedParser;
 
     public function __construct(Container $container, $parserName)
@@ -35,7 +39,7 @@ class ParserReference extends AbstractParser
     /**
      * @return AbstractParser
      */
-    public function getParser()
+    public function getParser() : AbstractParser
     {
         if ($this->resolvedParser === null) {
             $this->resolvedParser = $this->container->get($this->parserName);

@@ -44,7 +44,7 @@ class OperatorParser
         $this->operatorStack->push(null);
     }
 
-    public function popOperatorSentinel()
+    public function popOperatorSentinel() : Node
     {
         while ($this->operatorStack->top() !== null) {
             $this->popOperator();
@@ -77,7 +77,7 @@ class OperatorParser
         $this->operatorStack->push($operator);
     }
 
-    private function compareToStackTop(Operator $operator)
+    private function compareToStackTop(Operator $operator) : bool
     {
         $top = $this->operatorStack->top();
         if ($top === null) {

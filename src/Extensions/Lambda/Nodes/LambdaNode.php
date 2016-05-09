@@ -5,6 +5,7 @@ namespace Expresso\Extensions\Lambda\Nodes;
 use Expresso\Compiler\Compiler\Compiler;
 use Expresso\Compiler\Node;
 use Expresso\EvaluationContext;
+use Expresso\Extensions\Core\Nodes\CallableNode;
 use Recursor\Recursor;
 
 /**
@@ -12,7 +13,7 @@ use Recursor\Recursor;
  *
  * @package Expresso\Extensions\Lambda\Nodes
  */
-class LambdaNode extends Node
+class LambdaNode extends CallableNode
 {
     /**
      * @var Node

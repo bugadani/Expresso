@@ -32,7 +32,7 @@ class BinaryOperatorNode extends OperatorNode
     /**
      * @return Node
      */
-    public function getLeft()
+    public function getLeft() : Node
     {
         return $this->left;
     }
@@ -40,7 +40,7 @@ class BinaryOperatorNode extends OperatorNode
     /**
      * @return Node
      */
-    public function getRight()
+    public function getRight() : Node
     {
         return $this->right;
     }

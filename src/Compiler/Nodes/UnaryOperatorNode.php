@@ -19,7 +19,7 @@ class UnaryOperatorNode extends OperatorNode
     }
 
     /**
-     * @return Node
+     * @return Node[]
      */
     public function getChildren() : array
     {
@@ -29,7 +29,7 @@ class UnaryOperatorNode extends OperatorNode
     /**
      * @return Node
      */
-    public function getOperand()
+    public function getOperand() : Node
     {
         return $this->operand;
     }

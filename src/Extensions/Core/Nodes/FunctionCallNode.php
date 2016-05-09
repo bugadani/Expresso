@@ -31,7 +31,7 @@ class FunctionCallNode extends BinaryOperatorNode
 
     public function __construct(Node $functionName, ArgumentListNode $arguments)
     {
-        if (!$functionName instanceof FunctionNameNode) {
+        if (!$functionName instanceof CallableNode) {
             if ($functionName instanceof IdentifierNode) {
                 $functionName = new FunctionNameNode($functionName->getName());
             } else if ($this->isSimpleAccessOperator($functionName)) {
@@ -40,6 +40,8 @@ class FunctionCallNode extends BinaryOperatorNode
             } else {
                 $this->isIndirectCall = true;
             }
+        } else {
+            $this->isIndirectCall = !$functionName->inlineable();
         }
 
         $this->functionName = $functionName;
@@ -71,7 +73,7 @@ class FunctionCallNode extends BinaryOperatorNode
     /**
      * @return boolean
      */
-    public function isIndirectCall()
+    public function isIndirectCall() : bool
     {
         return $this->isIndirectCall;
     }

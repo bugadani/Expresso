@@ -6,6 +6,7 @@ use Expresso\Compiler\Compiler\CompilerConfiguration;
 use Expresso\Compiler\Exceptions\ParseException;
 use Expresso\Compiler\Node;
 use Expresso\Extensions\Core\Nodes\ArgumentListNode;
+use Expresso\Extensions\Core\Nodes\CallableNode;
 use Expresso\Extensions\Core\Nodes\FunctionCallNode;
 use Expresso\Extensions\Core\Nodes\FunctionNameNode;
 use Expresso\Extensions\Core\Nodes\IdentifierNode;
@@ -32,7 +33,7 @@ class FilterOperator extends BinaryOperator
             foreach ($args->getChildren() as $arg) {
                 $arguments->add($arg);
             }
-        } else if (!$right instanceof IdentifierNode) {
+        } else if (!$right instanceof IdentifierNode && !$right instanceof CallableNode) {
             //arg|funcName
             throw new ParseException("The right hand operand of filter node must be a function");
         }

@@ -7,7 +7,7 @@ use Expresso\Compiler\ExpressionFunction;
 use Expresso\Compiler\Node;
 use Expresso\EvaluationContext;
 
-class FunctionNameNode extends Node
+class FunctionNameNode extends CallableNode
 {
     private $functionName;
 
@@ -45,5 +45,10 @@ class FunctionNameNode extends Node
     public function getFunctionName()
     {
         return $this->functionName;
+    }
+
+    public function inlineable() : bool
+    {
+        return true;
     }
 }

@@ -10,7 +10,7 @@ class IdentifierNode extends Node
 {
     private $value;
 
-    public function __construct($value)
+    public function __construct(string $value)
     {
         $this->value = $value;
     }

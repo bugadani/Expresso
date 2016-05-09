@@ -7,7 +7,7 @@ use Expresso\Compiler\Node;
 use Expresso\Compiler\Nodes\BinaryOperatorNode;
 use Expresso\EvaluationContext;
 
-class MethodNameNode extends Node
+class MethodNameNode extends CallableNode
 {
     /**
      * @var Node
@@ -44,5 +44,10 @@ class MethodNameNode extends Node
     public function getChildren() : array
     {
         return [$this->object, $this->method];
+    }
+
+    public function inlineable() : bool
+    {
+        return true;
     }
 }
