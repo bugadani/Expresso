@@ -42,7 +42,8 @@ class ConditionalOperator extends TernaryOperator
         /** @var Node $right */
         list($left, $middle, $right) = $node->getChildren();
 
-        if (yield $left->evaluate($context)) {
+        $leftValue = yield $left->evaluate($context);
+        if ($leftValue) {
             return yield $middle->evaluate($context);
         } else {
             return yield $right->evaluate($context);

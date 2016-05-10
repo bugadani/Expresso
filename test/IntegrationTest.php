@@ -117,7 +117,10 @@ abstract class IntegrationTest extends \PHPUnit_Framework_TestCase
         }
 
         if ($exception) {
-            $this->setExpectedException($exception, $exceptionMessage);
+            $this->expectException($exception);
+            if (!empty($exceptionMessage)) {
+                $this->expectExceptionMessage($exceptionMessage);
+            }
         }
 
         $return = $this->expresso->execute($expression, $data);

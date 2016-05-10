@@ -7,7 +7,7 @@ use Expresso\Compiler\Exceptions\ParseException;
 use Expresso\Compiler\Node;
 use Expresso\Compiler\Operator;
 use Expresso\Compiler\Operators\BinaryOperator;
-use Expresso\Compiler\Operators\TernaryOperator;
+
 
 /**
  * Expression parser is based on the Shunting Yard algorithm by Edsger W. Dijkstra

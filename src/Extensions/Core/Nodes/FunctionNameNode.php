@@ -4,7 +4,7 @@ namespace Expresso\Extensions\Core\Nodes;
 
 use Expresso\Compiler\Compiler\Compiler;
 use Expresso\Compiler\ExpressionFunction;
-use Expresso\Compiler\Node;
+
 use Expresso\EvaluationContext;
 
 class FunctionNameNode extends CallableNode

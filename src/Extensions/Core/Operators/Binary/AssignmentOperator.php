@@ -6,7 +6,7 @@ use Expresso\Compiler\Compiler\Compiler;
 use Expresso\Compiler\Exceptions\ParseException;
 use Expresso\Compiler\Node;
 use Expresso\Compiler\Nodes\BinaryOperatorNode;
-use Expresso\Compiler\Nodes\OperatorNode;
+
 use Expresso\Compiler\Operators\BinaryOperator;
 use Expresso\EvaluationContext;
 use Expresso\Extensions\Core\Nodes\IdentifierNode;

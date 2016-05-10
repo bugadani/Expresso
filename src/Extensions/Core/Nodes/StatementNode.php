@@ -3,7 +3,7 @@
 namespace Expresso\Extensions\Core\Nodes;
 
 use Expresso\Compiler\Compiler\Compiler;
-use Expresso\Compiler\Compiler\Statement;
+
 use Expresso\Compiler\Node;
 use Expresso\EvaluationContext;
 

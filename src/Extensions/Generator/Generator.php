@@ -11,10 +11,8 @@ use Expresso\Compiler\Tokenizer\Token;
 use Expresso\Extension;
 use Expresso\Extensions\Core\Core;
 use Expresso\Extensions\Generator\Nodes\FunctionDefinitionNode;
-use Expresso\Extensions\Generator\Nodes\GeneratorArgumentNode;
 use Expresso\Extensions\Generator\Nodes\GeneratorBranchNode;
 use Expresso\Extensions\Generator\Nodes\GeneratorNode;
-use Expresso\Extensions\Lambda\Lambda;
 
 /**
  * Class Generator defines an extension that implements list comprehension expressions.

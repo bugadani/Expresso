@@ -1,22 +1,19 @@
 <?php
 
-namespace Expresso\Test\Compiler\ParserSequence;
+namespace Expresso\Test\Compiler\Parser\Parsers;
 
-use Expresso\Compiler\Parser\Parsers\Optional;
 use Expresso\Compiler\Parser\Parsers\Sequence;
 use Expresso\Compiler\Parser\Parsers\TokenParser;
 use Expresso\Compiler\Tokenizer\Token;
 use Expresso\Compiler\Tokenizer\TokenStream;
-use Expresso\Compiler\Utils\GeneratorHelper;
 use Recursor\Recursor;
 
-class OptionalTest extends \PHPUnit_Framework_TestCase
+class SequenceTest extends \PHPUnit_Framework_TestCase
 {
-    public function testOptionalIsPresent()
+    public function testGrammar()
     {
         $tokens = [
-            new Token(Token::CONSTANT, 'a'),
-            new Token(Token::CONSTANT, 'b'),
+            new Token(Token::CONSTANT, 1),
             new Token(Token::EOF)
         ];
 
@@ -26,20 +23,21 @@ class OptionalTest extends \PHPUnit_Framework_TestCase
             }
         };
 
-        $stream = new TokenStream($tokenGenerator());
-
-        $grammar = Sequence::create(TokenParser::create(Token::CONSTANT, 'a'))
-                           ->followedBy(new Optional(TokenParser::create(Token::CONSTANT, 'b')))
+        $stream  = new TokenStream($tokenGenerator());
+        $grammar = Sequence::create(TokenParser::create(Token::CONSTANT))
                            ->followedBy(TokenParser::create(Token::EOF));
 
         $result = new Recursor([$grammar, 'parse']);
         $this->assertEquals($tokens, $result($stream));
     }
 
-    public function testOptionalIsMissing()
+    /**
+     * @expectedException \Expresso\Compiler\Exceptions\SyntaxException
+     */
+    public function testNonMatchingGrammar()
     {
         $tokens = [
-            new Token(Token::CONSTANT, 'a'),
+            new Token(Token::IDENTIFIER, 1),
             new Token(Token::EOF)
         ];
 
@@ -49,14 +47,11 @@ class OptionalTest extends \PHPUnit_Framework_TestCase
             }
         };
 
-        $stream = new TokenStream($tokenGenerator());
-
-        $grammar = Sequence::create(TokenParser::create(Token::CONSTANT, 'a'))
-                           ->followedBy(new Optional(TokenParser::create(Token::CONSTANT, 'b')))
+        $stream  = new TokenStream($tokenGenerator());
+        $grammar = Sequence::create(TokenParser::create(Token::CONSTANT))
                            ->followedBy(TokenParser::create(Token::EOF));
 
         $result = new Recursor([$grammar, 'parse']);
-
-        $this->assertEquals([$tokens[0], null, $tokens[1]], $result($stream));
+        $result($stream);
     }
 }

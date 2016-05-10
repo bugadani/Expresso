@@ -6,7 +6,7 @@ use Expresso\Compiler\Exceptions\SyntaxException;
 use Expresso\Compiler\Parser\AbstractParser;
 use Expresso\Compiler\Tokenizer\Token;
 use Expresso\Compiler\Tokenizer\TokenStream;
-use Expresso\Extensions\Generator\Generator;
+
 
 class Alternative extends AbstractParser
 {

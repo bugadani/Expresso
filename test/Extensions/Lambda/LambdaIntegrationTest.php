@@ -3,8 +3,8 @@
 namespace Expresso\Test\Extensions\Lambda;
 
 use Expresso\Expresso;
-use Expresso\Extensions\Core\Core;
-use Expresso\Extensions\Generator\Generator;
+
+
 use Expresso\Extensions\Lambda\Lambda;
 use Expresso\Test\IntegrationTest;
 
