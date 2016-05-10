@@ -62,13 +62,12 @@ class FunctionDefinitionNode extends Node
             return function ($arguments) use ($context) {
                 $innerContext = $context->createInnerScope($arguments);
 
-                return $this->functionBody->evaluate($innerContext)->current();
+                return $this->functionBody->evaluate($innerContext);
             };
         } else {
-            return function (array $arguments) use ($context) {
+            $function = new Recursor([$this->functionBody, 'evaluate']);
+            return function (array $arguments) use ($context, $function) {
                 $innerContext = $context->createInnerScope($arguments);
-
-                $function = new Recursor([$this->functionBody, 'evaluate']);
 
                 return $function($innerContext);
             };

@@ -22,17 +22,9 @@ class ListDataNode extends Node
     {
         $compiler->add('[');
 
-        if (!empty($this->items)) {
-            $children  = $this->items;
-            $lastChild = array_pop($children);
-
-            foreach ($children as $child) {
-                $compiledChild = (yield $compiler->compileNode($child));
-                $compiler->add($compiledChild);
-                $compiler->add(', ');
-            }
-            $compiledChild = (yield $compiler->compileNode($lastChild));
-            $compiler->add($compiledChild);
+        foreach ($this->items as $child) {
+            $compiler->add(yield $compiler->compileNode($child));
+            $compiler->add(', ');
         }
 
         $compiler->add(']');
@@ -44,6 +36,7 @@ class ListDataNode extends Node
         foreach ($this->items as $child) {
             $list[] = (yield $child->evaluate($context));
         }
+
         return $list;
     }
 

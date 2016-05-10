@@ -22,7 +22,7 @@ class IdentifierNode extends Node
 
     public function evaluate(EvaluationContext $context)
     {
-        return yield $context[ $this->value ];
+        return $context[ $this->value ];
     }
 
     public function getName()

@@ -77,7 +77,7 @@ class GeneratorNode extends Node
 
             $compiler->add(
                 "foreach ({$iteratorVariable} as \$element) {
-                    \$arguments = call_user_func_array('array_merge', \$element);
+                    \$arguments = \\array_merge(...\$element);
                     yield {$transformVarName}(\$arguments);
                 }"
             );
@@ -114,7 +114,7 @@ class GeneratorNode extends Node
 
             $generator = function ($iterator) use ($transformFunction) {
                 foreach ($iterator as $arguments) {
-                    $mergedArguments = call_user_func_array('array_merge', $arguments);
+                    $mergedArguments = array_merge(...$arguments);
 
                     yield $transformFunction($mergedArguments);
                 }

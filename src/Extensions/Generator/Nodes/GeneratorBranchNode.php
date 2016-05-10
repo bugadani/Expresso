@@ -28,7 +28,7 @@ class GeneratorBranchNode extends Node
 
     /**
      * @param string $argumentName
-     * @param Node   $argumentNode
+     * @param Node $argumentNode
      */
     public function addArgument($argumentName, Node $argumentNode)
     {
@@ -63,14 +63,15 @@ class GeneratorBranchNode extends Node
                      ->add(') {');
         }
 
-        if (count($this->filters) > 0) {
-            $compiler->add('$accepted = true;');
+        $hasFilters = count($this->filters) > 0;
+        if ($hasFilters) {
+            $compiledFilters = [];
             foreach ($this->filters as $filter) {
-                $filter = (yield $compiler->compileNode($filter));
-                $compiler->add("\$accepted = \$accepted && ({$filter});");
+                $compiledFilters[] = (yield $compiler->compileNode($filter));
             }
-
-            $compiler->add('if($accepted) {');
+            $compiler->add('if ((')
+                     ->add(implode(') && (', $compiledFilters))
+                     ->add(')) {');
         }
 
         $compiler->add('yield [');
@@ -81,11 +82,10 @@ class GeneratorBranchNode extends Node
         }
         $compiler->add('];');
 
-        if (count($this->filters) > 0) {
+        if ($hasFilters) {
             $compiler->add('}');
         }
-        $compiler->add(str_repeat("}", count($this->arguments)));
-        $compiler->add("}");
+        $compiler->add(str_repeat("}", count($this->arguments) + 1));
 
         $callbackContext = $compiler->popContext();
         $compiler->add($compiler->addTempVariable($callbackContext) . '()');
@@ -181,7 +181,7 @@ class GeneratorBranchNode extends Node
                 $generators[] = new Recursor([$filter, 'evaluate']);
             }
 
-            $callback = function () use ($iterationContext, $generators) {
+            $filterBranchCallback = function () use ($iterationContext, $generators) {
                 foreach ($generators as $generator) {
                     if (!$generator($iterationContext)) {
                         return false;
@@ -190,10 +190,12 @@ class GeneratorBranchNode extends Node
 
                 return true;
             };
-            $iterator = new \CallbackFilterIterator($iterator, $callback);
+
+            $iterator = new \CallbackFilterIterator($iterator, $filterBranchCallback);
         } else {
             $iterator = new \IteratorIterator($iterator);
         }
+
         return $iterator;
     }
 }

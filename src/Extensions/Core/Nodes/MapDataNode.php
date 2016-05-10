@@ -11,36 +11,28 @@ class MapDataNode extends Node
     /**
      * @var Node[]
      */
-    private $children = [];
+    private $keys = [];
+
+    /**
+     * @var Node[]
+     */
+    private $values = [];
 
     public function add(Node $key, Node $value)
     {
-        $this->children[] = $key;
-        $this->children[] = $value;
+        $this->keys[]   = $key;
+        $this->values[] = $value;
     }
 
     public function compile(Compiler $compiler)
     {
         $compiler->add('[');
 
-        if (!empty($this->children)) {
-            $children = $this->children;
+        foreach ($this->keys as $i => $key) {
+            $compiledKey   = (yield $compiler->compileNode($key));
+            $compiledValue = (yield $compiler->compileNode($this->values[ $i ]));
 
-            $lastValue = array_pop($children);
-            $lastKey   = array_pop($children);
-
-            $childCount = count($children);
-            for ($keyIndex = 0; $keyIndex < $childCount; $keyIndex += 2) {
-                $compiledKey   = (yield $compiler->compileNode($children[ $keyIndex ]));
-                $compiledValue = (yield $compiler->compileNode($children[ $keyIndex + 1 ]));
-
-                $compiler->add("{$compiledKey} => {$compiledValue}, ");
-            }
-
-            $compiledKey   = (yield $compiler->compileNode($lastKey));
-            $compiledValue = (yield $compiler->compileNode($lastValue));
-
-            $compiler->add("{$compiledKey} => {$compiledValue}");
+            $compiler->add("{$compiledKey} => {$compiledValue}, ");
         }
 
         $compiler->add(']');
@@ -50,12 +42,11 @@ class MapDataNode extends Node
     {
         $array = [];
 
-        $childCount = count($this->children);
-        for ($keyIndex = 0; $keyIndex < $childCount; $keyIndex += 2) {
-            $key   = (yield $this->children[ $keyIndex ]->evaluate($context));
-            $value = (yield $this->children[ $keyIndex + 1 ]->evaluate($context));
+        foreach ($this->keys as $i => $key) {
+            $evaluatedKey   = (yield $key->evaluate($context));
+            $evaluatedValue = (yield $this->values[ $i ]->evaluate($context));
 
-            $array [ $key ] = $value;
+            $array [ $evaluatedKey ] = $evaluatedValue;
         }
 
         return $array;
@@ -63,6 +54,6 @@ class MapDataNode extends Node
 
     public function getChildren() : array
     {
-        return $this->children;
+        return [$this->keys, $this->values];
     }
 }

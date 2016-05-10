@@ -62,7 +62,7 @@ class FunctionCallNode extends BinaryOperatorNode
         $callback  = (yield $this->functionName->evaluate($context));
         $arguments = (yield $this->arguments->evaluate($context));
 
-        return call_user_func_array($callback, $arguments);
+        return $callback(...$arguments);
     }
 
     public function getChildren() : array

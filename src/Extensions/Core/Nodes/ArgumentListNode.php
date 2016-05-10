@@ -13,11 +13,6 @@ class ArgumentListNode extends Node
      */
     private $arguments = [];
 
-    public function getChildren() : array
-    {
-        return $this->arguments;
-    }
-
     public function compile(Compiler $compiler)
     {
         if (!empty($this->arguments)) {
@@ -25,12 +20,10 @@ class ArgumentListNode extends Node
             $lastChild = array_pop($children);
 
             foreach ($children as $child) {
-                $compiledChild = (yield $compiler->compileNode($child));
-                $compiler->add($compiledChild);
+                $compiler->add(yield $compiler->compileNode($child));
                 $compiler->add(', ');
             }
-            $compiledChild = (yield $compiler->compileNode($lastChild));
-            $compiler->add($compiledChild);
+            $compiler->add(yield $compiler->compileNode($lastChild));
         }
     }
 
@@ -46,5 +39,10 @@ class ArgumentListNode extends Node
     public function add(Node $node)
     {
         $this->arguments[] = $node;
+    }
+
+    public function getChildren() : array
+    {
+        return $this->arguments;
     }
 }

@@ -10,7 +10,7 @@ class RangeOperator extends BinaryOperator
 
     protected function evaluateSimple($left, $right)
     {
-        return new \IteratorIterator(\Expresso\Extensions\Core\range($left, $right));
+        return \Expresso\Extensions\Core\range($left, $right);
     }
 
     /**
@@ -20,7 +20,7 @@ class RangeOperator extends BinaryOperator
      */
     protected function compileSimple(Compiler $compiler, $leftSource, $rightSource)
     {
-        $compiler->add('\Expresso\Extensions\Core\range(')
+        $compiler->add('\\Expresso\\Extensions\\Core\\range(')
                  ->add($leftSource)
                  ->add(', ')
                  ->add($rightSource)

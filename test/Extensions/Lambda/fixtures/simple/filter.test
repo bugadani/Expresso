@@ -1,7 +1,7 @@
 --TEST--
 Test using lambdas as filters
 --EXPRESSION--
-4 | (\x -> x + 3)
-  | (\x -> x * 3)
+4 | \x -> (x + 3)
+  | \x -> (x * 3)
 --EXPECT--
 21

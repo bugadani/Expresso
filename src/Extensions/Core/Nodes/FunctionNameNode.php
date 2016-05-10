@@ -25,8 +25,6 @@ class FunctionNameNode extends CallableNode
         } else {
             $compiler->addVariableAccess($this->functionName);
         }
-
-        yield;
     }
 
     public function evaluate(EvaluationContext $context)

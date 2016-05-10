@@ -26,15 +26,21 @@ class LambdaNode extends CallableNode
     private $arguments;
 
     /**
+     * @var int
+     */
+    private $argumentCount;
+
+    /**
      * LambdaNode constructor.
      *
-     * @param Node  $functionBody
+     * @param Node $functionBody
      * @param array $arguments
      */
     public function __construct(Node $functionBody, array $arguments)
     {
-        $this->arguments    = $arguments;
-        $this->functionBody = $functionBody;
+        $this->arguments     = $arguments;
+        $this->functionBody  = $functionBody;
+        $this->argumentCount = count($this->arguments);
     }
 
     /**
@@ -75,11 +81,10 @@ class LambdaNode extends CallableNode
      */
     public function evaluate(EvaluationContext $context)
     {
-        return function () use ($context) {
-            $arguments    = array_slice(func_get_args(), 0, count($this->arguments));
+        $function = new Recursor([$this->functionBody, 'evaluate']);
+        return function (...$args) use ($context, $function) {
+            $arguments    = array_slice($args, 0, $this->argumentCount);
             $innerContext = $context->createInnerScope(array_combine($this->arguments, $arguments));
-
-            $function = new Recursor([$this->functionBody, 'evaluate']);
 
             return $function($innerContext);
         };
