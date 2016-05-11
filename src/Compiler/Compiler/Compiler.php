@@ -166,6 +166,7 @@ class Compiler
 
         if ($this->context) {
             $this->context->statements = array_merge($this->context->statements, $context->statements);
+            $context->statements = [];
         }
 
         return $context;

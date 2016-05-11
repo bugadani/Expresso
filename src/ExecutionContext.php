@@ -8,7 +8,7 @@ class ExecutionContext implements \ArrayAccess
      * @var ExecutionContext
      */
     protected $parentContext;
-    private   $data;
+    private $data;
 
     public function __construct($input, ExecutionContext $parentContext = null)
     {
@@ -18,10 +18,20 @@ class ExecutionContext implements \ArrayAccess
 
     public function &access(&$where, $what)
     {
-        if (is_array($where) || $where instanceof \ArrayAccess) {
+        if (is_array($where)) {
             return $where[ $what ];
         } else if (is_object($where)) {
-            return $where->{$what};
+            if (method_exists($where, $what)) {
+                $methodWrapper = function (...$args) use ($where, $what) {
+                    return $where->$what(...$args);
+                };
+
+                return $methodWrapper;
+            } else if ($where instanceof \ArrayAccess) {
+                return $where[ $what ];
+            } else {
+                return $where->{$what};
+            }
         }
 
         throw new \OutOfBoundsException("{$what} is not present in \$where");
@@ -53,8 +63,8 @@ class ExecutionContext implements \ArrayAccess
     public function offsetExists($offset)
     {
         return array_key_exists($offset, $this->data)
-               || ($this->parentContext !== null
-                   && $this->parentContext->offsetExists($offset));
+        || ($this->parentContext !== null
+            && $this->parentContext->offsetExists($offset));
     }
 
     /**

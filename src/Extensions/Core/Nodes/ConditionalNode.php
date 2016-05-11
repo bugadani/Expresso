@@ -82,9 +82,10 @@ class ConditionalNode extends Node
     {
         $tempVar = $compiler->requestTempVariable();
 
-        $leftOperand = (yield $compiler->compileNode($this->condition));
+        $compiledCondition = (yield $compiler->compileNode($this->condition));
+
         $compiler->pushContext();
-        $compiler->add("if({$leftOperand}) {");
+        $compiler->add("if({$compiledCondition}) {");
 
         $middleOperand = (yield $compiler->compileNode($this->onPositive));
         $compiler->compileStatements();
@@ -98,7 +99,9 @@ class ConditionalNode extends Node
 
         $compiler->add('}');
 
-        $compiler->addStatement($compiler->popContext());
+        $innerContext = $compiler->popContext();
+
+        $compiler->addStatement($innerContext);
         $compiler->add($tempVar);
     }
 

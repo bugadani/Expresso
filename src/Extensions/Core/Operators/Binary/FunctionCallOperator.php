@@ -22,23 +22,7 @@ class FunctionCallOperator extends BinaryOperator
         if (!$arguments instanceof ArgumentListNode) {
             throw  new ParseException('$arguments must be an instance of ArgumentListNode');
         }
-        if (!$functionName instanceof ConditionalNode) {
-            return new FunctionCallNode($functionName, $arguments);
-        }
-
-        list($left, $middle, $right) = $functionName->getChildren();
-
-        if (!$middle instanceof DataNode || $middle->getValue() !== null) {
-            $middle = new FunctionCallNode($middle, $arguments);
-        }
-        $right = new FunctionCallNode($right, $arguments);
-
-        return new ConditionalNode(
-            $config,
-            $left,
-            $middle,
-            $right
-        );
+        return new FunctionCallNode($functionName, $arguments);
     }
 
     public function evaluate(EvaluationContext $context, Node $node)
