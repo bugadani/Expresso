@@ -2,6 +2,10 @@
 
 namespace Expresso;
 
+use Expresso\Cache\CompiledExpressionCacheInterface;
+use Expresso\Cache\Parsed\NullCache as NullParsedCache;
+use Expresso\Cache\Compiled\NullCache as NullCompiledCache;
+use Expresso\Cache\ParsedExpressionCacheInterface;
 use Expresso\Compiler\Compiler\Compiler;
 use Expresso\Compiler\Compiler\CompilerConfiguration;
 use Expresso\Compiler\Node;
@@ -38,9 +42,21 @@ class Expresso
      */
     private $extensions = [];
 
-    public function __construct()
+    /**
+     * @var ParsedExpressionCacheInterface
+     */
+    private $parsedCache;
+
+    /**
+     * @var CompiledExpressionCacheInterface
+     */
+    private $compiledCache;
+
+    public function __construct(ParsedExpressionCacheInterface $parsedCache = null, CompiledExpressionCacheInterface $compiledCache = null)
     {
         $this->configuration = new CompilerConfiguration();
+        $this->parsedCache   = $parsedCache ?? new NullParsedCache();
+        $this->compiledCache = $compiledCache ?? new NullCompiledCache();
     }
 
     public function addExtension(Extension $extension)
@@ -105,11 +121,18 @@ class Expresso
      *
      * @return Node
      */
-    private function parse($expression) : Node
+    private function parse(string $expression) : Node
     {
-        $tokens = $this->getTokenizer()->tokenize($expression);
+        if (!$this->parsedCache->contains($expression)) {
+            $tokens = $this->getTokenizer()->tokenize($expression);
 
-        return new ExpressionNode($expression, $this->getParser()->parse($tokens));
+            $nodes = new ExpressionNode($expression, $this->getParser()->parse($tokens));
+            $this->parsedCache->store($expression, $nodes);
+        } else {
+            $nodes = $this->parsedCache->retrieve($expression);
+        }
+
+        return $nodes;
     }
 
     /**
@@ -117,11 +140,16 @@ class Expresso
      *
      * @return callable
      */
-    public function compile($expression) : callable
+    public function compile(string $expression) : callable
     {
-        $nodes = $this->parse($expression);
+        if (!$this->compiledCache->contains($expression)) {
+            $nodes = $this->parse($expression);
 
-        $source = $this->getCompiler()->compile($nodes);
+            $source = $this->getCompiler()->compile($nodes);
+            $this->compiledCache->store($expression, $source);
+        } else {
+            $source = $this->compiledCache->retrieve($expression);
+        }
 
         $function = eval('return ' . $source);
 
@@ -132,12 +160,11 @@ class Expresso
         return $function;
     }
 
-    public function execute($expression, array $parameters)
+    public function execute(string $expression, array $parameters)
     {
         $nodes = $this->parse($expression);
 
-        $context = new EvaluationContext($parameters, $this->configuration);
-
+        $context  = new EvaluationContext($parameters, $this->configuration);
         $function = new Recursor([$nodes, 'evaluate']);
 
         return $function($context);
