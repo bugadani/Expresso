@@ -22,9 +22,7 @@ class ExecutionContext implements \ArrayAccess
             return $where[ $what ];
         } else if (is_object($where)) {
             if (method_exists($where, $what)) {
-                $methodWrapper = function (...$args) use ($where, $what) {
-                    return $where->$what(...$args);
-                };
+                $methodWrapper = [$where, $what];
 
                 return $methodWrapper;
             } else if ($where instanceof \ArrayAccess) {
