@@ -10,6 +10,7 @@ use Expresso\Compiler\Parser\Parsers\TokenParser;
 use Expresso\Compiler\Tokenizer\Token;
 use Expresso\Extension;
 use Expresso\Extensions\Core\Core;
+use Expresso\Extensions\Core\Nodes\IdentifierNode;
 use Expresso\Extensions\Generator\Nodes\FunctionDefinitionNode;
 use Expresso\Extensions\Generator\Nodes\GeneratorBranchNode;
 use Expresso\Extensions\Generator\Nodes\GeneratorNode;
@@ -62,7 +63,11 @@ class Generator extends Extension
 
         $elementOfExpression = $pattern
             ->followedBy($elementOf)
-            ->followedBy($expression);
+            ->followedBy($expression)
+            ->process(function (array $children) {
+                //discard the arrow
+                return [$children[0]->getValue(), $children[2]];
+            });
 
         /** @var AbstractParser $filterExpression */
         $filterExpression = $keyword('where')
@@ -82,7 +87,7 @@ class Generator extends Extension
             ->followedBy($closingBraces)
             ->process(
                 function (array $children) {
-                    list(, $funcBody, , $generatorBranches, ) = $children;
+                    list(, $funcBody, , $generatorBranches,) = $children;
                     $node = new GeneratorNode(new FunctionDefinitionNode($funcBody));
 
                     foreach ($generatorBranches as $generatorBranch) {
@@ -90,17 +95,14 @@ class Generator extends Extension
                         foreach ($generatorBranch as $argumentOrFilter) {
 
                             $isFilter = $argumentOrFilter[0] instanceof Token
-                                        && $argumentOrFilter[0]->test(Token::IDENTIFIER, 'where');
+                                && $argumentOrFilter[0]->test(Token::IDENTIFIER, 'where');
 
                             if ($isFilter) {
-
                                 $branch->addFilter($argumentOrFilter[1]);
-
                             } else {
                                 //generator def
-                                //second element is the arrow symbol
-                                list($argument, , $source) = $argumentOrFilter;
-                                $branch->addArgument($argument->getValue(), $source);
+                                list($argument, $source) = $argumentOrFilter;
+                                $branch->addArgument($argument, $source);
                             }
 
                         }

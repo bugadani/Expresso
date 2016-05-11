@@ -5,14 +5,12 @@ namespace Expresso\Extensions\Core\Nodes;
 use Expresso\Compiler\Compiler\Compiler;
 use Expresso\Compiler\Node;
 use Expresso\Compiler\Nodes\BinaryOperatorNode;
-use Expresso\Compiler\Nodes\OperatorNode;
 use Expresso\EvaluationContext;
-use Expresso\Extensions\Core\Operators\Binary\SimpleAccessOperator;
 
 class FunctionCallNode extends BinaryOperatorNode
 {
     /**
-     * @var FunctionNameNode|MethodNameNode
+     * @var CallableNode|IdentifierNode
      */
     private $functionName;
 
