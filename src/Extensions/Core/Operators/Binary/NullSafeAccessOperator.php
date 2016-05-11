@@ -9,7 +9,7 @@ use Expresso\Extensions\Core\Nodes\IdentifierNode;
 use Expresso\Compiler\Operators\BinaryOperator;
 use Expresso\Extensions\Core\Operators\Binary\Comparison\IdenticalOperator;
 use Expresso\Extensions\Core\Operators\Binary\Logical\OrOperator;
-use Expresso\Extensions\Core\Operators\Ternary\ConditionalOperator as TernaryConditionalOperator;
+use Expresso\Extensions\Core\Operators\Ternary\TernaryConditionalOperator as TernaryConditionalOperator;
 use Expresso\Extensions\Core\Operators\Unary\Postfix\IsNotSetOperator;
 
 class NullSafeAccessOperator extends BinaryOperator

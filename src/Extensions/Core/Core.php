@@ -56,7 +56,7 @@ use Expresso\Extensions\Core\Operators\Binary\SimpleAccessOperator;
 use Expresso\Extensions\Core\Operators\Binary\Strings\ConcatenationOperator;
 use Expresso\Extensions\Core\Operators\Binary\Test\DivisibleOperator;
 use Expresso\Extensions\Core\Operators\Binary\Test\NotDivisibleOperator;
-use Expresso\Extensions\Core\Operators\Ternary\ConditionalOperator;
+use Expresso\Extensions\Core\Operators\Ternary\TernaryConditionalOperator;
 use Expresso\Extensions\Core\Operators\Unary\Postfix\EvenOperator;
 use Expresso\Extensions\Core\Operators\Unary\Postfix\InfiniteRangeOperator;
 use Expresso\Extensions\Core\Operators\Unary\Postfix\IsNotSetOperator;
@@ -165,7 +165,7 @@ class Core extends Extension
     public function getTernaryOperators() : array
     {
         return [
-            new ConditionalOperator(0)
+            new TernaryConditionalOperator(0)
         ];
     }
 
@@ -185,7 +185,7 @@ class Core extends Extension
         $parserContainer = $grammarParser->getContainer();
         $parser          = new OperatorParser($configuration);
 
-        $conditionalOperator  = $configuration->getOperatorByClass(ConditionalOperator::class);
+        $conditionalOperator  = $configuration->getOperatorByClass(TernaryConditionalOperator::class);
         $functionCallOperator = $configuration->getOperatorByClass(FunctionCallOperator::class);
         $arrayAccessOperator  = $configuration->getOperatorByClass(ArrayAccessOperator::class);
 
