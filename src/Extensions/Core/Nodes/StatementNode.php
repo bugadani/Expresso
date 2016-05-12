@@ -24,10 +24,14 @@ class StatementNode extends Node
 
     public function compile(Compiler $compiler)
     {
+        $last = array_pop($this->expressions);
+        //compile expressions into temp variables
         foreach ($this->expressions as $expression) {
-            $last = (yield $compiler->compileNode($expression, false));
+            $compiler->addTempVariable(yield $compiler->compileNode($expression));
         }
-        $compiler->add($last);
+
+        //the last expression is compiled directly
+        $compiler->add(yield $compiler->compileNode($last));
     }
 
     public function evaluate(ExecutionContext $context)

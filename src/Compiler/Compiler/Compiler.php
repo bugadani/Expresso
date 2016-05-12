@@ -35,26 +35,26 @@ class Compiler
     /**
      * @return CompilerConfiguration
      */
-    public function getConfiguration()
+    public function getConfiguration() : CompilerConfiguration
     {
         return $this->configuration;
     }
 
-    public function add($string)
+    public function add($string) : Compiler
     {
         $this->context->source .= $string;
 
         return $this;
     }
 
-    public function requestTempVariable()
+    public function requestTempVariable() : string
     {
         $num = $this->tempVariableCount++;
 
         return "\$tempVar_{$num}";
     }
 
-    public function addTempVariable($source)
+    public function addTempVariable($source) : TempVar
     {
         $tempVar = new TempVar($this, $this->requestTempVariable(), $source);
 
@@ -63,7 +63,7 @@ class Compiler
         return $tempVar;
     }
 
-    public function addStatement($source)
+    public function addStatement($source) : Statement
     {
         $statement = new Statement($this, $source);
 
@@ -77,14 +77,14 @@ class Compiler
         $this->context->compileStatements();
     }
 
-    public function compileString($string)
+    public function compileString($string) : Compiler
     {
         $string = strtr($string, ["'" => "\'"]);
 
         return $this->add("'{$string}'");
     }
 
-    public function addData($data)
+    public function addData($data) : Compiler
     {
         if (is_int($data)) {
             $this->add($data);
@@ -108,49 +108,31 @@ class Compiler
         return $this;
     }
 
-    public function addVariableAccess($variableName)
+    public function addVariableAccess($variableName) : Compiler
     {
-        $this->add("\$context['{$variableName}']");
-
-        return $this;
+        return $this->add("\$context['{$variableName}']");
     }
 
-    public function compileNode(Node $node, $isInlined = true)
+    public function compileNode(Node $node)
     {
         $this->pushContext();
 
         //This is a quasi-recursive call
         yield $node->compile($this);
 
-        //This is a return-like statement
-        $context = $this->popContext();
-
-        if (!$isInlined) {
-            $context->compileStatements();
-            $context = $this->addTempVariable($context);
-        }
-
-        return $context;
+        return $this->popContext();
     }
 
-    public function compile(Node $rootNode)
+    public function compile(Node $rootNode) : string
     {
         $this->contextStack      = new \SplStack();
         $this->tempVariableCount = 0;
 
+        $this->context = new CompilerContext();
+
         $generator = new Recursor([$this, 'compileNode']);
 
-        $context = $generator($rootNode);
-
-        return $context->source;
-    }
-
-    /**
-     * @return CompilerContext
-     */
-    public function getContext()
-    {
-        return $this->context;
+        return $generator($rootNode)->source;
     }
 
     public function pushContext()
@@ -159,15 +141,13 @@ class Compiler
         $this->context = new CompilerContext();
     }
 
-    public function popContext()
+    public function popContext() : CompilerContext
     {
         $context       = $this->context;
         $this->context = $this->contextStack->pop();
 
-        if ($this->context) {
-            $this->context->statements = array_merge($this->context->statements, $context->statements);
-            $context->statements = [];
-        }
+        $this->context->statements = array_merge($this->context->statements, $context->statements);
+        $context->statements       = [];
 
         return $context;
     }

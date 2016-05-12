@@ -57,16 +57,9 @@ class LambdaNode extends CallableNode
 
         $compiler->add(') use ($context) {')
                  ->add('$context = $context->createInnerScope([');
-
-        if ($hasArguments) {
-            $argumentNames    = $this->arguments;
-            $lastArgumentName = array_pop($argumentNames);
-            foreach ($argumentNames as $argName) {
-                $compiler->compileString($argName)
-                         ->add(" => \${$argName}, ");
-            }
-            $compiler->compileString($lastArgumentName)
-                     ->add(" => \${$lastArgumentName}");
+        foreach ($this->arguments as $argName) {
+            $compiler->compileString($argName)
+                     ->add(" => \${$argName}, ");
         }
         $compiler->add(']);');
 
@@ -82,6 +75,7 @@ class LambdaNode extends CallableNode
     public function evaluate(ExecutionContext $context)
     {
         $function = new Recursor([$this->functionBody, 'evaluate']);
+
         return function (...$args) use ($context, $function) {
             $arguments    = array_slice($args, 0, $this->argumentCount);
             $innerContext = $context->createInnerScope(array_combine($this->arguments, $arguments));

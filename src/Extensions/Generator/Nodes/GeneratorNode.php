@@ -59,7 +59,8 @@ class GeneratorNode extends Node
         }
 
         //Function bodies can't be inlined
-        $transformVarName = (yield $compiler->compileNode($this->functionBodyNode, false));
+        $functionBody     = (yield $compiler->compileNode($this->functionBodyNode));
+        $transformVarName = $compiler->addTempVariable($functionBody);
 
         if (count($this->branches) === 1) {
             $compiler->compileStatements();
