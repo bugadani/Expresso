@@ -131,8 +131,3 @@ Branches may also have guard expressions which are specified using the keyword '
 The following example creates a list of even numbers using guard expressions:
 
     { x : x <- [1..] where x is even }
-
-TODO
--------------
- - currying
- - documentation
