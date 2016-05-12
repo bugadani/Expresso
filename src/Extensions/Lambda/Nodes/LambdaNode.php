@@ -3,6 +3,7 @@
 namespace Expresso\Extensions\Lambda\Nodes;
 
 use Expresso\Compiler\Compiler\Compiler;
+use Expresso\Compiler\CurriedFunctionWrapper;
 use Expresso\Compiler\Node;
 use Expresso\ExecutionContext;
 use Expresso\Extensions\Core\Nodes\CallableNode;
@@ -50,8 +51,7 @@ class LambdaNode extends CallableNode
     {
         $compiler->add('function(');
 
-        $hasArguments = count($this->arguments) > 0;
-        if ($hasArguments) {
+        if ($this->argumentCount > 0) {
             $compiler->add('$' . implode(', $', $this->arguments));
         }
 
@@ -76,12 +76,12 @@ class LambdaNode extends CallableNode
     {
         $function = new Recursor([$this->functionBody, 'evaluate']);
 
-        return function (...$args) use ($context, $function) {
+        return new CurriedFunctionWrapper(function (...$args) use ($context, $function) {
             $arguments    = array_slice($args, 0, $this->argumentCount);
             $innerContext = $context->createInnerScope(array_combine($this->arguments, $arguments));
 
             return $function($innerContext);
-        };
+        }, $this->argumentCount);
     }
 
     /**

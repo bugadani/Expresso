@@ -1,0 +1,7 @@
+--TEST--
+Test curried function calls
+--EXPRESSION--
+takeN := take([1...])
+takeN(3)|join(', ')
+--EXPECT--
+1, 2, 3

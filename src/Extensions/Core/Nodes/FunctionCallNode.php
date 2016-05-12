@@ -3,6 +3,7 @@
 namespace Expresso\Extensions\Core\Nodes;
 
 use Expresso\Compiler\Compiler\Compiler;
+use Expresso\Compiler\CurriedFunctionWrapper;
 use Expresso\Compiler\Node;
 use Expresso\Compiler\Nodes\BinaryOperatorNode;
 use Expresso\ExecutionContext;
@@ -40,14 +41,26 @@ class FunctionCallNode extends BinaryOperatorNode
     public function compile(Compiler $compiler)
     {
         $functionName = (yield $compiler->compileNode($this->functionName));
-        $arguments = (yield $compiler->compileNode($this->arguments));
-
+        $arguments    = (yield $compiler->compileNode($this->arguments));
         if ($this->isIndirectCall) {
             //Never inline indirect calls
-            $functionName = $compiler->addTempVariable($functionName);
-            $compiler->add("(({$functionName} === null) ? null : {$functionName}({$arguments}))");
+            $functionName = (string)$compiler->addTempVariable($functionName);
         } else {
-            $compiler->add("{$functionName}({$arguments})");
+            $functionName = (string)$functionName;
+        }
+
+        $wrapper = CurriedFunctionWrapper::class;
+        if ($functionName[0] === '$') {
+            $wrapper             = CurriedFunctionWrapper::class;
+            $wrappedFunctionName = "(new {$wrapper}({$functionName}))";
+        } else {
+            $wrappedFunctionName = "(new {$wrapper}('{$functionName}'))";
+        }
+
+        if ($this->isIndirectCall) {
+            $compiler->add("(({$functionName} === null) ? null : ({$wrappedFunctionName})({$arguments}))");
+        } else {
+            $compiler->add("{$wrappedFunctionName}({$arguments})");
         }
     }
 
@@ -58,6 +71,10 @@ class FunctionCallNode extends BinaryOperatorNode
             return null;
         }
         $arguments = (yield $this->arguments->evaluate($context));
+
+        if (!$callback instanceof CurriedFunctionWrapper) {
+            $callback = new CurriedFunctionWrapper($callback);
+        }
 
         return $callback(...$arguments);
     }

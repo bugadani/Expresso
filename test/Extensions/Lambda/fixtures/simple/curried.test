@@ -1,0 +1,8 @@
+--TEST--
+Test currying lambdas
+--EXPRESSION--
+f := \(x, y) -> (x * y)
+timesTwo := f(2)
+3|timesTwo
+--EXPECT--
+6

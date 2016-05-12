@@ -3,6 +3,7 @@
 namespace Expresso\Extensions\Core\Nodes;
 
 use Expresso\Compiler\Compiler\Compiler;
+use Expresso\Compiler\CurriedFunctionWrapper;
 use Expresso\Compiler\ExpressionFunction;
 use Expresso\ExecutionContext;
 

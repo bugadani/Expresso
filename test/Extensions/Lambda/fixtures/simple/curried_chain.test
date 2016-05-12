@@ -1,0 +1,6 @@
+--TEST--
+Test currying lambdas directly
+--EXPRESSION--
+(\(x, y) -> (x * y))(2)(3)
+--EXPECT--
+6
