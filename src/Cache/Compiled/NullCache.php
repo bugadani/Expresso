@@ -7,12 +7,12 @@ use Expresso\Cache\CompiledExpressionCacheInterface;
 class NullCache implements CompiledExpressionCacheInterface
 {
 
-    public function store(string $expression, string $compiled)
+    public function store(string $expression, string $compiled) : callable
     {
-
+        return eval("return {$compiled};");
     }
 
-    public function retrieve(string $expression) : string
+    public function retrieve(string $expression) : callable
     {
         throw new \OutOfBoundsException("Expression has not yet been compiled: {$expression}");
     }

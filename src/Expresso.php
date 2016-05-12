@@ -146,15 +146,9 @@ class Expresso
             $nodes = $this->parse($expression);
 
             $source = $this->getCompiler()->compile($nodes);
-            $this->compiledCache->store($expression, $source);
+            $function = $this->compiledCache->store($expression, $source);
         } else {
-            $source = $this->compiledCache->retrieve($expression);
-        }
-
-        $function = eval('return ' . $source);
-
-        if (!is_callable($function)) {
-            throw new \InvalidArgumentException("Expression is not callable: {$expression}, compiled: {$source}");
+            $function = $this->compiledCache->retrieve($expression);
         }
 
         return $function;

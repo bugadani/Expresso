@@ -21,10 +21,12 @@ class MemoryCacheTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($this->cache->contains('missing'));
         $this->assertFalse($this->cache->contains('contained'));
 
-        $this->cache->store('contained', 'content');
+        $this->cache->store('contained', 'function(){return 2;}');
 
         $this->assertTrue($this->cache->contains('contained'));
-        $this->assertEquals('content', $this->cache->retrieve('contained'));
+        $retrieved = $this->cache->retrieve('contained');
+
+        $this->assertEquals(2, $retrieved());
     }
 
     public function testRetrieveException()
