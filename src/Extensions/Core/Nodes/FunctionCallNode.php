@@ -72,9 +72,7 @@ class FunctionCallNode extends BinaryOperatorNode
         }
         $arguments = (yield $this->arguments->evaluate($context));
 
-        if (!$callback instanceof CurriedFunctionWrapper) {
-            $callback = new CurriedFunctionWrapper($callback);
-        }
+        $callback = new CurriedFunctionWrapper($callback);
 
         return $callback(...$arguments);
     }
