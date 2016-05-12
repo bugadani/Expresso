@@ -7,6 +7,26 @@ use Expresso\Compiler\ExpressionFunction;
 
 class ExecutionContext implements \ArrayAccess
 {
+
+    public static function &access(&$where, $what)
+    {
+        if (is_array($where)) {
+            return $where[ $what ];
+        } else if (is_object($where)) {
+            if (method_exists($where, $what)) {
+                $methodWrapper = [$where, $what];
+
+                return $methodWrapper;
+            } else if ($where instanceof \ArrayAccess) {
+                return $where[ $what ];
+            } else {
+                return $where->{$what};
+            }
+        }
+
+        throw new \OutOfBoundsException("{$what} is not present in \$where");
+    }
+
     /**
      * @var ExecutionContext
      */
@@ -33,11 +53,6 @@ class ExecutionContext implements \ArrayAccess
 
                 }
 
-                public function &access(&$where, $what)
-                {
-                    throw new \OutOfBoundsException("{$what} is not present in \$where");
-                }
-
                 public function &offsetGet($index)
                 {
                     throw new \OutOfBoundsException("Array index out of bounds: {$index}");
@@ -53,25 +68,6 @@ class ExecutionContext implements \ArrayAccess
                     throw new \OutOfBoundsException('Function not found: ' . $functionName);
                 }
             };
-    }
-
-    public function &access(&$where, $what)
-    {
-        if (is_array($where)) {
-            return $where[ $what ];
-        } else if (is_object($where)) {
-            if (method_exists($where, $what)) {
-                $methodWrapper = [$where, $what];
-
-                return $methodWrapper;
-            } else if ($where instanceof \ArrayAccess) {
-                return $where[ $what ];
-            } else {
-                return $where->{$what};
-            }
-        }
-
-        return $this->parentContext->access($where, $what);
     }
 
     public function createInnerScope($input)

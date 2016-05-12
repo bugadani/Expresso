@@ -17,11 +17,12 @@ class ArrayAccessOperator extends BinaryOperator
         $left  = (yield $left->evaluate($context));
         $right = (yield $right->evaluate($context));
 
-        return $context->access($left, $right);
+        return ExecutionContext::access($left, $right);
     }
 
     public function compileSimple(Compiler $compiler, $leftSource, $rightSource)
     {
-        $compiler->add("\$context->access({$leftSource}, {$rightSource})");
+        $class = ExecutionContext::class;
+        $compiler->add("{$class}::access({$leftSource}, {$rightSource})");
     }
 }

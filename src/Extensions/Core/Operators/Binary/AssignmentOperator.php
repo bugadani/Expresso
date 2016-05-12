@@ -48,7 +48,7 @@ class AssignmentOperator extends BinaryOperator
             $varName   = array_shift($keys);
             while (!empty($keys)) {
                 $key       = array_pop($keys);
-                $container =& $context->access($container, $key);
+                $container =& ExecutionContext::access($container, $key);
             }
 
             //Assign value
