@@ -4,7 +4,6 @@ namespace Expresso\Compiler\Nodes;
 
 use Expresso\Compiler\Compiler\Compiler;
 use Expresso\Compiler\Node;
-use Expresso\EvaluationContext;
 use Expresso\ExecutionContext;
 
 class ExpressionNode extends Node
@@ -28,8 +27,7 @@ class ExpressionNode extends Node
     public function compile(Compiler $compiler)
     {
         $contextClass = ExecutionContext::class;
-        $compiler->add('function(array $context = []) {')
-                 ->add("\$context = new {$contextClass}(\$context);");
+        $compiler->add("function({$contextClass} \$context) {");
 
         $bodyContext = (yield $compiler->compileNode($this->rootNode));
         $compiler->compileStatements();
@@ -37,7 +35,7 @@ class ExpressionNode extends Node
         $compiler->add("return {$bodyContext};}");
     }
 
-    public function evaluate(EvaluationContext $context)
+    public function evaluate(ExecutionContext $context)
     {
         return $this->rootNode->evaluate($context);
     }

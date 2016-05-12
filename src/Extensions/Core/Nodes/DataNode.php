@@ -4,7 +4,7 @@ namespace Expresso\Extensions\Core\Nodes;
 
 use Expresso\Compiler\Compiler\Compiler;
 use Expresso\Compiler\Node;
-use Expresso\EvaluationContext;
+use Expresso\ExecutionContext;
 
 class DataNode extends Node
 {
@@ -20,7 +20,7 @@ class DataNode extends Node
         $compiler->addData($this->value);
     }
 
-    public function evaluate(EvaluationContext $context)
+    public function evaluate(ExecutionContext $context)
     {
         return $this->value;
     }

@@ -6,7 +6,7 @@ use Expresso\Compiler\Compiler\Compiler;
 use Expresso\Compiler\Compiler\CompilerConfiguration;
 use Expresso\Compiler\Node;
 use Expresso\Compiler\Operators\TernaryOperator;
-use Expresso\EvaluationContext;
+use Expresso\ExecutionContext;
 use Expresso\Extensions\Core\Nodes\ConditionalNode;
 
 class TernaryConditionalOperator extends TernaryOperator
@@ -19,7 +19,7 @@ class TernaryConditionalOperator extends TernaryOperator
         return new ConditionalNode($config, $left, $middle, $right);
     }
 
-    public function evaluate(EvaluationContext $context, Node $node)
+    public function evaluate(ExecutionContext $context, Node $node)
     {
 
     }

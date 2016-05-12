@@ -2,18 +2,57 @@
 
 namespace Expresso;
 
+use Expresso\Compiler\Compiler\CompilerConfiguration;
+use Expresso\Compiler\ExpressionFunction;
+
 class ExecutionContext implements \ArrayAccess
 {
     /**
      * @var ExecutionContext
      */
-    protected $parentContext;
+    private $parentContext;
+
+    /**
+     * @var CompilerConfiguration
+     */
+    private $configuration;
+
+    /**
+     * @var array
+     */
     private $data;
 
-    public function __construct($input, ExecutionContext $parentContext = null)
+    public function __construct(array $input, CompilerConfiguration $configuration, ExecutionContext $parentContext = null)
     {
         $this->data          = $input;
-        $this->parentContext = $parentContext;
+        $this->configuration = $configuration;
+        $this->parentContext = $parentContext ?? new class extends ExecutionContext
+            {
+                public function __construct()
+                {
+
+                }
+
+                public function &access(&$where, $what)
+                {
+                    throw new \OutOfBoundsException("{$what} is not present in \$where");
+                }
+
+                public function &offsetGet($index)
+                {
+                    throw new \OutOfBoundsException("Array index out of bounds: {$index}");
+                }
+
+                public function offsetExists($offset)
+                {
+                    return false;
+                }
+
+                public function getFunction($functionName)
+                {
+                    throw new \OutOfBoundsException('Function not found: ' . $functionName);
+                }
+            };
     }
 
     public function &access(&$where, $what)
@@ -32,12 +71,12 @@ class ExecutionContext implements \ArrayAccess
             }
         }
 
-        throw new \OutOfBoundsException("{$what} is not present in \$where");
+        return $this->parentContext->access($where, $what);
     }
 
     public function createInnerScope($input)
     {
-        return new ExecutionContext($input, $this);
+        return new ExecutionContext($input, $this->configuration, $this);
     }
 
     /**
@@ -49,10 +88,7 @@ class ExecutionContext implements \ArrayAccess
             return $this->data[ $index ];
         }
 
-        if ($this->parentContext !== null) {
-            return $this->parentContext->offsetGet($index);
-        }
-        throw new \OutOfBoundsException("Array index out of bounds: {$index}");
+        return $this->parentContext->offsetGet($index);
     }
 
     /**
@@ -60,9 +96,7 @@ class ExecutionContext implements \ArrayAccess
      */
     public function offsetExists($offset)
     {
-        return array_key_exists($offset, $this->data)
-        || ($this->parentContext !== null
-            && $this->parentContext->offsetExists($offset));
+        return array_key_exists($offset, $this->data) || $this->parentContext->offsetExists($offset);
     }
 
     /**
@@ -70,7 +104,7 @@ class ExecutionContext implements \ArrayAccess
      */
     public function offsetSet($offset, $value)
     {
-        if ($this->parentContext !== null && $this->parentContext->offsetExists($offset)) {
+        if ($this->parentContext->offsetExists($offset)) {
             $this->parentContext->offsetSet($offset, $value);
         } else {
             $this->data[ $offset ] = $value;
@@ -82,7 +116,7 @@ class ExecutionContext implements \ArrayAccess
      */
     public function offsetUnset($offset)
     {
-        if ($this->parentContext !== null && $this->parentContext->offsetExists($offset)) {
+        if ($this->parentContext->offsetExists($offset)) {
             $this->parentContext->offsetUnset($offset);
         } else {
             unset($this->data[ $offset ]);
@@ -95,5 +129,25 @@ class ExecutionContext implements \ArrayAccess
     public function getArrayCopy()
     {
         return $this->data;
+    }
+
+    /**
+     * @param $functionName
+     *
+     * @return ExpressionFunction
+     */
+    public function getFunction($functionName)
+    {
+        $functions = $this->configuration->getFunctions();
+
+        if (isset($functions[ $functionName ])) {
+            return $functions[ $functionName ];
+        }
+
+        if (isset($this[ $functionName ])) {
+            return $this[ $functionName ];
+        }
+
+        return $this->parentContext->getFunction($functionName);
     }
 }

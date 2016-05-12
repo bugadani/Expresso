@@ -4,7 +4,7 @@ namespace Expresso\Extensions\Lambda\Nodes;
 
 use Expresso\Compiler\Compiler\Compiler;
 use Expresso\Compiler\Node;
-use Expresso\EvaluationContext;
+use Expresso\ExecutionContext;
 use Expresso\Extensions\Core\Nodes\CallableNode;
 use Recursor\Recursor;
 
@@ -79,7 +79,7 @@ class LambdaNode extends CallableNode
     /**
      * @inheritdoc
      */
-    public function evaluate(EvaluationContext $context)
+    public function evaluate(ExecutionContext $context)
     {
         $function = new Recursor([$this->functionBody, 'evaluate']);
         return function (...$args) use ($context, $function) {

@@ -8,11 +8,11 @@ use Expresso\Compiler\Node;
 use Expresso\Compiler\Nodes\BinaryOperatorNode;
 
 use Expresso\Compiler\Operator;
-use Expresso\EvaluationContext;
+use Expresso\ExecutionContext;
 
 abstract class BinaryOperator extends Operator
 {
-    public function evaluate(EvaluationContext $context, Node $node)
+    public function evaluate(ExecutionContext $context, Node $node)
     {
         /** @var Node $left */
         /** @var Node $right */

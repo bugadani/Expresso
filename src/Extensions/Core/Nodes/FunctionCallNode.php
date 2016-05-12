@@ -5,7 +5,7 @@ namespace Expresso\Extensions\Core\Nodes;
 use Expresso\Compiler\Compiler\Compiler;
 use Expresso\Compiler\Node;
 use Expresso\Compiler\Nodes\BinaryOperatorNode;
-use Expresso\EvaluationContext;
+use Expresso\ExecutionContext;
 
 class FunctionCallNode extends BinaryOperatorNode
 {
@@ -50,7 +50,7 @@ class FunctionCallNode extends BinaryOperatorNode
         }
     }
 
-    public function evaluate(EvaluationContext $context)
+    public function evaluate(ExecutionContext $context)
     {
         $callback = (yield $this->functionName->evaluate($context));
         if ($callback === null) {

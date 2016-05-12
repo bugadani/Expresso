@@ -5,7 +5,7 @@ namespace Expresso\Compiler\Nodes;
 use Expresso\Compiler\Compiler\Compiler;
 use Expresso\Compiler\Node;
 use Expresso\Compiler\Operator;
-use Expresso\EvaluationContext;
+use Expresso\ExecutionContext;
 
 abstract class OperatorNode extends Node
 {
@@ -29,7 +29,7 @@ abstract class OperatorNode extends Node
         return $this->operator;
     }
 
-    public function evaluate(EvaluationContext $context)
+    public function evaluate(ExecutionContext $context)
     {
         return $this->operator->evaluate($context, $this);
     }

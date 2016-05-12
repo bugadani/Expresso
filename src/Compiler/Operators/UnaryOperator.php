@@ -8,12 +8,12 @@ use Expresso\Compiler\Node;
 
 use Expresso\Compiler\Nodes\UnaryOperatorNode;
 use Expresso\Compiler\Operator;
-use Expresso\EvaluationContext;
+use Expresso\ExecutionContext;
 
 abstract class UnaryOperator extends Operator
 {
 
-    public function evaluate(EvaluationContext $context, Node $node)
+    public function evaluate(ExecutionContext $context, Node $node)
     {
         /** @var UnaryOperatorNode $node */
         $operand = (yield $node->getOperand()->evaluate($context));

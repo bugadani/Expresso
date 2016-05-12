@@ -5,7 +5,7 @@ namespace Expresso\Extensions\Core\Nodes;
 use Expresso\Compiler\Compiler\Compiler;
 
 use Expresso\Compiler\Node;
-use Expresso\EvaluationContext;
+use Expresso\ExecutionContext;
 
 class StatementNode extends Node
 {
@@ -30,7 +30,7 @@ class StatementNode extends Node
         $compiler->add($last);
     }
 
-    public function evaluate(EvaluationContext $context)
+    public function evaluate(ExecutionContext $context)
     {
         foreach ($this->expressions as $expression) {
             $last = (yield $expression->evaluate($context));

@@ -4,7 +4,7 @@ namespace Expresso\Extensions\Core\Nodes;
 
 use Expresso\Compiler\Compiler\Compiler;
 use Expresso\Compiler\Node;
-use Expresso\EvaluationContext;
+use Expresso\ExecutionContext;
 
 class ArgumentListNode extends Node
 {
@@ -27,7 +27,7 @@ class ArgumentListNode extends Node
         }
     }
 
-    public function evaluate(EvaluationContext $context)
+    public function evaluate(ExecutionContext $context)
     {
         $list = [];
         foreach ($this->arguments as $child) {

@@ -4,7 +4,7 @@ namespace Expresso\Extensions\Core\Nodes;
 
 use Expresso\Compiler\Compiler\Compiler;
 use Expresso\Compiler\Node;
-use Expresso\EvaluationContext;
+use Expresso\ExecutionContext;
 
 class ListDataNode extends Node
 {
@@ -30,7 +30,7 @@ class ListDataNode extends Node
         $compiler->add(']');
     }
 
-    public function evaluate(EvaluationContext $context)
+    public function evaluate(ExecutionContext $context)
     {
         $list = [];
         foreach ($this->items as $child) {

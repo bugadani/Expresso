@@ -4,7 +4,7 @@ namespace Expresso\Compiler;
 
 use Expresso\Compiler\Compiler\Compiler;
 use Expresso\Compiler\Compiler\CompilerConfiguration;
-use Expresso\EvaluationContext;
+use Expresso\ExecutionContext;
 
 abstract class Operator
 {
@@ -35,12 +35,11 @@ abstract class Operator
     }
 
     /**
-     * @param EvaluationContext $context
+     * @param ExecutionContext $context
      * @param Node $node
-     *
      * @return \Generator
      */
-    public abstract function evaluate(EvaluationContext $context, Node $node);
+    public abstract function evaluate(ExecutionContext $context, Node $node);
 
     public abstract function compile(Compiler $compiler, Node $node);
 

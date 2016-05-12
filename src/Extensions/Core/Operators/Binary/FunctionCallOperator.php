@@ -7,12 +7,9 @@ use Expresso\Compiler\Compiler\CompilerConfiguration;
 use Expresso\Compiler\Exceptions\ParseException;
 use Expresso\Compiler\Node;
 use Expresso\Compiler\Operators\BinaryOperator;
+use Expresso\ExecutionContext;
 use Expresso\Extensions\Core\Nodes\ArgumentListNode;
-use Expresso\Extensions\Core\Nodes\ConditionalNode;
-use Expresso\Extensions\Core\Nodes\DataNode;
 use Expresso\Extensions\Core\Nodes\FunctionCallNode;
-use Expresso\Compiler\Nodes\TernaryOperatorNode;
-use Expresso\EvaluationContext;
 
 class FunctionCallOperator extends BinaryOperator
 {
@@ -25,7 +22,7 @@ class FunctionCallOperator extends BinaryOperator
         return new FunctionCallNode($functionName, $arguments);
     }
 
-    public function evaluate(EvaluationContext $context, Node $node)
+    public function evaluate(ExecutionContext $context, Node $node)
     {
     }
 

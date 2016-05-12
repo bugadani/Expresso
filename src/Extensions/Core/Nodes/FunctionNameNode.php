@@ -4,8 +4,7 @@ namespace Expresso\Extensions\Core\Nodes;
 
 use Expresso\Compiler\Compiler\Compiler;
 use Expresso\Compiler\ExpressionFunction;
-
-use Expresso\EvaluationContext;
+use Expresso\ExecutionContext;
 
 class FunctionNameNode extends CallableNode
 {
@@ -27,7 +26,7 @@ class FunctionNameNode extends CallableNode
         }
     }
 
-    public function evaluate(EvaluationContext $context)
+    public function evaluate(ExecutionContext $context)
     {
         $function = $context->getFunction($this->functionName);
         if ($function instanceof ExpressionFunction) {

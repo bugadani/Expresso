@@ -5,7 +5,7 @@ namespace Expresso\Extensions\Generator\Nodes;
 use Expresso\Compiler\Compiler\Compiler;
 use Expresso\Compiler\Compiler\CompilerContext;
 use Expresso\Compiler\Node;
-use Expresso\EvaluationContext;
+use Expresso\ExecutionContext;
 use Recursor\Recursor;
 
 /**
@@ -94,7 +94,7 @@ class GeneratorBranchNode extends Node
     /**
      * @inheritdoc
      */
-    public function evaluate(EvaluationContext $context)
+    public function evaluate(ExecutionContext $context)
     {
         $iterationContext = $context->createInnerScope([]);
         $argumentSource   = function ($source) use ($iterationContext) {

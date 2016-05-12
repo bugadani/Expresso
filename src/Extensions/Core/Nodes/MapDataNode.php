@@ -4,7 +4,7 @@ namespace Expresso\Extensions\Core\Nodes;
 
 use Expresso\Compiler\Compiler\Compiler;
 use Expresso\Compiler\Node;
-use Expresso\EvaluationContext;
+use Expresso\ExecutionContext;
 
 class MapDataNode extends Node
 {
@@ -38,7 +38,7 @@ class MapDataNode extends Node
         $compiler->add(']');
     }
 
-    public function evaluate(EvaluationContext $context)
+    public function evaluate(ExecutionContext $context)
     {
         $array = [];
 

@@ -4,7 +4,7 @@ namespace Expresso\Extensions\Generator\Nodes;
 
 use Expresso\Compiler\Compiler\Compiler;
 use Expresso\Compiler\Node;
-use Expresso\EvaluationContext;
+use Expresso\ExecutionContext;
 
 /**
  * GeneratorNode represents a list comprehension expression. It consists of an expression and a number of branches.
@@ -91,7 +91,7 @@ class GeneratorNode extends Node
     /**
      * @inheritdoc
      */
-    public function evaluate(EvaluationContext $context)
+    public function evaluate(ExecutionContext $context)
     {
         $transformFunction = (yield $this->functionBodyNode->evaluate($context));
 

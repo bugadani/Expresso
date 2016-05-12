@@ -6,7 +6,7 @@ use Expresso\Compiler\Compiler\Compiler;
 use Expresso\Compiler\Compiler\CompilerConfiguration;
 use Expresso\Compiler\Node;
 use Expresso\Compiler\Nodes\OperatorNode;
-use Expresso\EvaluationContext;
+use Expresso\ExecutionContext;
 use Expresso\Extensions\Core\Operators\Binary\ArrayAccessOperator;
 use Expresso\Extensions\Core\Operators\Binary\Logical\AndOperator;
 use Expresso\Extensions\Core\Operators\Unary\Postfix\IsSetOperator;
@@ -110,11 +110,10 @@ class ConditionalNode extends Node
      *
      * Note: this method should be executed with {@see GeneratorHelper).
      *
-     * @param EvaluationContext $context
-     *
+     * @param EvaluationContext|ExecutionContext $context
      * @return mixed
      */
-    public function evaluate(EvaluationContext $context)
+    public function evaluate(ExecutionContext $context)
     {
         $leftValue = yield $this->condition->evaluate($context);
         if ($leftValue) {

@@ -6,13 +6,12 @@ use Expresso\Compiler\Compiler\Compiler;
 use Expresso\Compiler\Node;
 use Expresso\Compiler\Nodes\UnaryOperatorNode;
 use Expresso\Compiler\Operators\UnaryOperator;
-use Expresso\EvaluationContext;
-
+use Expresso\ExecutionContext;
 
 class IsSetOperator extends UnaryOperator
 {
 
-    public function evaluate(EvaluationContext $context, Node $node)
+    public function evaluate(ExecutionContext $context, Node $node)
     {
         /** @var UnaryOperatorNode $node */
         return $context->offsetExists($node->getOperand()->getName());

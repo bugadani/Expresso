@@ -6,7 +6,7 @@ use Expresso\Compiler\Compiler\Compiler;
 use Expresso\Compiler\Node;
 use Expresso\Extensions\Core\Nodes\DataNode;
 use Expresso\Extensions\Core\Nodes\IdentifierNode;
-use Expresso\EvaluationContext;
+use Expresso\ExecutionContext;
 use Recursor\Recursor;
 
 /**
@@ -56,7 +56,7 @@ class FunctionDefinitionNode extends Node
     /**
      * @inheritdoc
      */
-    public function evaluate(EvaluationContext $context)
+    public function evaluate(ExecutionContext $context)
     {
         if ($this->isSimpleNode) {
             return function ($arguments) use ($context) {

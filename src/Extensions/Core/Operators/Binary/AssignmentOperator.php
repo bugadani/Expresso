@@ -8,7 +8,7 @@ use Expresso\Compiler\Node;
 use Expresso\Compiler\Nodes\BinaryOperatorNode;
 
 use Expresso\Compiler\Operators\BinaryOperator;
-use Expresso\EvaluationContext;
+use Expresso\ExecutionContext;
 use Expresso\Extensions\Core\Nodes\IdentifierNode;
 
 class AssignmentOperator extends BinaryOperator
@@ -17,7 +17,7 @@ class AssignmentOperator extends BinaryOperator
     /**
      * @inheritdoc
      */
-    public function evaluate(EvaluationContext $context, Node $node)
+    public function evaluate(ExecutionContext $context, Node $node)
     {
         /** @var BinaryOperatorNode $node */
         $variableToSet = $node->getLeft();

@@ -4,6 +4,7 @@ namespace Expresso\Compiler;
 
 use Expresso\Compiler\Compiler\Compiler;
 use Expresso\EvaluationContext;
+use Expresso\ExecutionContext;
 
 /**
  * Class Node represents an element in the Abstract Syntax Tree.
@@ -29,11 +30,10 @@ abstract class Node
      *
      * Note: this method should be executed with {@see GeneratorHelper).
      *
-     * @param EvaluationContext $context
-     *
+     * @param ExecutionContext $context
      * @return mixed
      */
-    abstract public function evaluate(EvaluationContext $context);
+    abstract public function evaluate(ExecutionContext $context);
 
     /**
      * @return Node[]

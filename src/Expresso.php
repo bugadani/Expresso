@@ -6,6 +6,7 @@ use Expresso\Cache\CompiledExpressionCacheInterface;
 use Expresso\Cache\Parsed\NullCache as NullParsedCache;
 use Expresso\Cache\Compiled\NullCache as NullCompiledCache;
 use Expresso\Cache\ParsedExpressionCacheInterface;
+use Expresso\Compiler\CompiledExpression;
 use Expresso\Compiler\Compiler\Compiler;
 use Expresso\Compiler\Compiler\CompilerConfiguration;
 use Expresso\Compiler\Node;
@@ -151,14 +152,14 @@ class Expresso
             $function = $this->compiledCache->retrieve($expression);
         }
 
-        return $function;
+        return new CompiledExpression($this->configuration, $function);
     }
 
     public function execute(string $expression, array $parameters)
     {
         $nodes = $this->parse($expression);
 
-        $context  = new EvaluationContext($parameters, $this->configuration);
+        $context  = new ExecutionContext($parameters, $this->configuration);
         $function = new Recursor([$nodes, 'evaluate']);
 
         return $function($context);
