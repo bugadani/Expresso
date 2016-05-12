@@ -102,6 +102,12 @@ A lambda expression is defined with the following syntax: `\<arguments> -> <expr
  - `fold`: reduces a collection to a single value using a callback function
  - `map`: maps every element of a collection to the return value of a function
 
+### Other uses
+ - Chaining lambda expressions. In this example, `someValue` will be 27.
+
+     someValue = 5 | \_ -> (_ * 5)
+                   | \_ -> (_ * 2)
+
 The Generator extension
 -------------
 The extension defines list comprehension expressions or generators in short.
@@ -130,4 +136,3 @@ TODO
 -------------
  - currying
  - documentation
- - compilation cache
