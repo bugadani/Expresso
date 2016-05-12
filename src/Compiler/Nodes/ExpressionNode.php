@@ -34,7 +34,7 @@ class ExpressionNode extends Node
         $bodyContext = (yield $compiler->compileNode($this->rootNode));
         $compiler->compileStatements();
 
-        $compiler->add("return {$bodyContext};};");
+        $compiler->add("return {$bodyContext};}");
     }
 
     public function evaluate(EvaluationContext $context)
