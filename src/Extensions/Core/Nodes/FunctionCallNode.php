@@ -49,12 +49,26 @@ class FunctionCallNode extends BinaryOperatorNode
             $functionName = (string)$functionName;
         }
 
-        $wrapper = CurriedFunctionWrapper::class;
-        if ($functionName[0] === '$') {
-            $wrapper             = CurriedFunctionWrapper::class;
-            $wrappedFunctionName = "(new {$wrapper}({$functionName}))";
+        if ($this->functionName instanceof CallableNode) {
+            if ($this->arguments->getCount() < $this->functionName->getArgumentCount()) {
+                $wrapper = CurriedFunctionWrapper::class;
+                if ($functionName[0] === '$') {
+                    $wrapper             = CurriedFunctionWrapper::class;
+                    $wrappedFunctionName = "(new {$wrapper}({$functionName}))";
+                } else {
+                    $wrappedFunctionName = "(new {$wrapper}('{$functionName}'))";
+                }
+            } else {
+                $wrappedFunctionName = $functionName;
+            }
         } else {
-            $wrappedFunctionName = "(new {$wrapper}('{$functionName}'))";
+            $wrapper = CurriedFunctionWrapper::class;
+            if ($functionName[0] === '$') {
+                $wrapper = CurriedFunctionWrapper::class;
+                $wrappedFunctionName = "(new {$wrapper}({$functionName}))";
+            } else {
+                $wrappedFunctionName = "(new {$wrapper}('{$functionName}'))";
+            }
         }
 
         if ($this->isIndirectCall) {
@@ -72,7 +86,11 @@ class FunctionCallNode extends BinaryOperatorNode
         }
         $arguments = (yield $this->arguments->evaluate($context));
 
-        $callback = new CurriedFunctionWrapper($callback);
+        if ($this->functionName instanceof CallableNode) {
+            if (count($arguments) < $this->functionName->getArgumentCount()) {
+                $callback = new CurriedFunctionWrapper($callback);
+            }
+        }
 
         return $callback(...$arguments);
     }

@@ -45,4 +45,9 @@ class ArgumentListNode extends Node
     {
         return $this->arguments;
     }
+
+    public function getCount()
+    {
+        return count($this->arguments);
+    }
 }

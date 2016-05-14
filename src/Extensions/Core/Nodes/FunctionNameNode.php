@@ -21,7 +21,7 @@ class FunctionNameNode extends CallableNode
         $functions = $compiler->getConfiguration()->getFunctions();
 
         if (isset($functions[ $this->functionName ])) {
-            $compiler->add($functions[ $this->functionName ]->getFunctionName());
+            $compiler->add($functions[ $this->functionName ]->getCallback());
         } else {
             $compiler->addVariableAccess($this->functionName);
         }
@@ -31,7 +31,7 @@ class FunctionNameNode extends CallableNode
     {
         $function = $context->getFunction($this->functionName);
         if ($function instanceof ExpressionFunction) {
-            return $function->getFunctionName();
+            return $function->getCallback();
         } else {
             return $function;
         }
@@ -48,5 +48,10 @@ class FunctionNameNode extends CallableNode
     public function inlineable() : bool
     {
         return true;
+    }
+
+    public function getArgumentCount() : int
+    {
+        return PHP_INT_MAX;
     }
 }
