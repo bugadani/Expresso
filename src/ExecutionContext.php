@@ -4,6 +4,7 @@ namespace Expresso;
 
 use Expresso\Compiler\Compiler\CompilerConfiguration;
 use Expresso\Compiler\ExpressionFunction;
+use Expresso\Compiler\RuntimeFunction;
 
 class ExecutionContext implements \ArrayAccess
 {
@@ -14,7 +15,7 @@ class ExecutionContext implements \ArrayAccess
             return $where[ $what ];
         } else if (is_object($where)) {
             if (method_exists($where, $what)) {
-                $methodWrapper = [$where, $what];
+                $methodWrapper = new RuntimeFunction([$where, $what]);
 
                 return $methodWrapper;
             } else if ($where instanceof \ArrayAccess) {
@@ -63,7 +64,7 @@ class ExecutionContext implements \ArrayAccess
                     return false;
                 }
 
-                public function getFunction($functionName)
+                public function getFunction($functionName) : RuntimeFunction
                 {
                     throw new \OutOfBoundsException('Function not found: ' . $functionName);
                 }
@@ -130,9 +131,9 @@ class ExecutionContext implements \ArrayAccess
     /**
      * @param $functionName
      *
-     * @return ExpressionFunction
+     * @return RuntimeFunction
      */
-    public function getFunction($functionName)
+    public function getFunction($functionName) : RuntimeFunction
     {
         $functions = $this->configuration->getFunctions();
 
@@ -141,7 +142,7 @@ class ExecutionContext implements \ArrayAccess
         }
 
         if (isset($this[ $functionName ])) {
-            return $this[ $functionName ];
+            return new RuntimeFunction($this[ $functionName ]);
         }
 
         return $this->parentContext->getFunction($functionName);
