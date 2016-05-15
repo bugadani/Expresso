@@ -3,7 +3,7 @@
 namespace Expresso\Extensions\Core\Nodes;
 
 use Expresso\Compiler\Compiler\Compiler;
-use Expresso\Compiler\CurriedFunctionWrapper;
+use Expresso\Compiler\RuntimeFunction;
 use Expresso\Compiler\ExpressionFunction;
 use Expresso\ExecutionContext;
 
@@ -21,7 +21,7 @@ class FunctionNameNode extends CallableNode
         $functions = $compiler->getConfiguration()->getFunctions();
 
         if (isset($functions[ $this->functionName ])) {
-            $compiler->add($functions[ $this->functionName ]->getCallback());
+            $compiler->add("\$context->getFunction('{$this->functionName}')");
         } else {
             $compiler->addVariableAccess($this->functionName);
         }
@@ -30,11 +30,8 @@ class FunctionNameNode extends CallableNode
     public function evaluate(ExecutionContext $context)
     {
         $function = $context->getFunction($this->functionName);
-        if ($function instanceof ExpressionFunction) {
-            return $function->getCallback();
-        } else {
-            return $function;
-        }
+
+        return $function;
     }
 
     /**

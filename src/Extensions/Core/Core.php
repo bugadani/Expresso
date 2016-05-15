@@ -6,6 +6,7 @@ use Expresso\Compiler\Parser\GrammarParser;
 use Expresso\Compiler\Compiler\CompilerConfiguration;
 use Expresso\Compiler\ExpressionFunction;
 use Expresso\Compiler\Node;
+use Expresso\Compiler\RuntimeFunction;
 use Expresso\Extensions\Core\Nodes\ArgumentListNode;
 use Expresso\Extensions\Core\Nodes\DataNode;
 use Expresso\Extensions\Core\Nodes\IdentifierNode;
@@ -358,7 +359,7 @@ class Core extends Extension
 
                     if ($first instanceof OperatorNode) {
                         $isRangeOperator = $first->isOperator(RangeOperator::class)
-                                           || $first->isOperator(InfiniteRangeOperator::class);
+                            || $first->isOperator(InfiniteRangeOperator::class);
 
                         if ($isRangeOperator) {
                             return $first;
@@ -367,7 +368,7 @@ class Core extends Extension
                     $isMap = false;
                 } else {
                     $isMap = ($array[0] instanceof Token
-                              && $array[0]->test(Token::SYMBOL, [':', '=>']));
+                        && $array[0]->test(Token::SYMBOL, [':', '=>']));
                 }
 
                 if ($isMap) {
@@ -453,18 +454,18 @@ class Core extends Extension
     public function getFunctions() : array
     {
         return [
-            new ExpressionFunction('count', __NAMESPACE__ . '\expression_function_count'),
-            new ExpressionFunction('join', __NAMESPACE__ . '\expression_function_join'),
-            new ExpressionFunction('skip', __NAMESPACE__ . '\expression_function_skip'),
-            new ExpressionFunction('replace', __NAMESPACE__ . '\expression_function_replace'),
-            new ExpressionFunction('reverse', 'strrev'),
-            new ExpressionFunction('take', __NAMESPACE__ . '\expression_function_take'),
+            'count'   => new RuntimeFunction(__NAMESPACE__ . '\expression_function_count', 1),
+            'join'    => new RuntimeFunction(__NAMESPACE__ . '\expression_function_join', 1),
+            'skip'    => new RuntimeFunction(__NAMESPACE__ . '\expression_function_skip', 2),
+            'replace' => new RuntimeFunction(__NAMESPACE__ . '\expression_function_replace', 2),
+            'reverse' => new RuntimeFunction('strrev', 1),
+            'take'    => new RuntimeFunction(__NAMESPACE__ . '\expression_function_take', 2),
         ];
     }
 }
 
 /**
- * @param int      $start
+ * @param int $start
  * @param int|null $end
  *
  * @return \Generator
@@ -507,8 +508,8 @@ function expression_function_count($data)
 /**
  * Replaces one or more substrings in a string.
  *
- * @param string               $string
- * @param string|string[]      $search
+ * @param string $string
+ * @param string|string[] $search
  * @param null|string|string[] $replacement
  *
  * @return mixed
@@ -532,7 +533,7 @@ function expression_function_replace($string, $search, $replacement = null)
  * Glues strings from a collection together with the given separator.
  *
  * @param array|\Traversable $collection
- * @param string             $glue
+ * @param string $glue
  *
  * @return string
  */
@@ -552,7 +553,7 @@ function expression_function_join($collection, $glue = '')
  * Returns a number of the elements from the beginning of the collection.
  *
  * @param array|\Traversable $collection
- * @param int                $number
+ * @param int $number
  *
  * @return array|\LimitIterator
  */
@@ -571,7 +572,7 @@ function expression_function_take($collection, $number)
  * Skips a number of the elements from the collection.
  *
  * @param array|\Traversable $collection
- * @param int                $number
+ * @param int $number
  *
  * @return array|\LimitIterator
  */

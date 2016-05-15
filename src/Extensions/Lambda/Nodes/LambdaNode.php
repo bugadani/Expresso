@@ -3,7 +3,7 @@
 namespace Expresso\Extensions\Lambda\Nodes;
 
 use Expresso\Compiler\Compiler\Compiler;
-use Expresso\Compiler\CurriedFunctionWrapper;
+use Expresso\Compiler\RuntimeFunction;
 use Expresso\Compiler\Node;
 use Expresso\ExecutionContext;
 use Expresso\Extensions\Core\Nodes\CallableNode;
@@ -76,7 +76,7 @@ class LambdaNode extends CallableNode
     {
         $function = new Recursor([$this->functionBody, 'evaluate']);
 
-        return new CurriedFunctionWrapper(function (...$args) use ($context, $function) {
+        return new RuntimeFunction(function (...$args) use ($context, $function) {
             $arguments    = array_slice($args, 0, $this->argumentCount);
             $innerContext = $context->createInnerScope(array_combine($this->arguments, $arguments));
 

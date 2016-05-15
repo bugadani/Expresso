@@ -2,7 +2,7 @@
 
 namespace Expresso\Test\Compiler;
 
-use Expresso\Compiler\CurriedFunctionWrapper;
+use Expresso\Compiler\RuntimeFunction;
 
 class CurriedFunctionWrapperTest extends \PHPUnit_Framework_TestCase
 {
@@ -12,7 +12,7 @@ class CurriedFunctionWrapperTest extends \PHPUnit_Framework_TestCase
         $function = function() {
             return 2;
         };
-        $wrapped = new CurriedFunctionWrapper($function);
+        $wrapped = new RuntimeFunction($function);
         $this->assertEquals(2, $wrapped());
     }
 
@@ -21,7 +21,7 @@ class CurriedFunctionWrapperTest extends \PHPUnit_Framework_TestCase
         $function = function($x) {
             return $x;
         };
-        $wrapped = new CurriedFunctionWrapper($function);
+        $wrapped = new RuntimeFunction($function);
         $this->assertEquals(2, $wrapped(2));
     }
 
@@ -30,7 +30,7 @@ class CurriedFunctionWrapperTest extends \PHPUnit_Framework_TestCase
         $function = function($x, $y) {
             return $x + $y;
         };
-        $wrapped = new CurriedFunctionWrapper($function);
+        $wrapped = new RuntimeFunction($function);
         $this->assertEquals(5, $wrapped(2, 3));
     }
 
@@ -39,7 +39,7 @@ class CurriedFunctionWrapperTest extends \PHPUnit_Framework_TestCase
         $function = function($x, $y) {
             return $x + $y;
         };
-        $wrapped = new CurriedFunctionWrapper($function);
+        $wrapped = new RuntimeFunction($function);
         $curried  = $wrapped(2);
         $this->assertTrue(is_callable($curried));
         $this->assertEquals(3,$curried(1));

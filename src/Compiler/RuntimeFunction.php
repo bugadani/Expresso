@@ -2,7 +2,7 @@
 
 namespace Expresso\Compiler;
 
-class CurriedFunctionWrapper
+class RuntimeFunction
 {
 
     public static function getParameterCount(callable $function)
@@ -33,8 +33,8 @@ class CurriedFunctionWrapper
 
     public function __construct(callable $function, int $paramCount = null, array $parameters = [])
     {
-        if ($function instanceof CurriedFunctionWrapper) {
-            $this->function = $function->function;
+        if ($function instanceof RuntimeFunction) {
+            $this->function   = $function->function;
             $this->paramCount = $function->paramCount;
             $this->parameters = $function->parameters + $parameters;
         } else {
@@ -46,12 +46,20 @@ class CurriedFunctionWrapper
 
     public function __invoke(...$args)
     {
-        if ((count($args) + count($this->parameters)) < $this->paramCount) {
-            return new CurriedFunctionWrapper($this->function, $this->paramCount, $this->parameters + $args);
+        $function = $this->function;
+        if (count($this->parameters) > 0) {
+            if ((func_num_args() + count($this->parameters)) < $this->paramCount) {
+                return new RuntimeFunction($function, $this->paramCount, array_merge($this->parameters, $args));
+            } else {
+                return $function(...array_merge($this->parameters, $args));
+            }
         } else {
-            $function = $this->function;
-
-            return $function(...$this->parameters, ...$args);
+            if (func_num_args() < $this->paramCount) {
+                return new RuntimeFunction($function, $this->paramCount, $args);
+            } else {
+                return $function(...$args);
+            }
         }
+
     }
 }

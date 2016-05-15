@@ -62,8 +62,8 @@ class CompilerConfiguration
 
         $this->symbols = array_unique(array_merge($this->symbols, $ext->getSymbols()));
 
-        foreach ($ext->getFunctions() as $function) {
-            $this->functions[ $function->getName() ] = $function;
+        foreach ($ext->getFunctions() as $functionName => $function) {
+            $this->functions[ $functionName ] = $function;
         }
     }
 

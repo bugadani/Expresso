@@ -7,6 +7,7 @@ use Expresso\Compiler\Compiler\CompilerConfiguration;
 use Expresso\Compiler\ExpressionFunction;
 use Expresso\Compiler\Parser\Parsers\ParserReference;
 use Expresso\Compiler\Parser\Parsers\TokenParser;
+use Expresso\Compiler\RuntimeFunction;
 use Expresso\Compiler\Tokenizer\Token;
 use Expresso\Extension;
 use Expresso\Extensions\Core\Core;
@@ -94,7 +95,7 @@ class Lambda extends Extension
             }
         );
 
-        $operandParser = $parserContainer->get('operand');
+        $operandParser      = $parserContainer->get('operand');
         $extendedExpression = $expression->orA($lambdaDefinition);
 
         $parserContainer->set('expression', $extendedExpression);
@@ -107,12 +108,12 @@ class Lambda extends Extension
     public function getFunctions() : array
     {
         return [
-            new ExpressionFunction('all', __NAMESPACE__ . '\expression_function_all'),
-            new ExpressionFunction('any', __NAMESPACE__ . '\expression_function_any'),
-            new ExpressionFunction('filter', __NAMESPACE__ . '\expression_function_filter'),
-            new ExpressionFunction('first', __NAMESPACE__ . '\expression_function_first'),
-            new ExpressionFunction('fold', __NAMESPACE__ . '\expression_function_fold'),
-            new ExpressionFunction('map', __NAMESPACE__ . '\expression_function_map')
+            'all'    => new RuntimeFunction(__NAMESPACE__ . '\expression_function_all', 2),
+            'any'    => new RuntimeFunction(__NAMESPACE__ . '\expression_function_any', 2),
+            'filter' => new RuntimeFunction(__NAMESPACE__ . '\expression_function_filter', 2),
+            'first'  => new RuntimeFunction(__NAMESPACE__ . '\expression_function_first', 2),
+            'fold'   => new RuntimeFunction(__NAMESPACE__ . '\expression_function_fold', 3),
+            'map'    => new RuntimeFunction(__NAMESPACE__ . '\expression_function_map', 2)
         ];
     }
 

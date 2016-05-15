@@ -3,7 +3,7 @@
 namespace Expresso\Extensions\Core\Nodes;
 
 use Expresso\Compiler\Compiler\Compiler;
-use Expresso\Compiler\CurriedFunctionWrapper;
+use Expresso\Compiler\RuntimeFunction;
 use Expresso\Compiler\Node;
 use Expresso\Compiler\Nodes\BinaryOperatorNode;
 use Expresso\ExecutionContext;
@@ -51,9 +51,9 @@ class FunctionCallNode extends BinaryOperatorNode
 
         if ($this->functionName instanceof CallableNode) {
             if ($this->arguments->getCount() < $this->functionName->getArgumentCount()) {
-                $wrapper = CurriedFunctionWrapper::class;
+                $wrapper = RuntimeFunction::class;
                 if ($functionName[0] === '$') {
-                    $wrapper             = CurriedFunctionWrapper::class;
+                    $wrapper             = RuntimeFunction::class;
                     $wrappedFunctionName = "(new {$wrapper}({$functionName}))";
                 } else {
                     $wrappedFunctionName = "(new {$wrapper}('{$functionName}'))";
@@ -62,9 +62,9 @@ class FunctionCallNode extends BinaryOperatorNode
                 $wrappedFunctionName = $functionName;
             }
         } else {
-            $wrapper = CurriedFunctionWrapper::class;
+            $wrapper = RuntimeFunction::class;
             if ($functionName[0] === '$') {
-                $wrapper = CurriedFunctionWrapper::class;
+                $wrapper = RuntimeFunction::class;
                 $wrappedFunctionName = "(new {$wrapper}({$functionName}))";
             } else {
                 $wrappedFunctionName = "(new {$wrapper}('{$functionName}'))";
@@ -86,9 +86,9 @@ class FunctionCallNode extends BinaryOperatorNode
         }
         $arguments = (yield $this->arguments->evaluate($context));
 
-        if ($this->functionName instanceof CallableNode) {
+        if (!$callback instanceof RuntimeFunction && $this->functionName instanceof CallableNode) {
             if (count($arguments) < $this->functionName->getArgumentCount()) {
-                $callback = new CurriedFunctionWrapper($callback);
+                $callback = new RuntimeFunction($callback);
             }
         }
 
