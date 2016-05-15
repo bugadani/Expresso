@@ -1,0 +1,9 @@
+--TEST--
+Test curried method calls
+--EXPRESSION--
+addTwo := cls.sum(2)
+addTwo(2) ~ ', ' ~ addTwo(3)
+--DATA--
+'cls' => new class { public function sum($a, $b) { return $a + $b; }}
+--EXPECT--
+4, 5

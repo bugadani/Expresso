@@ -35,13 +35,13 @@ class FunctionCallNode extends BinaryOperatorNode
         }
 
         $this->functionName = $functionName;
-        $this->arguments    = $arguments;
+        $this->arguments = $arguments;
     }
 
     public function compile(Compiler $compiler)
     {
         $functionName = (yield $compiler->compileNode($this->functionName));
-        $arguments    = (yield $compiler->compileNode($this->arguments));
+        $arguments = (yield $compiler->compileNode($this->arguments));
         if ($this->isIndirectCall) {
             //Never inline indirect calls
             $functionName = (string)$compiler->addTempVariable($functionName);
@@ -53,7 +53,7 @@ class FunctionCallNode extends BinaryOperatorNode
             if ($this->arguments->getCount() < $this->functionName->getArgumentCount()) {
                 $wrapper = RuntimeFunction::class;
                 if ($functionName[0] === '$') {
-                    $wrapper             = RuntimeFunction::class;
+                    $wrapper = RuntimeFunction::class;
                     $wrappedFunctionName = "(new {$wrapper}({$functionName}))";
                 } else {
                     $wrappedFunctionName = "(new {$wrapper}('{$functionName}'))";
@@ -86,12 +86,15 @@ class FunctionCallNode extends BinaryOperatorNode
         }
         $arguments = (yield $this->arguments->evaluate($context));
 
-        if (!$callback instanceof RuntimeFunction && $this->functionName instanceof CallableNode) {
-            if (count($arguments) < $this->functionName->getArgumentCount()) {
+        if (!$callback instanceof RuntimeFunction) {
+            if ($this->functionName instanceof CallableNode) {
+                if (count($arguments) < $this->functionName->getArgumentCount()) {
+                    $callback = new RuntimeFunction($callback);
+                }
+            } else if ($this->isIndirectCall) {
                 $callback = new RuntimeFunction($callback);
             }
         }
-
         return $callback(...$arguments);
     }
 
