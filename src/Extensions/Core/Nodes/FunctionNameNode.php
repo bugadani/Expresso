@@ -29,9 +29,7 @@ class FunctionNameNode extends CallableNode
 
     public function evaluate(ExecutionContext $context)
     {
-        $function = $context->getFunction($this->functionName);
-
-        return $function;
+        return $context->getFunction($this->functionName);
     }
 
     /**
