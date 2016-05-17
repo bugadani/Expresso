@@ -56,6 +56,9 @@ class Compiler
 
     public function addTempVariable($source) : TempVar
     {
+        if ($source instanceof TempVar) {
+            return $source;
+        }
         $tempVar = new TempVar($this, $this->requestTempVariable(), $source);
 
         $this->context->statements[] = $tempVar;

@@ -42,39 +42,14 @@ class FunctionCallNode extends BinaryOperatorNode
     {
         $functionName = (yield $compiler->compileNode($this->functionName));
         $arguments = (yield $compiler->compileNode($this->arguments));
+
         if ($this->isIndirectCall) {
             //Never inline indirect calls
-            $functionName = (string)$compiler->addTempVariable($functionName);
-        } else {
-            $functionName = (string)$functionName;
-        }
-
-        if ($this->functionName instanceof CallableNode) {
-            if ($this->arguments->getCount() < $this->functionName->getArgumentCount()) {
-                $wrapper = RuntimeFunction::class;
-                if ($functionName[0] === '$') {
-                    $wrapper = RuntimeFunction::class;
-                    $wrappedFunctionName = "(new {$wrapper}({$functionName}))";
-                } else {
-                    $wrappedFunctionName = "(new {$wrapper}('{$functionName}'))";
-                }
-            } else {
-                $wrappedFunctionName = $functionName;
-            }
-        } else {
+            $functionName = $compiler->addTempVariable($functionName);
             $wrapper = RuntimeFunction::class;
-            if ($functionName[0] === '$') {
-                $wrapper = RuntimeFunction::class;
-                $wrappedFunctionName = "(new {$wrapper}({$functionName}))";
-            } else {
-                $wrappedFunctionName = "(new {$wrapper}('{$functionName}'))";
-            }
-        }
-
-        if ($this->isIndirectCall) {
-            $compiler->add("(({$functionName} === null) ? null : ({$wrappedFunctionName})({$arguments}))");
+            $compiler->add("(({$functionName} === null) ? null : (new {$wrapper}({$functionName}))({$arguments}))");
         } else {
-            $compiler->add("{$wrappedFunctionName}({$arguments})");
+            $compiler->add("{$functionName}({$arguments})");
         }
     }
 
@@ -86,15 +61,6 @@ class FunctionCallNode extends BinaryOperatorNode
         }
         $arguments = (yield $this->arguments->evaluate($context));
 
-        if (!$callback instanceof RuntimeFunction) {
-            if ($this->functionName instanceof CallableNode) {
-                if (count($arguments) < $this->functionName->getArgumentCount()) {
-                    $callback = new RuntimeFunction($callback);
-                }
-            } else if ($this->isIndirectCall) {
-                $callback = new RuntimeFunction($callback);
-            }
-        }
         return $callback(...$arguments);
     }
 

@@ -49,7 +49,8 @@ class LambdaNode extends CallableNode
      */
     public function compile(Compiler $compiler)
     {
-        $compiler->add('function(');
+        $functionClass = RuntimeFunction::class;
+        $compiler->add("new {$functionClass}(function(");
 
         if ($this->argumentCount > 0) {
             $compiler->add('$' . implode(', $', $this->arguments));
@@ -66,7 +67,7 @@ class LambdaNode extends CallableNode
         $compiledFunctionBody = (yield $compiler->compileNode($this->functionBody));
         $compiler->compileStatements();
 
-        $compiler->add("return {$compiledFunctionBody};}");
+        $compiler->add("return {$compiledFunctionBody};}, {$this->argumentCount})");
     }
 
     /**
