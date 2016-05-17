@@ -46,20 +46,15 @@ class RuntimeFunction
 
     public function __invoke(...$args)
     {
-        $function = $this->function;
-        if (count($this->parameters) > 0) {
-            if ((func_num_args() + count($this->parameters)) < $this->paramCount) {
-                return new RuntimeFunction($function, $this->paramCount, array_merge($this->parameters, $args));
-            } else {
-                return $function(...array_merge($this->parameters, $args));
-            }
-        } else {
-            if (func_num_args() < $this->paramCount) {
-                return new RuntimeFunction($function, $this->paramCount, $args);
-            } else {
-                return $function(...$args);
-            }
+        if (!empty($this->parameters)) {
+            $args = array_merge($this->parameters, $args);
         }
 
+        $function = $this->function;
+        if (count($args) < $this->paramCount) {
+            return new RuntimeFunction($function, $this->paramCount, $args);
+        } else {
+            return $function(...$args);
+        }
     }
 }

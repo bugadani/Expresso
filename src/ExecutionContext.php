@@ -123,7 +123,7 @@ class ExecutionContext implements \ArrayAccess
     /**
      * @return mixed
      */
-    public function getArrayCopy()
+    public function getArrayCopy() : array
     {
         return $this->data;
     }

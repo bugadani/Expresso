@@ -3,8 +3,6 @@
 namespace Expresso\Extensions\Core\Nodes;
 
 use Expresso\Compiler\Compiler\Compiler;
-use Expresso\Compiler\RuntimeFunction;
-use Expresso\Compiler\ExpressionFunction;
 use Expresso\ExecutionContext;
 
 class FunctionNameNode extends CallableNode
