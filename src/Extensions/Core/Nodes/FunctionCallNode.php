@@ -24,29 +24,25 @@ class FunctionCallNode extends BinaryOperatorNode
 
     public function __construct(Node $functionName, ArgumentListNode $arguments)
     {
-        if (!$functionName instanceof CallableNode) {
-            if ($functionName instanceof IdentifierNode) {
-                $functionName = new FunctionNameNode($functionName->getName());
-            } else {
-                $this->isIndirectCall = true;
-            }
-        } else {
+        if ($functionName instanceof CallableNode) {
             $this->isIndirectCall = !$functionName->inlineable();
+        } else {
+            $this->isIndirectCall = true;
         }
 
         $this->functionName = $functionName;
-        $this->arguments = $arguments;
+        $this->arguments    = $arguments;
     }
 
     public function compile(Compiler $compiler)
     {
         $functionName = (yield $compiler->compileNode($this->functionName));
-        $arguments = (yield $compiler->compileNode($this->arguments));
+        $arguments    = (yield $compiler->compileNode($this->arguments));
 
         if ($this->isIndirectCall) {
             //Never inline indirect calls
             $functionName = $compiler->addTempVariable($functionName);
-            $wrapper = RuntimeFunction::class;
+            $wrapper      = RuntimeFunction::class;
             $compiler->add("(({$functionName} === null) ? null : (new {$wrapper}({$functionName}))({$arguments}))");
         } else {
             $compiler->add("{$functionName}({$arguments})");

@@ -4,7 +4,6 @@ namespace Expresso\Extensions\Core;
 
 use Expresso\Compiler\Parser\GrammarParser;
 use Expresso\Compiler\Compiler\CompilerConfiguration;
-use Expresso\Compiler\ExpressionFunction;
 use Expresso\Compiler\Node;
 use Expresso\Compiler\RuntimeFunction;
 use Expresso\Extensions\Core\Nodes\ArgumentListNode;

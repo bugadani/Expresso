@@ -4,7 +4,6 @@ namespace Expresso\Extensions\Lambda;
 
 use Expresso\Compiler\Parser\GrammarParser;
 use Expresso\Compiler\Compiler\CompilerConfiguration;
-use Expresso\Compiler\ExpressionFunction;
 use Expresso\Compiler\Parser\Parsers\ParserReference;
 use Expresso\Compiler\Parser\Parsers\TokenParser;
 use Expresso\Compiler\RuntimeFunction;

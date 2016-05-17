@@ -3,7 +3,6 @@
 namespace Expresso\Compiler;
 
 use Expresso\Compiler\Compiler\Compiler;
-use Expresso\EvaluationContext;
 use Expresso\ExecutionContext;
 
 /**

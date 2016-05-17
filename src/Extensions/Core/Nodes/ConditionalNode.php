@@ -110,7 +110,7 @@ class ConditionalNode extends Node
      *
      * Note: this method should be executed with {@see GeneratorHelper).
      *
-     * @param EvaluationContext|ExecutionContext $context
+     * @param ExecutionContext $context
      * @return mixed
      */
     public function evaluate(ExecutionContext $context)

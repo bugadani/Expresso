@@ -10,6 +10,8 @@ use Expresso\Compiler\Operators\BinaryOperator;
 use Expresso\ExecutionContext;
 use Expresso\Extensions\Core\Nodes\ArgumentListNode;
 use Expresso\Extensions\Core\Nodes\FunctionCallNode;
+use Expresso\Extensions\Core\Nodes\FunctionNameNode;
+use Expresso\Extensions\Core\Nodes\IdentifierNode;
 
 class FunctionCallOperator extends BinaryOperator
 {
@@ -19,6 +21,10 @@ class FunctionCallOperator extends BinaryOperator
         if (!$arguments instanceof ArgumentListNode) {
             throw  new ParseException('$arguments must be an instance of ArgumentListNode');
         }
+        if ($functionName instanceof IdentifierNode) {
+            $functionName = new FunctionNameNode($functionName->getName());
+        }
+
         return new FunctionCallNode($functionName, $arguments);
     }
 

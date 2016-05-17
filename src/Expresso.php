@@ -6,7 +6,6 @@ use Expresso\Cache\CompiledExpressionCacheInterface;
 use Expresso\Cache\Parsed\NullCache as NullParsedCache;
 use Expresso\Cache\Compiled\NullCache as NullCompiledCache;
 use Expresso\Cache\ParsedExpressionCacheInterface;
-use Expresso\Compiler\CompiledExpression;
 use Expresso\Compiler\Compiler\Compiler;
 use Expresso\Compiler\Compiler\CompilerConfiguration;
 use Expresso\Compiler\Node;

@@ -3,7 +3,6 @@
 namespace Expresso;
 
 use Expresso\Compiler\Compiler\CompilerConfiguration;
-use Expresso\Compiler\ExpressionFunction;
 use Expresso\Compiler\RuntimeFunction;
 
 class ExecutionContext implements \ArrayAccess
@@ -16,11 +15,11 @@ class ExecutionContext implements \ArrayAccess
         } else if (is_object($where)) {
             if (method_exists($where, $what)) {
                 $methodWrapper = new RuntimeFunction([$where, $what]);
-
+                //intentionally multiple lines because only variables can be returned by reference
                 return $methodWrapper;
             } else if ($where instanceof \ArrayAccess) {
                 return $where[ $what ];
-            } else {
+            } else if (isset($where->{$what})) {
                 return $where->{$what};
             }
         }

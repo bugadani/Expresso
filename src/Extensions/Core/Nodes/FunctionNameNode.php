@@ -16,9 +16,7 @@ class FunctionNameNode extends CallableNode
 
     public function compile(Compiler $compiler)
     {
-        $functions = $compiler->getConfiguration()->getFunctions();
-
-        if (isset($functions[ $this->functionName ])) {
+        if ($compiler->getConfiguration()->hasFunction($this->functionName)) {
             $compiler->add("\$context->getFunction('{$this->functionName}')");
         } else {
             $compiler->addVariableAccess($this->functionName);

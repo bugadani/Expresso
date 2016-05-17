@@ -4,8 +4,8 @@ namespace Expresso;
 
 use Expresso\Compiler\Parser\GrammarParser;
 use Expresso\Compiler\Compiler\CompilerConfiguration;
-use Expresso\Compiler\ExpressionFunction;
 use Expresso\Compiler\Operator;
+use Expresso\Compiler\RuntimeFunction;
 
 abstract class Extension
 {
@@ -42,7 +42,7 @@ abstract class Extension
     }
 
     /**
-     * @return ExpressionFunction[]
+     * @return RuntimeFunction[]
      */
     public function getFunctions() : array
     {

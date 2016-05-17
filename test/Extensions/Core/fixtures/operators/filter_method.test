@@ -1,0 +1,8 @@
+--TEST--
+Test filters using methods
+--EXPRESSION--
+2|cls.sum(3)
+--DATA--
+'cls' => new class { public function sum($a, $b) { return $a + $b; }}
+--EXPECT--
+5

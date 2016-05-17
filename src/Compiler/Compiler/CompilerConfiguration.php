@@ -2,8 +2,8 @@
 
 namespace Expresso\Compiler\Compiler;
 
-use Expresso\Compiler\ExpressionFunction;
 use Expresso\Compiler\OperatorCollection;
+use Expresso\Compiler\RuntimeFunction;
 use Expresso\Extension;
 
 class CompilerConfiguration
@@ -34,7 +34,7 @@ class CompilerConfiguration
     private $operators;
 
     /**
-     * @var ExpressionFunction[]
+     * @var RuntimeFunction[]
      */
     private $functions;
 
@@ -124,6 +124,11 @@ class CompilerConfiguration
     public function getFunctions()
     {
         return $this->functions;
+    }
+
+    public function hasFunction($functionName) : bool
+    {
+        return isset($this->functions[ $functionName ]);
     }
 
     public function getSymbols()
