@@ -7,6 +7,7 @@ use Expresso\Compiler\Exceptions\ParseException;
 use Expresso\Compiler\Node;
 use Expresso\Compiler\Nodes\BinaryOperatorNode;
 use Expresso\Compiler\Operators\BinaryOperator;
+use Expresso\Extensions\Core\Nodes\AssignableNode;
 use Expresso\Extensions\Core\Nodes\IdentifierNode;
 use Expresso\Runtime\Exceptions\AssignmentException;
 use Expresso\Runtime\ExecutionContext;
@@ -23,9 +24,9 @@ class AssignmentOperator extends BinaryOperator
         $containerNode = $node->getLeft();
         $value         = (yield $node->getRight()->evaluate($context));
 
-        if ($containerNode instanceof IdentifierNode) {
+        if ($containerNode instanceof AssignableNode) {
             //Assign to simple value
-            $context[ $containerNode->getName() ] = $value;
+            yield $containerNode->evaluateAssign($context, $value);
         } else if ($containerNode instanceof BinaryOperatorNode) {
             $keys = new \SplStack();
 
@@ -67,15 +68,13 @@ class AssignmentOperator extends BinaryOperator
     {
         list($left, $right) = $node->getChildren();
 
-        $tempVar = $compiler->requestTempVariable();
-
-        $rightSource = (yield $compiler->compileNode($right));
-
-        if ($left instanceof IdentifierNode) {
-            $compiler->addVariableAccess($left->getName())
-                     ->add(" = {$rightSource}");
+        if ($left instanceof AssignableNode) {
+            yield $left->compileAssign($compiler, $right);
         } else if ($left instanceof BinaryOperatorNode && $left->isOperator(ArrayAccessOperator::class)) {
+            $rightSource = (yield $compiler->compileNode($right));
             $leftSource = (yield $compiler->compileNode($left));
+
+            $tempVar = $compiler->requestTempVariable();
             $compiler->addStatement("{$tempVar} =& {$leftSource}");
             $compiler->add("{$tempVar} = {$rightSource}");
         } else {
