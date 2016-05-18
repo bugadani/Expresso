@@ -2,7 +2,7 @@
 
 namespace Expresso\Runtime\Exceptions;
 
-class ConstantCallException extends \RuntimeException
+class ConstantCallException extends RuntimeException
 {
 
 }

@@ -2,7 +2,7 @@
 
 namespace Expresso\Runtime\Exceptions;
 
-class TypeException extends RuntimeException
+class RuntimeException extends \Exception
 {
 
 }
