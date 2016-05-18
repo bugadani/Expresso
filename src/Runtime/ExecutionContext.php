@@ -146,7 +146,15 @@ class ExecutionContext implements \ArrayAccess
         }
 
         if (isset($this[ $functionName ])) {
-            return new RuntimeFunction($this[ $functionName ]);
+            if (!$this[ $functionName ] instanceof RuntimeFunction) {
+                if ($this[ $functionName ] === null) {
+                    $this[ $functionName ] = new NullFunction();
+                } else {
+                    $this[ $functionName ] = new RuntimeFunction($this[ $functionName ]);
+                }
+            }
+
+            return $this[ $functionName ];
         }
 
         return $this->parentContext->getFunction($functionName);

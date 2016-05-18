@@ -1,0 +1,9 @@
+--TEST--
+Test curried functions passed as input
+--EXPRESSION--
+addTwo := sum(2)
+addTwo(2) ~ ', ' ~ addTwo(3)
+--DATA--
+'sum' => function ($a, $b) { return $a + $b; }
+--EXPECT--
+4, 5

@@ -22,13 +22,8 @@ class OrOperator extends BinaryOperator
         return $second;
     }
 
-    public function compile(Compiler $compiler, Node $node)
+    public function compiledOperator()
     {
-        list($left, $right) = $node->getChildren();
-
-        $leftOperand  = (yield $compiler->compileNode($left));
-        $rightOperand = (yield $compiler->compileNode($right));
-
-        $compiler->add("({$leftOperand}) || ({$rightOperand})");
+        return '||';
     }
 }

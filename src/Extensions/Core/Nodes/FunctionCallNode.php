@@ -4,6 +4,7 @@ namespace Expresso\Extensions\Core\Nodes;
 
 use Expresso\Compiler\Compiler\Compiler;
 use Expresso\Runtime\Exceptions\ConstantCallException;
+use Expresso\Runtime\NullFunction;
 use Expresso\Runtime\RuntimeFunction;
 use Expresso\Compiler\Node;
 use Expresso\Compiler\Nodes\BinaryOperatorNode;
@@ -30,7 +31,7 @@ class FunctionCallNode extends BinaryOperatorNode
     {
         if ($functionName instanceof CallableNode) {
             $this->isIndirectCall = !$functionName->inlineable();
-        } else if($functionName instanceof DataNode) {
+        } else if ($functionName instanceof DataNode) {
             throw new ConstantCallException("Function name cannot be a constant");
         } else {
             $this->isIndirectCall = true;
@@ -47,12 +48,10 @@ class FunctionCallNode extends BinaryOperatorNode
 
         if ($this->isIndirectCall) {
             //Never inline indirect calls
-            $functionName = $compiler->addTempVariable($functionName);
-            $wrapper      = RuntimeFunction::class;
-            $compiler->add("(({$functionName} === null) ? null : (new {$wrapper}({$functionName}))({$arguments}))");
-        } else {
-            $compiler->add("{$functionName}({$arguments})");
+            $nullFunction = NullFunction::class;
+            $functionName = $compiler->addTempVariable("{$functionName} ?? new {$nullFunction}()");
         }
+        $compiler->add("{$functionName}({$arguments})");
     }
 
     public function evaluate(ExecutionContext $context)

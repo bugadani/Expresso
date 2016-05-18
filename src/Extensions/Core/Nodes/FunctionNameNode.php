@@ -9,18 +9,16 @@ class FunctionNameNode extends CallableNode
 {
     private $functionName;
 
-    public function __construct($functionName)
+    public function __construct(string $functionName)
     {
         $this->functionName = $functionName;
     }
 
     public function compile(Compiler $compiler)
     {
-        if ($compiler->getConfiguration()->hasFunction($this->functionName)) {
-            $compiler->add("\$context->getFunction('{$this->functionName}')");
-        } else {
-            $compiler->addVariableAccess($this->functionName);
-        }
+        $compiler->add("\$context->getFunction(")
+                 ->compileString($this->functionName)
+                 ->add(')');
     }
 
     public function evaluate(ExecutionContext $context)
@@ -28,21 +26,8 @@ class FunctionNameNode extends CallableNode
         return $context->getFunction($this->functionName);
     }
 
-    /**
-     * @return mixed
-     */
-    public function getFunctionName()
-    {
-        return $this->functionName;
-    }
-
     public function inlineable() : bool
     {
         return true;
-    }
-
-    public function getArgumentCount() : int
-    {
-        return PHP_INT_MAX;
     }
 }

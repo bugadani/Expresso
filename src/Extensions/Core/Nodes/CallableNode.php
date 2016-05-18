@@ -9,6 +9,4 @@ abstract class CallableNode extends Node
     public function inlineable() : bool {
         return false;
     }
-
-    public abstract function getArgumentCount() : int;
 }

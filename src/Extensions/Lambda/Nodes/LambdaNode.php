@@ -92,9 +92,4 @@ class LambdaNode extends CallableNode
     {
         return [$this->functionBody];
     }
-
-    public function getArgumentCount() : int
-    {
-        return $this->argumentCount;
-    }
 }

@@ -1,0 +1,7 @@
+--TEST--
+Test safe function calls
+--EXPRESSION--
+v := null
+v("123") ?: :default
+--EXPECT--
+default
