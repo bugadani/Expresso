@@ -21,13 +21,10 @@ class PropertyAccessNode extends AccessNode
 
     public function compileAssign(Compiler $compiler, Node $rightHand)
     {
-        $leftSource  = yield $compiler->compileNode($this->left);
-        $rightSource = yield $compiler->compileNode($this->right);
+        $source       = yield $compiler->compileNode($this);
+        $tempVariable = $compiler->addTempVariable("&{$source}");
 
-        $contextClass = ExecutionContext::class;
-        $tv           = $compiler->addTempVariable("&{$contextClass}::access({$leftSource}, {$rightSource})");
-
-        $compiler->add("{$tv} = ")
+        $compiler->add("{$tempVariable} = ")
                  ->add(yield $compiler->compileNode($rightHand));
     }
 

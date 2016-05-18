@@ -10,10 +10,8 @@ class ArrayAccessNode extends AccessNode
 {
     public function compileAssign(Compiler $compiler, Node $rightHand)
     {
-        $compiler->add(yield $compiler->compileNode($this->left))
-                 ->add('[')
-                 ->add(yield $compiler->compileNode($this->right))
-                 ->add('] = ')
+        $compiler->add(yield $compiler->compileNode($this))
+                 ->add(' = ')
                  ->add(yield $compiler->compileNode($rightHand));
     }
 
