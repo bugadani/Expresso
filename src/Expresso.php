@@ -152,7 +152,7 @@ class Expresso
             $function = $this->compiledCache->retrieve($expression);
         }
 
-        return function(array $args = []) use($function) {
+        return function (array $args = []) use ($function) {
             return $function(new ExecutionContext($args, $this->configuration));
         };
     }

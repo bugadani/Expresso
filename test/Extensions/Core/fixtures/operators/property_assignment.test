@@ -1,9 +1,9 @@
 --TEST--
 Test property assignment
 --EXPRESSION--
-a.foo := 'foobar'
-a.foo
+a.foo.bar := 'foobar'
+a.foo.bar
 --DATA--
-'a' => new class { public $foo; }
+'a' => new class { public $foo = ['bar' => 'baz']; }
 --EXPECT--
 foobar
