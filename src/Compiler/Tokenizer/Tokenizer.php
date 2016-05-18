@@ -72,7 +72,7 @@ class Tokenizer
 
         $signs = preg_quote($signs, '/');
 
-        return "/({$joined}|[{$signs}\n])/i";
+        return "/({$joined}|[{$signs}\s])/i";
     }
 
     /**
