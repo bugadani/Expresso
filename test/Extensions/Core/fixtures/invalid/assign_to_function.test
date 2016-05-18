@@ -1,0 +1,6 @@
+--TEST--
+Test assigning to predefined functions is disallowed
+--EXPRESSION--
+reverse := 2
+--EXCEPTION--
+Expresso\Runtime\Exceptions\AssignmentException

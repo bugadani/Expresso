@@ -3,6 +3,7 @@
 namespace Expresso\Runtime;
 
 use Expresso\Compiler\Compiler\CompilerConfiguration;
+use Expresso\Runtime\Exceptions\AssignmentException;
 
 class ExecutionContext implements \ArrayAccess
 {
@@ -105,6 +106,9 @@ class ExecutionContext implements \ArrayAccess
      */
     public function offsetSet($offset, $value)
     {
+        if ($this->configuration->hasFunction($offset)) {
+            throw new AssignmentException("Cannot assign value to predefined function '{$offset}'");
+        }
         if ($this->parentContext->offsetExists($offset)) {
             $this->parentContext->offsetSet($offset, $value);
         } else {
@@ -139,10 +143,8 @@ class ExecutionContext implements \ArrayAccess
      */
     public function getFunction($functionName) : RuntimeFunction
     {
-        $functions = $this->configuration->getFunctions();
-
-        if (isset($functions[ $functionName ])) {
-            return $functions[ $functionName ];
+        if ($this->configuration->hasFunction($functionName)) {
+            return $this->configuration->getFunctions()[ $functionName ];
         }
 
         if (isset($this[ $functionName ])) {

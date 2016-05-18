@@ -1,0 +1,6 @@
+--TEST--
+Test assigning to expressions is disallowed
+--EXPRESSION--
+a + b := 2
+--EXCEPTION--
+Expresso\Runtime\Exceptions\AssignmentException

@@ -5,7 +5,6 @@ namespace Expresso\Extensions\Core\Nodes;
 use Expresso\Compiler\Compiler\Compiler;
 use Expresso\Runtime\Exceptions\ConstantCallException;
 use Expresso\Runtime\NullFunction;
-use Expresso\Runtime\RuntimeFunction;
 use Expresso\Compiler\Node;
 use Expresso\Compiler\Nodes\BinaryOperatorNode;
 use Expresso\Runtime\ExecutionContext;
