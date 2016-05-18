@@ -1,8 +1,8 @@
 --TEST--
-Test array access
+Test simple access
 --EXPRESSION--
-a.1 ~ " " ~ a.foo ~ ' ' ~ a.nested.foobar
+a.foo ~ ' ' ~ a.nested.foobar
 --DATA--
 'a' => ['a', 'b', 'foo' => 'c', 'nested' => ['foobar' => 'baz']]
 --EXPECT--
-b c baz
+c baz

@@ -1,8 +1,9 @@
 --TEST--
 Test array element creation
 --EXPRESSION--
-a := []
 a[1] := 4
 a[1]
+--DATA--
+'a' => []
 --EXPECT--
 4

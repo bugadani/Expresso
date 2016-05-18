@@ -14,14 +14,16 @@ class IsSetOperator extends UnaryOperator
     public function evaluate(ExecutionContext $context, Node $node)
     {
         /** @var UnaryOperatorNode $node */
-        return $context->offsetExists($node->getOperand()->getName());
+        $operand = $node->getOperand();
+        return $context->offsetExists($operand->getName());
     }
 
     public function compile(Compiler $compiler, Node $node)
     {
         /** @var UnaryOperatorNode $node */
-        $compiler->add('$context->offsetExists(')
-                 ->compileString($node->getOperand()->getName())
+        $operand = $node->getOperand();
+        $compiler->add('isset(')
+                 ->add(yield $compiler->compileNode($operand))
                  ->add(')');
     }
 }

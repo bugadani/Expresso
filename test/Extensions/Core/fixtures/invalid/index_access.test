@@ -1,0 +1,8 @@
+--TEST--
+Test invalid simple access
+--EXPRESSION--
+a.1
+--DATA--
+'a' => ['a', 'b']
+--EXCEPTION--
+Expresso\Runtime\Exceptions\TypeException

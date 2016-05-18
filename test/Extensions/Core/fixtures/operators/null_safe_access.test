@@ -1,8 +1,8 @@
 --TEST--
 Test null safe array access
 --EXPRESSION--
-a?.0 ~ b?.c?.d
+a?.a ~ b?.c?.d
 --DATA--
-'a' => ['a', 'b'], 'b' => null
+'a' => ['a' => 'a', 'b'], 'b' => null
 --EXPECT--
 a

@@ -80,6 +80,11 @@ abstract class IntegrationTest extends \PHPUnit_Framework_TestCase
         if ($expect === false && $exception === false) {
             throw new \RuntimeException("{$file} does not contain a EXPECT or EXCEPTION block");
         }
+        if ($data) {
+            eval('$data = [' . $data . '];');
+        } else {
+            $data = [];
+        }
 
         $exceptionMessage = null;
         if ($exception && strpos($exception, "\n")) {
@@ -111,12 +116,6 @@ abstract class IntegrationTest extends \PHPUnit_Framework_TestCase
         $exceptionMessage
     )
     {
-        if ($data) {
-            eval('$data = [' . $data . '];');
-        } else {
-            $data = [];
-        }
-
         if ($exception) {
             $this->expectException($exception);
             if (!empty($exceptionMessage)) {
@@ -148,12 +147,6 @@ abstract class IntegrationTest extends \PHPUnit_Framework_TestCase
         $exceptionMessage
     )
     {
-        if ($data) {
-            eval('$data = [' . $data . '];');
-        } else {
-            $data = [];
-        }
-
         if ($exception) {
             $this->expectException($exception);
             if (!empty($exceptionMessage)) {
