@@ -8,7 +8,7 @@ use Expresso\Compiler\Node;
 
 use Expresso\Compiler\Nodes\UnaryOperatorNode;
 use Expresso\Compiler\Operator;
-use Expresso\ExecutionContext;
+use Expresso\Runtime\ExecutionContext;
 
 abstract class UnaryOperator extends Operator
 {

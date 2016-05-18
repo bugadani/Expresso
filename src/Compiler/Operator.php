@@ -4,7 +4,7 @@ namespace Expresso\Compiler;
 
 use Expresso\Compiler\Compiler\Compiler;
 use Expresso\Compiler\Compiler\CompilerConfiguration;
-use Expresso\ExecutionContext;
+use Expresso\Runtime\ExecutionContext;
 
 abstract class Operator
 {

@@ -2,7 +2,7 @@
 
 namespace Expresso\Test\Compiler;
 
-use Expresso\Compiler\RuntimeFunction;
+use Expresso\Runtime\RuntimeFunction;
 
 class CurriedFunctionWrapperTest extends \PHPUnit_Framework_TestCase
 {

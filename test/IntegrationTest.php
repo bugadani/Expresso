@@ -101,7 +101,7 @@ abstract class IntegrationTest extends \PHPUnit_Framework_TestCase
      * @test
      * @dataProvider getTests
      */
-    public function runIntegrationTests(
+    public function runInterpreted(
         $file,
         $description,
         $expression,
@@ -109,7 +109,8 @@ abstract class IntegrationTest extends \PHPUnit_Framework_TestCase
         $expectation,
         $exception,
         $exceptionMessage
-    ) {
+    )
+    {
         if ($data) {
             eval('$data = [' . $data . '];');
         } else {
@@ -123,18 +124,49 @@ abstract class IntegrationTest extends \PHPUnit_Framework_TestCase
             }
         }
 
-        $return = $this->expresso->execute($expression, $data);
+        $result = $this->expresso->execute($expression, $data);
         if ($expectation !== false) {
             $this->assertEquals(
                 $expectation,
-                $return,
+                $result,
                 $description . ' (' . $file . ')'
             );
+        }
+    }
 
-            $compiled = $this->expresso->compile($expression);
+    /**
+     * @test
+     * @dataProvider getTests
+     */
+    public function runCompiled(
+        $file,
+        $description,
+        $expression,
+        $data,
+        $expectation,
+        $exception,
+        $exceptionMessage
+    )
+    {
+        if ($data) {
+            eval('$data = [' . $data . '];');
+        } else {
+            $data = [];
+        }
+
+        if ($exception) {
+            $this->expectException($exception);
+            if (!empty($exceptionMessage)) {
+                $this->expectExceptionMessage($exceptionMessage);
+            }
+        }
+
+        $compiled = $this->expresso->compile($expression);
+        $result = $compiled($data);
+        if ($expectation !== false) {
             $this->assertEquals(
                 $expectation,
-                $compiled($data),
+                $result,
                 $description . ' (' . $file . ', compiled)'
             );
         }

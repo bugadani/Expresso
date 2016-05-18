@@ -5,7 +5,7 @@ namespace Expresso\Extensions\Core;
 use Expresso\Compiler\Parser\GrammarParser;
 use Expresso\Compiler\Compiler\CompilerConfiguration;
 use Expresso\Compiler\Node;
-use Expresso\Compiler\RuntimeFunction;
+use Expresso\Runtime\RuntimeFunction;
 use Expresso\Extensions\Core\Nodes\ArgumentListNode;
 use Expresso\Extensions\Core\Nodes\DataNode;
 use Expresso\Extensions\Core\Nodes\IdentifierNode;

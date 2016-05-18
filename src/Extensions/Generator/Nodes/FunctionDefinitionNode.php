@@ -6,7 +6,7 @@ use Expresso\Compiler\Compiler\Compiler;
 use Expresso\Compiler\Node;
 use Expresso\Extensions\Core\Nodes\DataNode;
 use Expresso\Extensions\Core\Nodes\IdentifierNode;
-use Expresso\ExecutionContext;
+use Expresso\Runtime\ExecutionContext;
 use Recursor\Recursor;
 
 /**

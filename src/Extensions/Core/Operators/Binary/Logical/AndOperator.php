@@ -5,7 +5,7 @@ namespace Expresso\Extensions\Core\Operators\Binary\Logical;
 use Expresso\Compiler\Compiler\Compiler;
 use Expresso\Compiler\Node;
 use Expresso\Compiler\Operators\BinaryOperator;
-use Expresso\ExecutionContext;
+use Expresso\Runtime\ExecutionContext;
 
 class AndOperator extends BinaryOperator
 {

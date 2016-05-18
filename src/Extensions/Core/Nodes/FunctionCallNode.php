@@ -3,10 +3,11 @@
 namespace Expresso\Extensions\Core\Nodes;
 
 use Expresso\Compiler\Compiler\Compiler;
-use Expresso\Compiler\RuntimeFunction;
+use Expresso\Runtime\Exceptions\ConstantCallException;
+use Expresso\Runtime\RuntimeFunction;
 use Expresso\Compiler\Node;
 use Expresso\Compiler\Nodes\BinaryOperatorNode;
-use Expresso\ExecutionContext;
+use Expresso\Runtime\ExecutionContext;
 
 class FunctionCallNode extends BinaryOperatorNode
 {
@@ -20,12 +21,17 @@ class FunctionCallNode extends BinaryOperatorNode
      */
     private $arguments;
 
+    /**
+     * @var bool
+     */
     private $isIndirectCall = false;
 
     public function __construct(Node $functionName, ArgumentListNode $arguments)
     {
         if ($functionName instanceof CallableNode) {
             $this->isIndirectCall = !$functionName->inlineable();
+        } else if($functionName instanceof DataNode) {
+            throw new ConstantCallException("Function name cannot be a constant");
         } else {
             $this->isIndirectCall = true;
         }

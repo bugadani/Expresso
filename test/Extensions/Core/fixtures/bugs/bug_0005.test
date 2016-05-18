@@ -1,0 +1,7 @@
+--TEST--
+Test identifier cannot contain newline
+--EXPRESSION--
+v := reverse
+v("123")
+--EXPECT--
+321

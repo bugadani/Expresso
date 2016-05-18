@@ -7,7 +7,7 @@ use Expresso\Compiler\Compiler\CompilerConfiguration;
 use Expresso\Compiler\Exceptions\ParseException;
 use Expresso\Compiler\Node;
 use Expresso\Compiler\Operators\BinaryOperator;
-use Expresso\ExecutionContext;
+use Expresso\Runtime\ExecutionContext;
 use Expresso\Extensions\Core\Nodes\ArgumentListNode;
 use Expresso\Extensions\Core\Nodes\FunctionCallNode;
 use Expresso\Extensions\Core\Nodes\FunctionNameNode;

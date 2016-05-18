@@ -1,0 +1,6 @@
+--TEST--
+Test calling constants is disallowed
+--EXPRESSION--
+"reverse"("123")
+--EXCEPTION--
+Expresso\Runtime\Exceptions\ConstantCallException

@@ -5,7 +5,7 @@ namespace Expresso;
 use Expresso\Compiler\Parser\GrammarParser;
 use Expresso\Compiler\Compiler\CompilerConfiguration;
 use Expresso\Compiler\Operator;
-use Expresso\Compiler\RuntimeFunction;
+use Expresso\Runtime\RuntimeFunction;
 
 abstract class Extension
 {

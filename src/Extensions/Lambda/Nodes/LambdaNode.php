@@ -3,9 +3,9 @@
 namespace Expresso\Extensions\Lambda\Nodes;
 
 use Expresso\Compiler\Compiler\Compiler;
-use Expresso\Compiler\RuntimeFunction;
+use Expresso\Runtime\RuntimeFunction;
 use Expresso\Compiler\Node;
-use Expresso\ExecutionContext;
+use Expresso\Runtime\ExecutionContext;
 use Expresso\Extensions\Core\Nodes\CallableNode;
 use Recursor\Recursor;
 

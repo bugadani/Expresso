@@ -6,7 +6,7 @@ use Expresso\Compiler\Compiler\Compiler;
 use Expresso\Compiler\Compiler\CompilerConfiguration;
 use Expresso\Compiler\Node;
 use Expresso\Compiler\Operators\TernaryOperator;
-use Expresso\ExecutionContext;
+use Expresso\Runtime\ExecutionContext;
 use Expresso\Extensions\Core\Nodes\ConditionalNode;
 
 class TernaryConditionalOperator extends TernaryOperator

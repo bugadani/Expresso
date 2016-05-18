@@ -4,7 +4,7 @@ namespace Expresso\Extensions\Generator\Nodes;
 
 use Expresso\Compiler\Compiler\Compiler;
 use Expresso\Compiler\Node;
-use Expresso\ExecutionContext;
+use Expresso\Runtime\ExecutionContext;
 
 /**
  * GeneratorNode represents a list comprehension expression. It consists of an expression and a number of branches.

@@ -1,9 +1,8 @@
 <?php
 
-namespace Expresso;
+namespace Expresso\Runtime;
 
 use Expresso\Compiler\Compiler\CompilerConfiguration;
-use Expresso\Compiler\RuntimeFunction;
 
 class ExecutionContext implements \ArrayAccess
 {
@@ -15,11 +14,12 @@ class ExecutionContext implements \ArrayAccess
         } else if (is_object($where)) {
             if (method_exists($where, $what)) {
                 $methodWrapper = new RuntimeFunction([$where, $what]);
+
                 //intentionally multiple lines because only variables can be returned by reference
                 return $methodWrapper;
             } else if ($where instanceof \ArrayAccess) {
                 return $where[ $what ];
-            } else if (isset($where->{$what})) {
+            } else if (property_exists($where, $what)) {
                 return $where->{$what};
             }
         }
@@ -46,16 +46,21 @@ class ExecutionContext implements \ArrayAccess
     {
         $this->data          = $input;
         $this->configuration = $configuration;
-        $this->parentContext = $parentContext ?? new class extends ExecutionContext
+        $this->parentContext = $parentContext ?? new class($configuration) extends ExecutionContext
             {
-                public function __construct()
-                {
+                private $configuration;
 
+                public function __construct(CompilerConfiguration $config)
+                {
+                    $this->configuration = $config;
                 }
 
                 public function &offsetGet($index)
                 {
-                    throw new \OutOfBoundsException("Array index out of bounds: {$index}");
+                    if ($this->configuration->hasFunction($index)) {
+                        return $this->configuration->getFunctions()[ $index ];
+                    }
+                    throw new \OutOfBoundsException("Array index out of bounds: '{$index}'");
                 }
 
                 public function offsetExists($offset)
@@ -65,7 +70,7 @@ class ExecutionContext implements \ArrayAccess
 
                 public function getFunction($functionName) : RuntimeFunction
                 {
-                    throw new \OutOfBoundsException('Function not found: ' . $functionName);
+                    throw new \OutOfBoundsException("Function not found: '{$functionName}'");
                 }
             };
     }

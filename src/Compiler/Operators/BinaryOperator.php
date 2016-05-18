@@ -8,7 +8,7 @@ use Expresso\Compiler\Node;
 use Expresso\Compiler\Nodes\BinaryOperatorNode;
 
 use Expresso\Compiler\Operator;
-use Expresso\ExecutionContext;
+use Expresso\Runtime\ExecutionContext;
 
 abstract class BinaryOperator extends Operator
 {

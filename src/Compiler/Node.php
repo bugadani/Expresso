@@ -3,7 +3,7 @@
 namespace Expresso\Compiler;
 
 use Expresso\Compiler\Compiler\Compiler;
-use Expresso\ExecutionContext;
+use Expresso\Runtime\ExecutionContext;
 
 /**
  * Class Node represents an element in the Abstract Syntax Tree.

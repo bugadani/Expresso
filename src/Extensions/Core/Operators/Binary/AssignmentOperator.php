@@ -8,7 +8,7 @@ use Expresso\Compiler\Node;
 use Expresso\Compiler\Nodes\BinaryOperatorNode;
 
 use Expresso\Compiler\Operators\BinaryOperator;
-use Expresso\ExecutionContext;
+use Expresso\Runtime\ExecutionContext;
 use Expresso\Extensions\Core\Nodes\IdentifierNode;
 
 class AssignmentOperator extends BinaryOperator

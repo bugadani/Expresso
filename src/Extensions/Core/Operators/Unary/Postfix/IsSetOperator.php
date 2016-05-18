@@ -6,7 +6,7 @@ use Expresso\Compiler\Compiler\Compiler;
 use Expresso\Compiler\Node;
 use Expresso\Compiler\Nodes\UnaryOperatorNode;
 use Expresso\Compiler\Operators\UnaryOperator;
-use Expresso\ExecutionContext;
+use Expresso\Runtime\ExecutionContext;
 
 class IsSetOperator extends UnaryOperator
 {

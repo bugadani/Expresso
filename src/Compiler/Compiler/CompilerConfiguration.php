@@ -3,7 +3,7 @@
 namespace Expresso\Compiler\Compiler;
 
 use Expresso\Compiler\OperatorCollection;
-use Expresso\Compiler\RuntimeFunction;
+use Expresso\Runtime\RuntimeFunction;
 use Expresso\Extension;
 
 class CompilerConfiguration
