@@ -28,13 +28,13 @@ abstract class AccessNode extends AssignableNode
         $parentStack = [];
 
         $left = $this->left;
-        while($left instanceof AccessNode) {
+        while ($left instanceof AccessNode) {
             $parentStack[] = $left;
-            $left = $left->left;
+            $left          = $left->left;
         }
-        $container = &$context[$left->getName()];
-        while(!empty($parentStack)) {
-            $parent = array_pop($parentStack);
+        $container = &$context[ $left->getName() ];
+        while (!empty($parentStack)) {
+            $parent    = array_pop($parentStack);
             $container = &ExecutionContext::access($container, yield $parent->right->evaluate($context));
         }
         $container[yield $this->right->evaluate($context)] = $value;

@@ -1,0 +1,6 @@
+--TEST--
+Test accessing arrays directly
+--EXPRESSION--
+[1, 2, 3][2]
+--EXPECT--
+3

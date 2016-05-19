@@ -1,0 +1,9 @@
+--TEST--
+Test dynamic array access
+--EXPRESSION--
+foo := 'bar'
+a[foo]
+--DATA--
+'a' => ['a', 'b', 'bar' => 'baz']
+--EXPECT--
+baz

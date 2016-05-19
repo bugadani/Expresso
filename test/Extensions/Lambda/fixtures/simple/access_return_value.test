@@ -1,0 +1,9 @@
+--TEST--
+Test dereferencing function return values
+--EXPRESSION--
+f := \() -> [1, 2, 3]
+g := \() -> [:a => 1, :b => 2, :c => 3]
+
+f()[1] ~ g()[:b]
+--EXPECT--
+22

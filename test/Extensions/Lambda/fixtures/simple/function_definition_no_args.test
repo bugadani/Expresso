@@ -1,0 +1,7 @@
+--TEST--
+Test calling lambdas without arguments
+--EXPRESSION--
+f := \() -> "abc"
+f()
+--EXPECT--
+abc

@@ -115,7 +115,7 @@ class Core extends Extension
           'in' => new ContainsOperator(8, Operator::NONE),
           'not in' => new NotContainsOperator(8, Operator::NONE),*/
             //other
-            new ArrayAccessOperator(17),
+            new ArrayAccessOperator(12),
             new FunctionCallOperator(12),
             '?:'                  => new BinaryConditionalOperator(1),
             '~'                   => new ConcatenationOperator(10),

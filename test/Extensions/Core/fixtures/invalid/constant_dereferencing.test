@@ -1,0 +1,6 @@
+--TEST--
+Test assigning to expressions is disallowed
+--EXPRESSION--
+2[5]
+--EXCEPTION--
+Expresso\Compiler\Exceptions\ParseException
