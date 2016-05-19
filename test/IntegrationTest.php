@@ -68,7 +68,9 @@ abstract class IntegrationTest extends \PHPUnit_Framework_TestCase
         $data       = $this->getBlock($testDescriptor, 'DATA');
 
         if ($skip) {
-            return false;
+            $skipped = true;
+        } else {
+            $skipped = false;
         }
 
         if (!$test) {
@@ -96,6 +98,7 @@ abstract class IntegrationTest extends \PHPUnit_Framework_TestCase
             $test,
             $expression,
             $data,
+            $skipped,
             $expect,
             $exception,
             $exceptionMessage
@@ -111,11 +114,15 @@ abstract class IntegrationTest extends \PHPUnit_Framework_TestCase
         $description,
         $expression,
         $data,
+        $skipped,
         $expectation,
         $exception,
         $exceptionMessage
     )
     {
+        if ($skipped) {
+            $this->markTestSkipped();
+        }
         if ($exception) {
             $this->expectException($exception);
             if (!empty($exceptionMessage)) {
@@ -142,11 +149,15 @@ abstract class IntegrationTest extends \PHPUnit_Framework_TestCase
         $description,
         $expression,
         $data,
+        $skipped,
         $expectation,
         $exception,
         $exceptionMessage
     )
     {
+        if ($skipped) {
+            $this->markTestSkipped();
+        }
         if ($exception) {
             $this->expectException($exception);
             if (!empty($exceptionMessage)) {
@@ -155,7 +166,7 @@ abstract class IntegrationTest extends \PHPUnit_Framework_TestCase
         }
 
         $compiled = $this->expresso->compile($expression);
-        $result = $compiled($data);
+        $result   = $compiled($data);
         if ($expectation !== false) {
             $this->assertEquals(
                 $expectation,

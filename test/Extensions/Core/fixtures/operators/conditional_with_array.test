@@ -1,0 +1,11 @@
+--SKIP--
+--TEST--
+Test conditional operator with array as condition
+--EXPRESSION--
+a[2] ?: :default
+~ ' ' ~
+a.b ?: :default
+--DATA--
+'a' => ['b' => 'value']
+--EXPECT--
+default value
