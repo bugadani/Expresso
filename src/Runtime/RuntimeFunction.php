@@ -9,8 +9,10 @@ class RuntimeFunction
     {
         if (is_array($function)) {
             $reflection = new \ReflectionMethod($function[0], $function[1]);
-        } else {
+        } else if (!is_string($function) || function_exists($function)) {
             $reflection = new \ReflectionFunction($function);
+        } else {
+            $reflection = new \ReflectionMethod($function);
         }
 
         return $reflection->getNumberOfRequiredParameters();

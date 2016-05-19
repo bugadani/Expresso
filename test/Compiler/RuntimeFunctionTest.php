@@ -34,6 +34,15 @@ class RuntimeFunctionTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(5, $wrapped(2, 3));
     }
 
+    public function testMethodAsString()
+    {
+        //Test that a method (RuntimeFunction::new in this case) can also be wrapped
+        $function = RuntimeFunction::class . "::new";
+        $wrapped = RuntimeFunction::new($function);
+
+        $this->assertInstanceOf(RuntimeFunction::class, $wrapped());
+    }
+
     public function testPartiallyAppliedFunction()
     {
         $function = function($x, $y) {
