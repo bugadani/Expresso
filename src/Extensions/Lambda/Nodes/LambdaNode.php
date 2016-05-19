@@ -50,7 +50,7 @@ class LambdaNode extends CallableNode
     public function compile(Compiler $compiler)
     {
         $functionClass = RuntimeFunction::class;
-        $compiler->add("new {$functionClass}(function(");
+        $compiler->add("{$functionClass}::new(function(");
 
         if ($this->argumentCount > 0) {
             $compiler->add('$' . implode(', $', $this->arguments));
@@ -77,7 +77,7 @@ class LambdaNode extends CallableNode
     {
         $function = new Recursor([$this->functionBody, 'evaluate']);
 
-        return new RuntimeFunction(function (...$args) use ($context, $function) {
+        return RuntimeFunction::new(function (...$args) use ($context, $function) {
             $arguments    = array_slice($args, 0, $this->argumentCount);
             $innerContext = $context->createInnerScope(array_combine($this->arguments, $arguments));
 

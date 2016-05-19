@@ -107,12 +107,12 @@ class Lambda extends Extension
     public function getFunctions() : array
     {
         return [
-            'all'    => new RuntimeFunction(__NAMESPACE__ . '\expression_function_all', 2),
-            'any'    => new RuntimeFunction(__NAMESPACE__ . '\expression_function_any', 2),
-            'filter' => new RuntimeFunction(__NAMESPACE__ . '\expression_function_filter', 2),
-            'first'  => new RuntimeFunction(__NAMESPACE__ . '\expression_function_first', 2),
-            'fold'   => new RuntimeFunction(__NAMESPACE__ . '\expression_function_fold', 3),
-            'map'    => new RuntimeFunction(__NAMESPACE__ . '\expression_function_map', 2)
+            'all'    => RuntimeFunction::new(__NAMESPACE__ . '\expression_function_all', 2),
+            'any'    => RuntimeFunction::new(__NAMESPACE__ . '\expression_function_any', 2),
+            'filter' => RuntimeFunction::new(__NAMESPACE__ . '\expression_function_filter', 2),
+            'first'  => RuntimeFunction::new(__NAMESPACE__ . '\expression_function_first', 2),
+            'fold'   => RuntimeFunction::new(__NAMESPACE__ . '\expression_function_fold', 3),
+            'map'    => RuntimeFunction::new(__NAMESPACE__ . '\expression_function_map', 2)
         ];
     }
 

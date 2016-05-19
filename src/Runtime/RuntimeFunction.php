@@ -5,7 +5,7 @@ namespace Expresso\Runtime;
 class RuntimeFunction
 {
 
-    public static function getParameterCount(callable $function)
+    public static function getParameterCount(callable $function) : int
     {
         if (is_array($function)) {
             $reflection = new \ReflectionMethod($function[0], $function[1]);
@@ -14,6 +14,23 @@ class RuntimeFunction
         }
 
         return $reflection->getNumberOfRequiredParameters();
+    }
+
+    public static function new(callable $function, int $paramCount = null, array $parameters = []) : RuntimeFunction
+    {
+        if ($function instanceof RuntimeFunction) {
+            if (empty($parameters)) {
+                return $function;
+            } else {
+                return $function(...$parameters);
+            }
+        }
+        $object             = new self;
+        $object->function   = $function;
+        $object->paramCount = $paramCount ?? self::getParameterCount($function);
+        $object->parameters = $parameters;
+
+        return $object;
     }
 
     /**
@@ -31,17 +48,8 @@ class RuntimeFunction
      */
     private $parameters;
 
-    public function __construct(callable $function, int $paramCount = null, array $parameters = [])
+    protected function __construct()
     {
-        if ($function instanceof RuntimeFunction) {
-            $this->function   = $function->function;
-            $this->paramCount = $function->paramCount;
-            $this->parameters = $function->parameters + $parameters;
-        } else {
-            $this->function   = $function;
-            $this->paramCount = $paramCount ?? self::getParameterCount($function);
-            $this->parameters = $parameters;
-        }
     }
 
     public function __invoke(...$args)
@@ -52,7 +60,7 @@ class RuntimeFunction
 
         $function = $this->function;
         if (count($args) < $this->paramCount) {
-            return new RuntimeFunction($function, $this->paramCount, $args);
+            return RuntimeFunction::new($function, $this->paramCount, $args);
         } else {
             return $function(...$args);
         }

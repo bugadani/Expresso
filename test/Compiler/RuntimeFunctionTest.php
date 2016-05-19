@@ -4,7 +4,7 @@ namespace Expresso\Test\Compiler;
 
 use Expresso\Runtime\RuntimeFunction;
 
-class CurriedFunctionWrapperTest extends \PHPUnit_Framework_TestCase
+class RuntimeFunctionTest extends \PHPUnit_Framework_TestCase
 {
 
     public function testFunctionWithoutArguments()
@@ -12,7 +12,7 @@ class CurriedFunctionWrapperTest extends \PHPUnit_Framework_TestCase
         $function = function() {
             return 2;
         };
-        $wrapped = new RuntimeFunction($function);
+        $wrapped = RuntimeFunction::new($function);
         $this->assertEquals(2, $wrapped());
     }
 
@@ -21,7 +21,7 @@ class CurriedFunctionWrapperTest extends \PHPUnit_Framework_TestCase
         $function = function($x) {
             return $x;
         };
-        $wrapped = new RuntimeFunction($function);
+        $wrapped = RuntimeFunction::new($function);
         $this->assertEquals(2, $wrapped(2));
     }
 
@@ -30,19 +30,19 @@ class CurriedFunctionWrapperTest extends \PHPUnit_Framework_TestCase
         $function = function($x, $y) {
             return $x + $y;
         };
-        $wrapped = new RuntimeFunction($function);
+        $wrapped = RuntimeFunction::new($function);
         $this->assertEquals(5, $wrapped(2, 3));
     }
 
-    public function testCurriedFunction()
+    public function testPartiallyAppliedFunction()
     {
         $function = function($x, $y) {
             return $x + $y;
         };
-        $wrapped = new RuntimeFunction($function);
-        $curried  = $wrapped(2);
-        $this->assertTrue(is_callable($curried));
-        $this->assertEquals(3,$curried(1));
-        $this->assertEquals(4,$curried(2));
+        $wrapped = RuntimeFunction::new($function);
+        $partial  = $wrapped(2);
+        $this->assertTrue(is_callable($partial));
+        $this->assertEquals(3,$partial(1));
+        $this->assertEquals(4,$partial(2));
     }
 }

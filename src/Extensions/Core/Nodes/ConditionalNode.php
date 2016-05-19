@@ -51,10 +51,8 @@ class ConditionalNode extends Node
      */
     private function shouldCheckExistence($left)
     {
-        if ($left instanceof IdentifierNode) {
+        if ($left instanceof IdentifierNode || $left instanceof AccessNode) {
             return true;
-        } else if ($left instanceof OperatorNode) {
-            return $left->isOperator(ArrayAccessOperator::class);
         } else {
             return false;
         }

@@ -453,12 +453,12 @@ class Core extends Extension
     public function getFunctions() : array
     {
         return [
-            'count'   => new RuntimeFunction(__NAMESPACE__ . '\expression_function_count', 1),
-            'join'    => new RuntimeFunction(__NAMESPACE__ . '\expression_function_join', 1),
-            'skip'    => new RuntimeFunction(__NAMESPACE__ . '\expression_function_skip', 2),
-            'replace' => new RuntimeFunction(__NAMESPACE__ . '\expression_function_replace', 2),
-            'reverse' => new RuntimeFunction('strrev', 1),
-            'take'    => new RuntimeFunction(__NAMESPACE__ . '\expression_function_take', 2),
+            'count'   => RuntimeFunction::new(__NAMESPACE__ . '\expression_function_count', 1),
+            'join'    => RuntimeFunction::new(__NAMESPACE__ . '\expression_function_join', 1),
+            'skip'    => RuntimeFunction::new(__NAMESPACE__ . '\expression_function_skip', 2),
+            'replace' => RuntimeFunction::new(__NAMESPACE__ . '\expression_function_replace', 2),
+            'reverse' => RuntimeFunction::new('strrev', 1),
+            'take'    => RuntimeFunction::new(__NAMESPACE__ . '\expression_function_take', 2),
         ];
     }
 }

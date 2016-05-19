@@ -22,7 +22,7 @@ class PropertyAccessNode extends AccessNode
 
     public function compileAssign(Compiler $compiler, Node $rightHand)
     {
-        if (!$this->left instanceof AssignableNode && !$this->left instanceof IdentifierNode) {
+        if (!$this->left instanceof AssignableNode) {
             throw new AssignmentException('Cannot assign to non-variable');
         }
         $source       = yield $compiler->compileNode($this);
@@ -40,14 +40,6 @@ class PropertyAccessNode extends AccessNode
                  ->add(', ')
                  ->add(yield $compiler->compileNode($this->right))
                  ->add(')');
-    }
-
-    public function evaluate(ExecutionContext $context)
-    {
-        $left  = (yield $this->left->evaluate($context));
-        $right = (yield $this->right->evaluate($context));
-
-        return $this->get($left, $right, false);
     }
 
     protected function &get(&$container, $rightHand, bool $forAssign)

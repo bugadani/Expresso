@@ -24,6 +24,14 @@ abstract class AccessNode extends AssignableNode
         $this->right = $right;
     }
 
+    public function evaluate(ExecutionContext $context)
+    {
+        $left  = (yield $this->left->evaluate($context));
+        $right = (yield $this->right->evaluate($context));
+
+        return $this->get($left, $right, false);
+    }
+
     abstract protected function &get(&$container, $rightHand, bool $forAssign);
 
     abstract protected function assign(&$container, $leftHand, $rightHand);

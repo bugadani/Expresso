@@ -14,7 +14,7 @@ class ExecutionContext implements \ArrayAccess
             return $where[ $what ];
         } else if (is_object($where)) {
             if (method_exists($where, $what)) {
-                $methodWrapper = new RuntimeFunction([$where, $what]);
+                $methodWrapper = RuntimeFunction::new([$where, $what]);
 
                 //intentionally multiple lines because only variables can be returned by reference
                 return $methodWrapper;
@@ -152,7 +152,7 @@ class ExecutionContext implements \ArrayAccess
                 if ($this[ $functionName ] === null) {
                     $this[ $functionName ] = new NullFunction();
                 } else {
-                    $this[ $functionName ] = new RuntimeFunction($this[ $functionName ]);
+                    $this[ $functionName ] = RuntimeFunction::new($this[ $functionName ]);
                 }
             }
 

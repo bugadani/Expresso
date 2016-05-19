@@ -86,6 +86,11 @@ definitions and defines some functions that can be used in expressions.
  - `reverse(s)`
  - `take(c, n)`
 
+Expresso supports partial function application. Example that creates a function to return the first N natural numbers:
+
+    f := take(1...)
+    f(5)|join(', ') # this prints 1, 2, 3, 4, 5
+
 The Lambda extension
 -------------
 The Lambda extension adds the ability to define lambda expressions and adds some higher order functions.

@@ -27,7 +27,7 @@ class IdentifierNode extends AssignableNode
 
     public function compileAssign(Compiler $compiler, Node $rightHand)
     {
-        $compiler->addVariableAccess($this->value)
+        $compiler->add(yield $compiler->compileNode($this))
                  ->add(' = ')
                  ->add(yield $compiler->compileNode($rightHand));
     }
@@ -37,7 +37,7 @@ class IdentifierNode extends AssignableNode
         return $context[ $this->value ] = $value;
     }
 
-    public function getName()
+    public function getName() : string
     {
         return $this->value;
     }
