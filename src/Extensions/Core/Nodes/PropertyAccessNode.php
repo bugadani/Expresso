@@ -4,6 +4,7 @@ namespace Expresso\Extensions\Core\Nodes;
 
 use Expresso\Compiler\Compiler\Compiler;
 use Expresso\Compiler\Node;
+use Expresso\Runtime\Exceptions\AssignmentException;
 use Expresso\Runtime\Exceptions\TypeException;
 use Expresso\Runtime\ExecutionContext;
 
@@ -21,6 +22,9 @@ class PropertyAccessNode extends AccessNode
 
     public function compileAssign(Compiler $compiler, Node $rightHand)
     {
+        if (!$this->left instanceof AssignableNode && !$this->left instanceof IdentifierNode) {
+            throw new AssignmentException('Cannot assign to non-variable');
+        }
         $source       = yield $compiler->compileNode($this);
         $tempVariable = $compiler->addTempVariable("&{$source}");
 

@@ -3,6 +3,7 @@
 namespace Expresso\Extensions\Core\Nodes;
 
 use Expresso\Compiler\Node;
+use Expresso\Runtime\Exceptions\AssignmentException;
 use Expresso\Runtime\ExecutionContext;
 
 abstract class AccessNode extends AssignableNode
@@ -35,6 +36,9 @@ abstract class AccessNode extends AssignableNode
         while ($left instanceof AccessNode) {
             $parentStack->push($left);
             $left = $left->left;
+        }
+        if (!$left instanceof IdentifierNode) {
+            throw new AssignmentException('Cannot assign to non-variable');
         }
         $container = &$context[ $left->getName() ];
         foreach ($parentStack as $parent) {
