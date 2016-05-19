@@ -23,20 +23,23 @@ abstract class AccessNode extends AssignableNode
         $this->right = $right;
     }
 
+    abstract protected function &get(&$container, $rightHand, bool $forAssign);
+
+    abstract protected function assign(&$container, $leftHand, $rightHand);
+
     public function evaluateAssign(ExecutionContext $context, $value)
     {
-        $parentStack = [];
+        $parentStack = new \SplStack();
 
         $left = $this->left;
         while ($left instanceof AccessNode) {
-            $parentStack[] = $left;
-            $left          = $left->left;
+            $parentStack->push($left);
+            $left = $left->left;
         }
         $container = &$context[ $left->getName() ];
-        while (!empty($parentStack)) {
-            $parent    = array_pop($parentStack);
-            $container = &ExecutionContext::access($container, yield $parent->right->evaluate($context));
+        foreach ($parentStack as $parent) {
+            $container = &$parent->get($container, yield $parent->right->evaluate($context), true);
         }
-        $container[yield $this->right->evaluate($context)] = $value;
+        $this->assign($container, yield $this->right->evaluate($context), $value);
     }
 }

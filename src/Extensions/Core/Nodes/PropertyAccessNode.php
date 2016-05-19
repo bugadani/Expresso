@@ -43,6 +43,20 @@ class PropertyAccessNode extends AccessNode
         $left  = (yield $this->left->evaluate($context));
         $right = (yield $this->right->evaluate($context));
 
-        return ExecutionContext::access($left, $right);
+        return $this->get($left, $right, false);
+    }
+
+    protected function &get(&$container, $rightHand, bool $forAssign)
+    {
+        return ExecutionContext::access($container, $rightHand);
+    }
+
+    protected function assign(&$container, $leftHand, $rightHand)
+    {
+        if (is_object($container)) {
+            $container->{$leftHand} = $rightHand;
+        } else {
+            $container[ $leftHand ] = $rightHand;
+        }
     }
 }

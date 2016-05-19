@@ -30,4 +30,14 @@ class ArrayAccessNode extends AccessNode
 
         return $left[ $right ];
     }
+
+    protected function &get(&$container, $rightHand, bool $forAssign)
+    {
+        return $container[$rightHand];
+    }
+
+    protected function assign(&$container, $leftHand, $rightHand)
+    {
+        $container[$leftHand] = $rightHand;
+    }
 }
