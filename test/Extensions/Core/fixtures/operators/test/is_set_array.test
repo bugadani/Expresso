@@ -1,0 +1,10 @@
+--TEST--
+Test isset operator on array access
+--EXPRESSION--
+(a[0] is set ? :true : :false)
+~' '~
+(a[1] is set ? :true : :false)
+--DATA--
+'a' => ['b']
+--EXPECT--
+true false

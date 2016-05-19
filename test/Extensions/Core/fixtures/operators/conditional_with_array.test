@@ -1,4 +1,3 @@
---SKIP--
 --TEST--
 Test conditional operator with array as condition
 --EXPRESSION--

@@ -47,6 +47,15 @@ class PropertyAccessNode extends AccessNode
         return ExecutionContext::access($container, $rightHand);
     }
 
+    protected function contains($container, $leftHand) : bool
+    {
+        if (is_array($container)) {
+            return isset($container[ $leftHand ]);
+        } else {
+            return (method_exists($container, $leftHand) || property_exists($container, $leftHand));
+        }
+    }
+
     protected function assign(&$container, $leftHand, $rightHand)
     {
         if (is_object($container)) {
@@ -54,5 +63,21 @@ class PropertyAccessNode extends AccessNode
         } else {
             $container[ $leftHand ] = $rightHand;
         }
+    }
+
+    public function compileContains(Compiler $compiler)
+    {
+        $contextClass = ExecutionContext::class;
+        $compiler->pushContext();
+        $tempVar = $compiler->requestTempVariable();
+        $compiler->add('try {');
+        $compiler->add("{$contextClass}::access(")
+                 ->add(yield $compiler->compileNode($this->left))
+                 ->add(', ')
+                 ->add(yield $compiler->compileNode($this->right))
+                 ->add(');');
+        $compiler->add("{$tempVar} = true;} catch(\\OutOfBoundsException \$e) {{$tempVar} = false;}");
+        $compiler->addStatement($compiler->popContext());
+        $compiler->add($tempVar);
     }
 }

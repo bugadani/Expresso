@@ -11,7 +11,9 @@ class ExecutionContext implements \ArrayAccess
     public static function &access(&$where, $what)
     {
         if (is_array($where)) {
-            return $where[ $what ];
+            if(isset($where[$what])) {
+                return $where[ $what ];
+            }
         } else if (is_object($where)) {
             if (method_exists($where, $what)) {
                 $methodWrapper = RuntimeFunction::new([$where, $what]);
@@ -19,7 +21,9 @@ class ExecutionContext implements \ArrayAccess
                 //intentionally multiple lines because only variables can be returned by reference
                 return $methodWrapper;
             } else if ($where instanceof \ArrayAccess) {
-                return $where[ $what ];
+                if(isset($where[$what])) {
+                    return $where[ $what ];
+                }
             } else if (property_exists($where, $what)) {
                 return $where->{$what};
             }

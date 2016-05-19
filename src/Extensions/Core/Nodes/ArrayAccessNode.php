@@ -29,11 +29,23 @@ class ArrayAccessNode extends AccessNode
 
     protected function &get(&$container, $rightHand, bool $forAssign)
     {
-        return $container[$rightHand];
+        return $container[ $rightHand ];
     }
 
     protected function assign(&$container, $leftHand, $rightHand)
     {
-        $container[$leftHand] = $rightHand;
+        $container[ $leftHand ] = $rightHand;
+    }
+
+    protected function contains($container, $leftHand) : bool
+    {
+        return isset($container[ $leftHand ]);
+    }
+
+    public function compileContains(Compiler $compiler)
+    {
+        $compiler->add('isset(')
+                 ->add(yield $compiler->compileNode($this))
+                 ->add(')');
     }
 }

@@ -41,4 +41,16 @@ class IdentifierNode extends AssignableNode
     {
         return $this->value;
     }
+
+    public function compileContains(Compiler $compiler)
+    {
+        $compiler->add('isset(')
+                 ->add(yield $compiler->compileNode($this))
+                 ->add(')');
+    }
+
+    public function evaluateContains(ExecutionContext $context)
+    {
+        return isset($context[ $this->value ]);
+    }
 }

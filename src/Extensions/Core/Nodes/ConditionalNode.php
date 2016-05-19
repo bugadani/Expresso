@@ -5,6 +5,7 @@ namespace Expresso\Extensions\Core\Nodes;
 use Expresso\Compiler\Compiler\Compiler;
 use Expresso\Compiler\Compiler\CompilerConfiguration;
 use Expresso\Compiler\Node;
+use Expresso\Compiler\Nodes\BinaryOperatorNode;
 use Expresso\Compiler\Nodes\OperatorNode;
 use Expresso\Runtime\ExecutionContext;
 use Expresso\Extensions\Core\Operators\Binary\ArrayAccessOperator;
@@ -51,11 +52,7 @@ class ConditionalNode extends Node
      */
     private function shouldCheckExistence($left)
     {
-        if ($left instanceof IdentifierNode || $left instanceof AccessNode) {
-            return true;
-        } else {
-            return false;
-        }
+        return $left instanceof AssignableNode;
     }
 
     public function getChildren() : array
