@@ -146,7 +146,7 @@ class Expresso
         if (!$this->compiledCache->contains($expression)) {
             $nodes = $this->parse($expression);
 
-            $source = $this->getCompiler()->compile($nodes);
+            $source   = $this->getCompiler()->compile($nodes);
             $function = $this->compiledCache->store($expression, $source);
         } else {
             $function = $this->compiledCache->retrieve($expression);

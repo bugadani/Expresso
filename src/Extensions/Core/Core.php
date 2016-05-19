@@ -119,7 +119,7 @@ class Core extends Extension
             new FunctionCallOperator(17),
             '?:'                  => new BinaryConditionalOperator(1),
             '~'                   => new ConcatenationOperator(10),
-            '.'                   => new SimpleAccessOperator(18),
+            '.'                   => new SimpleAccessOperator(17),
             '?.'                  => new NullSafeAccessOperator(18),
             '|'                   => new FilterOperator(11),
             '..'                  => new RangeOperator(12),

@@ -4,7 +4,9 @@ Test isset operator on property access
 (a.a is set ? :true : :false)
 ~' '~
 (a.b is set ? :true : :false)
+~' '~
+(a.b[:c].d is set ? :true : :false)
 --DATA--
 'a' => ['a' => 'b']
 --EXPECT--
-true false
+true false false
