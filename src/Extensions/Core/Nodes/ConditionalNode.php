@@ -34,7 +34,7 @@ class ConditionalNode extends Node
         $isSetOperator = $config->getOperatorByClass(IsSetOperator::class);
         $andOperator   = $config->getOperatorByClass(AndOperator::class);
 
-        $this->condition  = $this->shouldCheckExistence($condition)
+        $this->condition  = $condition instanceof AssignableNode
             ? $andOperator->createNode(
                 $config,
                 $isSetOperator->createNode($config, $condition),
@@ -43,16 +43,6 @@ class ConditionalNode extends Node
             : $condition;
         $this->onPositive = $positive;
         $this->onNegative = $negative;
-    }
-
-    /**
-     * @param $left
-     *
-     * @return bool
-     */
-    private function shouldCheckExistence($left)
-    {
-        return $left instanceof AssignableNode;
     }
 
     public function getChildren() : array
@@ -110,8 +100,7 @@ class ConditionalNode extends Node
      */
     public function evaluate(ExecutionContext $context)
     {
-        $leftValue = yield $this->condition->evaluate($context);
-        if ($leftValue) {
+        if (yield $this->condition->evaluate($context)) {
             return yield $this->onPositive->evaluate($context);
         } else {
             return yield $this->onNegative->evaluate($context);

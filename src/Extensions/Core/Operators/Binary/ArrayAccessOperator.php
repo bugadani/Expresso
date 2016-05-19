@@ -16,7 +16,7 @@ class ArrayAccessOperator extends BinaryOperator
         list($left, $right) = $operands;
 
         if ($left instanceof DataNode) {
-            throw new ParseException();
+            throw new ParseException('Cannot dereference from scalar values');
         }
 
         return new ArrayAccessNode($left, $right);

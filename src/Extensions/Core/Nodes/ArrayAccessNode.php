@@ -27,7 +27,7 @@ class ArrayAccessNode extends AccessNode
                  ->add(']');
     }
 
-    protected function &get(&$container, $rightHand, bool $forAssign)
+    protected function &get(&$container, $rightHand)
     {
         return $container[ $rightHand ];
     }

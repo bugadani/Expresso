@@ -10,7 +10,7 @@ class IntegerDivisionOperator extends BinaryOperator
 
     protected function evaluateSimple($left, $right)
     {
-        return ($left - $left % $right) / $right;
+        return intdiv($left, $right);
     }
 
     /**
@@ -20,14 +20,10 @@ class IntegerDivisionOperator extends BinaryOperator
      */
     protected function compileSimple(Compiler $compiler, $leftSource, $rightSource)
     {
-        $compiler->add('((');
-        $compiler->add($leftSource);
-        $compiler->add(' - ');
-        $compiler->add($leftSource);
-        $compiler->add(' % ');
-        $compiler->add($rightSource);
-        $compiler->add(') / ');
-        $compiler->add($rightSource);
-        $compiler->add(')');
+        $compiler->add('\intdiv(')
+                 ->add($leftSource)
+                 ->add(', ')
+                 ->add($rightSource)
+                 ->add(')');
     }
 }

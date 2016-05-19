@@ -2,7 +2,6 @@
 
 namespace Expresso\Extensions\Core\Operators\Binary\Arithmetic;
 
-use Expresso\Compiler\Compiler\Compiler;
 use Expresso\Compiler\Operators\BinaryOperator;
 
 class ExponentialOperator extends BinaryOperator
@@ -10,20 +9,11 @@ class ExponentialOperator extends BinaryOperator
 
     protected function evaluateSimple($left, $right)
     {
-        return pow($left, $right);
+        return $left ** $right;
     }
 
-    /**
-     * @param Compiler $compiler
-     * @param          $leftSource
-     * @param          $rightSource
-     */
-    protected function compileSimple(Compiler $compiler, $leftSource, $rightSource)
+    protected function compiledOperator()
     {
-        $compiler->add('pow(')
-                 ->add($leftSource)
-                 ->add(', ')
-                 ->add($rightSource)
-                 ->add(')');
+        return '**';
     }
 }

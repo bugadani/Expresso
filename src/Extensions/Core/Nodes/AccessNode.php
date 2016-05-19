@@ -29,10 +29,10 @@ abstract class AccessNode extends AssignableNode
         $left  = (yield $this->left->evaluate($context));
         $right = (yield $this->right->evaluate($context));
 
-        return $this->get($left, $right, false);
+        return $this->get($left, $right);
     }
 
-    abstract protected function &get(&$container, $rightHand, bool $forAssign);
+    abstract protected function &get(&$container, $rightHand);
 
     abstract protected function assign(&$container, $leftHand, $rightHand);
 
