@@ -6,7 +6,7 @@ use Expresso\Compiler\Compiler\Compiler;
 use Expresso\Compiler\Node;
 use Expresso\Runtime\ExecutionContext;
 
-class IdentifierNode extends AssignableNode
+class IdentifierNode extends VariableNode
 {
     private $value;
 

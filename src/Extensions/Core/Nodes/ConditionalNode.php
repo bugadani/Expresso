@@ -34,7 +34,7 @@ class ConditionalNode extends Node
         $isSetOperator = $config->getOperatorByClass(IsSetOperator::class);
         $andOperator   = $config->getOperatorByClass(AndOperator::class);
 
-        $this->condition  = $condition instanceof AssignableNode
+        $this->condition  = $condition instanceof VariableNode
             ? $andOperator->createNode(
                 $config,
                 $isSetOperator->createNode($config, $condition),

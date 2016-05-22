@@ -6,7 +6,7 @@ use Expresso\Compiler\Node;
 use Expresso\Runtime\Exceptions\AssignmentException;
 use Expresso\Runtime\ExecutionContext;
 
-abstract class AccessNode extends AssignableNode
+abstract class AccessNode extends VariableNode
 {
     /**
      * @var Node

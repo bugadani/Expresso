@@ -22,7 +22,7 @@ class PropertyAccessNode extends AccessNode
 
     public function compileAssign(Compiler $compiler, Node $rightHand)
     {
-        if (!$this->left instanceof AssignableNode) {
+        if (!$this->left instanceof VariableNode) {
             throw new AssignmentException('Cannot assign to non-variable');
         }
 

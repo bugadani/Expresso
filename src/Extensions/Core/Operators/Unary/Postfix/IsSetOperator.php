@@ -7,7 +7,7 @@ use Expresso\Compiler\Node;
 use Expresso\Compiler\Nodes\UnaryOperatorNode;
 use Expresso\Compiler\Operators\UnaryOperator;
 use Expresso\Extensions\Core\Nodes\AccessNode;
-use Expresso\Extensions\Core\Nodes\AssignableNode;
+use Expresso\Extensions\Core\Nodes\VariableNode;
 use Expresso\Runtime\ExecutionContext;
 
 class IsSetOperator extends UnaryOperator
@@ -17,7 +17,7 @@ class IsSetOperator extends UnaryOperator
     {
         /** @var UnaryOperatorNode $node */
         $operand = $node->getOperand();
-        if ($operand instanceof AssignableNode) {
+        if ($operand instanceof VariableNode) {
             return $operand->evaluateContains($context);
         } else {
             return true;
@@ -28,7 +28,7 @@ class IsSetOperator extends UnaryOperator
     {
         /** @var UnaryOperatorNode $node */
         $operand = $node->getOperand();
-        if ($operand instanceof AssignableNode) {
+        if ($operand instanceof VariableNode) {
             yield $operand->compileContains($compiler);
         } else {
             $compiler->add('true');

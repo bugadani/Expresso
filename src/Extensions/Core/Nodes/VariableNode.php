@@ -6,7 +6,7 @@ use Expresso\Compiler\Compiler\Compiler;
 use Expresso\Compiler\Node;
 use Expresso\Runtime\ExecutionContext;
 
-abstract class AssignableNode extends Node
+abstract class VariableNode extends Node
 {
     abstract public function compileAssign(Compiler $compiler, Node $rightHand);
 

@@ -6,7 +6,7 @@ use Expresso\Compiler\Compiler\Compiler;
 use Expresso\Compiler\Node;
 use Expresso\Compiler\Nodes\BinaryOperatorNode;
 use Expresso\Compiler\Operators\BinaryOperator;
-use Expresso\Extensions\Core\Nodes\AssignableNode;
+use Expresso\Extensions\Core\Nodes\VariableNode;
 use Expresso\Runtime\Exceptions\AssignmentException;
 use Expresso\Runtime\ExecutionContext;
 
@@ -21,7 +21,7 @@ class AssignmentOperator extends BinaryOperator
         /** @var BinaryOperatorNode $node */
         $containerNode = $node->getLeft();
 
-        if ($containerNode instanceof AssignableNode) {
+        if ($containerNode instanceof VariableNode) {
             //Assign to simple value
             $value = (yield $node->getRight()->evaluate($context));
             yield $containerNode->evaluateAssign($context, $value);
@@ -36,7 +36,7 @@ class AssignmentOperator extends BinaryOperator
     {
         list($left, $right) = $node->getChildren();
 
-        if ($left instanceof AssignableNode) {
+        if ($left instanceof VariableNode) {
             return $left->compileAssign($compiler, $right);
         } else {
             throw new AssignmentException('Can only assign to array element or object property');
