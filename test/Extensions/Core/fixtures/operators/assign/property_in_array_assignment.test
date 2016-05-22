@@ -1,0 +1,9 @@
+--TEST--
+Test property assignment in array
+--EXPRESSION--
+a[0].foo := 'foo'
+a[0].foo ~ a[1].foo
+--DATA--
+'a' => [new class { public $foo = 'bar'; }, new class { public $foo = 'bar'; }]
+--EXPECT--
+foobar

@@ -1,0 +1,9 @@
+--TEST--
+Test array assignment in property
+--EXPRESSION--
+input.property[2] := 4
+input.property[2]
+--DATA--
+'input' => new class { public $property = [1, 2, 3]; }
+--EXPECT--
+4
