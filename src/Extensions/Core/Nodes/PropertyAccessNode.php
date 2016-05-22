@@ -5,21 +5,10 @@ namespace Expresso\Extensions\Core\Nodes;
 use Expresso\Compiler\Compiler\Compiler;
 use Expresso\Compiler\Node;
 use Expresso\Runtime\Exceptions\AssignmentException;
-use Expresso\Runtime\Exceptions\TypeException;
 use Expresso\Runtime\RuntimeFunction;
 
 class PropertyAccessNode extends AccessNode
 {
-    public function __construct(Node $left, Node $right)
-    {
-        if ($right instanceof IdentifierNode) {
-            $right = new StringNode($right->getName());
-        } else {
-            throw new TypeException("Access operator requires a name on the right hand");
-        }
-        parent::__construct($left, $right);
-    }
-
     public function compileAssign(Compiler $compiler, Node $rightHand)
     {
         if (!$this->left instanceof VariableNode) {
@@ -48,9 +37,13 @@ class PropertyAccessNode extends AccessNode
 
     public function compile(Compiler $compiler)
     {
-        $leftSource = yield $compiler->compileNode($this->left);
+        $leftSource    = yield $compiler->compileNode($this->left);
         $rightSource   = yield $compiler->compileNode($this->right);
         $functionClass = RuntimeFunction::class;
+
+        if (!$this->left instanceof IdentifierNode) {
+            $leftSource = $compiler->addTempVariable($leftSource);
+        }
 
         $tempVar = $compiler->requestTempVariable();
         $compiler->addStatement("if (is_array({$leftSource})) {

@@ -1,0 +1,9 @@
+--TEST--
+Test class destructuring
+--EXPRESSION--
+[:b => b, :a => a] := input
+a ~ b
+--DATA--
+'input' => new class { public $a = 'foo'; public $b = 'bar'; }
+--EXPECT--
+foobar
