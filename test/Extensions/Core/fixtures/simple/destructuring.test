@@ -1,0 +1,7 @@
+--TEST--
+Test array destructuring
+--EXPRESSION--
+[a, b] := [:foo, :bar]
+a ~ b
+--EXPECT--
+foobar

@@ -1,0 +1,7 @@
+--TEST--
+Test array destructuring
+--EXPRESSION--
+[:nested => [:b => b, :c => c], :a => a] := [:a => :foo, :nested => [:c => :baz, :b => :bar]]
+a ~ b ~ c
+--EXPECT--
+foobarbaz

@@ -3,15 +3,33 @@
 namespace Expresso\Extensions\Core\Operators\Binary;
 
 use Expresso\Compiler\Compiler\Compiler;
+use Expresso\Compiler\Compiler\CompilerConfiguration;
 use Expresso\Compiler\Node;
 use Expresso\Compiler\Nodes\BinaryOperatorNode;
 use Expresso\Compiler\Operators\BinaryOperator;
+use Expresso\Extensions\Core\Nodes\ArrayAccessNode;
+use Expresso\Extensions\Core\Nodes\ArrayDataNode;
+use Expresso\Extensions\Core\Nodes\StatementNode;
 use Expresso\Extensions\Core\Nodes\VariableNode;
 use Expresso\Runtime\Exceptions\AssignmentException;
 use Expresso\Runtime\ExecutionContext;
 
 class AssignmentOperator extends BinaryOperator
 {
+    public function createNode(CompilerConfiguration $config, Node ...$operands) : Node
+    {
+        list($structure, $source) = $operands;
+        if ($structure instanceof ArrayDataNode) {
+            $nodes = [];
+            foreach ($structure as $key => $variableToAssign) {
+                $nodes[] = $this->createNode($config, $variableToAssign, new ArrayAccessNode($source, $key));
+            }
+
+            return new StatementNode($nodes);
+        } else {
+            return parent::createNode($config, ...$operands);
+        }
+    }
 
     /**
      * @inheritdoc
