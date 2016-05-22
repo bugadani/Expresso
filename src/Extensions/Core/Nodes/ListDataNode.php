@@ -6,7 +6,7 @@ use Expresso\Compiler\Compiler\Compiler;
 use Expresso\Compiler\Node;
 use Expresso\Runtime\ExecutionContext;
 
-class ListDataNode extends Node
+class ListDataNode extends ArrayDataNode
 {
     /**
      * @var Node[]
