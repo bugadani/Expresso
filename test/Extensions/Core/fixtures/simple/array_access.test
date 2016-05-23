@@ -1,8 +1,0 @@
---TEST--
-Test array access using both constant and variable keys
---EXPRESSION--
-a[1] ~ " " ~ a[:foo] ~ ' ' ~ a[b][:foobar]
---DATA--
-'a' => ['a', 'b', 'foo' => 'c', 'nested' => ['foobar' => 'baz']], 'b' => 'nested'
---EXPECT--
-b c baz
