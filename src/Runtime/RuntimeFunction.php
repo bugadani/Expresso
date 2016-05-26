@@ -7,7 +7,9 @@ class RuntimeFunction
 
     public static function getParameterCount(callable $function) : int
     {
-        if (is_array($function)) {
+        if ($function instanceof RuntimeFunction) {
+            return $function->paramCount;
+        } else if (is_array($function)) {
             $reflection = new \ReflectionMethod($function[0], $function[1]);
         } else if (!is_string($function) || function_exists($function)) {
             $reflection = new \ReflectionFunction($function);
@@ -20,24 +22,21 @@ class RuntimeFunction
 
     public static function new(callable $function, int $paramCount = null, array $parameters = []) : RuntimeFunction
     {
-        if ($function instanceof RuntimeFunction) {
-            if ($paramCount === null) {
-                if (empty($parameters)) {
-                    return $function;
-                } else {
-                    return $function(...$parameters);
-                }
-            } else {
-                $fixedParams = $function->parameters;
-                $function    = $function->function;
+        $parameterCount = $paramCount ?? self::getParameterCount($function);
 
-                $parameters = array_merge($fixedParams, $parameters);
+        $missingParams = [];
+        for ($i = 0; $i < $parameterCount; $i++) {
+            if (!isset($parameters[ $i ]) || $parameters[ $i ] instanceof PlaceholderArgument) {
+                $missingParams[] = $i;
+                unset($parameters[ $i ]);
             }
         }
-        $object             = new self;
-        $object->function   = $function;
-        $object->paramCount = $paramCount ?? self::getParameterCount($function);
-        $object->parameters = $parameters;
+
+        $object                    = new self;
+        $object->function          = $function;
+        $object->paramCount        = count($missingParams);
+        $object->fixedParameters   = $parameters;
+        $object->missingParameters = $missingParams;
 
         return $object;
     }
@@ -55,7 +54,12 @@ class RuntimeFunction
     /**
      * @var array
      */
-    private $parameters;
+    private $fixedParameters;
+
+    /**
+     * @var array
+     */
+    private $missingParameters;
 
     protected function __construct()
     {
@@ -63,15 +67,23 @@ class RuntimeFunction
 
     public function __invoke(...$args)
     {
-        if (!empty($this->parameters)) {
-            $args = array_merge($this->parameters, $args);
-        }
-
-        $function = $this->function;
         if (count($args) < $this->paramCount) {
-            return RuntimeFunction::new($function, $this->paramCount, $args);
+            return RuntimeFunction::new($this, $this->paramCount, $args);
         } else {
-            return $function(...$args);
+            $arguments = $this->fixedParameters;
+
+            for ($i = count($this->missingParameters) - 1; $i >= 0; $i--) {
+                $arguments[ $this->missingParameters[ $i ] ] = array_pop($args);
+            }
+            ksort($arguments);
+
+            for ($i = count($args) - 1; $i >= 0; $i--) {
+                array_unshift($arguments, array_pop($args));
+            }
+
+            $function = $this->function;
+
+            return $function(...$arguments);
         }
     }
 }

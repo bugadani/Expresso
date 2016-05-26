@@ -6,6 +6,7 @@ use Expresso\Compiler\Compiler\Compiler;
 use Expresso\Compiler\Exceptions\ParseException;
 use Expresso\Compiler\Node;
 use Expresso\Runtime\ExecutionContext;
+use Expresso\Runtime\PlaceholderArgument;
 
 class ArgumentListNode extends Node
 {
@@ -18,22 +19,25 @@ class ArgumentListNode extends Node
     public function compile(Compiler $compiler)
     {
         if (!empty($this->arguments)) {
-            $children  = $this->arguments;
-            $lastChild = array_pop($children);
-
-            foreach ($children as $child) {
-                $compiler->add(yield $compiler->compileNode($child));
-                $compiler->add(', ');
+            for ($i = 0; $i < $this->getCount(); $i++) {
+                if (!isset($this->arguments[ $i ]) || $this->arguments[ $i ] instanceof PlaceholderArgument) {
+                    $placeholderClass = PlaceholderArgument::class;
+                    $compiler->add("new {$placeholderClass}");
+                } else {
+                    $compiler->add(yield $compiler->compileNode($this->arguments[ $i ]));
+                }
+                if ($i != $this->getCount() - 1) {
+                    $compiler->add(', ');
+                }
             }
-            $compiler->add(yield $compiler->compileNode($lastChild));
         }
     }
 
     public function evaluate(ExecutionContext $context)
     {
         $list = [];
-        foreach ($this->arguments as $child) {
-            $list[] = (yield $child->evaluate($context));
+        foreach ($this->arguments as $k => $child) {
+            $list[ $k ] = (yield $child->evaluate($context));
         }
 
         return $list;
@@ -41,10 +45,7 @@ class ArgumentListNode extends Node
 
     public function add(Node $node)
     {
-        if ($this->placeholderCount > 0) {
-            throw new ParseException('Placeholder arguments must be at the end of the argument list');
-        }
-        $this->arguments[] = $node;
+        $this->arguments[ $this->getCount() ] = $node;
     }
 
     public function getChildren() : array
@@ -69,8 +70,9 @@ class ArgumentListNode extends Node
 
     public function append(ArgumentListNode $args)
     {
-        foreach ($args->getChildren() as $arg) {
-            $this->add($arg);
+        $keyOffset = $this->getCount();
+        foreach ($args->arguments as $key => $arg) {
+            $this->arguments[ $keyOffset + $key ] = $arg;
         }
         $this->placeholderCount += $args->placeholderCount;
     }
