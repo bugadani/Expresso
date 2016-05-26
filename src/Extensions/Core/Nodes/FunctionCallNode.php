@@ -8,6 +8,7 @@ use Expresso\Runtime\NullFunction;
 use Expresso\Compiler\Node;
 use Expresso\Compiler\Nodes\BinaryOperatorNode;
 use Expresso\Runtime\ExecutionContext;
+use Expresso\Runtime\RuntimeFunction;
 
 class FunctionCallNode extends BinaryOperatorNode
 {
@@ -50,7 +51,12 @@ class FunctionCallNode extends BinaryOperatorNode
             $nullFunction = NullFunction::class;
             $functionName = $compiler->addTempVariable("{$functionName} ?? new {$nullFunction}()");
         }
-        $compiler->add("{$functionName}({$arguments})");
+        if ($this->arguments->getPlaceholderCount() > 0) {
+            $runtimeFunction = RuntimeFunction::class;
+            $compiler->add("{$runtimeFunction}::new({$functionName}, {$this->arguments->getCount()}, [{$arguments}])");
+        } else {
+            $compiler->add("{$functionName}({$arguments})");
+        }
     }
 
     public function evaluate(ExecutionContext $context)
@@ -60,6 +66,10 @@ class FunctionCallNode extends BinaryOperatorNode
             return null;
         }
         $arguments = (yield $this->arguments->evaluate($context));
+
+        if ($this->arguments->getPlaceholderCount() > 0) {
+            return RuntimeFunction::new($callback, $this->arguments->getCount(), $arguments);
+        }
 
         return $callback(...$arguments);
     }

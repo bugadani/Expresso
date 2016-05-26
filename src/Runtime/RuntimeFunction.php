@@ -21,10 +21,17 @@ class RuntimeFunction
     public static function new(callable $function, int $paramCount = null, array $parameters = []) : RuntimeFunction
     {
         if ($function instanceof RuntimeFunction) {
-            if (empty($parameters)) {
-                return $function;
+            if ($paramCount === null) {
+                if (empty($parameters)) {
+                    return $function;
+                } else {
+                    return $function(...$parameters);
+                }
             } else {
-                return $function(...$parameters);
+                $fixedParams = $function->parameters;
+                $function    = $function->function;
+
+                $parameters = array_merge($fixedParams, $parameters);
             }
         }
         $object             = new self;

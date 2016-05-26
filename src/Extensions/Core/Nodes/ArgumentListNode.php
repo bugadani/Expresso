@@ -3,6 +3,7 @@
 namespace Expresso\Extensions\Core\Nodes;
 
 use Expresso\Compiler\Compiler\Compiler;
+use Expresso\Compiler\Exceptions\ParseException;
 use Expresso\Compiler\Node;
 use Expresso\Runtime\ExecutionContext;
 
@@ -12,6 +13,7 @@ class ArgumentListNode extends Node
      * @var Node[]
      */
     private $arguments = [];
+    private $placeholderCount = 0;
 
     public function compile(Compiler $compiler)
     {
@@ -33,11 +35,15 @@ class ArgumentListNode extends Node
         foreach ($this->arguments as $child) {
             $list[] = (yield $child->evaluate($context));
         }
+
         return $list;
     }
 
     public function add(Node $node)
     {
+        if ($this->placeholderCount > 0) {
+            throw new ParseException('Placeholder arguments must be at the end of the argument list');
+        }
         $this->arguments[] = $node;
     }
 
@@ -46,8 +52,26 @@ class ArgumentListNode extends Node
         return $this->arguments;
     }
 
-    public function getCount()
+    public function getCount() : int
     {
-        return count($this->arguments);
+        return count($this->arguments) + $this->placeholderCount;
+    }
+
+    public function getPlaceholderCount() : int
+    {
+        return $this->placeholderCount;
+    }
+
+    public function addPlaceholderArgument()
+    {
+        $this->placeholderCount++;
+    }
+
+    public function append(ArgumentListNode $args)
+    {
+        foreach ($args->getChildren() as $arg) {
+            $this->add($arg);
+        }
+        $this->placeholderCount += $args->placeholderCount;
     }
 }

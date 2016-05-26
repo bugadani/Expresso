@@ -279,8 +279,12 @@ class Core extends Extension
             ->followedBy($arrayElementList->optional())
             ->followedBy($closingSquareBrackets);
 
+        $argumentList = $questionMark
+            ->orA($expression)
+            ->repeatSeparatedBy($comma);
+
         $functionCall = $openingParenthesis
-            ->followedBy($expressionListSeparatedByComma->optional())
+            ->followedBy($argumentList->optional())
             ->followedBy($closingParenthesis);
 
         $arrayAccess = $openingSquareBracket
@@ -402,7 +406,11 @@ class Core extends Extension
                 $arguments = new ArgumentListNode();
                 if (!empty($children[1])) {
                     foreach ($children[1] as $argument) {
-                        $arguments->add($argument);
+                        if ($argument instanceof Token && $argument->getValue() === '?') {
+                            $arguments->addPlaceholderArgument();
+                        } else {
+                            $arguments->add($argument);
+                        }
                     }
                 }
                 $parser->pushOperand($arguments);

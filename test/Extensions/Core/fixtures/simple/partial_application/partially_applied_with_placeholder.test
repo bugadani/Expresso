@@ -1,0 +1,7 @@
+--TEST--
+Test replace function using partial application and placeholder argument
+--EXPRESSION--
+replaceOme := :some_string|replace('ome', ?)
+replaceOme('ame')
+--EXPECT--
+same_string

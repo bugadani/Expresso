@@ -25,10 +25,7 @@ class FilterOperator extends BinaryOperator
             //arg|funcName(args)
             list($right, $args) = $right->getChildren();
 
-            /** @var ArgumentListNode $args */
-            foreach ($args->getChildren() as $arg) {
-                $arguments->add($arg);
-            }
+            $arguments->append($args);
         } else if ($right instanceof IdentifierNode) {
             $right = new FunctionNameNode($right->getName());
         }
