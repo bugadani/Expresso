@@ -82,7 +82,7 @@ class LambdaNode extends CallableNode
             $innerContext = $context->createInnerScope(array_combine($this->arguments, $arguments));
 
             return $function($innerContext);
-        }, $this->argumentCount);
+        }, $this->argumentCount, $this->argumentCount);
     }
 
     /**

@@ -53,7 +53,7 @@ class FunctionCallNode extends BinaryOperatorNode
         }
         if ($this->arguments->getPlaceholderCount() > 0) {
             $runtimeFunction = RuntimeFunction::class;
-            $compiler->add("{$runtimeFunction}::new({$functionName}, {$this->arguments->getCount()}, [{$arguments}])");
+            $compiler->add("{$runtimeFunction}::new({$functionName}, {$this->arguments->getCount()}, {$this->arguments->getCount()}, [{$arguments}])");
         } else {
             $compiler->add("{$functionName}({$arguments})");
         }
@@ -68,7 +68,9 @@ class FunctionCallNode extends BinaryOperatorNode
         $arguments = (yield $this->arguments->evaluate($context));
 
         if ($this->arguments->getPlaceholderCount() > 0) {
-            return RuntimeFunction::new($callback, $this->arguments->getCount(), $arguments);
+            $paramCount = $this->arguments->getCount();
+
+            return RuntimeFunction::new($callback, $paramCount, $paramCount, $arguments);
         }
 
         return $callback(...$arguments);

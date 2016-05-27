@@ -1,0 +1,7 @@
+--TEST--
+Test placeholder arguments inside argument lists with extra one at the end
+--EXPRESSION--
+replaceWithBar := :foobar|replace(?, :bar)
+replaceWithBar('foo', 'bbb')
+--EXPECT--
+barbar

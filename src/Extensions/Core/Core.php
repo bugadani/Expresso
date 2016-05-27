@@ -462,9 +462,9 @@ class Core extends Extension
     {
         return [
             'count'   => RuntimeFunction::new(__NAMESPACE__ . '\expression_function_count', 1),
-            'join'    => RuntimeFunction::new(__NAMESPACE__ . '\expression_function_join', 1),
+            'join'    => RuntimeFunction::new(__NAMESPACE__ . '\expression_function_join', 1, 2),
             'skip'    => RuntimeFunction::new(__NAMESPACE__ . '\expression_function_skip', 2),
-            'replace' => RuntimeFunction::new(__NAMESPACE__ . '\expression_function_replace', 2),
+            'replace' => RuntimeFunction::new(__NAMESPACE__ . '\expression_function_replace', 2, 3),
             'reverse' => RuntimeFunction::new('strrev', 1),
             'take'    => RuntimeFunction::new(__NAMESPACE__ . '\expression_function_take', 2),
         ];
