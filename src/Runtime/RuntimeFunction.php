@@ -49,17 +49,17 @@ class RuntimeFunction
     /**
      * @var int
      */
-    private $paramCount;
+    private $paramCount = 0;
 
     /**
      * @var array
      */
-    private $fixedParameters;
+    private $fixedParameters = [];
 
     /**
      * @var array
      */
-    private $missingParameters;
+    private $missingParameters = [];
 
     protected function __construct()
     {
