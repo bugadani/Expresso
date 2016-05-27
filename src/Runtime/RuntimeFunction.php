@@ -72,14 +72,13 @@ class RuntimeFunction
         } else {
             $arguments = $this->fixedParameters;
 
+            //Merge fixed and passed arguments
             for ($i = count($this->missingParameters) - 1; $i >= 0; $i--) {
                 $arguments[ $this->missingParameters[ $i ] ] = array_pop($args);
             }
             ksort($arguments);
 
-            for ($i = count($args) - 1; $i >= 0; $i--) {
-                array_unshift($arguments, array_pop($args));
-            }
+            $arguments = array_merge($args, $arguments);
 
             $function = $this->function;
 

@@ -1,7 +1,12 @@
 --TEST--
-Test replace function using partial application and placeholder argument
+Test partial application and placeholder argument
 --EXPRESSION--
-replaceOme := :some_string|replace('ome', ?)
-replaceOme('ame')
+endWith4 := fn(?, ?, ?, 4)
+endWith234 := endWith4(?, 2, 3)
+1|endWith234
+--DATA--
+'fn' => function($a, $b, $c = 5, $d = 6) {
+    return "{$a}{$b}{$c}{$d}";
+}
 --EXPECT--
-same_string
+1234
