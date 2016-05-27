@@ -1,0 +1,9 @@
+--TEST--
+Test null safety of partial application
+--EXPRESSION--
+endWith4 := fn(?, ?, ?, 4)
+endWith234 := endWith4(?, 2, 3)
+1|endWith234
+--DATA--
+'fn' => null
+--EXPECT--
