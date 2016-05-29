@@ -48,7 +48,7 @@ class PropertyAccessNode extends AccessNode
         $tempVar = $compiler->requestTempVariable();
         $compiler->addStatement("if (is_array({$leftSource})) {
             if (!isset({$leftSource}[ {$rightSource} ])) {
-                throw new \\OutOfBoundsException();
+                throw new \\OutOfBoundsException({$rightSource});
             }
             {$tempVar} =& {$leftSource}[ {$rightSource} ];
         } else if (is_object({$leftSource})) {
@@ -56,13 +56,13 @@ class PropertyAccessNode extends AccessNode
                 {$tempVar} = {$functionClass}::new([{$leftSource}, {$rightSource}]);
             } else if ({$leftSource} instanceof \\ArrayAccess) {
                 if (!isset({$leftSource}[ {$rightSource} ])) {
-                    throw new \\OutOfBoundsException();
+                    throw new \\OutOfBoundsException({$rightSource});
                 }
                 {$tempVar} =& {$leftSource}[ {$rightSource} ];
             } else if (property_exists({$leftSource}, {$rightSource})) {
                 {$tempVar} =& {$leftSource}->{{$rightSource}};
             } else {
-                throw new \\OutOfBoundsException();
+                throw new \\OutOfBoundsException({$rightSource});
             }
         }");
 

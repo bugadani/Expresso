@@ -1,8 +1,8 @@
 --TEST--
 Test map using a curried method
 --EXPRESSION--
-[1, 2, 3]|map(cls.add(2))|join
+[1, 2, 3]|map(cls.sum(2))|join
 --DATA--
-'cls' => new class { public function add($a, $b) { return $a + $b; }}
+'cls' => new class { public function sum($a, $b) { return $a + $b; }}
 --EXPECT--
 345

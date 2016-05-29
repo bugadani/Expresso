@@ -83,7 +83,7 @@ abstract class IntegrationTest extends \PHPUnit_Framework_TestCase
             throw new \RuntimeException("{$file} does not contain a EXPECT or EXCEPTION block");
         }
         if ($data) {
-            eval('$data = [' . $data . '];');
+            $data = eval('return [' . $data . '];');
         } else {
             $data = [];
         }
