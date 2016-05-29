@@ -111,7 +111,7 @@ class Lambda extends Extension
             'any'    => RuntimeFunction::new(__NAMESPACE__ . '\expression_function_any', 2),
             'filter' => RuntimeFunction::new(__NAMESPACE__ . '\expression_function_filter', 2),
             'first'  => RuntimeFunction::new(__NAMESPACE__ . '\expression_function_first', 2),
-            'fold'   => RuntimeFunction::new(__NAMESPACE__ . '\expression_function_fold', 3, 3),
+            'fold'   => RuntimeFunction::new(__NAMESPACE__ . '\expression_function_fold', 3),
             'map'    => RuntimeFunction::new(__NAMESPACE__ . '\expression_function_map', 2)
         ];
     }
