@@ -2,9 +2,11 @@
 
 namespace Expresso\Extensions\Core;
 
+use Expresso\Compiler\Parser\AbstractParser;
 use Expresso\Compiler\Parser\GrammarParser;
 use Expresso\Compiler\Compiler\CompilerConfiguration;
 use Expresso\Compiler\Node;
+use Expresso\Extensions\Core\Nodes\ArrayAccessNode;
 use Expresso\Runtime\RuntimeFunction;
 use Expresso\Extensions\Core\Nodes\ArgumentListNode;
 use Expresso\Extensions\Core\Nodes\DataNode;
@@ -122,7 +124,7 @@ class Core extends Extension
             '.'                   => new SimpleAccessOperator(17),
             '?.'                  => new NullSafeAccessOperator(18),
             '|'                   => new FilterOperator(11),
-            '..'                  => new RangeOperator(12),
+            '..'                  => new RangeOperator(12),//todo csak []-ban
             ':='                  => new AssignmentOperator(-1)
         ];
     }
@@ -155,7 +157,7 @@ class Core extends Extension
            '++' => new PostIncrementOperator(15),
            'is empty' => new EmptyOperator(15),
            'is not empty' => new NotEmptyOperator(15)*/
-            '...'        => new InfiniteRangeOperator(15, Operator::NONE)
+            '...'        => new InfiniteRangeOperator(15, Operator::NONE)//todo csak []-ban
         ];
     }
 
@@ -260,6 +262,7 @@ class Core extends Extension
                 );
         };
 
+        //TODO: block: {expressionList}
         $expressionListSeparatedByComma = $expression
             ->repeatSeparatedBy($comma);
 
@@ -267,6 +270,7 @@ class Core extends Extension
             ->followedBy($expressionListSeparatedByComma)
             ->process($returnArgument(1));
 
+        //TODO: process based on what matched - optional to override parent processor function
         $arrayElementList = $expression
             ->followedBy(
                 $listParser
@@ -325,8 +329,9 @@ class Core extends Extension
             ->orA($groupedExpression);
 
         $term = $prefixOperatorSequence->optional()
-                                       ->followedBy($operand)
-                                       ->followedBy($dereferenceSequence->optional())
+                                       ->followedBy(
+                                           $operand->followedBy($dereferenceSequence->optional())
+                                       )
                                        ->followedBy($postfixOperatorSequence->optional());
 
         $binaryExpression = $term->repeatSeparatedBy($binaryParser);
@@ -347,7 +352,11 @@ class Core extends Extension
         $identifier->process($returnNode(IdentifierNode::class));
         $constantData->process($returnNode(DataNode::class));
         $constantString->process($returnNode(StringNode::class));
-        $operandParser->process([$parser, 'pushOperand']);
+        $operandParser->process(function ($node) use ($parser) {
+            $parser->pushOperand($node);
+
+            return $node;
+        });
 
         $arrayDefinition->process(
             function (array $children) {
@@ -450,6 +459,8 @@ class Core extends Extension
 
         $parserContainer->set('operand', $operandParser);
         $parserContainer->set('expression', $expressionParser);
+
+        //TODO: program: expr [; expr]...
         $parserContainer->set('program', $program);
 
         $grammarParser->setSentence('program');

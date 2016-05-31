@@ -16,6 +16,16 @@ abstract class DelegateParser extends AbstractParser
         $this->parser = $parser;
     }
 
+    public function setParent(AbstractParser $parser = null)
+    {
+        $this->getParser()->setParent($parser);
+    }
+
+    public function getParent()
+    {
+        return $this->getParser()->getParent();
+    }
+
     public function canParse(Token $token)
     {
         return $this->parser->canParse($token);

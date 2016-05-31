@@ -27,6 +27,5 @@ class Repeat extends DelegateParser
         } while (yield $this->parser->canParse($stream->current()));
 
         return $this->emit($children);
-
     }
 }

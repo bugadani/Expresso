@@ -43,6 +43,7 @@ class Generator extends Extension
      */
     public function addParsers(GrammarParser $parser, CompilerConfiguration $configuration)
     {
+        //TODO: [generátor]
         $parserContainer = $parser->getContainer();
 
         $operandParser = $parserContainer->get('operand');

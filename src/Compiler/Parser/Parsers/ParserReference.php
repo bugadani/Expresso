@@ -19,6 +19,7 @@ class ParserReference extends AbstractParser
      * @var AbstractParser
      */
     private $resolvedParser;
+    private $parentToSet;
 
     public function __construct(Container $container, $parserName)
     {
@@ -36,6 +37,20 @@ class ParserReference extends AbstractParser
         return $this->getParser()->parse($stream);
     }
 
+    public function setParent(AbstractParser $parser = null)
+    {
+        if ($this->resolvedParser === null) {
+            $this->parentToSet = $parser;
+        } else {
+            $this->getParser()->setParent($parser);
+        }
+    }
+
+    public function getParent()
+    {
+        return $this->getParser()->getParent();
+    }
+
     /**
      * @return AbstractParser
      */
@@ -43,6 +58,7 @@ class ParserReference extends AbstractParser
     {
         if ($this->resolvedParser === null) {
             $this->resolvedParser = $this->container->get($this->parserName);
+            $this->resolvedParser->setParent($this->parentToSet);
         }
 
         return $this->resolvedParser;

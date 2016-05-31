@@ -18,6 +18,11 @@ abstract class AbstractParser
     private $emitCallback;
 
     /**
+     * @var AbstractParser
+     */
+    private $parent;
+
+    /**
      * @param Token $token
      *
      * @return \Generator
@@ -31,12 +36,25 @@ abstract class AbstractParser
      */
     abstract public function parse(TokenStream $stream);
 
+    public function setParent(AbstractParser $parser = null)
+    {
+        $this->parent = $parser;
+    }
+
+    /**
+     * @return AbstractParser
+     */
+    public function getParent()
+    {
+        return $this->parent;
+    }
+
     protected function emit($data)
     {
         if ($this->emitCallback !== null) {
             $callback = $this->emitCallback;
 
-            $data = $callback($data);
+            $data = $callback($data, $this->parent);
         }
 
         return $data;

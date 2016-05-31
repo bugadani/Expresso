@@ -67,6 +67,7 @@ class Alternative extends AbstractParser
 
     public function orA(AbstractParser $parser)
     {
+        $parser->setParent($this);
         $this->parsers[] = $parser;
 
         return $this;

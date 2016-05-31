@@ -91,6 +91,7 @@ class Sequence extends AbstractParser
 
     public function followedBy(AbstractParser $parser)
     {
+        $parser->setParent($this);
         $this->parsers[] = $parser;
 
         return $this;
