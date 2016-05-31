@@ -262,7 +262,20 @@ class Core extends Extension
                         )
                         ->repeated()
                         ->optional()
-                );
+                )->process(function (array $children, AbstractParser $parent) {
+                    $parent->getParent()->tempProcess(function (array $children) {
+
+                        $node = new MapDataNode();
+                        array_unshift($children[1][1], [$children[0], $children[1][0]]);
+                        foreach ($children[1][1] as list($key, $value)) {
+                            $node->add($key, $value);
+                        }
+
+                        return $node;
+                    });
+
+                    return [$children[1], $children[2]];
+                });
         };
 
         //TODO: block: {expressionList}
@@ -273,7 +286,6 @@ class Core extends Extension
             ->followedBy($expressionListSeparatedByComma)
             ->process($returnArgument(1));
 
-        //TODO: process based on what matched - optional to override parent processor function
         $arrayElementList = $expression
             ->followedBy(
                 $listParser
@@ -291,34 +303,8 @@ class Core extends Extension
 
                             return $ch[1];
                         }))
-                    ->orA($mapParser(':')->process(function (array $children, AbstractParser $parent) {
-                        $parent->getParent()->tempProcess(function (array $children) {
-
-                            $node = new MapDataNode();
-                            array_unshift($children[1][1], [$children[0], $children[1][0]]);
-                            foreach ($children[1][1] as list($key, $value)) {
-                                $node->add($key, $value);
-                            }
-
-                            return $node;
-                        });
-
-                        return [$children[1], $children[2]];
-                    }))
-                    ->orA($mapParser('=>')->process(function (array $children, AbstractParser $parent) {
-                        $parent->getParent()->tempProcess(function (array $children) {
-
-                            $node = new MapDataNode();
-                            array_unshift($children[1][1], [$children[0], $children[1][0]]);
-                            foreach ($children[1][1] as list($key, $value)) {
-                                $node->add($key, $value);
-                            }
-
-                            return $node;
-                        });
-
-                        return [$children[1], $children[2]];
-                    }))
+                    ->orA($mapParser(':'))
+                    ->orA($mapParser('=>'))
                     ->optional()
             );
 
@@ -330,31 +316,23 @@ class Core extends Extension
                         return new ListDataNode();
                     }
 
+                    if (is_array($children)) {
+                        list($first, $array) = $children;
+                        $node = new ListDataNode();
+                        $node->add($first);
+                        if (!empty($array)) {
+                            foreach ($array as $item) {
+                                $node->add($item);
+                            }
+                        }
+
+                        return $node;
+                    }
+
                     return $children;
                 }))
-            ->followedBy($closingSquareBrackets);
-
-
-        $arrayDefinition->process(
-            function (array $children) {
-                $items = $children[1];
-
-                if (!is_array($items)) {
-                    return $items;
-                }
-
-                list($first, $array) = $items;
-                $node = new ListDataNode();
-                $node->add($first);
-                if (!empty($array)) {
-                    foreach ($array as $item) {
-                        $node->add($item);
-                    }
-                }
-
-                return $node;
-            }
-        );
+            ->followedBy($closingSquareBrackets)
+            ->process($returnArgument(1));
 
         $argumentList = $questionMark
             ->orA($expression)
