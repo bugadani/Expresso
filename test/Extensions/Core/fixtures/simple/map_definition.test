@@ -1,6 +1,6 @@
 --TEST--
 Test map declaration
 --EXPRESSION--
-[:foo => 1, :bar => 5]|join('')
+['foo' : 1, 'bar' : 5, 'foobar' : 6]|join('')
 --EXPECT--
-15
+156

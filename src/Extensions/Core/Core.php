@@ -6,7 +6,7 @@ use Expresso\Compiler\Parser\AbstractParser;
 use Expresso\Compiler\Parser\GrammarParser;
 use Expresso\Compiler\Compiler\CompilerConfiguration;
 use Expresso\Compiler\Node;
-use Expresso\Extensions\Core\Nodes\ArrayAccessNode;
+use Expresso\Extensions\Core\Nodes\ArrayDataNode;
 use Expresso\Runtime\RuntimeFunction;
 use Expresso\Extensions\Core\Nodes\ArgumentListNode;
 use Expresso\Extensions\Core\Nodes\DataNode;
@@ -274,8 +274,34 @@ class Core extends Extension
         $arrayElementList = $expression
             ->followedBy(
                 $listParser
-                    ->orA($mapParser(':'))
-                    ->orA($mapParser('=>'))
+                    ->orA($mapParser(':')->process(function (array $children, AbstractParser $parent) {
+                        $parent->getParent()->process(function (array $children) {
+
+                            $node = new MapDataNode();
+                            array_unshift($children[1][1], [$children[0], $children[1][0]]);
+                            foreach ($children[1][1] as list($key, $value)) {
+                                $node->add($key, $value);
+                            }
+
+                            return $node;
+                        });
+
+                        return [$children[1], $children[2]];
+                    }))
+                    ->orA($mapParser('=>')->process(function (array $children, AbstractParser $parent) {
+                        $parent->getParent()->process(function (array $children) {
+
+                            $node = new MapDataNode();
+                            array_unshift($children[1][1], [$children[0], $children[1][0]]);
+                            foreach ($children[1][1] as list($key, $value)) {
+                                $node->add($key, $value);
+                            }
+
+                            return $node;
+                        });
+
+                        return [$children[1], $children[2]];
+                    }))
                     ->optional()
             );
 
@@ -366,9 +392,12 @@ class Core extends Extension
                     return new ListDataNode();
                 }
 
+                if ($items instanceof ArrayDataNode) {
+                    return $items;
+                }
+
                 list($first, $array) = $items;
                 if (empty($array)) {
-
                     if ($first instanceof OperatorNode) {
                         $isRangeOperator = $first->isOperator(RangeOperator::class)
                             || $first->isOperator(InfiniteRangeOperator::class);
@@ -377,30 +406,13 @@ class Core extends Extension
                             return $first;
                         }
                     }
-                    $isMap = false;
-                } else {
-                    $isMap = ($array[0] instanceof Token
-                        && $array[0]->test(Token::SYMBOL, [':', '=>']));
                 }
 
-                if ($isMap) {
-                    $node = new MapDataNode();
-                    $node->add($first, $array[1]);
-
-                    /** @var Node $key */
-                    /** @var Node $value */
-                    if (!empty($array[2])) {
-                        foreach ($array[2] as list($key, $value)) {
-                            $node->add($key, $value);
-                        }
-                    }
-                } else {
-                    $node = new ListDataNode();
-                    $node->add($first);
-                    if (!empty($array)) {
-                        foreach ($array as $item) {
-                            $node->add($item);
-                        }
+                $node = new ListDataNode();
+                $node->add($first);
+                if (!empty($array)) {
+                    foreach ($array as $item) {
+                        $node->add($item);
                     }
                 }
 
