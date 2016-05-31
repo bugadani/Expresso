@@ -1,7 +1,7 @@
 --TEST--
 Test nested generators
 --EXPRESSION--
-{ 'x: ' ~ x ~ ' y: ' ~ y : x <- [1..5], y <- [1..x] }|join('\n')
+{ 'x: ' ~ x ~ ' y: ' ~ y : x <- [1...5], y <- [1...x] }|join('\n')
 --EXPECT--
 x: 1 y: 1
 x: 2 y: 1

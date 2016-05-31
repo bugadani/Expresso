@@ -1,6 +1,6 @@
 --TEST--
 Test finite range declaration
 --EXPRESSION--
-[1..5]|join
+[1...5]|join
 --EXPECT--
 12345

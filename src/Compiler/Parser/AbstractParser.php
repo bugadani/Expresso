@@ -73,6 +73,23 @@ abstract class AbstractParser
     }
 
     /**
+     * @param callable $callback
+     *
+     * @return $this
+     */
+    public function tempProcess(callable $callback)
+    {
+        $oldCallback = $this->emitCallback;
+        $this->emitCallback = function(...$args) use($callback, $oldCallback) {
+            $this->emitCallback = $oldCallback;
+
+            return $callback(...$args);
+        };
+
+        return $this;
+    }
+
+    /**
      * @param AbstractParser $parser
      *
      * @return Sequence

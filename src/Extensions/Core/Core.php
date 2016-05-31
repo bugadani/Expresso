@@ -2,6 +2,8 @@
 
 namespace Expresso\Extensions\Core;
 
+use Expresso\Compiler\Nodes\BinaryOperatorNode;
+use Expresso\Compiler\Nodes\UnaryOperatorNode;
 use Expresso\Compiler\Parser\AbstractParser;
 use Expresso\Compiler\Parser\GrammarParser;
 use Expresso\Compiler\Compiler\CompilerConfiguration;
@@ -124,7 +126,6 @@ class Core extends Extension
             '.'                   => new SimpleAccessOperator(17),
             '?.'                  => new NullSafeAccessOperator(18),
             '|'                   => new FilterOperator(11),
-            '..'                  => new RangeOperator(12),//todo csak []-ban
             ':='                  => new AssignmentOperator(-1)
         ];
     }
@@ -157,7 +158,6 @@ class Core extends Extension
            '++' => new PostIncrementOperator(15),
            'is empty' => new EmptyOperator(15),
            'is not empty' => new NotEmptyOperator(15)*/
-            '...'        => new InfiniteRangeOperator(15, Operator::NONE)//todo csak []-ban
         ];
     }
 
@@ -176,7 +176,7 @@ class Core extends Extension
      */
     public function getSymbols() : array
     {
-        return [',', '[', ']', '(', ')', '{', '}', ':', '?', '\\', '=>', ';'];
+        return [',', '[', ']', '(', ')', '{', '}', ':', '?', '\\', '=>', ';', '...'];
     }
 
     /**
@@ -216,6 +216,9 @@ class Core extends Extension
         };
 
         //Primitive parsers
+        $symbol       = function ($symbol) {
+            return TokenParser::create(Token::SYMBOL, $symbol);
+        };
         $comma        = TokenParser::create(Token::SYMBOL, ',');
         $colon        = TokenParser::create(Token::SYMBOL, ':');
         $questionMark = TokenParser::create(Token::SYMBOL, '?');
@@ -274,8 +277,22 @@ class Core extends Extension
         $arrayElementList = $expression
             ->followedBy(
                 $listParser
+                    ->orA($symbol('...')
+                        ->followedBy($expression->optional())
+                        ->process(function ($ch, AbstractParser $parent) use ($binaryOperators, $postfixOperators) {
+                            $parent->getParent()
+                                   ->tempProcess(function (array $children) use ($binaryOperators, $postfixOperators) {
+                                       if ($children[1] === null) {
+                                           return new UnaryOperatorNode(new InfiniteRangeOperator(0), $children[0]);
+                                       } else {
+                                           return new BinaryOperatorNode(new RangeOperator(0), $children[0], $children[1]);
+                                       }
+                                   });
+
+                            return $ch[1];
+                        }))
                     ->orA($mapParser(':')->process(function (array $children, AbstractParser $parent) {
-                        $parent->getParent()->process(function (array $children) {
+                        $parent->getParent()->tempProcess(function (array $children) {
 
                             $node = new MapDataNode();
                             array_unshift($children[1][1], [$children[0], $children[1][0]]);
@@ -289,7 +306,7 @@ class Core extends Extension
                         return [$children[1], $children[2]];
                     }))
                     ->orA($mapParser('=>')->process(function (array $children, AbstractParser $parent) {
-                        $parent->getParent()->process(function (array $children) {
+                        $parent->getParent()->tempProcess(function (array $children) {
 
                             $node = new MapDataNode();
                             array_unshift($children[1][1], [$children[0], $children[1][0]]);
@@ -306,8 +323,38 @@ class Core extends Extension
             );
 
         $arrayDefinition = $openingSquareBracket
-            ->followedBy($arrayElementList->optional())
+            ->followedBy($arrayElementList
+                ->optional()
+                ->process(function ($children) {
+                    if ($children === null) {
+                        return new ListDataNode();
+                    }
+
+                    return $children;
+                }))
             ->followedBy($closingSquareBrackets);
+
+
+        $arrayDefinition->process(
+            function (array $children) {
+                $items = $children[1];
+
+                if (!is_array($items)) {
+                    return $items;
+                }
+
+                list($first, $array) = $items;
+                $node = new ListDataNode();
+                $node->add($first);
+                if (!empty($array)) {
+                    foreach ($array as $item) {
+                        $node->add($item);
+                    }
+                }
+
+                return $node;
+            }
+        );
 
         $argumentList = $questionMark
             ->orA($expression)
@@ -383,42 +430,6 @@ class Core extends Extension
 
             return $node;
         });
-
-        $arrayDefinition->process(
-            function (array $children) {
-                $items = $children[1];
-
-                if ($items === null) {
-                    return new ListDataNode();
-                }
-
-                if ($items instanceof ArrayDataNode) {
-                    return $items;
-                }
-
-                list($first, $array) = $items;
-                if (empty($array)) {
-                    if ($first instanceof OperatorNode) {
-                        $isRangeOperator = $first->isOperator(RangeOperator::class)
-                            || $first->isOperator(InfiniteRangeOperator::class);
-
-                        if ($isRangeOperator) {
-                            return $first;
-                        }
-                    }
-                }
-
-                $node = new ListDataNode();
-                $node->add($first);
-                if (!empty($array)) {
-                    foreach ($array as $item) {
-                        $node->add($item);
-                    }
-                }
-
-                return $node;
-            }
-        );
 
         $functionCall->process(
             function (array $children) use ($parser, $functionCallOperator) {

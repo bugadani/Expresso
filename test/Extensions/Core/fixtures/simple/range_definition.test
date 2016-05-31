@@ -1,6 +1,6 @@
 --TEST--
 Test range declaration
 --EXPRESSION--
-[5..15]|take(5)|join
+[5...15]|take(5)|join
 --EXPECT--
 56789

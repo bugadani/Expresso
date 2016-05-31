@@ -1,6 +1,0 @@
---TEST--
-Test infinite range declaration without array definition
---EXPRESSION--
-5...|take(5)|join
---EXPECT--
-56789

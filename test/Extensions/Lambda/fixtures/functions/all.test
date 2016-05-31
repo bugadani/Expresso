@@ -1,6 +1,6 @@
 --TEST--
 Test all function
 --EXPRESSION--
-[1..4]|all(\x -> x > 2) ? :true : :false
+[1...4]|all(\x -> x > 2) ? :true : :false
 --EXPECT--
 false

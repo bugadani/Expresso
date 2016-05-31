@@ -1,6 +1,6 @@
 --TEST--
 Test skip function
 --EXPRESSION--
-[1..5]|skip(2)|join
+[1...5]|skip(2)|join
 --EXPECT--
 345

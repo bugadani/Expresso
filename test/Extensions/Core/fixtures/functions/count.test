@@ -5,6 +5,6 @@ Test count function
 ~ ' ' ~
 []|count
 ~ ' ' ~
-[1..4]|count
+[1...4]|count
 --EXPECT--
 2 0 4
