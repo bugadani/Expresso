@@ -1,0 +1,6 @@
+--TEST--
+Test that parenthesis can only hold a single expression
+--EXPRESSION--
+3 + (3+4, 4+5)
+--EXCEPTION--
+Expresso\Compiler\Exceptions\SyntaxException

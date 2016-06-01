@@ -279,12 +279,9 @@ class Core extends Extension
                 });
         };
 
-        //TODO: block: {expressionList}
-        $expressionListSeparatedByComma = $expression
-            ->repeatSeparatedBy($comma);
-
         $listParser = $comma
-            ->followedBy($expressionListSeparatedByComma)
+            ->followedBy($expression
+                ->repeatSeparatedBy($comma))
             ->process($returnArgument(1));
 
         $listTypes = $listParser
@@ -369,7 +366,7 @@ class Core extends Extension
             );
 
         $groupedExpression = $openingParenthesis
-            ->followedBy($expressions)
+            ->followedBy($expression)
             ->followedBy($closingParenthesis)
             ->process($returnArgument(1));
 
@@ -395,7 +392,14 @@ class Core extends Extension
         $expressionParser = $binaryExpression
             ->followedBy($conditionalExpressionSuffix->optional());
 
-        $program = $expressions
+        $block = $symbol('{')
+            ->followedBy($expressions)
+            ->followedBy($symbol('}'))
+            ->process($returnArgument(1));
+
+        $statement = $expression->orA($block);
+
+        $program = $expressions->orA($block)
             ->followedBy($endOfExpression)
             ->process($returnArgument(0));
 
@@ -460,9 +464,8 @@ class Core extends Extension
 
         $parserContainer->set('operand', $operandParser);
         $parserContainer->set('expression', $expressionParser);
+        $parserContainer->set('statement', $statement);
         $parserContainer->set('listSubtypes', $listTypes);
-
-        //TODO: program: expr [; expr]...
         $parserContainer->set('program', $program);
 
         $grammarParser->setSentence('program');

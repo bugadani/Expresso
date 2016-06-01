@@ -66,7 +66,7 @@ class Lambda extends Extension
                     ->orA($singleArgument)
             )
             ->followedBy($arrowOperator)
-            ->followedBy($reference('expression'));
+            ->followedBy($reference('statement'));
 
         $argumentName->process(
             function (Token $token) {
