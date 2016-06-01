@@ -58,6 +58,7 @@ class GeneratorBranchNode extends Node
             /** @var CompilerContext $compiledArgumentNode */
             $compiledArgumentNode = (yield $compiler->compileNode($argument));
 
+            $compiler->compileStatements();
             $compiler->add("foreach({$compiledArgumentNode} as ")
                      ->addVariableAccess($argName)
                      ->add(') {');

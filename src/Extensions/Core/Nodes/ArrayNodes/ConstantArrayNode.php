@@ -1,12 +1,12 @@
 <?php
 
-namespace Expresso\Extensions\Core\Nodes;
+namespace Expresso\Extensions\Core\Nodes\ArrayNodes;
 
 use Expresso\Compiler\Compiler\Compiler;
 use Expresso\Compiler\Node;
 use Expresso\Runtime\ExecutionContext;
 
-class ArrayDataNode extends Node implements \IteratorAggregate
+class ConstantArrayNode extends Node implements \IteratorAggregate
 {
     /**
      * @var Node[]

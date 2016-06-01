@@ -1,10 +1,10 @@
 <?php
 
-namespace Expresso\Extensions\Core\Nodes;
+namespace Expresso\Extensions\Core\Nodes\ArrayNodes;
 
 use Expresso\Compiler\Node;
 
-class MapDataNode extends ArrayDataNode
+class MapNode extends ConstantArrayNode
 {
     public function add(Node $key, Node $value)
     {

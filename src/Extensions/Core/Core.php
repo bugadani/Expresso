@@ -3,8 +3,6 @@
 namespace Expresso\Extensions\Core;
 
 use Expresso\Compiler\Compiler\CompilerConfiguration;
-use Expresso\Compiler\Nodes\BinaryOperatorNode;
-use Expresso\Compiler\Nodes\UnaryOperatorNode;
 use Expresso\Compiler\Operator;
 use Expresso\Compiler\OperatorCollection;
 use Expresso\Compiler\Parser\AbstractParser;
@@ -14,10 +12,11 @@ use Expresso\Compiler\Parser\Parsers\TokenParser;
 use Expresso\Compiler\Tokenizer\Token;
 use Expresso\Extension;
 use Expresso\Extensions\Core\Nodes\ArgumentListNode;
+use Expresso\Extensions\Core\Nodes\ArrayNodes\ListNode;
+use Expresso\Extensions\Core\Nodes\ArrayNodes\MapNode;
+use Expresso\Extensions\Core\Nodes\ArrayNodes\RangeNode;
 use Expresso\Extensions\Core\Nodes\DataNode;
 use Expresso\Extensions\Core\Nodes\IdentifierNode;
-use Expresso\Extensions\Core\Nodes\ListDataNode;
-use Expresso\Extensions\Core\Nodes\MapDataNode;
 use Expresso\Extensions\Core\Nodes\StatementNode;
 use Expresso\Extensions\Core\Nodes\StringNode;
 use Expresso\Extensions\Core\Operators\Binary\Arithmetic\AdditionOperator;
@@ -50,14 +49,12 @@ use Expresso\Extensions\Core\Operators\Binary\Logical\AndOperator;
 use Expresso\Extensions\Core\Operators\Binary\Logical\OrOperator;
 use Expresso\Extensions\Core\Operators\Binary\Logical\XorOperator;
 use Expresso\Extensions\Core\Operators\Binary\NullSafeAccessOperator;
-use Expresso\Extensions\Core\Operators\Binary\RangeOperator;
 use Expresso\Extensions\Core\Operators\Binary\SimpleAccessOperator;
 use Expresso\Extensions\Core\Operators\Binary\Strings\ConcatenationOperator;
 use Expresso\Extensions\Core\Operators\Binary\Test\DivisibleOperator;
 use Expresso\Extensions\Core\Operators\Binary\Test\NotDivisibleOperator;
 use Expresso\Extensions\Core\Operators\Ternary\TernaryConditionalOperator;
 use Expresso\Extensions\Core\Operators\Unary\Postfix\EvenOperator;
-use Expresso\Extensions\Core\Operators\Unary\Postfix\InfiniteRangeOperator;
 use Expresso\Extensions\Core\Operators\Unary\Postfix\IsNotSetOperator;
 use Expresso\Extensions\Core\Operators\Unary\Postfix\IsSetOperator;
 use Expresso\Extensions\Core\Operators\Unary\Postfix\OddOperator;
@@ -263,7 +260,7 @@ class Core extends Extension
                 )->process(function (array $children, AbstractParser $parent) {
                     $parent->getParent()->tempProcess(function (array $children) {
 
-                        $node = new MapDataNode();
+                        $node = new MapNode();
                         array_unshift($children[1][1], [$children[0], $children[1][0]]);
                         foreach ($children[1][1] as list($key, $value)) {
                             $node->add($key, $value);
@@ -287,11 +284,7 @@ class Core extends Extension
                 ->process(function ($ch, AbstractParser $parent) use ($binaryOperators, $postfixOperators) {
                     $parent->getParent()
                            ->tempProcess(function (array $children) use ($binaryOperators, $postfixOperators) {
-                               if ($children[1] === null) {
-                                   return new UnaryOperatorNode(new InfiniteRangeOperator(0), $children[0]);
-                               } else {
-                                   return new BinaryOperatorNode(new RangeOperator(0), $children[0], $children[1]);
-                               }
+                               return new RangeNode($children[0], $children[1]);
                            });
 
                     return $ch[1];
@@ -307,12 +300,12 @@ class Core extends Extension
                 ->optional()
                 ->process(function ($children) {
                     if ($children === null) {
-                        return new ListDataNode();
+                        return new ListNode();
                     }
 
                     if (is_array($children)) {
                         list($first, $array) = $children;
-                        $node = new ListDataNode();
+                        $node = new ListNode();
                         $node->add($first);
                         if (!empty($array)) {
                             foreach ($array as $item) {
@@ -481,29 +474,6 @@ class Core extends Extension
             'reverse' => RuntimeFunction::new('strrev', 1),
             'take'    => RuntimeFunction::new(__NAMESPACE__ . '\expression_function_take', 2),
         ];
-    }
-}
-
-/**
- * @param int $start
- * @param int|null $end
- *
- * @return \Generator
- */
-function range($start, $end = null)
-{
-    if ($end === null) {
-        while (true) {
-            yield $start++;
-        }
-    } else if ($end >= $start) {
-        for ($num = $start; $num <= $end; $num++) {
-            yield $num;
-        }
-    } else {
-        for ($num = $start; $num >= $end; $num--) {
-            yield $num;
-        }
     }
 }
 

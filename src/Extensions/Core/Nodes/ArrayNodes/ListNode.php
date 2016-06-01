@@ -1,10 +1,11 @@
 <?php
 
-namespace Expresso\Extensions\Core\Nodes;
+namespace Expresso\Extensions\Core\Nodes\ArrayNodes;
 
 use Expresso\Compiler\Node;
+use Expresso\Extensions\Core\Nodes\DataNode;
 
-class ListDataNode extends ArrayDataNode
+class ListNode extends ConstantArrayNode
 {
     public function add(Node $value)
     {

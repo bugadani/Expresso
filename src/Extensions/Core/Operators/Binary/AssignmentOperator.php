@@ -8,8 +8,8 @@ use Expresso\Compiler\Node;
 use Expresso\Compiler\Nodes\BinaryOperatorNode;
 use Expresso\Compiler\Operators\BinaryOperator;
 use Expresso\Extensions\Core\Nodes\ArrayAccessNode;
-use Expresso\Extensions\Core\Nodes\ArrayDataNode;
-use Expresso\Extensions\Core\Nodes\MapDataNode;
+use Expresso\Extensions\Core\Nodes\ArrayNodes\ConstantArrayNode;
+use Expresso\Extensions\Core\Nodes\ArrayNodes\MapNode;
 use Expresso\Extensions\Core\Nodes\PropertyAccessNode;
 use Expresso\Extensions\Core\Nodes\StatementNode;
 use Expresso\Extensions\Core\Nodes\VariableNode;
@@ -21,9 +21,9 @@ class AssignmentOperator extends BinaryOperator
     public function createNode(CompilerConfiguration $config, Node ...$operands) : Node
     {
         list($structure, $source) = $operands;
-        if ($structure instanceof ArrayDataNode) {
+        if ($structure instanceof ConstantArrayNode) {
             $nodes = [];
-            if ($structure instanceof MapDataNode) {
+            if ($structure instanceof MapNode) {
                 foreach ($structure as $key => $variableToAssign) {
                     $nodes[] = $this->createNode($config, $variableToAssign, new PropertyAccessNode($source, $key));
                 }
