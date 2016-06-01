@@ -5,10 +5,7 @@ namespace Expresso\Extensions\Core\Nodes;
 use Expresso\Compiler\Compiler\Compiler;
 use Expresso\Compiler\Compiler\CompilerConfiguration;
 use Expresso\Compiler\Node;
-use Expresso\Compiler\Nodes\BinaryOperatorNode;
-use Expresso\Compiler\Nodes\OperatorNode;
 use Expresso\Runtime\ExecutionContext;
-use Expresso\Extensions\Core\Operators\Binary\ArrayAccessOperator;
 use Expresso\Extensions\Core\Operators\Binary\Logical\AndOperator;
 use Expresso\Extensions\Core\Operators\Unary\Postfix\IsSetOperator;
 

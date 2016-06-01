@@ -3,7 +3,6 @@
 namespace Expresso\Extensions\Core\Nodes;
 
 use Expresso\Compiler\Compiler\Compiler;
-use Expresso\Compiler\Exceptions\ParseException;
 use Expresso\Compiler\Node;
 use Expresso\Runtime\ExecutionContext;
 use Expresso\Runtime\PlaceholderArgument;

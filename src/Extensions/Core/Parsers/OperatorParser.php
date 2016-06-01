@@ -8,7 +8,6 @@ use Expresso\Compiler\Node;
 use Expresso\Compiler\Operator;
 use Expresso\Compiler\Operators\BinaryOperator;
 
-
 /**
  * Expression parser is based on the Shunting Yard algorithm by Edsger W. Dijkstra
  *

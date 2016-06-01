@@ -2,31 +2,24 @@
 
 namespace Expresso\Extensions\Core;
 
+use Expresso\Compiler\Compiler\CompilerConfiguration;
 use Expresso\Compiler\Nodes\BinaryOperatorNode;
 use Expresso\Compiler\Nodes\UnaryOperatorNode;
-use Expresso\Compiler\Parser\AbstractParser;
-use Expresso\Compiler\Parser\GrammarParser;
-use Expresso\Compiler\Compiler\CompilerConfiguration;
-use Expresso\Compiler\Node;
-use Expresso\Extensions\Core\Nodes\ArrayDataNode;
-use Expresso\Runtime\RuntimeFunction;
-use Expresso\Extensions\Core\Nodes\ArgumentListNode;
-use Expresso\Extensions\Core\Nodes\DataNode;
-use Expresso\Extensions\Core\Nodes\IdentifierNode;
-use Expresso\Compiler\Nodes\OperatorNode;
-use Expresso\Extensions\Core\Nodes\StatementNode;
-use Expresso\Extensions\Core\Nodes\StringNode;
 use Expresso\Compiler\Operator;
 use Expresso\Compiler\OperatorCollection;
-use Expresso\Extensions\Core\Operators\Binary\FunctionCallOperator;
-use Expresso\Extensions\Core\Operators\Binary\AssignmentOperator;
-use Expresso\Extensions\Core\Parsers\OperatorParser;
+use Expresso\Compiler\Parser\AbstractParser;
+use Expresso\Compiler\Parser\GrammarParser;
 use Expresso\Compiler\Parser\Parsers\ParserReference;
 use Expresso\Compiler\Parser\Parsers\TokenParser;
 use Expresso\Compiler\Tokenizer\Token;
 use Expresso\Extension;
+use Expresso\Extensions\Core\Nodes\ArgumentListNode;
+use Expresso\Extensions\Core\Nodes\DataNode;
+use Expresso\Extensions\Core\Nodes\IdentifierNode;
 use Expresso\Extensions\Core\Nodes\ListDataNode;
 use Expresso\Extensions\Core\Nodes\MapDataNode;
+use Expresso\Extensions\Core\Nodes\StatementNode;
+use Expresso\Extensions\Core\Nodes\StringNode;
 use Expresso\Extensions\Core\Operators\Binary\Arithmetic\AdditionOperator;
 use Expresso\Extensions\Core\Operators\Binary\Arithmetic\DivisionOperator;
 use Expresso\Extensions\Core\Operators\Binary\Arithmetic\ExponentialOperator;
@@ -36,6 +29,7 @@ use Expresso\Extensions\Core\Operators\Binary\Arithmetic\MultiplicationOperator;
 use Expresso\Extensions\Core\Operators\Binary\Arithmetic\RemainderOperator;
 use Expresso\Extensions\Core\Operators\Binary\Arithmetic\SubtractionOperator;
 use Expresso\Extensions\Core\Operators\Binary\ArrayAccessOperator;
+use Expresso\Extensions\Core\Operators\Binary\AssignmentOperator;
 use Expresso\Extensions\Core\Operators\Binary\Bitwise\BitwiseAndOperator;
 use Expresso\Extensions\Core\Operators\Binary\Bitwise\BitwiseOrOperator;
 use Expresso\Extensions\Core\Operators\Binary\Bitwise\BitwiseXorOperator;
@@ -51,6 +45,7 @@ use Expresso\Extensions\Core\Operators\Binary\Comparison\NotEqualsOperator;
 use Expresso\Extensions\Core\Operators\Binary\Comparison\NotIdenticalOperator;
 use Expresso\Extensions\Core\Operators\Binary\ConditionalOperator as BinaryConditionalOperator;
 use Expresso\Extensions\Core\Operators\Binary\FilterOperator;
+use Expresso\Extensions\Core\Operators\Binary\FunctionCallOperator;
 use Expresso\Extensions\Core\Operators\Binary\Logical\AndOperator;
 use Expresso\Extensions\Core\Operators\Binary\Logical\OrOperator;
 use Expresso\Extensions\Core\Operators\Binary\Logical\XorOperator;
@@ -69,6 +64,8 @@ use Expresso\Extensions\Core\Operators\Unary\Postfix\OddOperator;
 use Expresso\Extensions\Core\Operators\Unary\Prefix\BitwiseNotOperator;
 use Expresso\Extensions\Core\Operators\Unary\Prefix\MinusOperator;
 use Expresso\Extensions\Core\Operators\Unary\Prefix\NotOperator;
+use Expresso\Extensions\Core\Parsers\OperatorParser;
+use Expresso\Runtime\RuntimeFunction;
 
 /**
  * Class Core defines the core language elements, including operators and some basic functions.

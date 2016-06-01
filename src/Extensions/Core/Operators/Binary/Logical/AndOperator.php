@@ -2,7 +2,6 @@
 
 namespace Expresso\Extensions\Core\Operators\Binary\Logical;
 
-use Expresso\Compiler\Compiler\Compiler;
 use Expresso\Compiler\Node;
 use Expresso\Compiler\Operators\BinaryOperator;
 use Expresso\Runtime\ExecutionContext;
