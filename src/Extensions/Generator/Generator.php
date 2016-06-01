@@ -35,7 +35,7 @@ class Generator extends Extension
      */
     public function getSymbols() : array
     {
-        return ['<-', '{', '}', ',', ':', ';'];
+        return ['<-', ',', ';'];
     }
 
     /**
@@ -43,17 +43,13 @@ class Generator extends Extension
      */
     public function addParsers(GrammarParser $parser, CompilerConfiguration $configuration)
     {
-        //TODO: [generátor]
         $parserContainer = $parser->getContainer();
 
-        $operandParser = $parserContainer->get('operand');
-        $expression    = $parserContainer->get('expression');
+        $expression   = $parserContainer->get('expression');
+        $listSubtypes = $parserContainer->get('listSubtypes');
 
-        $openingBraces   = TokenParser::create(Token::SYMBOL, '{');
-        $closingBraces   = TokenParser::create(Token::SYMBOL, '}');
         $elementOf       = TokenParser::create(Token::SYMBOL, '<-');
         $comma           = TokenParser::create(Token::SYMBOL, ',');
-        $separator       = TokenParser::create(Token::SYMBOL, ':');
         $branchSeparator = TokenParser::create(Token::SYMBOL, ';');
         $identifier      = TokenParser::create(Token::IDENTIFIER);
         $keyword         = function ($keyword) {
@@ -78,44 +74,44 @@ class Generator extends Extension
             ->orA($elementOfExpression)
             ->repeatSeparatedBy($comma);
 
-        $generatorExpression = $openingBraces
-            ->followedBy($expression)
-            ->followedBy($separator)
-            ->followedBy(
-                $generatorSource
-                    ->repeatSeparatedBy($branchSeparator)
-            )
-            ->followedBy($closingBraces)
-            ->process(
-                function (array $children) {
-                    list(, $funcBody, , $generatorBranches,) = $children;
-                    $node = new GeneratorNode(new FunctionDefinitionNode($funcBody));
+        $newListParser = $listSubtypes->orA(
+            $keyword('for')
+                ->followedBy(
+                    $generatorSource->repeatSeparatedBy($branchSeparator)
+                )
+                ->process(function (array $children, AbstractParser $parent) {
+                    $parent->getParent()
+                           ->tempProcess(function (array $children) {
+                               list($funcBody, $generatorBranches) = $children;
+                               $node = new GeneratorNode(new FunctionDefinitionNode($funcBody));
 
-                    foreach ($generatorBranches as $generatorBranch) {
-                        $branch = new GeneratorBranchNode();
-                        foreach ($generatorBranch as $argumentOrFilter) {
+                               foreach ($generatorBranches as $generatorBranch) {
+                                   $branch = new GeneratorBranchNode();
+                                   foreach ($generatorBranch as $argumentOrFilter) {
 
-                            $isFilter = $argumentOrFilter[0] instanceof Token
-                                && $argumentOrFilter[0]->test(Token::IDENTIFIER, 'where');
+                                       $isFilter = $argumentOrFilter[0] instanceof Token
+                                           && $argumentOrFilter[0]->test(Token::IDENTIFIER, 'where');
 
-                            if ($isFilter) {
-                                $branch->addFilter($argumentOrFilter[1]);
-                            } else {
-                                //generator def
-                                list($argument, $source) = $argumentOrFilter;
-                                $branch->addArgument($argument, $source);
-                            }
+                                       if ($isFilter) {
+                                           $branch->addFilter($argumentOrFilter[1]);
+                                       } else {
+                                           //generator def
+                                           list($argument, $source) = $argumentOrFilter;
+                                           $branch->addArgument($argument, $source);
+                                       }
 
-                        }
+                                   }
 
-                        $node->addBranch($branch);
-                    }
+                                   $node->addBranch($branch);
+                               }
 
-                    return $node;
-                }
-            );
+                               return $node;
+                           });
 
-        $parserContainer->set('operand', $operandParser->orA($generatorExpression));
+                    return $children[1];
+                })
+        );
+        $parserContainer->set('listSubtypes', $newListParser);
     }
 
     /**

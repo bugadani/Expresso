@@ -1,7 +1,7 @@
 --TEST--
 Test basic generator syntax with a variable from outside
 --EXPRESSION--
-{ x + y : x <- [1, 2, 3] }|join(', ')
+[ x + y for x <- [1, 2, 3] ]|join(', ')
 --DATA--
 'y' => 2
 --EXPECT--

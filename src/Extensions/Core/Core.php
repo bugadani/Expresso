@@ -241,8 +241,9 @@ class Core extends Extension
         $constantString  = TokenParser::create(Token::STRING);
         $endOfExpression = TokenParser::create(Token::EOF);
 
-        $expression = new ParserReference($parserContainer, 'expression');
-        $operand    = new ParserReference($parserContainer, 'operand');
+        $expression  = new ParserReference($parserContainer, 'expression');
+        $operand     = new ParserReference($parserContainer, 'operand');
+        $listSubtype = new ParserReference($parserContainer, 'listSubtypes');
 
         //Other parsers
         $mapParser = function ($separatorSymbol) use ($expression, $comma) {
@@ -286,27 +287,26 @@ class Core extends Extension
             ->followedBy($expressionListSeparatedByComma)
             ->process($returnArgument(1));
 
-        $arrayElementList = $expression
-            ->followedBy(
-                $listParser
-                    ->orA($symbol('...')
-                        ->followedBy($expression->optional())
-                        ->process(function ($ch, AbstractParser $parent) use ($binaryOperators, $postfixOperators) {
-                            $parent->getParent()
-                                   ->tempProcess(function (array $children) use ($binaryOperators, $postfixOperators) {
-                                       if ($children[1] === null) {
-                                           return new UnaryOperatorNode(new InfiniteRangeOperator(0), $children[0]);
-                                       } else {
-                                           return new BinaryOperatorNode(new RangeOperator(0), $children[0], $children[1]);
-                                       }
-                                   });
+        $listTypes = $listParser
+            ->orA($symbol('...')
+                ->followedBy($expression->optional())
+                ->process(function ($ch, AbstractParser $parent) use ($binaryOperators, $postfixOperators) {
+                    $parent->getParent()
+                           ->tempProcess(function (array $children) use ($binaryOperators, $postfixOperators) {
+                               if ($children[1] === null) {
+                                   return new UnaryOperatorNode(new InfiniteRangeOperator(0), $children[0]);
+                               } else {
+                                   return new BinaryOperatorNode(new RangeOperator(0), $children[0], $children[1]);
+                               }
+                           });
 
-                            return $ch[1];
-                        }))
-                    ->orA($mapParser(':'))
-                    ->orA($mapParser('=>'))
-                    ->optional()
-            );
+                    return $ch[1];
+                }))
+            ->orA($mapParser(':'))
+            ->orA($mapParser('=>'));
+
+        $arrayElementList = $expression
+            ->followedBy($listSubtype->optional());
 
         $arrayDefinition = $openingSquareBracket
             ->followedBy($arrayElementList
@@ -460,6 +460,7 @@ class Core extends Extension
 
         $parserContainer->set('operand', $operandParser);
         $parserContainer->set('expression', $expressionParser);
+        $parserContainer->set('listSubtypes', $listTypes);
 
         //TODO: program: expr [; expr]...
         $parserContainer->set('program', $program);

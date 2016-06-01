@@ -1,6 +1,6 @@
 --TEST--
 Test generator syntax with guard expressions
 --EXPRESSION--
-{ x * 2 : x <- [1, 2, 3], where x is odd }|join(', ')
+[ x * 2 for x <- [1, 2, 3], where x is odd ]|join(', ')
 --EXPECT--
 2, 6

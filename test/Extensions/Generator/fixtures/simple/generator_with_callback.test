@@ -1,7 +1,7 @@
 --TEST--
 Test basic generator syntax with variable function call
 --EXPRESSION--
-{ double(x) : x <- [1, 2, 3] }|join(', ')
+[ double(x) for x <- [1, 2, 3] ]|join(', ')
 --DATA--
 'double' => function($x) { return $x * 2; }
 --EXPECT--

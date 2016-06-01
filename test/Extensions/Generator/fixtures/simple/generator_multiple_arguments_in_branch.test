@@ -1,6 +1,6 @@
 --TEST--
 Test generator syntax with arguments in a single branch
 --EXPRESSION--
-{ x * y : x <- [1, 2, 3], y  <- [1, 2, 3] }|join(', ')
+[ x * y for x <- [1, 2, 3], y  <- [1, 2, 3] ]|join(', ')
 --EXPECT--
 1, 2, 3, 2, 4, 6, 3, 6, 9

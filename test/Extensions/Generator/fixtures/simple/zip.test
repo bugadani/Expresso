@@ -1,7 +1,7 @@
 --TEST--
 Test generator syntax for a zip functionality
 --EXPRESSION--
-{ x ~ ': ' ~ y : x <- [1...5], y <- [1, 2]}|join(',\n')
+[ x ~ ': ' ~ y for x <- [1...5], y <- [1, 2]]|join(',\n')
 --EXPECT--
 1: 1,
 1: 2,

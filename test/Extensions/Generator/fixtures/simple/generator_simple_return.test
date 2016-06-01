@@ -1,6 +1,6 @@
 --TEST--
 Test basic generator syntax without any transformation
 --EXPRESSION--
-{ x : x <- [1, 2, 3] }|join(', ')
+[ x for x <- [1, 2, 3] ]|join(', ')
 --EXPECT--
 1, 2, 3

@@ -64,8 +64,8 @@ definitions and defines some functions that can be used in expressions.
    - `x is not set`
  - Other operators
    - `x ~`: Concatenates two strings
-   - `x..y`: Creates a collection of numbers between `x` and `y`, including both `x` and `y`
-   - `x...`: Creates an infinite collection of numbers starting with `x`
+   - `[x...y]`: Creates a collection of numbers between `x` and `y`, including both `x` and `y`
+   - `[x...]`: Creates an infinite collection of numbers starting with `x`
    - `x()`
    - `x|y`
    - `x|y()`
@@ -88,7 +88,7 @@ definitions and defines some functions that can be used in expressions.
 
 Expresso supports partial function application. Example that creates a function to return the first N natural numbers:
 
-    f := take(1...)
+    f := take([1...])
     f(5)|join(', ') # this prints 1, 2, 3, 4, 5
 
 The Lambda extension
@@ -97,7 +97,7 @@ The Lambda extension adds the ability to define lambda expressions and adds some
 
 A lambda expression is defined with the following syntax: `\<arguments> -> <expression>`
 
-    $expresso->evaluate('[1..5]|map(\x -> 2*x)|join(", ")');    //returns "2, 4, 6, 8, 10"
+    $expresso->evaluate('[1...5]|map(\x -> 2*x)|join(", ")');    //returns "2, 4, 6, 8, 10"
 
 ### Available functions
  - `all`: returns true if all members of a collection match the given predicate
@@ -120,19 +120,19 @@ Generators follow the common notation used in mathematics to define lists or set
 
 An example generator, that generates the list of square numbers:
 
-    { x^2 : x <- [1..]}
+    [ x^2 for x <- [1...]]
 
 Multiple branches can be defined which will be run in parallel (e.g. sources are iterated at the same time).
 Example to generate the list of even numbers:
 
-    { x + y : x <- [1..]; y <- [1..]}
+    [ x + y for x <- [1...]; y <- [1...]]
 
 A branch may define multiple arguments that will be evaluated from left to right.
 An example that generates the list of numbers between 0 and 99:
 
-    { x * 10 + y : x <- [0..9]; y <- [1..9]}
+    [ x * 10 + y for x <- [0...9]; y <- [1...9]]
 
 Branches may also have guard expressions which are specified using the keyword 'where'.
 The following example creates a list of even numbers using guard expressions:
 
-    { x : x <- [1..] where x is even }
+    [ x for x <- [1...] where x is even ]
