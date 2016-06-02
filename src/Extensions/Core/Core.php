@@ -210,25 +210,16 @@ class Core extends Extension
         };
 
         //Primitive parsers
-        $symbol       = function ($symbol) {
+        $symbol         = function ($symbol) {
             return TokenParser::create(Token::SYMBOL, $symbol);
         };
-        $comma        = TokenParser::create(Token::SYMBOL, ',');
-        $colon        = TokenParser::create(Token::SYMBOL, ':');
-        $questionMark = TokenParser::create(Token::SYMBOL, '?');
-
-        $openingSquareBracket  = TokenParser::create(Token::SYMBOL, '[');
-        $closingSquareBrackets = TokenParser::create(Token::SYMBOL, ']');
-
-        $openingParenthesis = TokenParser::create(Token::SYMBOL, '(');
-        $closingParenthesis = TokenParser::create(Token::SYMBOL, ')');
-
-        $prefixParser  = TokenParser::create(Token::OPERATOR, [$prefixOperators, 'isOperator'])
-                                    ->process($pushOperator($prefixOperators));
-        $binaryParser  = TokenParser::create(Token::OPERATOR, [$binaryOperators, 'isOperator'])
-                                    ->process($pushOperator($binaryOperators));
-        $postfixParser = TokenParser::create(Token::OPERATOR, [$postfixOperators, 'isOperator'])
-                                    ->process($pushOperator($postfixOperators));
+        $operatorParser = function ($operators) use ($pushOperator) {
+            return TokenParser::create(Token::OPERATOR, [$operators, 'isOperator'])
+                              ->process($pushOperator($operators));
+        };
+        $prefixParser   = $operatorParser($prefixOperators);
+        $binaryParser   = $operatorParser($binaryOperators);
+        $postfixParser  = $operatorParser($postfixOperators);
 
         $identifier      = TokenParser::create(Token::IDENTIFIER);
         $constantData    = TokenParser::create(Token::CONSTANT);
@@ -240,13 +231,13 @@ class Core extends Extension
         $listSubtype = new ParserReference($parserContainer, 'listSubtypes');
 
         //Other parsers
-        $mapParser = function ($separatorSymbol) use ($expression, $comma) {
+        $mapParser = function ($separatorSymbol) use ($expression, $symbol) {
             $separator = TokenParser::create(Token::SYMBOL, $separatorSymbol);
 
             return $separator
                 ->followedBy($expression)
                 ->followedBy(
-                    $comma
+                    $symbol(',')
                         ->followedBy($expression)
                         ->followedBy($separator)
                         ->followedBy($expression)
@@ -258,32 +249,36 @@ class Core extends Extension
                         ->repeated()
                         ->optional()
                 )->process(function (array $children, AbstractParser $parent) {
-                    $parent->getParent()->tempProcess(function (array $children) {
+                    $parent->getParent()
+                           ->overrideProcess(function (array $children) {
+                               list($firstKey, list($firstValue, $elements)) = $children;
+                               $node = new MapNode();
+                               $node->add($firstKey, $firstValue);
+                               if (!empty($elements)) {
+                                   foreach ($elements as list($key, $value)) {
+                                       $node->add($key, $value);
+                                   }
+                               }
 
-                        $node = new MapNode();
-                        array_unshift($children[1][1], [$children[0], $children[1][0]]);
-                        foreach ($children[1][1] as list($key, $value)) {
-                            $node->add($key, $value);
-                        }
+                               return $node;
+                           });
+                    list(, $firstValue, $elements) = $children;
 
-                        return $node;
-                    });
-
-                    return [$children[1], $children[2]];
+                    return [$firstValue, $elements];
                 });
         };
 
-        $listParser = $comma
+        $listParser = $symbol(',')
             ->followedBy($expression
-                ->repeatSeparatedBy($comma))
+                ->repeatSeparatedBy($symbol(',')))
             ->process($returnArgument(1));
 
         $listTypes = $listParser
             ->orA($symbol('...')
                 ->followedBy($expression->optional())
-                ->process(function ($ch, AbstractParser $parent) use ($binaryOperators, $postfixOperators) {
+                ->process(function ($ch, AbstractParser $parent) {
                     $parent->getParent()
-                           ->tempProcess(function (array $children) use ($binaryOperators, $postfixOperators) {
+                           ->overrideProcess(function (array $children) {
                                return new RangeNode($children[0], $children[1]);
                            });
 
@@ -295,15 +290,13 @@ class Core extends Extension
         $arrayElementList = $expression
             ->followedBy($listSubtype->optional());
 
-        $arrayDefinition = $openingSquareBracket
+        $arrayDefinition = $symbol('[')
             ->followedBy($arrayElementList
                 ->optional()
                 ->process(function ($children) {
                     if ($children === null) {
                         return new ListNode();
-                    }
-
-                    if (is_array($children)) {
+                    } else if (is_array($children)) {
                         list($first, $array) = $children;
                         $node = new ListNode();
                         $node->add($first);
@@ -318,20 +311,20 @@ class Core extends Extension
 
                     return $children;
                 }))
-            ->followedBy($closingSquareBrackets)
+            ->followedBy($symbol(']'))
             ->process($returnArgument(1));
 
-        $argumentList = $questionMark
+        $argumentList = $symbol('?')
             ->orA($expression)
-            ->repeatSeparatedBy($comma);
+            ->repeatSeparatedBy($symbol(','));
 
-        $functionCall = $openingParenthesis
+        $functionCall = $symbol('(')
             ->followedBy($argumentList->optional())
-            ->followedBy($closingParenthesis);
+            ->followedBy($symbol(')'));
 
-        $arrayAccess = $openingSquareBracket
+        $arrayAccess = $symbol('[')
             ->followedBy($expression)
-            ->followedBy($closingSquareBrackets);
+            ->followedBy($symbol(']'));
 
         $prefixOperatorSequence = $prefixParser->repeated();
 
@@ -345,19 +338,11 @@ class Core extends Extension
 
         $expressions = $expression
             ->repeated()
-            ->process(
-                function (array $children) {
-                    if (count($children) > 1) {
-                        return new StatementNode($children);
-                    } else {
-                        return $children[0];
-                    }
-                }
-            );
+            ->process([StatementNode::class, 'create']);
 
-        $groupedExpression = $openingParenthesis
+        $groupedExpression = $symbol('(')
             ->followedBy($expression)
-            ->followedBy($closingParenthesis)
+            ->followedBy($symbol(')'))
             ->process($returnArgument(1));
 
         $operandParser = $identifier
@@ -372,15 +357,34 @@ class Core extends Extension
                                        )
                                        ->followedBy($postfixOperatorSequence->optional());
 
-        $binaryExpression = $term->repeatSeparatedBy($binaryParser);
+        $binaryExpression = $term
+            ->repeatSeparatedBy($binaryParser);
 
-        $conditionalExpressionSuffix = $questionMark
+        $conditionalExpressionSuffix = $symbol('?')
             ->followedBy($expression)
-            ->followedBy($colon)
+            ->followedBy($symbol(':'))
             ->followedBy($expression);
 
         $expressionParser = $binaryExpression
             ->followedBy($conditionalExpressionSuffix->optional());
+
+        $conditionalExpressionSuffix->process(
+            function (array $children, AbstractParser $parent) use ($parser, $conditionalOperator) {
+                $parent->overrideProcess(function ($children) use ($parser, $conditionalOperator) {
+                    list($left, list($middle, $right)) = $children;
+                    $parser->pushOperator($conditionalOperator);
+
+                    $parser->pushOperand($middle);
+                    $parser->pushOperand($right);
+
+                    return $parser->popOperatorSentinel();
+                });
+
+                list(, $middle, , $right) = $children;
+
+                return [$middle, $right];
+            }
+        );
 
         $block = $symbol('{')
             ->followedBy($expressions)
@@ -390,18 +394,14 @@ class Core extends Extension
         $statement = $expression->orA($block);
 
         $program = $expressions->orA($block)
-            ->followedBy($endOfExpression)
-            ->process($returnArgument(0));
+                               ->followedBy($endOfExpression)
+                               ->process($returnArgument(0));
 
         //Set processor functions
         $identifier->process($returnNode(IdentifierNode::class));
         $constantData->process($returnNode(DataNode::class));
         $constantString->process($returnNode(StringNode::class));
-        $operandParser->process(function ($node) use ($parser) {
-            $parser->pushOperand($node);
-
-            return $node;
-        });
+        $operandParser->process([$parser, 'pushOperand']);
 
         $functionCall->process(
             function (array $children) use ($parser, $functionCallOperator) {
@@ -428,29 +428,9 @@ class Core extends Extension
             }
         );
 
-        $conditionalExpressionSuffix->process(
-            function (array $children) {
-                return [$children[1], $children[3]];
-            }
-        );
-
         $expressionParser
             ->runBefore([$parser, 'pushOperatorSentinel'])
-            ->process(
-                function (array $children) use ($parser, $conditionalOperator) {
-
-                    if ($children[1] !== null) {
-                        list($middle, $right) = $children[1];
-
-                        $parser->pushOperator($conditionalOperator);
-
-                        $parser->pushOperand($middle);
-                        $parser->pushOperand($right);
-                    }
-
-                    return $parser->popOperatorSentinel();
-                }
-            );
+            ->process([$parser, 'popOperatorSentinel']);
 
         $parserContainer->set('operand', $operandParser);
         $parserContainer->set('expression', $expressionParser);

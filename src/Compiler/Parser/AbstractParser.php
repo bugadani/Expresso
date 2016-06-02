@@ -77,7 +77,7 @@ abstract class AbstractParser
      *
      * @return $this
      */
-    public function tempProcess(callable $callback)
+    public function overrideProcess(callable $callback)
     {
         $oldCallback = $this->emitCallback;
         $this->emitCallback = function(...$args) use($callback, $oldCallback) {

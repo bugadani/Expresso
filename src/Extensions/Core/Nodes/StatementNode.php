@@ -16,9 +16,6 @@ class StatementNode extends Node
 
     public function __construct(array $expressions)
     {
-        if (count($expressions) < 2) {
-            throw new \BadMethodCallException('A statement must have at least 2 expressions');
-        }
         $this->expressions = $expressions;
     }
 

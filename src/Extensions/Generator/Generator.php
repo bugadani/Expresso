@@ -81,7 +81,7 @@ class Generator extends Extension
                 )
                 ->process(function (array $children, AbstractParser $parent) {
                     $parent->getParent()
-                           ->tempProcess(function (array $children) {
+                           ->overrideProcess(function (array $children) {
                                list($funcBody, $generatorBranches) = $children;
                                $node = new GeneratorNode(new FunctionDefinitionNode($funcBody));
 

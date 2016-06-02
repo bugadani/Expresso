@@ -13,6 +13,10 @@ use Expresso\Runtime\ExecutionContext;
 abstract class Node
 {
 
+    static function create(...$args) : Node {
+        return new static(...$args);
+    }
+
     /**
      * Compile the given node.
      *
