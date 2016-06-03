@@ -28,7 +28,7 @@ class Lambda extends Extension
      */
     public function getSymbols() : array
     {
-        return ['->', '(', ')', '\\'];
+        return ['->', '(', ')', '\\', ','];
     }
 
     /**
@@ -44,28 +44,30 @@ class Lambda extends Extension
             return new ParserReference($parserContainer, $name);
         };
 
-        $argumentName       = TokenParser::create(Token::IDENTIFIER);
-        $comma              = TokenParser::create(Token::SYMBOL, ',');
-        $openingParenthesis = TokenParser::create(Token::SYMBOL, '(');
-        $closingParenthesis = TokenParser::create(Token::SYMBOL, ')');
-        $arrowOperator      = TokenParser::create(Token::SYMBOL, '->');
-        $lambdaPrefix       = TokenParser::create(Token::SYMBOL, '\\');
-        $singleArgument     = TokenParser::create(Token::IDENTIFIER);
+        $symbol = function ($symbol) {
+            return TokenParser::create(Token::SYMBOL, $symbol);
+        };
 
-        $argList = $openingParenthesis
+        $argumentName = TokenParser::create(Token::IDENTIFIER);
+
+        $argList = $symbol('(')
             ->followedBy(
                 $argumentName
-                    ->repeatSeparatedBy($comma)
+                    ->repeatSeparatedBy($symbol(','))
                     ->optional()
             )
-            ->followedBy($closingParenthesis);
+            ->followedBy($symbol(')'))
+            ->process(
+                function (array $children) {
+                    return $children[1];
+                }
+            );
 
-        $lambdaDefinition = $lambdaPrefix
+        $lambdaDefinition = $symbol('\\')
             ->followedBy(
-                $argList
-                    ->orA($singleArgument)
+                $argList->orA($argumentName)
             )
-            ->followedBy($arrowOperator)
+            ->followedBy($symbol('->'))
             ->followedBy($reference('statement'));
 
         $argumentName->process(
@@ -73,24 +75,9 @@ class Lambda extends Extension
                 return $token->getValue();
             }
         );
-        $singleArgument->process(
-            function (Token $token) {
-                return [$token->getValue()];
-            }
-        );
         $lambdaDefinition->process(
             function (array $children) {
-                return new LambdaNode($children[3], $children[1]);
-            }
-        );
-
-        $argList->process(
-            function (array $children) {
-                if ($children[1] === null) {
-                    return [];
-                }
-
-                return $children[1];
+                return new LambdaNode($children[3], (array)$children[1]);
             }
         );
 
@@ -149,7 +136,6 @@ function expression_function_any($collection, callable $callback)
 
     return false;
 }
-
 
 /**
  * This function tells if all of the elements in the given collection satisfy a condition that is given in the callback.

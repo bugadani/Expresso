@@ -62,10 +62,9 @@ abstract class AbstractParser
 
     /**
      * @param callable $callback
-     *
-     * @return $this
+     * @return AbstractParser
      */
-    public function process(callable $callback)
+    public function process(callable $callback) : AbstractParser
     {
         $this->emitCallback = $callback;
 
@@ -74,13 +73,12 @@ abstract class AbstractParser
 
     /**
      * @param callable $callback
-     *
-     * @return $this
+     * @return AbstractParser
      */
-    public function overrideProcess(callable $callback)
+    public function overrideProcess(callable $callback) : AbstractParser
     {
-        $oldCallback = $this->emitCallback;
-        $this->emitCallback = function(...$args) use($callback, $oldCallback) {
+        $oldCallback        = $this->emitCallback;
+        $this->emitCallback = function (...$args) use ($callback, $oldCallback) {
             $this->emitCallback = $oldCallback;
 
             return $callback(...$args);
@@ -94,7 +92,7 @@ abstract class AbstractParser
      *
      * @return Sequence
      */
-    public function followedBy(AbstractParser $parser)
+    public function followedBy(AbstractParser $parser) : Sequence
     {
         return Sequence::create($this)
                        ->followedBy($parser);
@@ -105,7 +103,7 @@ abstract class AbstractParser
      *
      * @return Alternative
      */
-    public function orA(AbstractParser $parser)
+    public function orA(AbstractParser $parser) : Alternative
     {
         return Alternative::create($this)
                           ->orA($parser);
@@ -114,7 +112,7 @@ abstract class AbstractParser
     /**
      * @return Repeat
      */
-    public function repeated()
+    public function repeated() : Repeat
     {
         return Repeat::create($this);
     }
@@ -124,7 +122,7 @@ abstract class AbstractParser
      *
      * @return RepeatSeparated
      */
-    public function repeatSeparatedBy(AbstractParser $parser)
+    public function repeatSeparatedBy(AbstractParser $parser) : RepeatSeparated
     {
         return RepeatSeparated::create($this, $parser);
     }
@@ -132,7 +130,7 @@ abstract class AbstractParser
     /**
      * @return Optional
      */
-    public function optional()
+    public function optional() : Optional
     {
         return Optional::create($this);
     }

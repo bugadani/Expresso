@@ -30,7 +30,7 @@ class GeneratorBranchNode extends Node
      * @param string $argumentName
      * @param Node $argumentNode
      */
-    public function addArgument($argumentName, Node $argumentNode)
+    public function addArgument(string $argumentName, Node $argumentNode)
     {
         $this->arguments[ $argumentName ] = $argumentNode;
     }
@@ -70,6 +70,7 @@ class GeneratorBranchNode extends Node
             foreach ($this->filters as $filter) {
                 $compiledFilters[] = (yield $compiler->compileNode($filter));
             }
+            $compiler->compileStatements();
             $compiler->add('if ((')
                      ->add(implode(') && (', $compiledFilters))
                      ->add(')) {');

@@ -15,7 +15,7 @@ class Container
      *
      * @return AbstractParser
      */
-    public function set(string $parserName, AbstractParser $parser)
+    public function set(string $parserName, AbstractParser $parser) : AbstractParser
     {
         $this->parsers[ $parserName ] = $parser;
 

@@ -2,6 +2,7 @@
 
 namespace Expresso\Compiler\Compiler;
 
+use Expresso\Compiler\Operator;
 use Expresso\Compiler\OperatorCollection;
 use Expresso\Runtime\RuntimeFunction;
 use Expresso\Extension;
@@ -29,14 +30,14 @@ class CompilerConfiguration
     private $ternaryOperators;
 
     /**
-     * @var \ArrayObject
+     * @var Operator[]
      */
-    private $operators;
+    private $operators = [];
 
     /**
      * @var RuntimeFunction[]
      */
-    private $functions;
+    private $functions = [];
 
     /**
      * @var string[]
@@ -49,8 +50,6 @@ class CompilerConfiguration
         $this->prefixOperators  = new OperatorCollection();
         $this->unaryOperators   = new OperatorCollection();
         $this->ternaryOperators = new OperatorCollection();
-        $this->functions        = new \ArrayObject();
-        $this->operators        = new \ArrayObject();
     }
 
     public function addExtension(Extension $ext)
@@ -75,7 +74,7 @@ class CompilerConfiguration
         }
     }
 
-    public function getOperatorByClass($class)
+    public function getOperatorByClass(string $class) : Operator
     {
         return $this->operators[ $class ];
     }
@@ -92,7 +91,7 @@ class CompilerConfiguration
     /**
      * @return OperatorCollection
      */
-    public function getBinaryOperators()
+    public function getBinaryOperators() : OperatorCollection
     {
         return $this->binaryOperators;
     }
@@ -100,7 +99,7 @@ class CompilerConfiguration
     /**
      * @return OperatorCollection
      */
-    public function getPrefixOperators()
+    public function getPrefixOperators() : OperatorCollection
     {
         return $this->prefixOperators;
     }
@@ -108,7 +107,7 @@ class CompilerConfiguration
     /**
      * @return OperatorCollection
      */
-    public function getUnaryOperators()
+    public function getUnaryOperators() : OperatorCollection
     {
         return $this->unaryOperators;
     }
@@ -116,22 +115,31 @@ class CompilerConfiguration
     /**
      * @return OperatorCollection
      */
-    public function getTernaryOperators()
+    public function getTernaryOperators() : OperatorCollection
     {
         return $this->ternaryOperators;
     }
 
-    public function getFunctions()
+    public function getFunction(string $functionName) : RuntimeFunction
+    {
+        if (!$this->hasFunction($functionName)) {
+            throw new \OutOfBoundsException("Function {$functionName} does not exist");
+        }
+
+        return $this->functions[ $functionName ];
+    }
+
+    public function getFunctions() : array
     {
         return $this->functions;
     }
 
-    public function hasFunction($functionName) : bool
+    public function hasFunction(string $functionName) : bool
     {
         return isset($this->functions[ $functionName ]);
     }
 
-    public function getSymbols()
+    public function getSymbols() : array
     {
         return $this->symbols;
     }

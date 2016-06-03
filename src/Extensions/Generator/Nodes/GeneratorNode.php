@@ -29,19 +29,13 @@ class GeneratorNode extends Node
     /**
      * GeneratorNode constructor.
      *
-     * @param Node $functionBody
+     * @param FunctionDefinitionNode $functionBody
+     * @param GeneratorBranchNode[] $branches
      */
-    public function __construct(Node $functionBody)
+    public function __construct(FunctionDefinitionNode $functionBody, GeneratorBranchNode... $branches)
     {
         $this->functionBodyNode = $functionBody;
-    }
-
-    /**
-     * @param GeneratorBranchNode $branch
-     */
-    public function addBranch(GeneratorBranchNode $branch)
-    {
-        $this->branches[] = $branch;
+        $this->branches         = $branches;
     }
 
     /**
@@ -98,8 +92,7 @@ class GeneratorNode extends Node
 
         if (count($this->branches) === 1) {
 
-            $iterator = (yield $this->branches[0]->evaluate($context));
-
+            $iterator  = (yield $this->branches[0]->evaluate($context));
             $generator = function ($iterator) use ($transformFunction) {
                 foreach ($iterator as $arguments) {
                     yield $transformFunction($arguments);

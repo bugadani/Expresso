@@ -4,8 +4,6 @@ namespace Expresso\Extensions\Generator\Nodes;
 
 use Expresso\Compiler\Compiler\Compiler;
 use Expresso\Compiler\Node;
-use Expresso\Extensions\Core\Nodes\DataNode;
-use Expresso\Extensions\Core\Nodes\IdentifierNode;
 use Expresso\Runtime\ExecutionContext;
 use Recursor\Recursor;
 
@@ -22,11 +20,6 @@ class FunctionDefinitionNode extends Node
     private $functionBody;
 
     /**
-     * @var bool
-     */
-    private $isSimpleNode;
-
-    /**
      * FunctionDefinitionNode constructor.
      *
      * @param Node $functionBody
@@ -34,7 +27,6 @@ class FunctionDefinitionNode extends Node
     public function __construct(Node $functionBody)
     {
         $this->functionBody = $functionBody;
-        $this->isSimpleNode = $functionBody instanceof IdentifierNode || $functionBody instanceof DataNode;
     }
 
     /**
@@ -58,20 +50,12 @@ class FunctionDefinitionNode extends Node
      */
     public function evaluate(ExecutionContext $context)
     {
-        if ($this->isSimpleNode) {
-            return function ($arguments) use ($context) {
-                $innerContext = $context->createInnerScope($arguments);
+        $function = new Recursor([$this->functionBody, 'evaluate']);
+        return function (array $arguments) use ($context, $function) {
+            $innerContext = $context->createInnerScope($arguments);
 
-                return $this->functionBody->evaluate($innerContext);
-            };
-        } else {
-            $function = new Recursor([$this->functionBody, 'evaluate']);
-            return function (array $arguments) use ($context, $function) {
-                $innerContext = $context->createInnerScope($arguments);
-
-                return $function($innerContext);
-            };
-        }
+            return $function($innerContext);
+        };
     }
 
     /**

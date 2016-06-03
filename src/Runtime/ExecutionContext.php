@@ -43,7 +43,7 @@ class ExecutionContext implements \ArrayAccess
                     throw new \OutOfBoundsException("Array index out of bounds: '{$index}'");
                 }
 
-                public function offsetExists($offset)
+                public function offsetExists($offset) : bool
                 {
                     return false;
                 }
@@ -55,7 +55,7 @@ class ExecutionContext implements \ArrayAccess
             };
     }
 
-    public function createInnerScope($input)
+    public function createInnerScope($input) : ExecutionContext
     {
         return new ExecutionContext($input, $this->configuration, $this);
     }
@@ -75,7 +75,7 @@ class ExecutionContext implements \ArrayAccess
     /**
      * @inheritdoc
      */
-    public function offsetExists($offset)
+    public function offsetExists($offset) : bool
     {
         return array_key_exists($offset, $this->data) || $this->parentContext->offsetExists($offset);
     }
@@ -123,10 +123,8 @@ class ExecutionContext implements \ArrayAccess
     public function getFunction($functionName) : RuntimeFunction
     {
         if ($this->configuration->hasFunction($functionName)) {
-            return $this->configuration->getFunctions()[ $functionName ];
-        }
-
-        if (isset($this[ $functionName ])) {
+            return $this->configuration->getFunction($functionName);
+        } else if (isset($this[ $functionName ])) {
             if (!$this[ $functionName ] instanceof RuntimeFunction) {
                 if ($this[ $functionName ] === null) {
                     $this[ $functionName ] = new NullFunction();
@@ -136,8 +134,8 @@ class ExecutionContext implements \ArrayAccess
             }
 
             return $this[ $functionName ];
+        } else {
+            return $this->parentContext->getFunction($functionName);
         }
-
-        return $this->parentContext->getFunction($functionName);
     }
 }

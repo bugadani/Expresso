@@ -23,8 +23,8 @@ use Expresso\Extensions\Generator\Nodes\GeneratorNode;
  * branch       = element , {',' , element},
  * element      = filter | elementOf
  * filter       = 'where' , expression
- * elementOf    = pattern , '->' , expression
- * pattern      = identifier
+ * elementOf    = name , '->' , expression
+ * name         = identifier
  *
  * @package Expresso\Extensions\Generator
  */
@@ -48,18 +48,17 @@ class Generator extends Extension
         $expression   = $parserContainer->get('expression');
         $listSubtypes = $parserContainer->get('listSubtypes');
 
-        $elementOf       = TokenParser::create(Token::SYMBOL, '<-');
-        $comma           = TokenParser::create(Token::SYMBOL, ',');
-        $branchSeparator = TokenParser::create(Token::SYMBOL, ';');
-        $identifier      = TokenParser::create(Token::IDENTIFIER);
-        $keyword         = function ($keyword) {
+        $keyword    = function ($keyword) {
             return TokenParser::create(Token::IDENTIFIER, $keyword);
         };
+        $symbol     = function ($symbol) {
+            return TokenParser::create(Token::SYMBOL, $symbol);
+        };
 
-        $pattern = $identifier;
+        $name = TokenParser::create(Token::IDENTIFIER);
 
-        $elementOfExpression = $pattern
-            ->followedBy($elementOf)
+        $elementOfExpression = $name
+            ->followedBy($symbol('<-'))
             ->followedBy($expression)
             ->process(function (array $children) {
                 //discard the arrow
@@ -72,40 +71,40 @@ class Generator extends Extension
 
         $generatorSource = $filterExpression
             ->orA($elementOfExpression)
-            ->repeatSeparatedBy($comma);
+            ->repeatSeparatedBy($symbol(','))
+            ->process(function (array $sources) {
+                $branch = new GeneratorBranchNode();
+                foreach ($sources as $argumentOrFilter) {
+                    $isFilter = $argumentOrFilter[0] instanceof Token
+                        && $argumentOrFilter[0]->test(Token::IDENTIFIER, 'where');
+
+                    if ($isFilter) {
+                        $branch->addFilter($argumentOrFilter[1]);
+                    } else {
+                        //generator def
+                        list($argument, $source) = $argumentOrFilter;
+                        $branch->addArgument($argument, $source);
+                    }
+                }
+
+                return $branch;
+            });
 
         $newListParser = $listSubtypes->orA(
             $keyword('for')
                 ->followedBy(
-                    $generatorSource->repeatSeparatedBy($branchSeparator)
+                    $generatorSource
+                        ->repeatSeparatedBy($symbol(';'))
                 )
                 ->process(function (array $children, AbstractParser $parent) {
                     $parent->getParent()
                            ->overrideProcess(function (array $children) {
                                list($funcBody, $generatorBranches) = $children;
-                               $node = new GeneratorNode(new FunctionDefinitionNode($funcBody));
 
-                               foreach ($generatorBranches as $generatorBranch) {
-                                   $branch = new GeneratorBranchNode();
-                                   foreach ($generatorBranch as $argumentOrFilter) {
-
-                                       $isFilter = $argumentOrFilter[0] instanceof Token
-                                           && $argumentOrFilter[0]->test(Token::IDENTIFIER, 'where');
-
-                                       if ($isFilter) {
-                                           $branch->addFilter($argumentOrFilter[1]);
-                                       } else {
-                                           //generator def
-                                           list($argument, $source) = $argumentOrFilter;
-                                           $branch->addArgument($argument, $source);
-                                       }
-
-                                   }
-
-                                   $node->addBranch($branch);
-                               }
-
-                               return $node;
+                               return new GeneratorNode(
+                                   new FunctionDefinitionNode($funcBody),
+                                   ...$generatorBranches
+                               );
                            });
 
                     return $children[1];

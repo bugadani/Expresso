@@ -31,7 +31,7 @@ abstract class DelegateParser extends AbstractParser
         return $this->parser->canParse($token);
     }
 
-    public function getParser()
+    public function getParser() : AbstractParser
     {
         return $this->parser;
     }

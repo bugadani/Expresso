@@ -273,17 +273,19 @@ class Core extends Extension
                 ->repeatSeparatedBy($symbol(',')))
             ->process($returnArgument(1));
 
-        $listTypes = $listParser
-            ->orA($symbol('...')
-                ->followedBy($expression->optional())
-                ->process(function ($ch, AbstractParser $parent) {
-                    $parent->getParent()
-                           ->overrideProcess(function (array $children) {
-                               return new RangeNode($children[0], $children[1]);
-                           });
+        $rangeDefinitionParser = $symbol('...')
+            ->followedBy($expression->optional())
+            ->process(function ($ch, AbstractParser $parent) {
+                $parent->getParent()
+                       ->overrideProcess(function (array $children) {
+                           return new RangeNode($children[0], $children[1]);
+                       });
 
-                    return $ch[1];
-                }))
+                return $ch[1];
+            });
+
+        $listTypes = $listParser
+            ->orA($rangeDefinitionParser)
             ->orA($mapParser(':'))
             ->orA($mapParser('=>'));
 
@@ -307,9 +309,9 @@ class Core extends Extension
                         }
 
                         return $node;
+                    } else {
+                        return $children;
                     }
-
-                    return $children;
                 }))
             ->followedBy($symbol(']'))
             ->process($returnArgument(1));

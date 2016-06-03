@@ -11,6 +11,10 @@ class GrammarParser
      * @var Container
      */
     private $container;
+
+    /**
+     * @var string
+     */
     private $sentence;
 
     public function __construct(Container $container)
@@ -19,9 +23,9 @@ class GrammarParser
     }
 
     /**
-     * @return mixed
+     * @return string
      */
-    public function getSentence()
+    public function getSentence() : string
     {
         return $this->sentence;
     }
@@ -29,7 +33,7 @@ class GrammarParser
     /**
      * @param mixed $sentence
      */
-    public function setSentence($sentence)
+    public function setSentence(string $sentence)
     {
         $this->sentence = $sentence;
     }
